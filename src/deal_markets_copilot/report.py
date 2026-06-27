@@ -19,6 +19,7 @@ def build_html_report(
     mode: str,
     market_snapshot: list[dict] | None = None,
     workflow: dict | None = None,
+    precedent_transactions: list[dict] | None = None,
 ) -> Path:
     """Build a daily IB workflow desk rather than a generic news dashboard."""
     output = Path(output_path)
@@ -26,6 +27,7 @@ def build_html_report(
     ranked = sorted(items, key=lambda item: (item.score, item.event.published_at), reverse=True)
     quotes = market_snapshot or []
     flow = workflow or _empty_workflow()
+    precedents = precedent_transactions or []
     counts = Counter(item.category for item in ranked)
     generated = datetime.now().astimezone().strftime("%d.%m.%Y · %H:%M")
     news_window = "72H CATCH-UP" if datetime.now().astimezone().weekday() in {0, 5, 6} else "24H"
@@ -40,13 +42,13 @@ def build_html_report(
 
     document = f"""<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Banker Morning Desk</title><style>{_CSS}</style></head>
+<title>Banker Morning Desk</title><style>{_CSS}{_DEAL_CSS}</style></head>
 <body><div class="shell">
 <aside class="sidebar">
   <div class="brand"><span class="brand-mark">D</span><div><strong>DEAL DESK</strong><small>JUNIOR BANKER COPILOT</small></div></div>
-  <nav><a class="active" href="#brief"><span>01</span>Morning brief</a><a href="#actions"><span>02</span>Действия</a>
-  <a href="#hypotheses"><span>03</span>Deal hypotheses</a><a href="#signals"><span>04</span>Сигналы</a>
-  <a href="#sources"><span>05</span>Источники</a></nav>
+  <nav><a class="active" href="#brief"><span>01</span>Morning brief</a><a href="#deal-card"><span>02</span>Deal card</a>
+  <a href="#actions"><span>03</span>Действия</a><a href="#hypotheses"><span>04</span>Deal hypotheses</a>
+  <a href="#signals"><span>05</span>Сигналы</a><a href="#sources"><span>06</span>Источники</a></nav>
   <div class="scope"><span>WATCHLIST</span><strong>TMT · RUSSIA</strong><small>{html.escape(scope)}</small></div>
   <div class="sidebar-note">Focused IB workflow<br>Не является Bloomberg Terminal</div>
 </aside>
@@ -66,6 +68,16 @@ def build_html_report(
     {_metric("Analyst actions", len(flow.get("tasks", [])), "чекбоксы сохраняются")}
     {_metric("Hypotheses at risk", flow.get("attention_hypotheses", 0), "нужен review")}
     {_metric("Покрытие", len(config.get("coverage", [])), "компаний в watchlist")}
+  </section>
+
+  <section class="deal-module" id="deal-card">
+    {_deal_card(precedents[0] if precedents else None)}
+    <div class="panel precedent-panel">
+      <div class="panel-head"><div><span class="kicker">PRECEDENT TRANSACTIONS</span><h2>Накопительная база сделок</h2></div>
+      <div class="export-actions"><a href="precedent_transactions.xlsx" download>Excel .xlsx ↓</a><a class="secondary-export" href="precedent_transactions.csv" download>CSV ↓</a></div></div>
+      <div class="precedent-summary"><span><b>{len(precedents)}</b> сделок в базе</span><span>Source-backed · screening-grade</span></div>
+      {_precedent_table(precedents[:8])}
+    </div>
   </section>
 
   <section class="workflow-grid" id="actions">
@@ -143,6 +155,48 @@ def _brief_text(flow: dict, generated: str) -> str:
 
 def _metric(label: str, value: int, note: str) -> str:
     return f'<article><span>{html.escape(label)}</span><strong>{value}</strong><small>{html.escape(note)}</small></article>'
+
+
+def _deal_card(deal: dict | None) -> str:
+    if not deal:
+        return '<article class="panel deal-card"><span class="kicker">DEAL CARD</span><div class="empty">Новая сделка появится здесь после следующего запуска.</div></article>'
+    amount = _deal_amount(deal.get("transaction_value"), deal.get("currency", ""))
+    source_url = _safe_url(deal.get("source_url", ""))
+    return f"""<article class="panel deal-card">
+      <div class="deal-card-top"><span class="kicker">LATEST DEAL CARD</span><b>{html.escape(deal.get('status','Reported'))}</b></div>
+      <div class="deal-type">{html.escape(deal.get('deal_type',''))} · SCORE {html.escape(str(deal.get('score','—')))}/10</div>
+      <h2>{html.escape(deal.get('headline',''))}</h2>
+      <div class="deal-kpis"><div><span>TARGET / ISSUER</span><strong>{html.escape(deal.get('target_or_issuer','Not disclosed'))}</strong></div>
+      <div><span>ACQUIRER / INVESTOR</span><strong>{html.escape(deal.get('acquirer_or_investor','Not disclosed'))}</strong></div>
+      <div><span>TRANSACTION VALUE</span><strong>{html.escape(amount)}</strong></div>
+      <div><span>ANNOUNCED</span><strong>{html.escape(deal.get('announced_date','—') or '—')}</strong></div></div>
+      <div class="deal-note"><span>RATIONALE / USE OF PROCEEDS</span><p>{html.escape(deal.get('rationale','Not disclosed'))}</p></div>
+      <div class="deal-foot"><span>{html.escape(deal.get('instrument',''))} · {html.escape(deal.get('evidence_label','unverified'))}</span><a href="{html.escape(source_url, quote=True)}" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>"""
+
+
+def _precedent_table(rows: list[dict]) -> str:
+    if not rows:
+        return '<div class="empty">База пока пуста.</div>'
+    output = []
+    for row in rows:
+        output.append(f"""<tr><td>{html.escape(row.get('announced_date','—') or '—')}</td><td><b>{html.escape(row.get('deal_type',''))}</b><small>{html.escape(row.get('status',''))}</small></td>
+        <td>{html.escape(row.get('target_or_issuer','Not disclosed'))}</td><td>{html.escape(row.get('acquirer_or_investor','Not disclosed'))}</td>
+        <td>{html.escape(_deal_amount(row.get('transaction_value'), row.get('currency','')))}</td><td>{html.escape(row.get('instrument',''))}</td>
+        <td><a href="{html.escape(_safe_url(row.get('source_url','')), quote=True)}" target="_blank" rel="noopener">{html.escape(row.get('source_name','Source'))} ↗</a></td></tr>""")
+    return f'<div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Instrument</th><th>Source</th></tr></thead><tbody>{"".join(output)}</tbody></table></div>'
+
+
+def _deal_amount(value, currency: str) -> str:
+    if value in {None, ""}:
+        return "Not disclosed"
+    number = float(value)
+    symbol = {"RUB": "₽", "USD": "$", "EUR": "€"}.get(str(currency).upper(), str(currency))
+    if number >= 1_000_000_000:
+        return f"{number / 1_000_000_000:,.1f} bn {symbol}".replace(",", " ")
+    if number >= 1_000_000:
+        return f"{number / 1_000_000:,.1f} mm {symbol}".replace(",", " ")
+    return f"{number:,.0f} {symbol}".replace(",", " ")
 
 
 def _quote_cards(quotes: list[dict], live: bool) -> str:
@@ -350,4 +404,8 @@ _CSS = r"""
 @media(max-width:1100px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto;display:block;border-right:0;border-bottom:1px solid var(--line)}.brand{margin-bottom:16px}.sidebar nav{display:flex;overflow:auto}.scope,.sidebar-note{display:none}.workflow-grid,.terminal-grid{grid-template-columns:1fr}.detail{position:static}.workspace{padding:18px}.market-tape{grid-template-columns:1fr}.quote-card{border-right:0;border-bottom:1px solid var(--line)}}
 @media(max-width:700px){.topbar,.panel-head,.hero{align-items:flex-start;flex-direction:column}.metrics,.hypothesis-grid{grid-template-columns:1fr 1fr}.filters{justify-content:flex-start}.task{grid-template-columns:22px 30px minmax(0,1fr) 18px}.task .state{display:none}.hero-actions{width:100%}.hero button{flex:1}.event-card{grid-template-columns:38px minmax(0,1fr) 20px}h1{font-size:22px}}
 @media print{.sidebar,.hero-actions,.filters,.search{display:none}.shell{display:block}.workspace{max-width:none;padding:0}.panel{break-inside:avoid;background:#fff;color:#111;border-color:#bbb}.task,.event-card{break-inside:avoid}body{background:#fff;color:#111}.muted{color:#555}}
+"""
+
+_DEAL_CSS = r"""
+.deal-module{display:grid;grid-template-columns:minmax(320px,.9fr) minmax(520px,1.5fr);gap:14px;margin-bottom:14px;align-items:start}.deal-card{padding:22px}.deal-card-top{display:flex;justify-content:space-between;gap:12px}.deal-card-top b{font:700 10px monospace;color:var(--cyan);border:1px solid #24524f;padding:5px 8px}.deal-type{margin:22px 0 8px;color:var(--cyan);font:700 11px monospace;letter-spacing:.08em}.deal-card h2{font-size:21px;line-height:1.3;margin:0 0 20px}.deal-kpis{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}.deal-kpis div{padding:13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.deal-kpis div:nth-child(2n){border-right:0}.deal-kpis div:nth-last-child(-n+2){border-bottom:0}.deal-kpis span,.deal-note span{display:block;color:var(--muted);font:700 9px monospace;letter-spacing:.08em;margin-bottom:6px}.deal-kpis strong{font-size:12px}.deal-note{margin-top:16px;padding:13px;background:#0c1219;border-left:2px solid var(--cyan)}.deal-note p{margin:0;font-size:12px;line-height:1.5}.deal-foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font:10px monospace}.deal-foot a,.export-actions a{color:#071014;background:var(--cyan);padding:8px 11px;text-decoration:none;font-weight:800}.precedent-panel{overflow:hidden}.precedent-panel .panel-head{padding:20px 20px 14px}.precedent-summary{display:flex;justify-content:space-between;padding:0 20px 14px;color:var(--muted);font:10px monospace}.precedent-summary b{color:var(--text);font-size:15px}.export-actions{display:flex;gap:7px}.export-actions .secondary-export{background:transparent;color:var(--text);border:1px solid var(--line)}.precedent-panel .table-wrap{border-top:1px solid var(--line)}.precedent-panel td{vertical-align:top}.precedent-panel td:nth-child(3),.precedent-panel td:nth-child(4){max-width:150px}@media(max-width:1150px){.deal-module{grid-template-columns:1fr}}@media(max-width:700px){.deal-kpis{grid-template-columns:1fr}.deal-kpis div{border-right:0}.deal-kpis div:nth-last-child(2){border-bottom:1px solid var(--line)}.precedent-summary{align-items:flex-start;gap:8px;flex-direction:column}.export-actions{width:100%}.export-actions a{flex:1;text-align:center}}
 """

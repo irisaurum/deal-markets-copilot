@@ -15,19 +15,21 @@
 @media(max-width:1100px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto;display:block;border-right:0;border-bottom:1px solid var(--line)}.brand{margin-bottom:16px}.sidebar nav{display:flex;overflow:auto}.scope,.sidebar-note{display:none}.workflow-grid,.terminal-grid{grid-template-columns:1fr}.detail{position:static}.workspace{padding:18px}.market-tape{grid-template-columns:1fr}.quote-card{border-right:0;border-bottom:1px solid var(--line)}}
 @media(max-width:700px){.topbar,.panel-head,.hero{align-items:flex-start;flex-direction:column}.metrics,.hypothesis-grid{grid-template-columns:1fr 1fr}.filters{justify-content:flex-start}.task{grid-template-columns:22px 30px minmax(0,1fr) 18px}.task .state{display:none}.hero-actions{width:100%}.hero button{flex:1}.event-card{grid-template-columns:38px minmax(0,1fr) 20px}h1{font-size:22px}}
 @media print{.sidebar,.hero-actions,.filters,.search{display:none}.shell{display:block}.workspace{max-width:none;padding:0}.panel{break-inside:avoid;background:#fff;color:#111;border-color:#bbb}.task,.event-card{break-inside:avoid}body{background:#fff;color:#111}.muted{color:#555}}
+
+.deal-module{display:grid;grid-template-columns:minmax(320px,.9fr) minmax(520px,1.5fr);gap:14px;margin-bottom:14px;align-items:start}.deal-card{padding:22px}.deal-card-top{display:flex;justify-content:space-between;gap:12px}.deal-card-top b{font:700 10px monospace;color:var(--cyan);border:1px solid #24524f;padding:5px 8px}.deal-type{margin:22px 0 8px;color:var(--cyan);font:700 11px monospace;letter-spacing:.08em}.deal-card h2{font-size:21px;line-height:1.3;margin:0 0 20px}.deal-kpis{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}.deal-kpis div{padding:13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.deal-kpis div:nth-child(2n){border-right:0}.deal-kpis div:nth-last-child(-n+2){border-bottom:0}.deal-kpis span,.deal-note span{display:block;color:var(--muted);font:700 9px monospace;letter-spacing:.08em;margin-bottom:6px}.deal-kpis strong{font-size:12px}.deal-note{margin-top:16px;padding:13px;background:#0c1219;border-left:2px solid var(--cyan)}.deal-note p{margin:0;font-size:12px;line-height:1.5}.deal-foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font:10px monospace}.deal-foot a,.export-actions a{color:#071014;background:var(--cyan);padding:8px 11px;text-decoration:none;font-weight:800}.precedent-panel{overflow:hidden}.precedent-panel .panel-head{padding:20px 20px 14px}.precedent-summary{display:flex;justify-content:space-between;padding:0 20px 14px;color:var(--muted);font:10px monospace}.precedent-summary b{color:var(--text);font-size:15px}.export-actions{display:flex;gap:7px}.export-actions .secondary-export{background:transparent;color:var(--text);border:1px solid var(--line)}.precedent-panel .table-wrap{border-top:1px solid var(--line)}.precedent-panel td{vertical-align:top}.precedent-panel td:nth-child(3),.precedent-panel td:nth-child(4){max-width:150px}@media(max-width:1150px){.deal-module{grid-template-columns:1fr}}@media(max-width:700px){.deal-kpis{grid-template-columns:1fr}.deal-kpis div{border-right:0}.deal-kpis div:nth-last-child(2){border-bottom:1px solid var(--line)}.precedent-summary{align-items:flex-start;gap:8px;flex-direction:column}.export-actions{width:100%}.export-actions a{flex:1;text-align:center}}
 </style></head>
 <body><div class="shell">
 <aside class="sidebar">
   <div class="brand"><span class="brand-mark">D</span><div><strong>DEAL DESK</strong><small>JUNIOR BANKER COPILOT</small></div></div>
-  <nav><a class="active" href="#brief"><span>01</span>Morning brief</a><a href="#actions"><span>02</span>Действия</a>
-  <a href="#hypotheses"><span>03</span>Deal hypotheses</a><a href="#signals"><span>04</span>Сигналы</a>
-  <a href="#sources"><span>05</span>Источники</a></nav>
+  <nav><a class="active" href="#brief"><span>01</span>Morning brief</a><a href="#deal-card"><span>02</span>Deal card</a>
+  <a href="#actions"><span>03</span>Действия</a><a href="#hypotheses"><span>04</span>Deal hypotheses</a>
+  <a href="#signals"><span>05</span>Сигналы</a><a href="#sources"><span>06</span>Источники</a></nav>
   <div class="scope"><span>WATCHLIST</span><strong>TMT · RUSSIA</strong><small>YDEX · OZON · VKCO</small></div>
   <div class="sidebar-note">Focused IB workflow<br>Не является Bloomberg Terminal</div>
 </aside>
 <main class="workspace">
   <header class="topbar"><div><span class="crumb">WORKSPACE / MORNING RUN</span><h1>Banker Morning Desk</h1></div>
-  <div class="status"><span class="dot live"></span><div><strong>LIVE PUBLIC DATA · 72H CATCH-UP</strong><small>27.06.2026 · 21:48</small></div></div></header>
+  <div class="status"><span class="dot live"></span><div><strong>LIVE PUBLIC DATA · 72H CATCH-UP</strong><small>27.06.2026 · 22:40</small></div></div></header>
 
   <section class="hero panel" id="brief">
     <div><span class="kicker">DAILY DEAL FLOW · 72H CATCH-UP · M&A / ECM / DCM</span><h2>Что изменилось. Что обновить. Что отдать.</h2>
@@ -37,9 +39,9 @@
 
   <section class="market-tape"><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">
         <div><strong>YDEX</strong><small>Yandex</small></div>
-        <span class="quote-price">3 587.00 ₽</span><span class="quote-change down">-0.25%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">
+        <span class="quote-price">3 592.50 ₽</span><span class="quote-change down">-0.10%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">
         <div><strong>OZON</strong><small>Ozon</small></div>
-        <span class="quote-price">3 460.00 ₽</span><span class="quote-change up">+0.32%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">
+        <span class="quote-price">3 457.00 ₽</span><span class="quote-change up">+0.23%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">
         <div><strong>VKCO</strong><small>VK</small></div>
         <span class="quote-price">195.65 ₽</span><span class="quote-change down">-0.08%</span></a></section>
   <section class="metrics">
@@ -47,6 +49,29 @@
     <article><span>Analyst actions</span><strong>1</strong><small>чекбоксы сохраняются</small></article>
     <article><span>Hypotheses at risk</span><strong>0</strong><small>нужен review</small></article>
     <article><span>Покрытие</span><strong>3</strong><small>компаний в watchlist</small></article>
+  </section>
+
+  <section class="deal-module" id="deal-card">
+    <article class="panel deal-card">
+      <div class="deal-card-top"><span class="kicker">LATEST DEAL CARD</span><b>Announced</b></div>
+      <div class="deal-type">DCM · SCORE 4/10</div>
+      <h2>Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru</h2>
+      <div class="deal-kpis"><div><span>TARGET / ISSUER</span><strong>Selectel</strong></div>
+      <div><span>ACQUIRER / INVESTOR</span><strong>Not applicable</strong></div>
+      <div><span>TRANSACTION VALUE</span><strong>5.0 bn ₽</strong></div>
+      <div><span>ANNOUNCED</span><strong>2026-06-24</strong></div></div>
+      <div class="deal-note"><span>RATIONALE / USE OF PROCEEDS</span><p>рефинансирования и инвестиций</p></div>
+      <div class="deal-foot"><span>Bonds · unverified</span><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5" target="_blank" rel="noopener">Source ↗</a></div>
+    </article>
+    <div class="panel precedent-panel">
+      <div class="panel-head"><div><span class="kicker">PRECEDENT TRANSACTIONS</span><h2>Накопительная база сделок</h2></div>
+      <div class="export-actions"><a href="precedent_transactions.xlsx" download>Excel .xlsx ↓</a><a class="secondary-export" href="precedent_transactions.csv" download>CSV ↓</a></div></div>
+      <div class="precedent-summary"><span><b>1</b> сделок в базе</span><span>Source-backed · screening-grade</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Instrument</th><th>Source</th></tr></thead><tbody><tr><td>2026-06-24</td><td><b>DCM</b><small>Announced</small></td>
+        <td>Selectel</td><td>Not applicable</td>
+        <td>5.0 bn ₽</td><td>Bonds</td>
+        <td><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5" target="_blank" rel="noopener">ComNews.ru ↗</a></td></tr></tbody></table></div>
+    </div>
   </section>
 
   <section class="workflow-grid" id="actions">
@@ -109,12 +134,12 @@
   <section class="panel market-table">
     <div class="panel-head"><div><span class="kicker">MARKET MONITOR</span><h2>Котировки покрытия</h2></div><span class="provider">MOEX ISS · VS PREVIOUS CLOSE</span></div>
     <div class="table-wrap"><table><thead><tr><th>Security</th><th>Last</th><th>Change</th><th>Turnover</th><th>Updated</th><th>Source</th></tr></thead><tbody><tr><td><strong>YDEX</strong><small>Yandex</small></td>
-        <td>3 587.00 ₽</td><td class="negative">-0.25%</td>
-        <td>124.7 млн ₽</td><td>17:34:28</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>OZON</strong><small>Ozon</small></td>
-        <td>3 460.00 ₽</td><td class="positive">+0.32%</td>
-        <td>74.1 млн ₽</td><td>17:34:04</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>VKCO</strong><small>VK</small></td>
+        <td>3 592.50 ₽</td><td class="negative">-0.10%</td>
+        <td>134.4 млн ₽</td><td>19:00:19</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>OZON</strong><small>Ozon</small></td>
+        <td>3 457.00 ₽</td><td class="positive">+0.23%</td>
+        <td>79.1 млн ₽</td><td>19:00:19</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>VKCO</strong><small>VK</small></td>
         <td>195.65 ₽</td><td class="negative">-0.08%</td>
-        <td>15.4 млн ₽</td><td>17:34:29</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr></tbody></table></div>
+        <td>16.6 млн ₽</td><td>19:00:19</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr></tbody></table></div>
   </section>
 
   <section class="panel sources" id="sources">
@@ -124,7 +149,7 @@
   </section>
   <footer>Screen-grade public-data workflow · Material conclusions require analyst review · Not investment advice</footer>
 </main></div>
-<script>window.EVENTS=[{"title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru", "category": "DCM", "coverage": "MARKET", "evidence": "unverified", "source": "ComNews.ru", "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5", "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.", "next_action": "Обновить debt comps и проверить ближайшие погашения.", "score": 4, "severity": "medium", "is_new": false}];window.BRIEF_TEXT="BANKER MORNING BRIEF · 27.06.2026 · 21:48\nНовых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Обновить debt comps и проверить ближайшие погашения.\nActions:\n- P2 · MARKET · Обновить debt comps и проверить ближайшие погашения.";
+<script>window.EVENTS=[{"title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru", "category": "DCM", "coverage": "MARKET", "evidence": "unverified", "source": "ComNews.ru", "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5", "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.", "next_action": "Обновить debt comps и проверить ближайшие погашения.", "score": 4, "severity": "medium", "is_new": false}];window.BRIEF_TEXT="BANKER MORNING BRIEF · 27.06.2026 · 22:40\nНовых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Обновить debt comps и проверить ближайшие погашения.\nActions:\n- P2 · MARKET · Обновить debt comps и проверить ближайшие погашения.";
 const AUTO_REFRESH_MS=5*60*1000;
 const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
 function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}

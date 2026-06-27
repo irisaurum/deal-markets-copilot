@@ -38,3 +38,32 @@ class ClassifiedEvent:
         data["event"] = self.event.to_dict()
         return data
 
+
+@dataclass(slots=True)
+class DealRecord:
+    deal_id: str
+    announced_date: str
+    deal_type: str
+    status: str
+    target_or_issuer: str
+    acquirer_or_investor: str
+    sector: str
+    geography: str
+    headline: str
+    transaction_value: float | None
+    currency: str
+    stake_percent: float | None
+    instrument: str
+    rationale: str
+    matched_coverage: list[str]
+    source_name: str
+    source_url: str
+    evidence_label: str
+    score: int
+    source_event_id: str
+    first_seen_at: str
+    last_seen_at: str
+    notes: str = ""
+
+    def to_dict(self) -> dict:
+        return asdict(self)

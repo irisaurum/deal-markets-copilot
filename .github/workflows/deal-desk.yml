@@ -44,13 +44,15 @@ jobs:
         run: |
           mkdir -p site
           cp output/deal_markets_brief.html site/index.html
+          cp output/precedent_transactions.csv site/precedent_transactions.csv
+          if [ -f output/precedent_transactions.xlsx ]; then cp output/precedent_transactions.xlsx site/precedent_transactions.xlsx; fi
           touch site/.nojekyll
 
       - name: Persist change-detection baseline
         run: |
           git config user.name "deal-desk-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add output/deal_markets_brief.html output/latest_snapshot.json
+          git add output/deal_markets_brief.html output/latest_snapshot.json output/precedent_transactions.csv data/precedent_transactions.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh deal desk"
             git push

@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, stable_event_id
+from deal_markets_copilot.deals import extract_deal_record, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import effective_news_lookback, load_demo_events
@@ -108,6 +109,53 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(_safe_url("https://example.com/story"), "https://example.com/story")
         self.assertEqual(_safe_url("javascript:alert(1)"), "#")
         self.assertEqual(_safe_url("file:///Users/example/private.txt"), "#")
+
+    def test_extracts_dcm_deal_card_without_inventing_fields(self) -> None:
+        event = Event(
+            event_id="selectel-1", published_at="Wed, 24 Jun 2026 10:00:00 GMT",
+            title="Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru",
+            summary="", source="ComNews.ru", url="https://example.com/selectel",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertIsNotNone(record)
+        self.assertEqual(record.target_or_issuer, "Selectel")
+        self.assertEqual(record.transaction_value, 5_000_000_000)
+        self.assertEqual(record.currency, "RUB")
+        self.assertEqual(record.instrument, "Bonds")
+        self.assertEqual(record.rationale, "рефинансирования и инвестиций")
+        self.assertEqual(record.sector, "Not classified")
+
+    def test_precedent_database_deduplicates_and_exports_csv(self) -> None:
+        event = Event(
+            event_id="deal-1", published_at="2026-06-27T08:00:00+03:00",
+            title="Ozon considers a new bond", summary="RUB 5 billion refinancing",
+            source="Company release", url="https://example.com/deal", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, self.coverage), self.coverage)
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            rows = update_precedent_database([record, record], database)
+            self.assertEqual(len(rows), 1)
+            csv_path = write_precedents_csv(rows, Path(directory) / "precedents.csv")
+            self.assertIn("deal_id,announced_date,deal_type", csv_path.read_text(encoding="utf-8-sig"))
+
+    def test_report_contains_deal_card_and_excel_export(self) -> None:
+        event = Event(
+            event_id="deal-2", published_at="2026-06-27T08:00:00+03:00",
+            title="Ozon considers a new bond", summary="RUB 5 billion refinancing",
+            source="Company release", url="https://example.com/deal", confidence="confirmed",
+        )
+        item = classify_event(event, self.coverage)
+        record = extract_deal_record(item, self.coverage)
+        with tempfile.TemporaryDirectory() as directory:
+            path = build_html_report(
+                [item], {}, Path(directory) / "report.html", "live",
+                precedent_transactions=[record.to_dict()],
+            )
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("LATEST DEAL CARD", text)
+            self.assertIn("PRECEDENT TRANSACTIONS", text)
+            self.assertIn("precedent_transactions.xlsx", text)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,27 @@
+[
+  {
+    "deal_id": "DL-bec65812ff9fcfae",
+    "announced_date": "2026-06-24",
+    "deal_type": "DCM",
+    "status": "Announced",
+    "target_or_issuer": "Selectel",
+    "acquirer_or_investor": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Russia",
+    "headline": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru",
+    "transaction_value": 5000000000.0,
+    "currency": "RUB",
+    "stake_percent": null,
+    "instrument": "Bonds",
+    "rationale": "рефинансирования и инвестиций",
+    "matched_coverage": [],
+    "source_name": "ComNews.ru",
+    "source_url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5",
+    "evidence_label": "unverified",
+    "score": 4,
+    "source_event_id": "bec65812ff9fcfae",
+    "first_seen_at": "2026-06-27T19:39:21+00:00",
+    "last_seen_at": "2026-06-27T19:40:51+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  }
+]

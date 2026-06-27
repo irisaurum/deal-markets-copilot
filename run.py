@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate
+from deal_markets_copilot.deals import extract_deal_record, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.report import build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import (
     fetch_company_news,
@@ -54,6 +55,17 @@ def main() -> int:
         config,
         previous_snapshot=previous_snapshot,
     )
+    current_deals = [
+        record for item in classified
+        if (record := extract_deal_record(item, config.get("coverage", []))) is not None
+    ]
+    precedent_path = ROOT / "data" / "precedent_transactions.json"
+    precedents = (
+        update_precedent_database(current_deals, precedent_path)
+        if selected_mode == "live"
+        else [record.to_dict() for record in current_deals]
+    )
+    csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
 
     report_path = build_html_report(
         classified,
@@ -62,6 +74,7 @@ def main() -> int:
         selected_mode,
         market_snapshot=market_snapshot,
         workflow=workflow,
+        precedent_transactions=precedents,
     )
     snapshot_path.write_text(json.dumps({
         "workflow_version": 1,
@@ -73,6 +86,8 @@ def main() -> int:
     print(f"Report created: {report_path}")
     print(f"Data snapshot: {snapshot_path}")
     print(f"Events included: {len(classified)}")
+    print(f"Precedent transactions: {len(precedents)}")
+    print(f"Excel-compatible export: {csv_path}")
 
     if args.telegram:
         load_dotenv(ROOT / ".env")

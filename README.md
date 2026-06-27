@@ -55,6 +55,13 @@ Docker, платный API или постоянно включённый ноу
 - 📊 MOEX market tape показывает цену, изменение и оборот компаний покрытия
 - ☁️ dashboard автоматически обновляется и публикуется через GitHub Pages
 
+**Deal execution toolkit:**
+
+- 🧾 **Deal card** — стороны сделки, статус, сумма, валюта, инструмент и rationale / use of proceeds
+- 🗂 **Precedent transactions database** — накопительная JSON/CSV-база без дублей, с датой и источником
+- 📥 **Excel-export** — banker-style workbook с Dashboard, Deal Card, полной базой и листом Sources & QA
+- ✅ неизвестные параметры остаются `Not disclosed`: система не придумывает отсутствующую экономику сделки
+
 ## Что ты получишь
 
 Пример карточки в утренней сводке:
@@ -82,6 +89,15 @@ python3 run.py --live
 ```
 
 4. Открой `output/deal_markets_brief.html`.
+
+В dashboard доступны выгрузки:
+
+- `output/precedent_transactions.csv` обновляется при каждом запуске;
+- `output/precedent_transactions.xlsx` — готовый Excel-файл для анализа и precedent screen.
+
+CSV обновляется автоматически в GitHub Actions. Готовый `.xlsx` включён в публичный
+релиз и содержит формулы, фильтры, источники и QA-checks; скрипт его сборки также
+оставлен в репозитории для воспроизводимости в совместимом workspace.
 
 Ничего устанавливать не требуется: достаточно Python 3.11+. Полная инструкция —
 [`docs/SETUP.md`](docs/SETUP.md).
