@@ -1,0 +1,79 @@
+name: Update Deal Desk
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "output/**"
+      - "site/**"
+  workflow_dispatch:
+  schedule:
+    # Moscow 08:30, then every 30 minutes through 18:30 (UTC+3).
+    - cron: "30 5 * * 1-5"
+    - cron: "0,30 6-14 * * 1-5"
+    - cron: "0,30 15 * * 1-5"
+
+permissions: {}
+
+concurrency:
+  group: deal-desk-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Fetch current deal flow
+        run: python run.py --live
+
+      - name: Prepare site
+        run: |
+          mkdir -p site
+          cp output/deal_markets_brief.html site/index.html
+          touch site/.nojekyll
+
+      - name: Persist change-detection baseline
+        run: |
+          git config user.name "deal-desk-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/deal_markets_brief.html output/latest_snapshot.json
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: refresh deal desk"
+            git push
+          fi
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

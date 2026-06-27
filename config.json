@@ -1,0 +1,93 @@
+{
+  "project_name": "Deal & Markets Intelligence Copilot",
+  "report_title": "TMT Deal & Markets Morning Brief",
+  "timezone": "Europe/Moscow",
+  "coverage": [
+    {
+      "ticker": "YDEX",
+      "company": "Yandex",
+      "sector": "Technology",
+      "aliases": ["Yandex", "Яндекс", "YDEX"],
+      "news_query": "Яндекс (сделка OR приобретение OR покупка OR продажа актива OR облигации OR размещение акций)",
+      "exclude_terms": [],
+      "moex_secid": "YDEX"
+    },
+    {
+      "ticker": "OZON",
+      "company": "Ozon",
+      "sector": "E-commerce",
+      "aliases": ["Ozon", "Озон", "OZON"],
+      "news_query": "Ozon -фармацевтики -Pharmaceuticals (сделка OR приобретение OR покупка OR продажа актива OR облигации OR размещение акций)",
+      "exclude_terms": ["озон фарма", "ozon pharma"],
+      "moex_secid": "OZON"
+    },
+    {
+      "ticker": "VKCO",
+      "company": "VK",
+      "sector": "Internet & Media",
+      "aliases": ["VK Company", "VK Tech", "ВКонтакте", "VKCO"],
+      "news_query": "ВКонтакте (сделка OR приобретение OR покупка OR продажа актива OR облигации OR размещение акций)",
+      "exclude_terms": ["vk ads", "вк ads", "кейс"],
+      "moex_secid": "VKCO"
+    }
+  ],
+  "deal_queries": [
+    {
+      "name": "Russia M&A",
+      "query": "(слияние OR поглощение OR приобретение OR купила OR продала OR закрыла сделку) (компания OR группа OR холдинг)",
+      "enabled": true,
+      "exclude_terms": ["недвижимость частным лицам", "автомобиль"]
+    },
+    {
+      "name": "Russia ECM / DCM",
+      "query": "(IPO OR SPO OR размещение акций OR размещение облигаций OR выпуск облигаций) (компания OR эмитент)",
+      "enabled": true,
+      "exclude_terms": []
+    }
+  ],
+  "deal_hypotheses": [
+    {
+      "id": "H-01",
+      "title": "Yandex — inorganic travel expansion",
+      "stage": "Opportunity screening",
+      "tickers": ["YDEX"],
+      "monitor_categories": ["M&A", "Regulatory", "Strategic"],
+      "thesis": "Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.",
+      "decision_question": "Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?",
+      "deliverable": "Target map + precedent transactions + one-page pitch angle"
+    },
+    {
+      "id": "H-02",
+      "title": "Ozon — capital allocation and financing options",
+      "stage": "Coverage idea",
+      "tickers": ["OZON"],
+      "monitor_categories": ["Earnings", "ECM", "DCM", "Strategic"],
+      "thesis": "Отслеживать, как financial performance и capital allocation меняют доступные equity/debt financing сценарии.",
+      "decision_question": "Какое окно финансирования и banker angle выглядят наиболее актуальными сейчас?",
+      "deliverable": "Funding options screen + trading comps + capital structure note"
+    }
+  ],
+  "workflow": {
+    "market_move_threshold": 2.0,
+    "max_actions": 8,
+    "deals_only": true,
+    "deal_categories": ["M&A", "ECM", "DCM"]
+  },
+  "live_data": {
+    "market_provider": "MOEX ISS",
+    "news_provider": "Google News RSS",
+    "news_lookback": "1d",
+    "catchup_lookback": "3d",
+    "max_news_per_company": 8,
+    "max_deal_news_per_query": 15
+  },
+  "sources": [],
+  "telegram": {
+    "enabled": false,
+    "max_items": 5
+  },
+  "thresholds": {
+    "dashboard_min_score": 4,
+    "telegram_min_score": 6
+  }
+}

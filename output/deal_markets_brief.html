@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Banker Morning Desk</title><style>
+:root{--bg:#070a0f;--surface:#10151d;--surface2:#151c26;--line:#253040;--text:#eef2f7;--muted:#8b98aa;--cyan:#34d1bb;--blue:#6aa7ff;--amber:#ffbd5b;--red:#ff6b6b;--green:#51d88a}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}.panel{border:1px solid var(--line);background:var(--surface);padding:18px}
+.sidebar{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:#0a0e14;padding:24px 18px;display:flex;flex-direction:column}.brand{display:flex;gap:12px;align-items:center;margin-bottom:40px}.brand-mark{display:grid;place-items:center;width:36px;height:36px;background:var(--cyan);color:#06100e;font-size:20px;font-weight:900}.brand strong{display:block;font-size:13px;letter-spacing:1.5px}.brand small{display:block;color:var(--muted);font-size:8px;letter-spacing:1.2px}nav{display:grid;gap:4px}nav a{display:flex;gap:12px;padding:11px 12px;color:var(--muted);text-decoration:none;border-left:2px solid transparent}nav a span{font-family:monospace;color:#526070}nav a:hover,nav a.active{color:var(--text);background:var(--surface);border-left-color:var(--cyan)}.scope{margin-top:38px;padding:14px;border:1px solid var(--line);display:grid;gap:5px}.scope span,.kicker,.detail-section span,.detail-grid span,.baseline span{color:var(--cyan);font-size:9px;font-weight:800;letter-spacing:1.3px}.scope small{color:var(--muted)}.sidebar-note{margin-top:auto;color:#596575;font-size:10px;line-height:1.6}
+.workspace{min-width:0;padding:24px 28px 44px;max-width:1680px;width:100%;margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}.crumb{font:10px monospace;color:var(--muted)}h1{font-size:28px;margin:5px 0 0;letter-spacing:-.5px}h2{font-size:18px;margin:4px 0}.status{display:flex;align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);background:var(--surface)}.status strong{display:block;font-size:10px;letter-spacing:.8px}.status small{display:block;color:var(--muted);font-size:9px}.dot{width:8px;height:8px;border-radius:50%}.dot.live{background:var(--green);box-shadow:0 0 12px var(--green)}.dot.demo{background:var(--amber)}
+.hero{display:flex;align-items:center;justify-content:space-between;gap:30px;background:linear-gradient(100deg,#111923,#0d131b);border-left:3px solid var(--cyan);padding:24px;margin-bottom:12px}.hero h2{font-size:25px;margin:8px 0 5px}.hero p{color:#b8c2cf;margin:0}.hero-actions{display:flex;gap:8px;flex:none}.hero button{border:1px solid var(--cyan);background:var(--cyan);color:#06100e;padding:10px 13px;font:700 11px inherit;cursor:pointer}.hero button.secondary{background:transparent;color:var(--text);border-color:var(--line)}
+.market-tape{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);background:var(--surface);margin-bottom:12px}.quote-card{display:grid;grid-template-columns:1fr auto auto;gap:14px;align-items:center;padding:12px 15px;border-right:1px solid var(--line);color:var(--text);text-decoration:none}.quote-card:last-child{border:0}.quote-card strong,.quote-card small{display:block}.quote-card small{font-size:9px;color:var(--muted)}.quote-price{font:700 14px monospace}.quote-change{font:700 12px monospace}.up,.positive{color:var(--green)}.down,.negative{color:var(--red)}.flat{color:var(--muted)}.tape-empty{padding:12px;color:var(--muted);font:10px monospace;grid-column:1/-1}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}.metrics article{border:1px solid var(--line);background:var(--surface);padding:15px}.metrics span,.metrics small{display:block;color:var(--muted)}.metrics strong{display:block;font:700 27px monospace;color:var(--text);margin:5px 0}.metrics small{font-size:9px}.workflow-grid{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(300px,.7fr);gap:12px;align-items:start}.panel-head{display:flex;justify-content:space-between;gap:15px;align-items:flex-end;margin-bottom:14px}.provider{font:9px monospace;color:var(--muted)}
+.task-list{display:grid}.task{position:relative;display:grid;grid-template-columns:22px 36px minmax(0,1fr) 54px 18px;gap:10px;align-items:center;padding:13px 6px;border-bottom:1px solid var(--line);cursor:pointer}.task:hover{background:var(--surface2)}.task input{position:absolute;opacity:0}.checkmark{display:grid;place-items:center;width:18px;height:18px;border:1px solid #3a4656;color:transparent}.task input:checked+.checkmark{background:var(--cyan);border-color:var(--cyan);color:#06100e}.task.done .task-body{text-decoration:line-through;opacity:.45}.priority{font:800 10px monospace}.priority.p1{color:var(--amber)}.priority.p2{color:var(--green)}.task-body strong,.task-body small{display:block}.task-body strong{font-size:12px}.task-body small{color:var(--muted);font-size:9px;margin-top:4px}.task .state{font:800 8px monospace;color:var(--muted)}.task .state.new{color:var(--cyan)}.task .state.market{color:var(--blue)}.task a{color:var(--blue);text-decoration:none}.readout{background:linear-gradient(145deg,#121923,#0d131b)}.readout-row{padding:15px 0;border-bottom:1px solid var(--line)}.readout-row span{font:800 9px monospace;color:var(--muted);text-transform:uppercase}.readout-row p{margin:5px 0 0;color:#d0d7e1}.baseline{display:grid;gap:4px;margin-top:17px;padding:12px;border:1px solid var(--line)}
+.hypotheses,.market-table,.sources{margin-top:12px}.hypothesis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.hypothesis-card{border:1px solid var(--line);background:#0d1219;padding:17px}.hypothesis-card.attention{border-top:2px solid var(--amber)}.hypothesis-card.active{border-top:2px solid var(--green)}.hypothesis-top,.hypothesis-foot{display:flex;justify-content:space-between;gap:10px;font:9px monospace;color:var(--muted)}.hypothesis-top b{color:var(--green)}.hypothesis-card.attention .hypothesis-top b{color:var(--amber)}.hypothesis-card h3{font-size:15px;margin:10px 0 6px}.hypothesis-card>p{color:var(--muted);font-size:11px;min-height:32px}.hypothesis-card dl{margin:14px 0}.hypothesis-card dl div{border-top:1px solid var(--line);padding:9px 0}.hypothesis-card dt{font:8px monospace;color:var(--cyan);text-transform:uppercase}.hypothesis-card dd{margin:3px 0 0;font-size:11px}.hypothesis-foot{border-top:1px solid var(--line);padding-top:10px}.hypothesis-foot b{color:var(--cyan)}
+.terminal-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,.75fr);gap:12px;align-items:start;margin-top:12px}.filters{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px}.filter{border:1px solid var(--line);background:var(--bg);color:var(--muted);padding:6px 9px;cursor:pointer;font:10px inherit}.filter:hover,.filter.active{color:#06100e;background:var(--cyan);border-color:var(--cyan)}.filter small{opacity:.7}.search{display:flex;gap:8px;align-items:center;background:#090d12;border:1px solid var(--line);padding:9px 12px;margin-bottom:10px}.search span{color:var(--cyan)}.search input{width:100%;background:transparent;border:0;outline:0;color:var(--text);font:12px inherit}.search input::placeholder{color:#556170}.event-list{display:grid;max-height:650px;overflow:auto}.event-card{position:relative;display:grid;grid-template-columns:42px minmax(0,1fr) 28px;gap:12px;padding:14px 10px;border-bottom:1px solid var(--line);cursor:pointer}.event-card:hover,.event-card.selected{background:var(--surface2)}.event-card.selected:before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--cyan)}.score{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line);font:800 14px monospace}.score.critical{color:var(--red)}.score.high{color:var(--amber)}.score.medium{color:var(--green)}.event-meta{display:flex;flex-wrap:wrap;gap:9px;color:var(--muted);font:9px monospace;text-transform:uppercase}.event-meta span:first-child{color:var(--cyan)}.event-meta b{background:var(--cyan);color:#06100e;padding:1px 4px}.event-card h3{font-size:14px;margin:6px 0 3px}.event-card p{color:var(--muted);font-size:11px;margin:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.event-source{color:#566375;font-size:9px;margin-top:7px}.source-link{color:var(--blue);text-decoration:none;font-size:16px}.event-card[hidden]{display:none}
+.detail{position:sticky;top:18px;background:linear-gradient(145deg,#121923,#0e131b)}.detail-score{display:flex;align-items:end;gap:8px;margin:18px 0 12px}.detail-score span{font:800 30px monospace;color:var(--cyan)}.detail-score small{color:var(--muted);font-size:9px}.detail h2{font-size:20px;line-height:1.25;margin-bottom:22px}.detail-section{border-top:1px solid var(--line);padding:14px 0}.detail-section p{margin:6px 0 0;color:#c7d0dc}.detail-grid{display:grid;grid-template-columns:1fr 1fr;border-top:1px solid var(--line);margin:4px 0 18px}.detail-grid div{padding:10px 0;border-bottom:1px solid var(--line)}.detail-grid strong{display:block;margin-top:4px;font-size:11px}.primary-link{display:block;background:var(--cyan);color:#06100e;padding:11px;text-align:center;text-decoration:none;font-weight:800}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;min-width:760px}th{text-align:left;color:#687587;font:9px monospace;text-transform:uppercase;padding:9px;border-bottom:1px solid var(--line)}td{padding:11px 9px;border-bottom:1px solid var(--line);font-size:11px}td small{display:block;color:var(--muted);font-size:9px}td a{color:var(--blue);text-decoration:none}.empty{padding:25px;color:var(--muted);text-align:center}footer{text-align:center;color:#515c6b;font-size:9px;padding:30px 0 0}
+@media(max-width:1100px){.shell{grid-template-columns:1fr}.sidebar{position:static;height:auto;display:block;border-right:0;border-bottom:1px solid var(--line)}.brand{margin-bottom:16px}.sidebar nav{display:flex;overflow:auto}.scope,.sidebar-note{display:none}.workflow-grid,.terminal-grid{grid-template-columns:1fr}.detail{position:static}.workspace{padding:18px}.market-tape{grid-template-columns:1fr}.quote-card{border-right:0;border-bottom:1px solid var(--line)}}
+@media(max-width:700px){.topbar,.panel-head,.hero{align-items:flex-start;flex-direction:column}.metrics,.hypothesis-grid{grid-template-columns:1fr 1fr}.filters{justify-content:flex-start}.task{grid-template-columns:22px 30px minmax(0,1fr) 18px}.task .state{display:none}.hero-actions{width:100%}.hero button{flex:1}.event-card{grid-template-columns:38px minmax(0,1fr) 20px}h1{font-size:22px}}
+@media print{.sidebar,.hero-actions,.filters,.search{display:none}.shell{display:block}.workspace{max-width:none;padding:0}.panel{break-inside:avoid;background:#fff;color:#111;border-color:#bbb}.task,.event-card{break-inside:avoid}body{background:#fff;color:#111}.muted{color:#555}}
+</style></head>
+<body><div class="shell">
+<aside class="sidebar">
+  <div class="brand"><span class="brand-mark">D</span><div><strong>DEAL DESK</strong><small>JUNIOR BANKER COPILOT</small></div></div>
+  <nav><a class="active" href="#brief"><span>01</span>Morning brief</a><a href="#actions"><span>02</span>Действия</a>
+  <a href="#hypotheses"><span>03</span>Deal hypotheses</a><a href="#signals"><span>04</span>Сигналы</a>
+  <a href="#sources"><span>05</span>Источники</a></nav>
+  <div class="scope"><span>WATCHLIST</span><strong>TMT · RUSSIA</strong><small>YDEX · OZON · VKCO</small></div>
+  <div class="sidebar-note">Focused IB workflow<br>Не является Bloomberg Terminal</div>
+</aside>
+<main class="workspace">
+  <header class="topbar"><div><span class="crumb">WORKSPACE / MORNING RUN</span><h1>Banker Morning Desk</h1></div>
+  <div class="status"><span class="dot live"></span><div><strong>LIVE PUBLIC DATA · 72H CATCH-UP</strong><small>27.06.2026 · 21:48</small></div></div></header>
+
+  <section class="hero panel" id="brief">
+    <div><span class="kicker">DAILY DEAL FLOW · 72H CATCH-UP · M&A / ECM / DCM</span><h2>Что изменилось. Что обновить. Что отдать.</h2>
+    <p>Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.</p></div>
+    <div class="hero-actions"><button id="copy-brief">Скопировать brief</button><button class="secondary" onclick="window.print()">Печать / PDF</button></div>
+  </section>
+
+  <section class="market-tape"><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">
+        <div><strong>YDEX</strong><small>Yandex</small></div>
+        <span class="quote-price">3 587.00 ₽</span><span class="quote-change down">-0.25%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">
+        <div><strong>OZON</strong><small>Ozon</small></div>
+        <span class="quote-price">3 460.00 ₽</span><span class="quote-change up">+0.32%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">
+        <div><strong>VKCO</strong><small>VK</small></div>
+        <span class="quote-price">195.65 ₽</span><span class="quote-change down">-0.08%</span></a></section>
+  <section class="metrics">
+    <article><span>Новых сигналов</span><strong>0</strong><small>с прошлого запуска</small></article>
+    <article><span>Analyst actions</span><strong>1</strong><small>чекбоксы сохраняются</small></article>
+    <article><span>Hypotheses at risk</span><strong>0</strong><small>нужен review</small></article>
+    <article><span>Покрытие</span><strong>3</strong><small>компаний в watchlist</small></article>
+  </section>
+
+  <section class="workflow-grid" id="actions">
+    <div class="panel action-panel">
+      <div class="panel-head"><div><span class="kicker">BANKER ACTION QUEUE</span><h2>Что сделать сегодня</h2></div>
+      <span class="provider"><b id="open-count">1</b> OPEN · LOCAL STATE</span></div>
+      <div class="task-list"><label class="task" data-task-id="TASK-600754d9dde2">
+        <input class="task-check" type="checkbox"><span class="checkmark">✓</span>
+        <span class="priority p2">P2</span>
+        <span class="task-body"><strong>Обновить debt comps и проверить ближайшие погашения.</strong>
+        <small>MARKET · DCM · DELIVERABLE: Debt comps + maturity profile</small></span>
+        <span class="state open">OPEN</span>
+        <a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5" target="_blank" rel="noopener" title="Источник">↗</a></label></div>
+    </div>
+    <aside class="panel readout">
+      <span class="kicker">60-SECOND READOUT</span><h2>Утренний вывод</h2><div class="readout-row"><span>Главный сигнал</span><p>Новых событий после предыдущего запуска не обнаружено.</p></div><div class="readout-row"><span>Рынок</span><p>Движений выше установленного порога нет.</p></div><div class="readout-row"><span>Первое действие</span><p>Обновить debt comps и проверить ближайшие погашения.</p></div>
+      <div class="baseline"><span>CHANGE DETECTION</span><strong>Сравнено с прошлым запуском</strong></div>
+    </aside>
+  </section>
+
+  <section class="panel hypotheses" id="hypotheses">
+    <div class="panel-head"><div><span class="kicker">ACTIVE DEAL HYPOTHESES</span><h2>За какими сценариями мы следим</h2></div>
+    <span class="provider">INTERNAL HYPOTHESES · NOT TRANSACTION FACTS</span></div>
+    <div class="hypothesis-grid"><article class="hypothesis-card active">
+        <div class="hypothesis-top"><span>H-01 · Opportunity screening</span><b>ACTIVE</b></div>
+        <h3>Yandex — inorganic travel expansion</h3><p>Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.</p>
+        <dl><div><dt>Decision question</dt><dd>Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?</dd></div>
+        <div><dt>Next deliverable</dt><dd>Target map + precedent transactions + one-page pitch angle</dd></div></dl>
+        <div class="hypothesis-foot"><span>0 signals · <b>0 new</b></span><span>YDEX</span></div></article><article class="hypothesis-card active">
+        <div class="hypothesis-top"><span>H-02 · Coverage idea</span><b>ACTIVE</b></div>
+        <h3>Ozon — capital allocation and financing options</h3><p>Отслеживать, как financial performance и capital allocation меняют доступные equity/debt financing сценарии.</p>
+        <dl><div><dt>Decision question</dt><dd>Какое окно финансирования и banker angle выглядят наиболее актуальными сейчас?</dd></div>
+        <div><dt>Next deliverable</dt><dd>Funding options screen + trading comps + capital structure note</dd></div></dl>
+        <div class="hypothesis-foot"><span>0 signals · <b>0 new</b></span><span>OZON</span></div></article></div>
+  </section>
+
+  <section class="terminal-grid" id="signals">
+    <div class="radar panel">
+      <div class="panel-head"><div><span class="kicker">SOURCE-BACKED SIGNAL RADAR</span><h2>События и изменения</h2></div>
+      <div class="filters"><button class="filter active" data-filter="all">Все</button><button class="filter" data-filter="new">Только новые</button><button class="filter" data-filter="DCM">DCM <small>1</small></button></div></div>
+      <div class="search"><span>⌕</span><input id="event-search" placeholder="Компания, событие или источник"></div>
+      <div class="event-list"><article class="event-card selected" data-index="0" data-category="DCM" data-new="false" data-search="selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - comnews.ru comnews.ru market">
+          <div class="score medium">4</div><div class="event-main">
+          <div class="event-meta"><span>DCM</span><span>MARKET</span><span>24 Jun 2026</span></div>
+          <h3>Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru</h3>
+          <div class="event-source">ComNews.ru · unverified</div></div>
+          <a class="source-link" href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5" target="_blank" rel="noopener" title="Открыть источник">↗</a></article></div>
+    </div>
+    <aside class="detail panel"><span class="kicker">BANKER BRIEF</span><div class="detail-score"><span id="detail-score">4/10</span><small id="detail-state">MEDIUM</small></div>
+    <h2 id="detail-title">Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru</h2>
+    <div class="detail-section"><span>ПОЧЕМУ ЭТО ВАЖНО</span><p id="detail-angle">Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.</p></div>
+    <div class="detail-section"><span>СЛЕДУЮЩЕЕ ДЕЙСТВИЕ</span><p id="detail-action">Обновить debt comps и проверить ближайшие погашения.</p></div>
+    <div class="detail-grid"><div><span>TYPE</span><strong id="detail-category">DCM</strong></div>
+    <div><span>COVERAGE</span><strong id="detail-coverage">MARKET</strong></div>
+    <div><span>EVIDENCE</span><strong id="detail-evidence">unverified</strong></div>
+    <div><span>SOURCE</span><strong id="detail-source">ComNews.ru</strong></div></div>
+    <a id="detail-link" class="primary-link" href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5" target="_blank" rel="noopener">Открыть материал ↗</a></aside>
+  </section>
+
+  <section class="panel market-table">
+    <div class="panel-head"><div><span class="kicker">MARKET MONITOR</span><h2>Котировки покрытия</h2></div><span class="provider">MOEX ISS · VS PREVIOUS CLOSE</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Security</th><th>Last</th><th>Change</th><th>Turnover</th><th>Updated</th><th>Source</th></tr></thead><tbody><tr><td><strong>YDEX</strong><small>Yandex</small></td>
+        <td>3 587.00 ₽</td><td class="negative">-0.25%</td>
+        <td>124.7 млн ₽</td><td>17:34:28</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>OZON</strong><small>Ozon</small></td>
+        <td>3 460.00 ₽</td><td class="positive">+0.32%</td>
+        <td>74.1 млн ₽</td><td>17:34:04</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>VKCO</strong><small>VK</small></td>
+        <td>195.65 ₽</td><td class="negative">-0.08%</td>
+        <td>15.4 млн ₽</td><td>17:34:29</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr></tbody></table></div>
+  </section>
+
+  <section class="panel sources" id="sources">
+    <div class="panel-head"><div><span class="kicker">EVIDENCE LEDGER</span><h2>На чём основан brief</h2></div>
+    <span class="provider">ФАКТ ≠ HYPOTHESIS ≠ BANKER ACTION</span></div><div class="table-wrap"><table><thead><tr><th>ID</th><th>Источник</th><th>Дата</th><th>Статус</th><th>Тип</th><th>Claim</th><th>Ссылка</th></tr></thead><tbody><tr><td>SRC-001</td><td>ComNews.ru</td><td>24 Jun 2026</td>
+        <td>unverified</td><td>DCM</td><td>Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru</td><td><a href="https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5" target="_blank" rel="noopener">Открыть ↗</a></td></tr></tbody></table></div>
+  </section>
+  <footer>Screen-grade public-data workflow · Material conclusions require analyst review · Not investment advice</footer>
+</main></div>
+<script>window.EVENTS=[{"title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru", "category": "DCM", "coverage": "MARKET", "evidence": "unverified", "source": "ComNews.ru", "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5", "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.", "next_action": "Обновить debt comps и проверить ближайшие погашения.", "score": 4, "severity": "medium", "is_new": false}];window.BRIEF_TEXT="BANKER MORNING BRIEF · 27.06.2026 · 21:48\nНовых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Обновить debt comps и проверить ближайшие погашения.\nActions:\n- P2 · MARKET · Обновить debt comps и проверить ближайшие погашения.";
+const AUTO_REFRESH_MS=5*60*1000;
+const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
+function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}
+filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));button.classList.add('active');active=button.dataset.filter;applyFilters();}));search.addEventListener('input',applyFilters);
+cards.forEach(card=>card.addEventListener('click',event=>{if(event.target.closest('a'))return;cards.forEach(x=>x.classList.remove('selected'));card.classList.add('selected');const d=window.EVENTS[Number(card.dataset.index)];
+document.getElementById('detail-title').textContent=d.title;document.getElementById('detail-angle').textContent=d.banker_angle;document.getElementById('detail-action').textContent=d.next_action;document.getElementById('detail-category').textContent=d.category;document.getElementById('detail-coverage').textContent=d.coverage;document.getElementById('detail-evidence').textContent=d.evidence;document.getElementById('detail-source').textContent=d.source;document.getElementById('detail-score').textContent=d.score+'/10';document.getElementById('detail-state').textContent=d.is_new?'NEW SIGNAL':d.severity.toUpperCase();document.getElementById('detail-link').href=d.url;}));
+const completed=JSON.parse(localStorage.getItem('dealDeskCompleted')||'{}');
+function refreshTasks(){document.querySelectorAll('.task').forEach(row=>{const check=row.querySelector('.task-check');check.checked=!!completed[row.dataset.taskId];row.classList.toggle('done',check.checked);});document.getElementById('open-count').textContent=document.querySelectorAll('.task:not(.done)').length;localStorage.setItem('dealDeskCompleted',JSON.stringify(completed));}
+document.querySelectorAll('.task-check').forEach(check=>check.addEventListener('change',()=>{const row=check.closest('.task');completed[row.dataset.taskId]=check.checked;if(!check.checked)delete completed[row.dataset.taskId];refreshTasks();}));refreshTasks();
+document.getElementById('copy-brief').addEventListener('click',async event=>{await navigator.clipboard.writeText(window.BRIEF_TEXT);const old=event.currentTarget.textContent;event.currentTarget.textContent='Скопировано ✓';setTimeout(()=>event.currentTarget.textContent=old,1300);});
+setInterval(()=>{if(document.visibilityState==='visible')window.location.reload();},AUTO_REFRESH_MS);
+</script></body></html>

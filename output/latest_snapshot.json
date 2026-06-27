@@ -1,0 +1,137 @@
+{
+  "workflow_version": 1,
+  "mode": "live",
+  "market": [
+    {
+      "ticker": "YDEX",
+      "company": "Yandex",
+      "price": 3587,
+      "change_percent": -0.25,
+      "turnover": 124671013,
+      "updated": "17:34:28",
+      "currency": "RUB",
+      "source": "MOEX ISS",
+      "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+    },
+    {
+      "ticker": "OZON",
+      "company": "Ozon",
+      "price": 3460,
+      "change_percent": 0.32,
+      "turnover": 74098737,
+      "updated": "17:34:04",
+      "currency": "RUB",
+      "source": "MOEX ISS",
+      "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+    },
+    {
+      "ticker": "VKCO",
+      "company": "VK",
+      "price": 195.65,
+      "change_percent": -0.08,
+      "turnover": 15362327,
+      "updated": "17:34:29",
+      "currency": "RUB",
+      "source": "MOEX ISS",
+      "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+    }
+  ],
+  "events": [
+    {
+      "event": {
+        "event_id": "bec65812ff9fcfae",
+        "published_at": "Wed, 24 Jun 2026 23:35:54 GMT",
+        "title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru",
+        "summary": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций ComNews.ru",
+        "source": "ComNews.ru",
+        "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5",
+        "companies": [],
+        "source_type": "public_deal_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 4,
+      "severity": "medium",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "unverified"
+    }
+  ],
+  "workflow": {
+    "baseline_status": "compared_with_previous_run",
+    "new_event_ids": [],
+    "new_signals": 0,
+    "market_moves": [],
+    "hypotheses": [
+      {
+        "id": "H-01",
+        "title": "Yandex — inorganic travel expansion",
+        "stage": "Opportunity screening",
+        "status": "active",
+        "tickers": [
+          "YDEX"
+        ],
+        "thesis": "Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.",
+        "decision_question": "Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?",
+        "deliverable": "Target map + precedent transactions + one-page pitch angle",
+        "signal_count": 0,
+        "new_signal_count": 0,
+        "signal_ids": [],
+        "latest_signal": "Новых подтверждающих сигналов нет"
+      },
+      {
+        "id": "H-02",
+        "title": "Ozon — capital allocation and financing options",
+        "stage": "Coverage idea",
+        "status": "active",
+        "tickers": [
+          "OZON"
+        ],
+        "thesis": "Отслеживать, как financial performance и capital allocation меняют доступные equity/debt financing сценарии.",
+        "decision_question": "Какое окно финансирования и banker angle выглядят наиболее актуальными сейчас?",
+        "deliverable": "Funding options screen + trading comps + capital structure note",
+        "signal_count": 0,
+        "new_signal_count": 0,
+        "signal_ids": [],
+        "latest_signal": "Новых подтверждающих сигналов нет"
+      }
+    ],
+    "tasks": [
+      {
+        "id": "TASK-600754d9dde2",
+        "priority": "P2",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5",
+        "source_title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru",
+        "hypothesis_ids": []
+      }
+    ],
+    "attention_hypotheses": 0,
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
+    "readout": [
+      {
+        "label": "Главный сигнал",
+        "text": "Новых событий после предыдущего запуска не обнаружено."
+      },
+      {
+        "label": "Рынок",
+        "text": "Движений выше установленного порога нет."
+      },
+      {
+        "label": "Первое действие",
+        "text": "Обновить debt comps и проверить ближайшие погашения."
+      }
+    ]
+  }
+}

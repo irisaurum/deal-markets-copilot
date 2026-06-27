@@ -1,0 +1,76 @@
+[
+  {
+    "event_id": "demo-ma-001",
+    "published_at": "2026-06-27T08:15:00+03:00",
+    "title": "Yandex evaluates acquisition of a B2B cloud platform",
+    "summary": "Illustrative transaction: management began a strategic review of a potential acquisition to expand cloud capabilities. Indicative enterprise value is RUB 38 billion.",
+    "source": "Demo corporate announcement",
+    "url": "https://example.com/demo/yandex-cloud-ma",
+    "companies": ["Yandex"],
+    "source_type": "demo",
+    "confidence": "confirmed",
+    "amount": 38000000000,
+    "currency": "RUB",
+    "demo": true
+  },
+  {
+    "event_id": "demo-dcm-002",
+    "published_at": "2026-06-27T07:30:00+03:00",
+    "title": "Ozon considers a new bond and refinancing programme",
+    "summary": "Illustrative financing update: the company is assessing a multi-tranche bond issuance to refinance short-term debt and fund logistics infrastructure.",
+    "source": "Demo financing update",
+    "url": "https://example.com/demo/ozon-bond",
+    "companies": ["Ozon"],
+    "source_type": "demo",
+    "confidence": "inferred",
+    "amount": 25000000000,
+    "currency": "RUB",
+    "demo": true
+  },
+  {
+    "event_id": "demo-earnings-003",
+    "published_at": "2026-06-26T18:10:00+03:00",
+    "title": "VK reports higher revenue and updates EBITDA guidance",
+    "summary": "Illustrative results: revenue increased while management revised full-year margin guidance and highlighted investment in content and recommendation systems.",
+    "source": "Demo earnings release",
+    "url": "https://example.com/demo/vk-results",
+    "companies": ["VK"],
+    "source_type": "demo",
+    "confidence": "confirmed",
+    "demo": true
+  },
+  {
+    "event_id": "demo-reg-004",
+    "published_at": "2026-06-26T16:20:00+03:00",
+    "title": "Regulator opens consultation on digital platform disclosure",
+    "summary": "Illustrative regulatory event affecting large internet and e-commerce platforms, with potential implications for transaction disclosure and compliance costs.",
+    "source": "Demo regulatory bulletin",
+    "url": "https://example.com/demo/platform-regulation",
+    "source_type": "demo",
+    "confidence": "confirmed",
+    "demo": true
+  },
+  {
+    "event_id": "demo-ecm-005",
+    "published_at": "2026-06-26T14:00:00+03:00",
+    "title": "Technology issuer explores a secondary share placement",
+    "summary": "Illustrative ECM event: shareholders are considering a marketed secondary offering subject to market conditions.",
+    "source": "Demo market source",
+    "url": "https://example.com/demo/tech-secondary",
+    "source_type": "demo",
+    "confidence": "unverified",
+    "demo": true
+  },
+  {
+    "event_id": "demo-ma-001",
+    "published_at": "2026-06-27T08:15:00+03:00",
+    "title": "Yandex evaluates acquisition of a B2B cloud platform",
+    "summary": "Duplicate copy included intentionally to demonstrate deduplication.",
+    "source": "Demo duplicate",
+    "url": "https://example.com/demo/yandex-cloud-ma",
+    "source_type": "demo",
+    "confidence": "unverified",
+    "demo": true
+  }
+]
+
