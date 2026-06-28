@@ -18,10 +18,16 @@ from deal_markets_copilot.sources import (
     fetch_configured_sources,
     fetch_deal_archive_news,
     fetch_deal_news,
+    fetch_gdelt_deal_news,
     fetch_moex_disclosures,
     fetch_moex_quotes,
     fetch_official_issuer_news,
+    fetch_sec_deal_filings,
+    effective_news_lookback,
+    filter_recent_events,
     load_demo_events,
+    resolve_google_news_events,
+    resolve_google_news_rows,
 )
 from deal_markets_copilot.telegram import load_dotenv, send_telegram
 from deal_markets_copilot.workflow import build_morning_workflow, load_previous_snapshot
@@ -46,14 +52,18 @@ def main() -> int:
         archive_events = []
         market_snapshot = previous_snapshot.get("market", [])
     elif selected_mode == "live":
+        official_events = fetch_official_issuer_news(config)
+        lookback = effective_news_lookback(config.get("live_data", {}))
+        gdelt_events = fetch_gdelt_deal_news(config)
         events = (
             fetch_moex_disclosures(config)
-            + fetch_official_issuer_news(config)
+            + filter_recent_events(official_events, lookback)
             + fetch_configured_sources(config)
             + fetch_deal_news(config)
             + fetch_company_news(config)
+            + filter_recent_events(gdelt_events, lookback)
         )
-        archive_events = fetch_deal_archive_news(config)
+        archive_events = fetch_deal_archive_news(config) + fetch_sec_deal_filings(config) + official_events + gdelt_events
         market_snapshot = fetch_moex_quotes(config)
     else:
         events = load_demo_events(ROOT / "data" / "sample_events.json")
@@ -66,6 +76,11 @@ def main() -> int:
         classified = [item for item in classified if item.category in deal_categories]
     min_score = config.get("thresholds", {}).get("dashboard_min_score", 3)
     classified = [item for item in classified if item.score >= min_score]
+    if args.live:
+        resolve_google_news_events(
+            [item.event for item in classified],
+            limit=int(config.get("live_data", {}).get("max_live_link_resolutions", 12)),
+        )
     workflow = build_morning_workflow(
         classified,
         market_snapshot,
@@ -91,6 +106,12 @@ def main() -> int:
         if selected_mode == "live"
         else [record.to_dict() for record in current_deals]
     )
+    upgraded_links = resolve_google_news_rows(
+        precedents,
+        limit=int(config.get("live_data", {}).get("max_archive_link_resolutions", 30)),
+    ) if args.live else 0
+    if upgraded_links:
+        precedent_path.write_text(json.dumps(precedents, ensure_ascii=False, indent=2), encoding="utf-8")
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
 
     report_path = build_html_report(
@@ -113,6 +134,7 @@ def main() -> int:
     print(f"Data snapshot: {snapshot_path}")
     print(f"Events included: {len(classified)}")
     print(f"Precedent transactions: {len(precedents)}")
+    print(f"Direct source links upgraded: {upgraded_links}")
     print(f"Excel-compatible export: {csv_path}")
 
     if args.telegram:

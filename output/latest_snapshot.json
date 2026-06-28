@@ -200,60 +200,6 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "48bd4fc3fa031e6c",
-        "published_at": "2026-06-19T00:00:00+03:00",
-        "title": "Яндекс разместил два выпуска биржевых облигаций на общую сумму 60 млрд рублей",
-        "summary": "Сайт для частных инвесторов Яндекса содержит информацию про бизнесы и технологии компании, а также географию присутствия, финансовые результаты, важные новости и многое другое о компании и её рынках.",
-        "source": "Yandex Investor Relations",
-        "url": "https://ir.yandex.ru/press-releases?year=2026&id=19-06-2026-03",
-        "companies": [
-          "YDEX"
-        ],
-        "source_type": "official_issuer",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [
-        "YDEX"
-      ],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "360af9a222272dcf",
-        "published_at": "2026-06-02T00:00:00+03:00",
-        "title": "Яндекс закрыл сделку по продаже Авто.ру",
-        "summary": "Сайт для частных инвесторов Яндекса содержит информацию про бизнесы и технологии компании, а также географию присутствия, финансовые результаты, важные новости и многое другое о компании и её рынках.",
-        "source": "Yandex Investor Relations",
-        "url": "https://ir.yandex.ru/press-releases?year=2026&id=02-06-2026-04",
-        "companies": [
-          "YDEX"
-        ],
-        "source_type": "official_issuer",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "M&A",
-      "score": 9,
-      "severity": "critical",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "YDEX"
-      ],
-      "evidence_label": "confirmed"
     }
   ],
   "workflow": {
@@ -273,12 +219,10 @@
         "thesis": "Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.",
         "decision_question": "Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?",
         "deliverable": "Target map + precedent transactions + one-page pitch angle",
-        "signal_count": 1,
+        "signal_count": 0,
         "new_signal_count": 0,
-        "signal_ids": [
-          "360af9a222272dcf"
-        ],
-        "latest_signal": "Яндекс закрыл сделку по продаже Авто.ру"
+        "signal_ids": [],
+        "latest_signal": "Новых подтверждающих сигналов нет"
       },
       {
         "id": "H-02",
@@ -298,20 +242,6 @@
       }
     ],
     "tasks": [
-      {
-        "id": "TASK-244a22f3efcb",
-        "priority": "P1",
-        "state": "open",
-        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-        "deliverable": "Transaction snapshot + precedent transactions",
-        "coverage": "YDEX",
-        "category": "M&A",
-        "source_url": "https://ir.yandex.ru/press-releases?year=2026&id=02-06-2026-04",
-        "source_title": "Яндекс закрыл сделку по продаже Авто.ру",
-        "hypothesis_ids": [
-          "H-01"
-        ]
-      },
       {
         "id": "TASK-35d127ddc6fe",
         "priority": "P1",
@@ -398,7 +328,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 8 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 7 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -410,7 +340,7 @@
       },
       {
         "label": "Первое действие",
-        "text": "Добавить событие в deal log и подготовить one-page transaction snapshot."
+        "text": "Обновить debt comps и проверить ближайшие погашения."
       }
     ]
   }

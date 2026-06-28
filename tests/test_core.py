@@ -14,7 +14,7 @@ from deal_markets_copilot.classifier import classify_event, deduplicate, stable_
 from deal_markets_copilot.deals import extract_deal_record, median_multiples, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
-from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_moex_disclosures, fetch_official_issuer_news, load_demo_events
+from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
 from deal_markets_copilot.workflow import build_morning_workflow
 
 
@@ -140,6 +140,17 @@ class CoreTests(unittest.TestCase):
             csv_path = write_precedents_csv(rows, Path(directory) / "precedents.csv")
             self.assertIn("deal_id,announced_date,deal_type", csv_path.read_text(encoding="utf-8-sig"))
 
+    def test_database_preserves_resolved_publisher_url(self) -> None:
+        event = Event("resolved-1", "2026-06-27T08:00:00+03:00", "Ozon announces acquisition", "", "Publisher", "https://news.google.com/rss/articles/token")
+        record = extract_deal_record(classify_event(event, self.coverage), self.coverage)
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            rows = update_precedent_database([record], database)
+            rows[0]["source_url"] = "https://publisher.example/direct-deal"
+            database.write_text(json.dumps(rows), encoding="utf-8")
+            refreshed = update_precedent_database([record], database)
+            self.assertEqual(refreshed[0]["source_url"], "https://publisher.example/direct-deal")
+
     def test_report_contains_deal_card_and_excel_export(self) -> None:
         event = Event(
             event_id="deal-2", published_at="2026-06-27T08:00:00+03:00",
@@ -159,6 +170,7 @@ class CoreTests(unittest.TestCase):
             self.assertIn("precedent_transactions.xlsx", text)
             self.assertIn("10 последних ключевых сделок", text)
             self.assertIn("Свежие события за", text)
+            self.assertIn("Подтверждение ↗", text)
 
     def test_extracts_explicit_precedent_analytics_only(self) -> None:
         event = Event(
@@ -212,6 +224,41 @@ class CoreTests(unittest.TestCase):
         published, title = _date_from_title("19 июня 2026 Яндекс разместил облигации")
         self.assertEqual(published[:10], "2026-06-19")
         self.assertEqual(title, "Яндекс разместил облигации")
+        published, title = _date_from_title("12/16/2024 Selectel приобрел Servers.ru")
+        self.assertEqual(published[:10], "2024-12-16")
+        self.assertEqual(title, "Selectel приобрел Servers.ru")
+
+    def test_live_feed_excludes_old_official_archive_items(self) -> None:
+        from datetime import datetime, timezone
+        events = [
+            Event("old", "2024-12-16T00:00:00+03:00", "Old acquisition", "", "Issuer IR", "https://example.com/old"),
+            Event("new", "2026-06-27T12:00:00+03:00", "New acquisition", "", "Issuer IR", "https://example.com/new"),
+        ]
+        filtered = filter_recent_events(events, "3d", datetime(2026, 6, 28, 8, 0, tzinfo=timezone.utc))
+        self.assertEqual([event.event_id for event in filtered], ["new"])
+
+    def test_sec_transaction_filing_has_direct_archive_url(self) -> None:
+        payload = {
+            "name": "Example Corp",
+            "filings": {"recent": {
+                "form": ["8-K"], "filingDate": ["2026-06-20"], "items": ["2.01"],
+                "accessionNumber": ["0001234567-26-000001"], "primaryDocument": ["deal.htm"],
+                "primaryDocDescription": ["Completion of acquisition"],
+            }},
+        }
+        config = {"primary_sources": {"sec_edgar": {"enabled": True, "archive_days": 900, "companies": [{"ticker": "EX", "cik": "1234567"}]}}}
+        with patch("deal_markets_copilot.sources._get_json", return_value=payload):
+            events = fetch_sec_deal_filings(config)
+        self.assertEqual(events[0].source, "SEC EDGAR")
+        self.assertEqual(events[0].source_type, "official_regulator")
+        self.assertEqual(events[0].url, "https://www.sec.gov/Archives/edgar/data/1234567/000123456726000001/deal.htm")
+
+    def test_google_rows_upgrade_only_when_direct_url_resolves(self) -> None:
+        rows = [{"source_url": "https://news.google.com/rss/articles/token"}]
+        with patch("deal_markets_copilot.sources.resolve_google_news_url", return_value="https://publisher.example/deal"):
+            upgraded = resolve_google_news_rows(rows, workers=1)
+        self.assertEqual(upgraded, 1)
+        self.assertEqual(rows[0]["source_url"], "https://publisher.example/deal")
 
     def test_key_deals_exclude_technical_exchange_notices(self) -> None:
         rows = [

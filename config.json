@@ -80,6 +80,8 @@
     "catchup_lookback": "3d",
     "archive_lookback": "90d",
     "max_archive_items_per_query": 40,
+    "max_live_link_resolutions": 12,
+    "max_archive_link_resolutions": 10,
     "max_news_per_company": 8,
     "max_deal_news_per_query": 15
   },
@@ -105,8 +107,65 @@
         "enabled": true,
         "max_items": 15,
         "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
+      },
+      {
+        "name": "Ozon Investor Relations",
+        "ticker": "OZON",
+        "url": "https://ir.ozon.com/ru/sth/",
+        "enabled": true,
+        "max_items": 15,
+        "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
+      },
+      {
+        "name": "Selectel Newsroom",
+        "ticker": "SELECTEL",
+        "url": "https://selectel.ru/about/newsroom/news/",
+        "enabled": true,
+        "max_items": 15,
+        "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
+      },
+      {
+        "name": "MTS Investor Relations",
+        "ticker": "MTSS",
+        "url": "https://ir.mts.ru/news_and_events/corporate_releases/",
+        "enabled": true,
+        "max_items": 15,
+        "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
       }
-    ]
+    ],
+    "regulators": [
+      {
+        "name": "ФАС России",
+        "url": "https://fas.gov.ru/news",
+        "source_type": "official_regulator",
+        "enabled": true,
+        "max_items": 20,
+        "include_terms": ["ходатайств", "экономическ", "концентрац", "приобрет", "сделк", "слиян"]
+      }
+    ],
+    "sec_edgar": {
+      "enabled": true,
+      "archive_days": 900,
+      "max_per_company": 3,
+      "user_agent": "DealMarketsCopilot 261844671+irisaurum@users.noreply.github.com",
+      "companies": [
+        {"ticker": "IBM", "company": "IBM", "cik": "51143"},
+        {"ticker": "CRM", "company": "Salesforce", "cik": "1108524"},
+        {"ticker": "CSCO", "company": "Cisco", "cik": "858877"},
+        {"ticker": "MSFT", "company": "Microsoft", "cik": "789019"},
+        {"ticker": "GOOGL", "company": "Alphabet", "cik": "1652044"},
+        {"ticker": "ADBE", "company": "Adobe", "cik": "796343"},
+        {"ticker": "AMZN", "company": "Amazon", "cik": "1018724"},
+        {"ticker": "SQSP", "company": "Squarespace", "cik": "1496963"}
+      ]
+    }
+  },
+  "discovery_sources": {
+    "gdelt": {
+      "enabled": true,
+      "timespan": "7d",
+      "max_items_per_company": 8
+    }
   },
   "sources": [
     {

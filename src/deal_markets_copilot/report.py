@@ -182,7 +182,7 @@ def _deal_card(deal: dict | None) -> str:
       <div><span>EV / EBITDA</span><strong>{html.escape(_multiple(deal.get('ev_ebitda')))}</strong></div></div>
       <div class="deal-note"><span>RATIONALE / USE OF PROCEEDS</span><p>{html.escape(deal.get('rationale','Not disclosed'))}</p></div>
       <div class="deal-note"><span>ADVISORS</span><p>{html.escape(deal.get('advisors','Not disclosed'))}</p></div>
-      <div class="deal-foot"><span>{html.escape(deal.get('instrument',''))} · {html.escape(deal.get('evidence_label','unverified'))}</span><a href="{html.escape(source_url, quote=True)}" target="_blank" rel="noopener">Source ↗</a></div>
+      <div class="deal-foot"><span>{html.escape(deal.get('instrument',''))} · {html.escape(deal.get('evidence_label','unverified'))}</span><a href="{html.escape(source_url, quote=True)}" target="_blank" rel="noopener">{_proof_label(source_url)}</a></div>
     </article>"""
 
 
@@ -196,7 +196,7 @@ def _precedent_table(rows: list[dict]) -> str:
         <td>{html.escape(row.get('target_or_issuer','Not disclosed'))}</td><td>{html.escape(row.get('acquirer_or_investor','Not disclosed'))}</td>
         <td>{html.escape(_deal_amount(row.get('transaction_value'), row.get('currency','')))}</td><td>{html.escape(_percent(row.get('stake_percent')))}</td>
         <td>{html.escape(_multiple(row.get('ev_revenue')))}</td><td>{html.escape(_multiple(row.get('ev_ebitda')))}</td><td>{html.escape(row.get('payment_form','Not disclosed'))}</td>
-        <td><a href="{html.escape(_safe_url(row.get('source_url','')), quote=True)}" target="_blank" rel="noopener">{html.escape(row.get('source_name','Source'))} ↗</a></td></tr>""")
+        <td><a class="proof-link" href="{html.escape(_safe_url(row.get('source_url','')), quote=True)}" target="_blank" rel="noopener"><b>{_proof_label(row.get('source_url',''))}</b><small>{html.escape(row.get('source_name','Source'))}</small></a></td></tr>""")
     return f'<div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Сделка / событие</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Stake</th><th>EV/Revenue</th><th>EV/EBITDA</th><th>Payment</th><th>Source</th></tr></thead><tbody>{"".join(output)}</tbody></table></div>'
 
 
@@ -326,7 +326,7 @@ def _detail_panel(item: ClassifiedEvent | None, is_new: bool) -> str:
     <div><span>COVERAGE</span><strong id="detail-coverage">{html.escape(payload['coverage'])}</strong></div>
     <div><span>EVIDENCE</span><strong id="detail-evidence">{html.escape(payload['evidence'])}</strong></div>
     <div><span>SOURCE</span><strong id="detail-source">{html.escape(payload['source'])}</strong></div></div>
-    <a id="detail-link" class="primary-link" href="{html.escape(payload['url'], quote=True)}" target="_blank" rel="noopener">Открыть материал ↗</a>"""
+    <a id="detail-link" class="primary-link" href="{html.escape(payload['url'], quote=True)}" target="_blank" rel="noopener">{html.escape(payload['proof_label'])}</a>"""
 
 
 def _quote_table(quotes: list[dict]) -> str:
@@ -346,7 +346,7 @@ def _source_table(items: list[ClassifiedEvent]) -> str:
     for index, item in enumerate(items, 1):
         event = item.event
         rows.append(f"""<tr><td>SRC-{index:03d}</td><td>{html.escape(event.source)}</td><td>{html.escape(_short_date(event.published_at))}</td>
-        <td>{html.escape(item.evidence_label)}</td><td>{html.escape(item.category)}</td><td>{html.escape(event.title[:90])}</td><td><a href="{html.escape(_safe_url(event.url), quote=True)}" target="_blank" rel="noopener">Открыть ↗</a></td></tr>""")
+        <td>{html.escape(item.evidence_label)}</td><td>{html.escape(item.category)}</td><td>{html.escape(event.title[:90])}</td><td><a href="{html.escape(_safe_url(event.url), quote=True)}" target="_blank" rel="noopener">{_proof_label(event.url)}</a></td></tr>""")
     return f'<div class="table-wrap"><table><thead><tr><th>ID</th><th>Источник</th><th>Дата</th><th>Статус</th><th>Тип</th><th>Claim</th><th>Ссылка</th></tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
 
 
@@ -358,6 +358,7 @@ def _event_payload(item: ClassifiedEvent, is_new: bool) -> dict:
         "url": _safe_url(item.event.url), "banker_angle": item.banker_angle,
         "next_action": item.next_action, "score": item.score,
         "severity": item.severity, "is_new": is_new,
+        "proof_label": _proof_label(item.event.url),
     }
 
 
@@ -371,6 +372,10 @@ def _safe_url(value: str) -> str:
         return str(value).strip() if parsed.scheme in {"http", "https"} and parsed.netloc else "#"
     except (TypeError, ValueError):
         return "#"
+
+
+def _proof_label(value: str) -> str:
+    return "Открыть через Google News ↗" if "news.google.com" in str(value) else "Подтверждение ↗"
 
 
 def _compact(value) -> str:
@@ -401,7 +406,7 @@ const cards=[...document.querySelectorAll('.event-card')],filters=[...document.q
 function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}
 filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));button.classList.add('active');active=button.dataset.filter;applyFilters();}));search.addEventListener('input',applyFilters);
 cards.forEach(card=>card.addEventListener('click',event=>{if(event.target.closest('a'))return;cards.forEach(x=>x.classList.remove('selected'));card.classList.add('selected');const d=window.EVENTS[Number(card.dataset.index)];
-document.getElementById('detail-title').textContent=d.title;document.getElementById('detail-angle').textContent=d.banker_angle;document.getElementById('detail-action').textContent=d.next_action;document.getElementById('detail-category').textContent=d.category;document.getElementById('detail-coverage').textContent=d.coverage;document.getElementById('detail-evidence').textContent=d.evidence;document.getElementById('detail-source').textContent=d.source;document.getElementById('detail-score').textContent=d.score+'/10';document.getElementById('detail-state').textContent=d.is_new?'NEW SIGNAL':d.severity.toUpperCase();document.getElementById('detail-link').href=d.url;}));
+document.getElementById('detail-title').textContent=d.title;document.getElementById('detail-angle').textContent=d.banker_angle;document.getElementById('detail-action').textContent=d.next_action;document.getElementById('detail-category').textContent=d.category;document.getElementById('detail-coverage').textContent=d.coverage;document.getElementById('detail-evidence').textContent=d.evidence;document.getElementById('detail-source').textContent=d.source;document.getElementById('detail-score').textContent=d.score+'/10';document.getElementById('detail-state').textContent=d.is_new?'NEW SIGNAL':d.severity.toUpperCase();document.getElementById('detail-link').href=d.url;document.getElementById('detail-link').textContent=d.proof_label;}));
 const completed=JSON.parse(localStorage.getItem('dealDeskCompleted')||'{}');
 function refreshTasks(){document.querySelectorAll('.task').forEach(row=>{const check=row.querySelector('.task-check');check.checked=!!completed[row.dataset.taskId];row.classList.toggle('done',check.checked);});document.getElementById('open-count').textContent=document.querySelectorAll('.task:not(.done)').length;localStorage.setItem('dealDeskCompleted',JSON.stringify(completed));}
 document.querySelectorAll('.task-check').forEach(check=>check.addEventListener('change',()=>{const row=check.closest('.task');completed[row.dataset.taskId]=check.checked;if(!check.checked)delete completed[row.dataset.taskId];refreshTasks();}));refreshTasks();
@@ -428,5 +433,5 @@ _CSS = r"""
 """
 
 _DEAL_CSS = r"""
-.deal-module{display:grid;grid-template-columns:minmax(320px,.72fr) minmax(620px,1.7fr);gap:14px;margin-bottom:14px;align-items:start}.deal-card{padding:22px}.deal-card-top{display:flex;justify-content:space-between;gap:12px}.deal-card-top b{font:700 10px monospace;color:var(--cyan);border:1px solid #24524f;padding:5px 8px}.deal-type{margin:22px 0 8px;color:var(--cyan);font:700 11px monospace;letter-spacing:.08em}.deal-card h2{font-size:21px;line-height:1.3;margin:0 0 20px}.deal-kpis{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}.deal-kpis div{padding:13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.deal-kpis div:nth-child(2n){border-right:0}.deal-kpis div:nth-last-child(-n+2){border-bottom:0}.deal-kpis span,.deal-note span{display:block;color:var(--muted);font:700 9px monospace;letter-spacing:.08em;margin-bottom:6px}.deal-kpis strong{font-size:12px}.deal-note{margin-top:12px;padding:12px;background:#0c1219;border-left:2px solid var(--cyan)}.deal-note p{margin:0;font-size:12px;line-height:1.5}.deal-foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font:10px monospace}.deal-foot a,.export-actions a{color:#071014;background:var(--cyan);padding:8px 11px;text-decoration:none;font-weight:800}.precedent-panel{overflow:hidden}.precedent-panel .panel-head{padding:20px 20px 12px;align-items:flex-start}.panel-explainer{max-width:720px;margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.precedent-summary{display:flex;flex-wrap:wrap;gap:18px;padding:0 20px 14px;color:var(--muted);font:10px monospace}.precedent-summary b{color:var(--text);font-size:15px}.precedent-summary small{font-size:10px}.export-actions{display:flex;gap:7px;flex:none}.export-actions .secondary-export{background:transparent;color:var(--text);border:1px solid var(--line)}.precedent-panel .table-wrap{border-top:1px solid var(--line);max-height:540px;overflow:auto}.precedent-panel table{min-width:1380px}.precedent-panel th{position:sticky;top:0;z-index:2;background:var(--surface)}.precedent-panel td{vertical-align:top}.precedent-panel .deal-headline{min-width:290px;max-width:360px;line-height:1.35}.precedent-panel td:nth-child(4),.precedent-panel td:nth-child(5){max-width:160px}@media(max-width:1150px){.deal-module{grid-template-columns:1fr}}@media(max-width:700px){.deal-kpis{grid-template-columns:1fr}.deal-kpis div{border-right:0}.deal-kpis div:nth-last-child(2){border-bottom:1px solid var(--line)}.precedent-summary{align-items:flex-start;gap:8px;flex-direction:column}.export-actions{width:100%}.export-actions a{flex:1;text-align:center}}
+.deal-module{display:grid;grid-template-columns:minmax(320px,.72fr) minmax(620px,1.7fr);gap:14px;margin-bottom:14px;align-items:start}.deal-card{padding:22px}.deal-card-top{display:flex;justify-content:space-between;gap:12px}.deal-card-top b{font:700 10px monospace;color:var(--cyan);border:1px solid #24524f;padding:5px 8px}.deal-type{margin:22px 0 8px;color:var(--cyan);font:700 11px monospace;letter-spacing:.08em}.deal-card h2{font-size:21px;line-height:1.3;margin:0 0 20px}.deal-kpis{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}.deal-kpis div{padding:13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.deal-kpis div:nth-child(2n){border-right:0}.deal-kpis div:nth-last-child(-n+2){border-bottom:0}.deal-kpis span,.deal-note span{display:block;color:var(--muted);font:700 9px monospace;letter-spacing:.08em;margin-bottom:6px}.deal-kpis strong{font-size:12px}.deal-note{margin-top:12px;padding:12px;background:#0c1219;border-left:2px solid var(--cyan)}.deal-note p{margin:0;font-size:12px;line-height:1.5}.deal-foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font:10px monospace}.deal-foot a,.export-actions a{color:#071014;background:var(--cyan);padding:8px 11px;text-decoration:none;font-weight:800}.precedent-panel{overflow:hidden}.precedent-panel .panel-head{padding:20px 20px 12px;align-items:flex-start}.panel-explainer{max-width:720px;margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.precedent-summary{display:flex;flex-wrap:wrap;gap:18px;padding:0 20px 14px;color:var(--muted);font:10px monospace}.precedent-summary b{color:var(--text);font-size:15px}.precedent-summary small{font-size:10px}.export-actions{display:flex;gap:7px;flex:none}.export-actions .secondary-export{background:transparent;color:var(--text);border:1px solid var(--line)}.precedent-panel .table-wrap{border-top:1px solid var(--line);max-height:540px;overflow:auto}.precedent-panel table{min-width:1380px}.precedent-panel th{position:sticky;top:0;z-index:2;background:var(--surface)}.precedent-panel td{vertical-align:top}.precedent-panel .deal-headline{min-width:290px;max-width:360px;line-height:1.35}.precedent-panel td:nth-child(4),.precedent-panel td:nth-child(5){max-width:160px}.proof-link{display:inline-block;padding:7px 9px;border:1px solid #315a68;background:#0d1b22;color:var(--cyan)!important;border-radius:2px}.proof-link b,.proof-link small{display:block}.proof-link small{margin-top:3px;color:var(--muted);font-size:8px}@media(max-width:1150px){.deal-module{grid-template-columns:1fr}}@media(max-width:700px){.deal-kpis{grid-template-columns:1fr}.deal-kpis div{border-right:0}.deal-kpis div:nth-last-child(2){border-bottom:1px solid var(--line)}.precedent-summary{align-items:flex-start;gap:8px;flex-direction:column}.export-actions{width:100%}.export-actions a{flex:1;text-align:center}}
 """

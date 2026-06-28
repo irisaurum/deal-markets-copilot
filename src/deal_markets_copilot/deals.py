@@ -84,6 +84,8 @@ def update_precedent_database(records: list[DealRecord], path: str | Path) -> li
         old = by_id.get(record.deal_id)
         if old:
             row["first_seen_at"] = old.get("first_seen_at", row["first_seen_at"])
+            if "news.google.com/rss/articles/" in str(row.get("source_url") or "") and "news.google.com" not in str(old.get("source_url") or ""):
+                row["source_url"] = old["source_url"]
             for field in (
                 "enterprise_value", "payment_form", "advisors", "revenue_ltm", "ebitda_ltm",
                 "financials_as_of", "financials_currency", "ev_revenue", "ev_ebitda", "notes",
@@ -97,7 +99,11 @@ def update_precedent_database(records: list[DealRecord], path: str | Path) -> li
         old = by_source.get(key)
         if old is None or row.get("last_seen_at", "") >= old.get("last_seen_at", ""):
             by_source[key] = row
-    output = sorted(by_source.values(), key=lambda row: (row.get("announced_date", ""), row.get("score", 0)), reverse=True)
+    output = sorted(
+        (row for row in by_source.values() if not _is_navigation_record(row)),
+        key=lambda row: (row.get("announced_date", ""), row.get("score", 0)),
+        reverse=True,
+    )
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
     return output
@@ -327,6 +333,11 @@ def median_multiples(rows: list[dict]) -> dict[str, float | int | None]:
 
 def _is_blank(value) -> bool:
     return value is None or value == "" or value == "Not disclosed"
+
+
+def _is_navigation_record(row: dict) -> bool:
+    headline = str(row.get("headline") or "").strip().lower()
+    return row.get("source_name") in {"MTS Investor Relations"} and headline in {"облигации", "еврооблигации 2023"}
 
 
 def _extract_stake(text: str) -> float | None:

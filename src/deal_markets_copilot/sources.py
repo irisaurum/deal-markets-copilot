@@ -7,7 +7,8 @@ import ssl
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import datetime, timedelta, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -30,14 +31,17 @@ def fetch_configured_sources(config: dict, timeout: int = 15) -> list[Event]:
     for source in config.get("sources", []):
         if not source.get("enabled"):
             continue
-        events.extend(fetch_feed(
-            source["url"],
-            source_name=source.get("name", source["url"]),
-            source_type=source.get("source_type", "public_web"),
-            timeout=timeout,
-            include_terms=source.get("include_terms", []),
-            exclude_terms=source.get("exclude_terms", []),
-        ))
+        try:
+            events.extend(fetch_feed(
+                source["url"],
+                source_name=source.get("name", source["url"]),
+                source_type=source.get("source_type", "public_web"),
+                timeout=timeout,
+                include_terms=source.get("include_terms", []),
+                exclude_terms=source.get("exclude_terms", []),
+            ))
+        except Exception:
+            continue
     return events
 
 
@@ -81,44 +85,148 @@ def fetch_moex_disclosures(config: dict, timeout: int = 15) -> list[Event]:
 
 def fetch_official_issuer_news(config: dict, timeout: int = 15) -> list[Event]:
     """Collect transaction-related links directly from configured issuer IR pages."""
+    primary = config.get("primary_sources", {})
+    sources = [source for source in primary.get("issuers", []) + primary.get("regulators", []) if source.get("enabled", True)]
     events: list[Event] = []
-    for source in config.get("primary_sources", {}).get("issuers", []):
-        if not source.get("enabled", True):
-            continue
-        url = source.get("url", "")
-        try:
-            page = _get_text(url, timeout)
-        except Exception:
-            continue
-        parser = _LinkParser()
-        parser.feed(page)
-        allowed_host = urllib.parse.urlparse(url).netloc.lower()
-        terms = [term.lower() for term in source.get("include_terms", _deal_terms())]
-        seen: set[str] = set()
-        for href, label in parser.links:
-            title = re.sub(r"\s+", " ", html.unescape(label)).strip()
-            absolute = urllib.parse.urljoin(url, href)
-            parsed = urllib.parse.urlparse(absolute)
-            if not title or not any(term in title.lower() for term in terms):
+    with ThreadPoolExecutor(max_workers=min(6, len(sources) or 1)) as pool:
+        futures = [pool.submit(_fetch_official_page, source, timeout) for source in sources]
+        for future in as_completed(futures):
+            try:
+                events.extend(future.result())
+            except Exception:
                 continue
-            if parsed.scheme not in {"http", "https"} or parsed.netloc.lower() != allowed_host or absolute in seen:
+    return events
+
+
+def _fetch_official_page(source: dict, timeout: int) -> list[Event]:
+    url = source.get("url", "")
+    page = _get_text(url, timeout)
+    parser = _LinkParser()
+    parser.feed(page)
+    allowed_host = urllib.parse.urlparse(url).netloc.lower()
+    terms = [term.lower() for term in source.get("include_terms", _deal_terms())]
+    seen: set[str] = set()
+    events: list[Event] = []
+    for href, label in parser.links:
+        title = re.sub(r"\s+", " ", html.unescape(label)).strip()
+        absolute = urllib.parse.urljoin(url, href)
+        parsed = urllib.parse.urlparse(absolute)
+        if not title or not any(term in title.lower() for term in terms):
+            continue
+        if parsed.scheme not in {"http", "https"} or parsed.netloc.lower() != allowed_host or absolute in seen:
+            continue
+        seen.add(absolute)
+        published, summary = _page_metadata(absolute, timeout)
+        title_date, clean_title = _date_from_title(title)
+        if clean_title.strip().lower() in {"облигации", "еврооблигации 2023", "bond", "bonds"}:
+            continue
+        event_date = title_date or published
+        if not event_date:
+            continue
+        events.append(Event(
+            event_id=stable_event_id("official-page", absolute),
+            published_at=event_date,
+            title=clean_title,
+            summary=summary,
+            source=source.get("name", "Official source"),
+            url=absolute,
+            companies=[source.get("ticker", "")],
+            source_type=source.get("source_type", "official_issuer"),
+            confidence="confirmed",
+        ))
+        if len(events) >= int(source.get("max_items", 20)):
+            break
+    return events
+
+
+def fetch_sec_deal_filings(config: dict, timeout: int = 20) -> list[Event]:
+    """Fetch transaction filings from the official free SEC submissions API."""
+    settings = config.get("primary_sources", {}).get("sec_edgar", {})
+    if not settings.get("enabled", False):
+        return []
+    cutoff = datetime.now(timezone.utc).date() - timedelta(days=int(settings.get("archive_days", 540)))
+    max_per_company = int(settings.get("max_per_company", 5))
+    user_agent = settings.get("user_agent", "DealMarketsCopilot irisaurum@users.noreply.github.com")
+    events: list[Event] = []
+    for company in settings.get("companies", []):
+        cik = str(company.get("cik", "")).lstrip("0")
+        if not cik:
+            continue
+        endpoint = f"https://data.sec.gov/submissions/CIK{int(cik):010d}.json"
+        payload = _get_json(endpoint, timeout, user_agent=user_agent)
+        recent = payload.get("filings", {}).get("recent", {})
+        columns = list(recent)
+        rows = [dict(zip(columns, values, strict=False)) for values in zip(*(recent.get(column, []) for column in columns))] if columns else []
+        accepted = 0
+        for row in rows:
+            form = str(row.get("form") or "")
+            filing_date = str(row.get("filingDate") or "")
+            try:
+                if datetime.fromisoformat(filing_date).date() < cutoff:
+                    continue
+            except ValueError:
                 continue
-            seen.add(absolute)
-            published, summary = _page_metadata(absolute, timeout)
-            title_date, clean_title = _date_from_title(title)
+            items = str(row.get("items") or "")
+            transaction_form = form in {"S-4", "S-4/A", "PREM14A", "DEFM14A", "SC 14D9", "SC TO-T", "SC TO-T/A"}
+            completed_deal = form in {"8-K", "8-K/A"} and "2.01" in items
+            if not (transaction_form or completed_deal):
+                continue
+            accession = str(row.get("accessionNumber") or "")
+            document = str(row.get("primaryDocument") or "")
+            if not accession or not document:
+                continue
+            company_name = str(payload.get("name") or company.get("company") or cik)
+            direct_url = f"https://www.sec.gov/Archives/edgar/data/{int(cik)}/{accession.replace('-', '')}/{document}"
+            description = str(row.get("primaryDocDescription") or "").strip()
             events.append(Event(
-                event_id=stable_event_id("official-issuer", absolute),
-                published_at=published or title_date or datetime.now(timezone.utc).isoformat(timespec="seconds"),
-                title=clean_title,
-                summary=summary,
-                source=source.get("name", "Issuer IR"),
-                url=absolute,
-                companies=[source.get("ticker", "")],
-                source_type="official_issuer",
+                event_id=f"sec-{accession.lower()}",
+                published_at=f"{filing_date}T00:00:00-04:00",
+                title=f"{company_name}: SEC {form} transaction filing",
+                summary=f"Official transaction filing. {description}. Items: {items}. Merger, acquisition or disposition disclosure.",
+                source="SEC EDGAR",
+                url=direct_url,
+                companies=[company.get("ticker", "")],
+                source_type="official_regulator",
                 confidence="confirmed",
             ))
-            if len(events) >= int(source.get("max_items", 20)):
+            accepted += 1
+            if accepted >= max_per_company:
                 break
+    return events
+
+
+def fetch_gdelt_deal_news(config: dict, timeout: int = 20) -> list[Event]:
+    """Use free GDELT only as direct-link discovery; all claims remain unverified."""
+    settings = config.get("discovery_sources", {}).get("gdelt", {})
+    if not settings.get("enabled", False):
+        return []
+    events: list[Event] = []
+    for company in config.get("coverage", []):
+        name = company.get("company")
+        if not name:
+            continue
+        query = f'"{name}" (acquisition OR merger OR IPO OR bond OR "share placement")'
+        params = urllib.parse.urlencode({
+            "query": query, "mode": "ArtList", "maxrecords": int(settings.get("max_items_per_company", 10)),
+            "format": "json", "timespan": settings.get("timespan", "7d"), "sort": "HybridRel",
+        })
+        payload = _get_json(f"https://api.gdeltproject.org/api/v2/doc/doc?{params}", timeout)
+        for row in payload.get("articles", []):
+            title = str(row.get("title") or "").strip()
+            url = str(row.get("url") or "").strip()
+            if not title or not _safe_http_url(url):
+                continue
+            events.append(Event(
+                event_id=stable_event_id(title, url),
+                published_at=_gdelt_date(str(row.get("seendate") or "")),
+                title=title,
+                summary="GDELT discovery result; verify against a primary company or regulatory source.",
+                source=str(row.get("domain") or "GDELT"),
+                url=url,
+                companies=[company.get("ticker", "")],
+                source_type="public_discovery",
+                confidence="unverified",
+            ))
     return events
 
 
@@ -196,6 +304,27 @@ def effective_news_lookback(live_config: dict, now: datetime | None = None) -> s
     if current.weekday() in {0, 5, 6}:
         return live_config.get("catchup_lookback", "3d")
     return live_config.get("news_lookback", "1d")
+
+
+def filter_recent_events(events: list[Event], lookback: str, now: datetime | None = None) -> list[Event]:
+    match = re.match(r"(\d+)d", str(lookback).lower())
+    days = int(match.group(1)) if match else 1
+    cutoff = (now or datetime.now(timezone.utc)).astimezone(timezone.utc) - timedelta(days=days)
+    recent: list[Event] = []
+    for event in events:
+        try:
+            try:
+                published = datetime.fromisoformat(event.published_at.replace("Z", "+00:00"))
+            except ValueError:
+                from email.utils import parsedate_to_datetime
+                published = parsedate_to_datetime(event.published_at)
+            if published.tzinfo is None:
+                published = published.replace(tzinfo=timezone.utc)
+            if published.astimezone(timezone.utc) >= cutoff:
+                recent.append(event)
+        except (TypeError, ValueError):
+            continue
+    return recent
 
 
 def _fetch_google_news(
@@ -371,13 +500,78 @@ def _strip_html(value: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", value))).strip()
 
 
-def _get_json(url: str, timeout: int) -> dict:
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+def _get_json(url: str, timeout: int, user_agent: str = USER_AGENT) -> dict:
+    request = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": "application/json"})
     try:
         with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
             return json.loads(response.read())
     except Exception:
         return {}
+
+
+def resolve_google_news_url(url: str, timeout: int = 20) -> str:
+    """Resolve a Google News RSS article token to the publisher's direct URL."""
+    if "news.google.com/rss/articles/" not in url:
+        return url
+    try:
+        request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
+            page = response.read().decode("utf-8", errors="replace")
+        signature = re.search(r'data-n-a-sg="([^"]+)"', page)
+        timestamp = re.search(r'data-n-a-ts="([^"]+)"', page)
+        if not signature or not timestamp:
+            return url
+        token = url.split("/articles/", 1)[1].split("?", 1)[0]
+        request_payload = [
+            "garturlreq",
+            [["X", "X", ["FINANCE_TOP_INDICES", "WEB_TEST_1_0_0"], None, None, 1, 1, "US:en", None, 180, None, None, None, None, None, 0, None, None, [1608992183, 723341000]], "X", "X", 1, [2, 3, 4, 8], 1, 0, "655000234", 0, 0, None, 0],
+            token,
+            int(timestamp.group(1)),
+            signature.group(1),
+        ]
+        inner = json.dumps(request_payload, separators=(",", ":"))
+        outer = json.dumps([[["Fbv4je", inner, None, "generic"]]], separators=(",", ":"))
+        data = urllib.parse.urlencode({"f.req": outer}).encode()
+        batch_request = urllib.request.Request(
+            "https://news.google.com/_/DotsSplashUi/data/batchexecute?rpcids=Fbv4je",
+            data=data,
+            headers={"User-Agent": "Mozilla/5.0", "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"},
+        )
+        with urllib.request.urlopen(batch_request, timeout=timeout, context=SSL_CONTEXT) as response:
+            result = response.read().decode("utf-8", errors="replace")
+        match = re.search(r'\[\\"garturlres\\",\\"(https?://.+?)\\",\d+\]', result)
+        direct = match.group(1).replace(r"\u003d", "=").replace(r"\u0026", "&") if match else ""
+        return direct if _safe_http_url(direct) and "news.google.com" not in direct else url
+    except Exception:
+        return url
+
+
+def resolve_google_news_rows(rows: list[dict], limit: int = 30, workers: int = 6) -> int:
+    """Upgrade stored Google redirect URLs in parallel without dropping failed rows."""
+    candidates = [row for row in rows if "news.google.com/rss/articles/" in str(row.get("source_url") or "")][:limit]
+    if not candidates:
+        return 0
+    upgraded = 0
+    with ThreadPoolExecutor(max_workers=min(workers, len(candidates))) as pool:
+        futures = {pool.submit(resolve_google_news_url, row["source_url"]): row for row in candidates}
+        for future in as_completed(futures):
+            row = futures[future]
+            try:
+                direct = future.result()
+            except Exception:
+                continue
+            if direct != row.get("source_url"):
+                row["source_url"] = direct
+                upgraded += 1
+    return upgraded
+
+
+def resolve_google_news_events(events: list[Event], limit: int = 12, workers: int = 6) -> int:
+    rows = [{"source_url": event.url, "event": event} for event in events if "news.google.com/rss/articles/" in event.url][:limit]
+    upgraded = resolve_google_news_rows(rows, limit=limit, workers=workers)
+    for row in rows:
+        row["event"].url = row["source_url"]
+    return upgraded
 
 
 def _get_text(url: str, timeout: int) -> str:
@@ -403,6 +597,21 @@ def _page_metadata(url: str, timeout: int) -> tuple[str, str]:
     return published, summary[:1500]
 
 
+def _gdelt_date(value: str) -> str:
+    try:
+        return datetime.strptime(value[:15], "%Y%m%dT%H%M%S").replace(tzinfo=timezone.utc).isoformat()
+    except ValueError:
+        return ""
+
+
+def _safe_http_url(value: str) -> bool:
+    try:
+        parsed = urllib.parse.urlparse(value)
+        return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
+    except ValueError:
+        return False
+
+
 def _deal_terms() -> list[str]:
     return [
         "слиян", "поглощ", "приобрет", "сделк", "ipo", "spo", "размещ",
@@ -416,10 +625,14 @@ def _date_from_title(value: str) -> tuple[str, str]:
         "июля": 7, "августа": 8, "сентября": 9, "октября": 10, "ноября": 11, "декабря": 12,
     }
     match = re.match(r"^(\d{1,2})\s+([а-яё]+)\s+(20\d{2})\s+(.+)$", value, re.I)
-    if not match or match.group(2).lower() not in months:
-        return "", value
-    date = f"{int(match.group(3)):04d}-{months[match.group(2).lower()]:02d}-{int(match.group(1)):02d}T00:00:00+03:00"
-    return date, match.group(4).strip()
+    if match and match.group(2).lower() in months:
+        date = f"{int(match.group(3)):04d}-{months[match.group(2).lower()]:02d}-{int(match.group(1)):02d}T00:00:00+03:00"
+        return date, match.group(4).strip()
+    numeric = re.match(r"^(\d{1,2})/(\d{1,2})/(20\d{2})\s+(.+)$", value)
+    if numeric:
+        date = f"{int(numeric.group(3)):04d}-{int(numeric.group(1)):02d}-{int(numeric.group(2)):02d}T00:00:00+03:00"
+        return date, numeric.group(4).strip()
+    return "", value
 
 
 class _LinkParser(HTMLParser):
