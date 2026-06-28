@@ -34,6 +34,40 @@
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
+    "deal_id": "DL-bfcdac2063ce29e4",
+    "announced_date": "2026-06-28",
+    "deal_type": "DCM",
+    "status": "Reported",
+    "target_or_issuer": "YDEX",
+    "acquirer_or_investor": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Not disclosed",
+    "headline": "Молодые инвесторы увеличили вложения в облигации в два раза - Финансы Mail",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "NOT DISCLOSED",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "rationale": "Not disclosed",
+    "matched_coverage": [],
+    "source_name": "Финансы Mail",
+    "source_url": "https://finance.mail.ru/article/molodyie-investoryi-uvelichili-vlozheniya-v-obligatsii-v-dva-raza-69215293/",
+    "evidence_label": "unverified",
+    "score": 3,
+    "source_event_id": "bfcdac2063ce29e4",
+    "first_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
     "deal_id": "DL-moex-101492",
     "announced_date": "2026-06-26",
     "deal_type": "DCM",
@@ -64,7 +98,7 @@
     "score": 7,
     "source_event_id": "moex-101492",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -98,7 +132,7 @@
     "score": 7,
     "source_event_id": "moex-101473",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -132,7 +166,7 @@
     "score": 7,
     "source_event_id": "moex-101468",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -166,7 +200,7 @@
     "score": 7,
     "source_event_id": "moex-101457",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -197,10 +231,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101454",
     "evidence_label": "confirmed",
-    "score": 7,
+    "score": 6,
     "source_event_id": "moex-101454",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -231,10 +265,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101451",
     "evidence_label": "confirmed",
-    "score": 7,
+    "score": 6,
     "source_event_id": "moex-101451",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -265,10 +299,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101450",
     "evidence_label": "confirmed",
-    "score": 7,
+    "score": 6,
     "source_event_id": "moex-101450",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T05:17:43+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -329,7 +363,7 @@
     "score": 7,
     "source_event_id": "7a721642a53e0f1d",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -363,7 +397,7 @@
     "score": 3,
     "source_event_id": "9092ffd6a36a0a81",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -399,7 +433,7 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -471,7 +505,7 @@
     "score": 6,
     "source_event_id": "2e27ebc506e38656",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -507,7 +541,7 @@
     "score": 9,
     "source_event_id": "5eba3b27a4e84dd3",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -543,7 +577,7 @@
     "score": 4,
     "source_event_id": "a78cf0af94927306",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -579,7 +613,7 @@
     "score": 4,
     "source_event_id": "1f4ea43fab1ad3e7",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -651,7 +685,7 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -723,7 +757,7 @@
     "score": 4,
     "source_event_id": "ca53a880a58471a3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -795,7 +829,7 @@
     "score": 4,
     "source_event_id": "4d23d3c416f43c48",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -831,7 +865,7 @@
     "score": 4,
     "source_event_id": "54c26c1e05d520bd",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -901,7 +935,7 @@
     "score": 3,
     "source_event_id": "32f044efd41bc454",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -935,7 +969,7 @@
     "score": 3,
     "source_event_id": "71608263fecb5e53",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -971,7 +1005,7 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1044,7 +1078,7 @@
     "score": 4,
     "source_event_id": "6bc0569f7ac374fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1080,7 +1114,7 @@
     "score": 4,
     "source_event_id": "cc671fa6b14f8f28",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1152,7 +1186,7 @@
     "score": 4,
     "source_event_id": "dd21f961f579e55a",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1188,7 +1222,7 @@
     "score": 4,
     "source_event_id": "09b72d880f67361b",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1224,7 +1258,7 @@
     "score": 4,
     "source_event_id": "0bceebeca9933dc3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1255,12 +1289,12 @@
       "VKCO"
     ],
     "source_name": "RB.ru",
-    "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNQlJkLWo5eXZTSkZxSWU5NjF5TVJ0N1lYdXJqSzlFUGFMdk5jVEZMak1HeDE2SDZNcDduc3hENHkzaW8wWTVfWjN1QmpodGdYdDRLVXpua0pBUUs0MzVBX3lnOHlkVkJhVGdLNDlESDNRYmNmaDFaamJZVHdJRGhpX25lSkNmcmZ2dWZhZnhja2NwcXVnelJZVjg0Z1Flakd2VGl0MGRwUVdTTGtYYlNFcUYxSXdYaGY5?oc=5",
+    "source_url": "https://rb.ru/news/vk-prodal-25-akcij-tochka-banka-sdelku-ocenili-v-212-mlrd-vdvoe-vyshe-iznachalnoj-stoimosti-bumag/",
     "evidence_label": "unverified",
     "score": 6,
     "source_event_id": "c10daba8af8e67d8",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1291,12 +1325,12 @@
       "VKCO"
     ],
     "source_name": "Ведомости",
-    "source_url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1vSUlEOTl2cU5jckxzemNzN2oyNVZaX203N1VWRkpuZXNwYV9sdUNGMTZPTHhiNm5LWFBmdFM0QkFTRjFPczd4VEFlTEZpRzhiakF2ZGh5UU5kamRvbnFRTDE5dG8zOF9HRkk5MDUwVzBWbU9qWEN0MDhIdTJNUQ?oc=5",
+    "source_url": "https://www.vedomosti.ru/finance/news/2026/04/16/1190812-vk-prodala-dolyu",
     "evidence_label": "unverified",
     "score": 4,
     "source_event_id": "4d20ecb8f5c75dad",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1327,12 +1361,12 @@
       "VKCO"
     ],
     "source_name": "CNews.ru",
-    "source_url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOeU1NOHJNay1uUm9TdlpGcWh4YkNXN3J0clFCT2JrM0t5T3hwTmtTRlJXUWpyeVBYbnltZlB0dnpqLWxhTUxQNW9wQU1LeG5sTjVzT1NNQlFlY0Jpb1REMGhyWG1wSUM0STZXbFFaNndzQ1A1MlVvMFN3RmlmOW4tXw?oc=5",
+    "source_url": "https://www.cnews.ru/news/top/2026-04-16_vk_prodal_svoyu_dolyu_v_virtualnom",
     "evidence_label": "unverified",
     "score": 4,
     "source_event_id": "dfc59ea0a0794532",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1399,12 +1433,12 @@
       "OZON"
     ],
     "source_name": "Альфа-Банк",
-    "source_url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNbVZjUURpZDgxcTE2VG9jRktkMVZHRmpqSG9jclBJZU45SVNzS3VLTUFyYkhnUWdpQl9pb1Jvd1p5Ni12Z1pFQWlKeDQtUDUxY0xCSVA0dno3ZjJzWnZkS3RLVWh3UjNGWVJXd29rbjFBUjdVUnZwa1RGdk9hQTIxMHBCRzFPdw?oc=5",
+    "source_url": "https://alfabank.ru/alfa-investor/posts/t/1238104e-fa34-f111-91c8-0050569ebac3/",
     "evidence_label": "unverified",
     "score": 4,
     "source_event_id": "87f81143148d7276",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1435,12 +1469,12 @@
       "OZON"
     ],
     "source_name": "https://expert.ru",
-    "source_url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNVmVRdkQ4RElHdURKbmVDQU9NbVRmZTd0Z3NiM3JzMjFhZzNzQzVPMnhzNHFER2VsYVAyWEpwVlg4c24zZUozY1ZNUFQxNDMxakR1Q1J0RFhhbkRxbUZYTmgtc3N3UzhsckljT1lpZTFvaXJKeGlTblNyNlNWb2JhOWFSVXZJWjZ0Rmc?oc=5",
+    "source_url": "https://expert.ru/news/ozon-anonsiroval-razmeshchenie-obligatsiy-na-15-mlrd-rubley",
     "evidence_label": "unverified",
     "score": 4,
     "source_event_id": "1363a495ec14164a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1476,7 +1510,7 @@
     "score": 4,
     "source_event_id": "12855c6275c496fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1582,7 +1616,7 @@
     "score": 5,
     "source_event_id": "238a83afad61e805",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1616,7 +1650,7 @@
     "score": 7,
     "source_event_id": "251bf0d0b7b600c1",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1650,7 +1684,7 @@
     "score": 5,
     "source_event_id": "aa5a93661389a659",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1684,7 +1718,7 @@
     "score": 5,
     "source_event_id": "c898acc93d60813b",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1718,7 +1752,7 @@
     "score": 5,
     "source_event_id": "3b4a4419ab6b81bf",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1752,7 +1786,7 @@
     "score": 5,
     "source_event_id": "0242cf80b3f97c9c",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-28T05:16:57+00:00",
+    "last_seen_at": "2026-06-28T15:09:41+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   }
 ]
