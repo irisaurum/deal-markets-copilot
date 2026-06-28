@@ -39,31 +39,7 @@
       "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
     }
   ],
-  "events": [
-    {
-      "event": {
-        "event_id": "bec65812ff9fcfae",
-        "published_at": "Wed, 24 Jun 2026 23:35:54 GMT",
-        "title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru",
-        "summary": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций ComNews.ru",
-        "source": "ComNews.ru",
-        "url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5",
-        "companies": [],
-        "source_type": "public_deal_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 4,
-      "severity": "medium",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "unverified"
-    }
-  ],
+  "events": [],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
@@ -103,22 +79,9 @@
         "latest_signal": "Новых подтверждающих сигналов нет"
       }
     ],
-    "tasks": [
-      {
-        "id": "TASK-600754d9dde2",
-        "priority": "P2",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxOZ0FzQTE1TUJkMGFCVjZuNTBGY0JwNTZBaS16Wnl0NW9XSXBmNFlTRUJacXFlV0tYdUxpUTZTWVhNWk4wYll4a3dZZEU2ZFYzZ2d6T2YwUl85bGlXZGRpN3NiTXJwcnExdzBVVkx6YWV1eExnOFJlcmlDb21UTG5KQWozVTNhX0VwNDVmdnFYTEQwcFpENjdHMjhEX01fTERSUHpsNkE2a3FESkdwbzEzbGRsXzB6MWFlVW80Ri1fa0JYdDVKNEhMZml2WmtiSWYyV2tuZA?oc=5",
-        "source_title": "Selectel разместит облигации на 5 млрд руб. для рефинансирования и инвестиций - ComNews.ru",
-        "hypothesis_ids": []
-      }
-    ],
+    "tasks": [],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -130,7 +93,7 @@
       },
       {
         "label": "Первое действие",
-        "text": "Обновить debt comps и проверить ближайшие погашения."
+        "text": "Очередь действий пуста."
       }
     ]
   }
