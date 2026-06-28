@@ -11,12 +11,16 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate
 from deal_markets_copilot.deals import extract_deal_record, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import (
     fetch_company_news,
     fetch_configured_sources,
+    fetch_deal_archive_news,
     fetch_deal_news,
+    fetch_moex_disclosures,
     fetch_moex_quotes,
+    fetch_official_issuer_news,
     load_demo_events,
 )
 from deal_markets_copilot.telegram import load_dotenv, send_telegram
@@ -28,19 +32,32 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--demo", action="store_true", help="Use illustrative offline events")
     mode.add_argument("--live", action="store_true", help="Fetch enabled RSS/Atom feeds")
+    mode.add_argument("--replay", action="store_true", help="Rebuild from the latest saved live snapshot without network access")
     parser.add_argument("--telegram", action="store_true", help="Send digest to Telegram")
     parser.add_argument("--serve", action="store_true", help="Generate demo and serve output on localhost:8765")
     args = parser.parse_args()
 
     config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
-    selected_mode = "live" if args.live else "demo"
+    selected_mode = "live" if args.live or args.replay else "demo"
     snapshot_path = ROOT / "output" / "latest_snapshot.json"
     previous_snapshot = load_previous_snapshot(snapshot_path)
-    if selected_mode == "live":
-        events = fetch_deal_news(config) + fetch_company_news(config) + fetch_configured_sources(config)
+    if args.replay:
+        events = [Event(**row["event"]) for row in previous_snapshot.get("events", []) if row.get("event")]
+        archive_events = []
+        market_snapshot = previous_snapshot.get("market", [])
+    elif selected_mode == "live":
+        events = (
+            fetch_moex_disclosures(config)
+            + fetch_official_issuer_news(config)
+            + fetch_configured_sources(config)
+            + fetch_deal_news(config)
+            + fetch_company_news(config)
+        )
+        archive_events = fetch_deal_archive_news(config)
         market_snapshot = fetch_moex_quotes(config)
     else:
         events = load_demo_events(ROOT / "data" / "sample_events.json")
+        archive_events = []
         market_snapshot = []
     events = deduplicate(events)
     classified = [classify_event(event, config.get("coverage", [])) for event in events]
@@ -59,6 +76,15 @@ def main() -> int:
         record for item in classified
         if (record := extract_deal_record(item, config.get("coverage", []))) is not None
     ]
+    if archive_events:
+        archive_classified = [classify_event(event, config.get("coverage", [])) for event in deduplicate(archive_events)]
+        archive_deals = [
+            record for item in archive_classified
+            if item.category in {"M&A", "ECM", "DCM"}
+            and item.score >= config.get("thresholds", {}).get("archive_min_score", 3)
+            and (record := extract_deal_record(item, config.get("coverage", []))) is not None
+        ]
+        current_deals.extend(archive_deals)
     precedent_path = ROOT / "data" / "precedent_transactions.json"
     precedents = (
         update_precedent_database(current_deals, precedent_path)

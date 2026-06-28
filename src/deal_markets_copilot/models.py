@@ -51,8 +51,17 @@ class DealRecord:
     geography: str
     headline: str
     transaction_value: float | None
+    enterprise_value: float | None
     currency: str
     stake_percent: float | None
+    payment_form: str
+    advisors: str
+    revenue_ltm: float | None
+    ebitda_ltm: float | None
+    financials_as_of: str
+    financials_currency: str
+    ev_revenue: float | None
+    ev_ebitda: float | None
     instrument: str
     rationale: str
     matched_coverage: list[str]

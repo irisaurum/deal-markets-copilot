@@ -5,15 +5,16 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, stable_event_id
-from deal_markets_copilot.deals import extract_deal_record, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import extract_deal_record, median_multiples, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
-from deal_markets_copilot.sources import effective_news_lookback, load_demo_events
+from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_moex_disclosures, fetch_official_issuer_news, load_demo_events
 from deal_markets_copilot.workflow import build_morning_workflow
 
 
@@ -60,9 +61,9 @@ class CoreTests(unittest.TestCase):
             self.assertIn("DEMO DATA", text)
             self.assertIn("Не является Bloomberg Terminal", text)
             self.assertIn("BANKER ACTION QUEUE", text)
-            self.assertIn("Что изменилось", text)
+            self.assertIn("Рынок сегодня", text)
             self.assertIn("AUTO_REFRESH_MS", text)
-            self.assertIn("DAILY DEAL FLOW", text)
+            self.assertIn("ДВА РЕЖИМА", text)
 
     def test_workflow_detects_new_events_and_keeps_stable_tasks(self) -> None:
         event = Event(
@@ -154,8 +155,71 @@ class CoreTests(unittest.TestCase):
             )
             text = path.read_text(encoding="utf-8")
             self.assertIn("LATEST DEAL CARD", text)
-            self.assertIn("PRECEDENT TRANSACTIONS", text)
+            self.assertIn("LAST 10 KEY DEALS", text)
             self.assertIn("precedent_transactions.xlsx", text)
+            self.assertIn("10 последних ключевых сделок", text)
+            self.assertIn("Свежие события за", text)
+
+    def test_extracts_explicit_precedent_analytics_only(self) -> None:
+        event = Event(
+            event_id="analytics-1", published_at="2026-06-27T08:00:00+03:00",
+            title="Buyer announces acquisition and merger deal for 75% of Target",
+            summary="Enterprise value RUB 120 billion; revenue RUB 40 billion; EBITDA RUB 12 billion. Consideration is cash and shares. Financial advisor: Alpha Bank.",
+            source="Target company release", url="https://target.example/deal", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.enterprise_value, 120_000_000_000)
+        self.assertIsNone(record.transaction_value)
+        self.assertEqual(record.stake_percent, 75)
+        self.assertEqual(record.payment_form, "Cash and shares")
+        self.assertEqual(record.advisors, "Alpha Bank")
+        self.assertEqual(record.ev_revenue, 3)
+        self.assertEqual(record.ev_ebitda, 10)
+
+    def test_medians_use_valid_ma_multiples(self) -> None:
+        stats = median_multiples([
+            {"deal_type": "M&A", "ev_revenue": 2.0, "ev_ebitda": 8.0},
+            {"deal_type": "M&A", "ev_revenue": 4.0, "ev_ebitda": 12.0},
+            {"deal_type": "DCM", "ev_revenue": 99.0, "ev_ebitda": 99.0},
+        ])
+        self.assertEqual(stats["ev_revenue"], 3.0)
+        self.assertEqual(stats["ev_ebitda"], 10.0)
+
+    def test_official_moex_disclosure_uses_direct_url(self) -> None:
+        payloads = [
+            {"sitenews": {"columns": ["id", "title", "published_at", "tag"], "data": [[123, "О регистрации выпуска облигаций", "2026-06-27T10:00:00+03:00", "listing"]]}},
+            {"content": {"columns": ["body"], "data": [["<p>Первичный документ</p>"]]}},
+        ]
+        with patch("deal_markets_copilot.sources._get_json", side_effect=payloads):
+            events = fetch_moex_disclosures({"primary_sources": {"moex": {"enabled": True}}})
+        self.assertEqual(events[0].url, "https://www.moex.com/n123")
+        self.assertEqual(events[0].source_type, "official_exchange")
+        self.assertEqual(events[0].confidence, "confirmed")
+
+    def test_bond_buyback_is_dcm_not_ma(self) -> None:
+        event = Event("bond-1", "2026-06-27T08:00:00+03:00", "О порядке приобретения облигаций серии 001P", "", "MOEX disclosure", "https://www.moex.com/n1", source_type="official_exchange", confidence="confirmed")
+        self.assertEqual(classify_event(event, []).category, "DCM")
+
+    def test_official_issuer_parser_extracts_date_and_direct_link(self) -> None:
+        config = {"primary_sources": {"issuers": [{"name": "Issuer IR", "ticker": "TEST", "url": "https://issuer.example/news", "include_terms": ["сделк"]}]}}
+        with patch("deal_markets_copilot.sources._get_text", return_value='<a href="/deal">2 июня 2026 Компания закрыла сделку</a>'), patch("deal_markets_copilot.sources._page_metadata", return_value=("", "Primary release")):
+            events = fetch_official_issuer_news(config)
+        self.assertEqual(events[0].published_at[:10], "2026-06-02")
+        self.assertEqual(events[0].title, "Компания закрыла сделку")
+        self.assertEqual(events[0].url, "https://issuer.example/deal")
+
+    def test_russian_date_prefix(self) -> None:
+        published, title = _date_from_title("19 июня 2026 Яндекс разместил облигации")
+        self.assertEqual(published[:10], "2026-06-19")
+        self.assertEqual(title, "Яндекс разместил облигации")
+
+    def test_key_deals_exclude_technical_exchange_notices(self) -> None:
+        rows = [
+            {"deal_id": "technical", "announced_date": "2026-06-28", "deal_type": "DCM", "status": "Reported", "target_or_issuer": "Not disclosed", "acquirer_or_investor": "Not applicable", "transaction_value": None, "score": 8, "headline": "О регистрации изменений в эмиссионные документы"},
+            {"deal_id": "ma", "announced_date": "2026-06-27", "deal_type": "M&A", "status": "Completed", "target_or_issuer": "Auto.ru", "acquirer_or_investor": "T-Technologies", "transaction_value": 35_000_000_000, "score": 7, "headline": "Т-Технологии купили Auto.ru у Яндекса"},
+            {"deal_id": "dcm", "announced_date": "2026-06-26", "deal_type": "DCM", "status": "Announced", "target_or_issuer": "Selectel", "acquirer_or_investor": "Not applicable", "transaction_value": 5_000_000_000, "score": 5, "headline": "Selectel анонсировал размещение облигаций"},
+        ]
+        self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["ma", "dcm"])
 
 
 if __name__ == "__main__":

@@ -9,6 +9,7 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 from urllib.parse import urlparse
 
+from .deals import median_multiples, select_key_deals
 from .models import ClassifiedEvent
 
 
@@ -28,6 +29,8 @@ def build_html_report(
     quotes = market_snapshot or []
     flow = workflow or _empty_workflow()
     precedents = precedent_transactions or []
+    key_deals = select_key_deals(precedents, 10)
+    precedent_stats = median_multiples(key_deals)
     counts = Counter(item.category for item in ranked)
     generated = datetime.now().astimezone().strftime("%d.%m.%Y · %H:%M")
     news_window = "72H CATCH-UP" if datetime.now().astimezone().weekday() in {0, 5, 6} else "24H"
@@ -42,41 +45,44 @@ def build_html_report(
 
     document = f"""<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Banker Morning Desk</title><style>{_CSS}{_DEAL_CSS}</style></head>
+<title>Deal Market Monitor</title><style>{_CSS}{_DEAL_CSS}</style></head>
 <body><div class="shell">
 <aside class="sidebar">
   <div class="brand"><span class="brand-mark">D</span><div><strong>DEAL DESK</strong><small>JUNIOR BANKER COPILOT</small></div></div>
-  <nav><a class="active" href="#brief"><span>01</span>Morning brief</a><a href="#deal-card"><span>02</span>Deal card</a>
-  <a href="#actions"><span>03</span>Действия</a><a href="#hypotheses"><span>04</span>Deal hypotheses</a>
-  <a href="#signals"><span>05</span>Сигналы</a><a href="#sources"><span>06</span>Источники</a></nav>
+  <nav><a class="active" href="#brief"><span>01</span>Обзор сегодня</a><a href="#deal-card"><span>02</span>10 ключевых сделок</a>
+  <a href="#actions"><span>03</span>Действия</a><a href="#signals"><span>04</span>Live-поток 24ч</a>
+  <a href="#hypotheses"><span>05</span>Сценарии</a><a href="#sources"><span>06</span>Источники</a></nav>
   <div class="scope"><span>WATCHLIST</span><strong>TMT · RUSSIA</strong><small>{html.escape(scope)}</small></div>
   <div class="sidebar-note">Focused IB workflow<br>Не является Bloomberg Terminal</div>
 </aside>
 <main class="workspace">
-  <header class="topbar"><div><span class="crumb">WORKSPACE / MORNING RUN</span><h1>Banker Morning Desk</h1></div>
+  <header class="topbar"><div><span class="crumb">MARKET CONTROL / DAILY AUTO-UPDATE</span><h1>Deal Market Monitor</h1></div>
   <div class="status"><span class="dot {'live' if live else 'demo'}"></span><div><strong>{f'LIVE PUBLIC DATA · {news_window}' if live else 'DEMO DATA'}</strong><small>{generated}</small></div></div></header>
 
   <section class="hero panel" id="brief">
-    <div><span class="kicker">DAILY DEAL FLOW · {news_window} · M&A / ECM / DCM</span><h2>Что изменилось. Что обновить. Что отдать.</h2>
-    <p>{html.escape(flow.get('summary', 'Запусти сборку, чтобы сформировать morning workflow.'))}</p></div>
+    <div><span class="kicker">ДВА РЕЖИМА · СЕГОДНЯ + НАКОПИТЕЛЬНЫЙ АРХИВ</span><h2>Рынок сегодня и 10 последних ключевых сделок</h2>
+    <p>{html.escape(flow.get('summary', 'Запусти сборку, чтобы сформировать morning workflow.'))} Лента ниже показывает только свежие события; архив сделок сохраняется отдельно и не очищается каждый день.</p></div>
     <div class="hero-actions"><button id="copy-brief">Скопировать brief</button><button class="secondary" onclick="window.print()">Печать / PDF</button></div>
   </section>
 
   <section class="market-tape">{_quote_cards(quotes, live)}</section>
   <section class="metrics">
-    {_metric("Новых сигналов", flow.get("new_signals", 0), "с прошлого запуска")}
-    {_metric("Analyst actions", len(flow.get("tasks", [])), "чекбоксы сохраняются")}
-    {_metric("Hypotheses at risk", flow.get("attention_hypotheses", 0), "нужен review")}
-    {_metric("Покрытие", len(config.get("coverage", [])), "компаний в watchlist")}
+    {_metric("Сегодня в ленте", len(ranked), f"событий за {news_window.lower()}")}
+    {_metric("Ключевые сделки", len(key_deals), "последние в архиве")}
+    {_metric("M&A в архиве", sum(1 for row in key_deals if row.get('deal_type') == 'M&A'), "отдельно от ECM / DCM")}
+    {_metric("Автообновление", "30 мин", "в рабочее время")}
   </section>
 
   <section class="deal-module" id="deal-card">
-    {_deal_card(precedents[0] if precedents else None)}
+    {_deal_card(key_deals[0] if key_deals else None)}
     <div class="panel precedent-panel">
-      <div class="panel-head"><div><span class="kicker">PRECEDENT TRANSACTIONS</span><h2>Накопительная база сделок</h2></div>
+      <div class="panel-head"><div><span class="kicker">LAST 10 KEY DEALS · PERSISTENT ARCHIVE</span><h2>10 последних ключевых сделок рынка</h2><p class="panel-explainer">M&A, ECM и DCM с раскрытой компанией или сторонами. Технические уведомления биржи сюда не попадают.</p></div>
       <div class="export-actions"><a href="precedent_transactions.xlsx" download>Excel .xlsx ↓</a><a class="secondary-export" href="precedent_transactions.csv" download>CSV ↓</a></div></div>
-      <div class="precedent-summary"><span><b>{len(precedents)}</b> сделок в базе</span><span>Source-backed · screening-grade</span></div>
-      {_precedent_table(precedents[:8])}
+      <div class="precedent-summary"><span><b>{len(key_deals)}</b> ключевых · <small>{len(precedents)} записей всего</small></span>
+      <span>Median EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b></span>
+      <span>Median EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda'))}</b></span>
+      <span>Multiples coverage <b>{precedent_stats.get('coverage', 0)}</b></span></div>
+      {_precedent_table(key_deals)}
     </div>
   </section>
 
@@ -100,7 +106,7 @@ def build_html_report(
 
   <section class="terminal-grid" id="signals">
     <div class="radar panel">
-      <div class="panel-head"><div><span class="kicker">SOURCE-BACKED SIGNAL RADAR</span><h2>События и изменения</h2></div>
+      <div class="panel-head"><div><span class="kicker">LIVE FLOW · НЕ АРХИВ</span><h2>Свежие события за {news_window.lower()}</h2><p class="panel-explainer">Этот блок каждый день меняется. Исторические сделки остаются в таблице выше.</p></div>
       <div class="filters"><button class="filter active" data-filter="all">Все</button><button class="filter" data-filter="new">Только новые</button>{_filter_buttons(counts)}</div></div>
       <div class="search"><span>⌕</span><input id="event-search" placeholder="Компания, событие или источник"></div>
       <div class="event-list">{_event_cards(ranked, new_ids)}</div>
@@ -169,8 +175,13 @@ def _deal_card(deal: dict | None) -> str:
       <div class="deal-kpis"><div><span>TARGET / ISSUER</span><strong>{html.escape(deal.get('target_or_issuer','Not disclosed'))}</strong></div>
       <div><span>ACQUIRER / INVESTOR</span><strong>{html.escape(deal.get('acquirer_or_investor','Not disclosed'))}</strong></div>
       <div><span>TRANSACTION VALUE</span><strong>{html.escape(amount)}</strong></div>
-      <div><span>ANNOUNCED</span><strong>{html.escape(deal.get('announced_date','—') or '—')}</strong></div></div>
+      <div><span>ANNOUNCED</span><strong>{html.escape(deal.get('announced_date','—') or '—')}</strong></div>
+      <div><span>STAKE</span><strong>{html.escape(_percent(deal.get('stake_percent')))}</strong></div>
+      <div><span>PAYMENT</span><strong>{html.escape(deal.get('payment_form','Not disclosed'))}</strong></div>
+      <div><span>EV / REVENUE</span><strong>{html.escape(_multiple(deal.get('ev_revenue')))}</strong></div>
+      <div><span>EV / EBITDA</span><strong>{html.escape(_multiple(deal.get('ev_ebitda')))}</strong></div></div>
       <div class="deal-note"><span>RATIONALE / USE OF PROCEEDS</span><p>{html.escape(deal.get('rationale','Not disclosed'))}</p></div>
+      <div class="deal-note"><span>ADVISORS</span><p>{html.escape(deal.get('advisors','Not disclosed'))}</p></div>
       <div class="deal-foot"><span>{html.escape(deal.get('instrument',''))} · {html.escape(deal.get('evidence_label','unverified'))}</span><a href="{html.escape(source_url, quote=True)}" target="_blank" rel="noopener">Source ↗</a></div>
     </article>"""
 
@@ -181,10 +192,12 @@ def _precedent_table(rows: list[dict]) -> str:
     output = []
     for row in rows:
         output.append(f"""<tr><td>{html.escape(row.get('announced_date','—') or '—')}</td><td><b>{html.escape(row.get('deal_type',''))}</b><small>{html.escape(row.get('status',''))}</small></td>
+        <td class="deal-headline"><b>{html.escape(row.get('headline','Not disclosed'))}</b></td>
         <td>{html.escape(row.get('target_or_issuer','Not disclosed'))}</td><td>{html.escape(row.get('acquirer_or_investor','Not disclosed'))}</td>
-        <td>{html.escape(_deal_amount(row.get('transaction_value'), row.get('currency','')))}</td><td>{html.escape(row.get('instrument',''))}</td>
+        <td>{html.escape(_deal_amount(row.get('transaction_value'), row.get('currency','')))}</td><td>{html.escape(_percent(row.get('stake_percent')))}</td>
+        <td>{html.escape(_multiple(row.get('ev_revenue')))}</td><td>{html.escape(_multiple(row.get('ev_ebitda')))}</td><td>{html.escape(row.get('payment_form','Not disclosed'))}</td>
         <td><a href="{html.escape(_safe_url(row.get('source_url','')), quote=True)}" target="_blank" rel="noopener">{html.escape(row.get('source_name','Source'))} ↗</a></td></tr>""")
-    return f'<div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Instrument</th><th>Source</th></tr></thead><tbody>{"".join(output)}</tbody></table></div>'
+    return f'<div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Сделка / событие</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Stake</th><th>EV/Revenue</th><th>EV/EBITDA</th><th>Payment</th><th>Source</th></tr></thead><tbody>{"".join(output)}</tbody></table></div>'
 
 
 def _deal_amount(value, currency: str) -> str:
@@ -197,6 +210,14 @@ def _deal_amount(value, currency: str) -> str:
     if number >= 1_000_000:
         return f"{number / 1_000_000:,.1f} mm {symbol}".replace(",", " ")
     return f"{number:,.0f} {symbol}".replace(",", " ")
+
+
+def _multiple(value) -> str:
+    return "N/M" if value in {None, ""} else f"{float(value):.1f}x"
+
+
+def _percent(value) -> str:
+    return "Not disclosed" if value in {None, ""} else f"{float(value):.1f}%"
 
 
 def _quote_cards(quotes: list[dict], live: bool) -> str:
@@ -407,5 +428,5 @@ _CSS = r"""
 """
 
 _DEAL_CSS = r"""
-.deal-module{display:grid;grid-template-columns:minmax(320px,.9fr) minmax(520px,1.5fr);gap:14px;margin-bottom:14px;align-items:start}.deal-card{padding:22px}.deal-card-top{display:flex;justify-content:space-between;gap:12px}.deal-card-top b{font:700 10px monospace;color:var(--cyan);border:1px solid #24524f;padding:5px 8px}.deal-type{margin:22px 0 8px;color:var(--cyan);font:700 11px monospace;letter-spacing:.08em}.deal-card h2{font-size:21px;line-height:1.3;margin:0 0 20px}.deal-kpis{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}.deal-kpis div{padding:13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.deal-kpis div:nth-child(2n){border-right:0}.deal-kpis div:nth-last-child(-n+2){border-bottom:0}.deal-kpis span,.deal-note span{display:block;color:var(--muted);font:700 9px monospace;letter-spacing:.08em;margin-bottom:6px}.deal-kpis strong{font-size:12px}.deal-note{margin-top:16px;padding:13px;background:#0c1219;border-left:2px solid var(--cyan)}.deal-note p{margin:0;font-size:12px;line-height:1.5}.deal-foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font:10px monospace}.deal-foot a,.export-actions a{color:#071014;background:var(--cyan);padding:8px 11px;text-decoration:none;font-weight:800}.precedent-panel{overflow:hidden}.precedent-panel .panel-head{padding:20px 20px 14px}.precedent-summary{display:flex;justify-content:space-between;padding:0 20px 14px;color:var(--muted);font:10px monospace}.precedent-summary b{color:var(--text);font-size:15px}.export-actions{display:flex;gap:7px}.export-actions .secondary-export{background:transparent;color:var(--text);border:1px solid var(--line)}.precedent-panel .table-wrap{border-top:1px solid var(--line)}.precedent-panel td{vertical-align:top}.precedent-panel td:nth-child(3),.precedent-panel td:nth-child(4){max-width:150px}@media(max-width:1150px){.deal-module{grid-template-columns:1fr}}@media(max-width:700px){.deal-kpis{grid-template-columns:1fr}.deal-kpis div{border-right:0}.deal-kpis div:nth-last-child(2){border-bottom:1px solid var(--line)}.precedent-summary{align-items:flex-start;gap:8px;flex-direction:column}.export-actions{width:100%}.export-actions a{flex:1;text-align:center}}
+.deal-module{display:grid;grid-template-columns:minmax(320px,.72fr) minmax(620px,1.7fr);gap:14px;margin-bottom:14px;align-items:start}.deal-card{padding:22px}.deal-card-top{display:flex;justify-content:space-between;gap:12px}.deal-card-top b{font:700 10px monospace;color:var(--cyan);border:1px solid #24524f;padding:5px 8px}.deal-type{margin:22px 0 8px;color:var(--cyan);font:700 11px monospace;letter-spacing:.08em}.deal-card h2{font-size:21px;line-height:1.3;margin:0 0 20px}.deal-kpis{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line)}.deal-kpis div{padding:13px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}.deal-kpis div:nth-child(2n){border-right:0}.deal-kpis div:nth-last-child(-n+2){border-bottom:0}.deal-kpis span,.deal-note span{display:block;color:var(--muted);font:700 9px monospace;letter-spacing:.08em;margin-bottom:6px}.deal-kpis strong{font-size:12px}.deal-note{margin-top:12px;padding:12px;background:#0c1219;border-left:2px solid var(--cyan)}.deal-note p{margin:0;font-size:12px;line-height:1.5}.deal-foot{display:flex;justify-content:space-between;gap:12px;margin-top:16px;color:var(--muted);font:10px monospace}.deal-foot a,.export-actions a{color:#071014;background:var(--cyan);padding:8px 11px;text-decoration:none;font-weight:800}.precedent-panel{overflow:hidden}.precedent-panel .panel-head{padding:20px 20px 12px;align-items:flex-start}.panel-explainer{max-width:720px;margin:7px 0 0;color:var(--muted);font-size:12px;line-height:1.45}.precedent-summary{display:flex;flex-wrap:wrap;gap:18px;padding:0 20px 14px;color:var(--muted);font:10px monospace}.precedent-summary b{color:var(--text);font-size:15px}.precedent-summary small{font-size:10px}.export-actions{display:flex;gap:7px;flex:none}.export-actions .secondary-export{background:transparent;color:var(--text);border:1px solid var(--line)}.precedent-panel .table-wrap{border-top:1px solid var(--line);max-height:540px;overflow:auto}.precedent-panel table{min-width:1380px}.precedent-panel th{position:sticky;top:0;z-index:2;background:var(--surface)}.precedent-panel td{vertical-align:top}.precedent-panel .deal-headline{min-width:290px;max-width:360px;line-height:1.35}.precedent-panel td:nth-child(4),.precedent-panel td:nth-child(5){max-width:160px}@media(max-width:1150px){.deal-module{grid-template-columns:1fr}}@media(max-width:700px){.deal-kpis{grid-template-columns:1fr}.deal-kpis div{border-right:0}.deal-kpis div:nth-last-child(2){border-bottom:1px solid var(--line)}.precedent-summary{align-items:flex-start;gap:8px;flex-direction:column}.export-actions{width:100%}.export-actions a{flex:1;text-align:center}}
 """

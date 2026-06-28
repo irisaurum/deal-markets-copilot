@@ -71,10 +71,13 @@ def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
     keyword_hits = 0
 
     for candidate, keywords in CATEGORY_KEYWORDS.items():
-        hits = sum(1 for keyword in keywords if keyword in text)
+        hits = len({keyword for keyword in keywords if keyword in text})
         if hits > keyword_hits:
             category = candidate
             keyword_hits = hits
+
+    if re.search(r"\b(bond|notes)\b|облигац", text, re.I) and not re.search(r"acquisition\s+of\s+(?:a\s+)?company|покупк\w*\s+(?:компани|бизнес)", text, re.I):
+        category = "DCM"
 
     matched: list[str] = []
     for company in coverage:
@@ -93,6 +96,8 @@ def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
         score += 1
     if event.confidence == "confirmed":
         score += 1
+    if event.source_type in {"official_exchange", "official_regulator", "official_issuer"}:
+        score += 2
     source_name = event.source.lower()
     if any(low_quality in source_name for low_quality in ("форум", "smart-lab", "forum")):
         score -= 2
@@ -128,7 +133,7 @@ def deduplicate(events: list[Event]) -> list[Event]:
         duplicate_index = next((i for i, current in enumerate(unique) if _title_similarity(event.title, current.title) >= 0.30), None)
         if duplicate_index is None:
             unique.append(event)
-        elif _source_rank(event.source) > _source_rank(unique[duplicate_index].source):
+        elif _source_rank(event.source, event.source_type) > _source_rank(unique[duplicate_index].source, unique[duplicate_index].source_type):
             unique[duplicate_index] = event
     return unique
 
@@ -163,7 +168,9 @@ def _alias_matches(alias: str, text: str) -> bool:
     return bool(re.search(rf"(?<!\w){re.escape(alias)}(?!\w)", text))
 
 
-def _source_rank(source: str) -> int:
+def _source_rank(source: str, source_type: str = "") -> int:
+    if source_type in {"official_exchange", "official_regulator", "official_issuer"}:
+        return 5
     name = source.lower()
     if any(value in name for value in ("интерфакс", "reuters", "company release", "moex", "банк россии")):
         return 3

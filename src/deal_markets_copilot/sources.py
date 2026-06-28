@@ -7,7 +7,8 @@ import ssl
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
-from datetime import datetime
+from datetime import datetime, timezone
+from html.parser import HTMLParser
 from pathlib import Path
 
 from .classifier import stable_event_id
@@ -34,7 +35,90 @@ def fetch_configured_sources(config: dict, timeout: int = 15) -> list[Event]:
             source_name=source.get("name", source["url"]),
             source_type=source.get("source_type", "public_web"),
             timeout=timeout,
+            include_terms=source.get("include_terms", []),
+            exclude_terms=source.get("exclude_terms", []),
         ))
+    return events
+
+
+def fetch_moex_disclosures(config: dict, timeout: int = 15) -> list[Event]:
+    """Fetch direct MOEX disclosure/news records from the official ISS API."""
+    settings = config.get("primary_sources", {}).get("moex", {})
+    if not settings.get("enabled", True):
+        return []
+    limit = int(settings.get("max_items", 80))
+    terms = [term.lower() for term in settings.get("include_terms", _deal_terms())]
+    params = urllib.parse.urlencode({
+        "iss.meta": "off",
+        "sitenews.columns": "id,title,published_at,tag",
+        "start": 0,
+    })
+    endpoint = f"https://iss.moex.com/iss/sitenews.json?{params}"
+    payload = _get_json(endpoint, timeout)
+    events: list[Event] = []
+    for row in _rows(payload.get("sitenews", {}))[:limit]:
+        title = html.unescape(str(row.get("title") or "").strip())
+        if not title or not any(term in title.lower() for term in terms):
+            continue
+        news_id = row.get("id")
+        detail_url = f"https://iss.moex.com/iss/sitenews/{news_id}.json?iss.meta=off"
+        detail = _get_json(detail_url, timeout)
+        detail_rows = _rows(detail.get("content", {})) or _rows(detail.get("sitenews", {}))
+        body = " ".join(str(value) for item in detail_rows for value in item.values() if isinstance(value, str))
+        public_url = f"https://www.moex.com/n{news_id}"
+        events.append(Event(
+            event_id=f"moex-{news_id}",
+            published_at=str(row.get("published_at") or ""),
+            title=title,
+            summary=_strip_html(body)[:1500],
+            source="MOEX disclosure",
+            url=public_url,
+            source_type="official_exchange",
+            confidence="confirmed",
+        ))
+    return events
+
+
+def fetch_official_issuer_news(config: dict, timeout: int = 15) -> list[Event]:
+    """Collect transaction-related links directly from configured issuer IR pages."""
+    events: list[Event] = []
+    for source in config.get("primary_sources", {}).get("issuers", []):
+        if not source.get("enabled", True):
+            continue
+        url = source.get("url", "")
+        try:
+            page = _get_text(url, timeout)
+        except Exception:
+            continue
+        parser = _LinkParser()
+        parser.feed(page)
+        allowed_host = urllib.parse.urlparse(url).netloc.lower()
+        terms = [term.lower() for term in source.get("include_terms", _deal_terms())]
+        seen: set[str] = set()
+        for href, label in parser.links:
+            title = re.sub(r"\s+", " ", html.unescape(label)).strip()
+            absolute = urllib.parse.urljoin(url, href)
+            parsed = urllib.parse.urlparse(absolute)
+            if not title or not any(term in title.lower() for term in terms):
+                continue
+            if parsed.scheme not in {"http", "https"} or parsed.netloc.lower() != allowed_host or absolute in seen:
+                continue
+            seen.add(absolute)
+            published, summary = _page_metadata(absolute, timeout)
+            title_date, clean_title = _date_from_title(title)
+            events.append(Event(
+                event_id=stable_event_id("official-issuer", absolute),
+                published_at=published or title_date or datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                title=clean_title,
+                summary=summary,
+                source=source.get("name", "Issuer IR"),
+                url=absolute,
+                companies=[source.get("ticker", "")],
+                source_type="official_issuer",
+                confidence="confirmed",
+            ))
+            if len(events) >= int(source.get("max_items", 20)):
+                break
     return events
 
 
@@ -76,6 +160,33 @@ def fetch_deal_news(config: dict, timeout: int = 15) -> list[Event]:
             source_type="public_deal_news",
             exclude_terms=query.get("exclude_terms", []),
         ))
+    return events
+
+
+def fetch_deal_archive_news(config: dict, timeout: int = 15) -> list[Event]:
+    """Fetch a rolling discovery window for the persistent deal archive.
+
+    These events feed the precedent database only; they never inflate the 24h live radar.
+    """
+    live = config.get("live_data", {})
+    lookback = live.get("archive_lookback", "90d")
+    max_items = int(live.get("max_archive_items_per_query", 40))
+    events: list[Event] = []
+    for query in config.get("deal_queries", []):
+        if query.get("enabled", True) and query.get("query"):
+            events.extend(_fetch_google_news(
+                query=query["query"], lookback=lookback, max_items=max_items,
+                timeout=timeout, source_type="archive_discovery",
+                exclude_terms=query.get("exclude_terms", []),
+            ))
+    for company in config.get("coverage", []):
+        query = company.get("news_query") or company.get("company")
+        if query:
+            events.extend(_fetch_google_news(
+                query=query, lookback=lookback, max_items=max_items,
+                timeout=timeout, companies=[company.get("ticker", "")],
+                source_type="archive_discovery", exclude_terms=company.get("exclude_terms", []),
+            ))
     return events
 
 
@@ -189,7 +300,14 @@ def fetch_moex_quotes(config: dict, timeout: int = 15) -> list[dict]:
     return quotes
 
 
-def fetch_feed(url: str, source_name: str, source_type: str = "public_web", timeout: int = 15) -> list[Event]:
+def fetch_feed(
+    url: str,
+    source_name: str,
+    source_type: str = "public_web",
+    timeout: int = 15,
+    include_terms: list[str] | None = None,
+    exclude_terms: list[str] | None = None,
+) -> list[Event]:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
         root = ET.fromstring(response.read())
@@ -214,6 +332,11 @@ def fetch_feed(url: str, source_name: str, source_type: str = "public_web", time
             published = _text(row, "pubDate")
             link = _text(row, "link")
         if not title:
+            continue
+        combined = f"{title} {_strip_html(summary)}".lower()
+        if include_terms and not any(term.lower() in combined for term in include_terms):
+            continue
+        if exclude_terms and any(term.lower() in combined for term in exclude_terms):
             continue
         events.append(Event(
             event_id=stable_event_id(title, link),
@@ -246,3 +369,77 @@ def _rows(block: dict) -> list[dict]:
 
 def _strip_html(value: str) -> str:
     return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", value))).strip()
+
+
+def _get_json(url: str, timeout: int) -> dict:
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    try:
+        with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
+            return json.loads(response.read())
+    except Exception:
+        return {}
+
+
+def _get_text(url: str, timeout: int) -> str:
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
+        return response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+
+
+def _page_metadata(url: str, timeout: int) -> tuple[str, str]:
+    try:
+        page = _get_text(url, timeout)
+    except Exception:
+        return "", ""
+    date_patterns = [
+        r'<meta[^>]+(?:property|name)=["\'](?:article:published_time|datePublished)["\'][^>]+content=["\']([^"\']+)',
+        r'<time[^>]+datetime=["\']([^"\']+)',
+    ]
+    description_patterns = [
+        r'<meta[^>]+(?:property|name)=["\'](?:og:description|description)["\'][^>]+content=["\']([^"\']+)',
+    ]
+    published = next((match.group(1) for pattern in date_patterns if (match := re.search(pattern, page, re.I))), "")
+    summary = next((_strip_html(match.group(1)) for pattern in description_patterns if (match := re.search(pattern, page, re.I))), "")
+    return published, summary[:1500]
+
+
+def _deal_terms() -> list[str]:
+    return [
+        "слиян", "поглощ", "приобрет", "сделк", "ipo", "spo", "размещ",
+        "облигац", "выпуск", "эмисси", "bond", "acquisition", "offering",
+    ]
+
+
+def _date_from_title(value: str) -> tuple[str, str]:
+    months = {
+        "января": 1, "февраля": 2, "марта": 3, "апреля": 4, "мая": 5, "июня": 6,
+        "июля": 7, "августа": 8, "сентября": 9, "октября": 10, "ноября": 11, "декабря": 12,
+    }
+    match = re.match(r"^(\d{1,2})\s+([а-яё]+)\s+(20\d{2})\s+(.+)$", value, re.I)
+    if not match or match.group(2).lower() not in months:
+        return "", value
+    date = f"{int(match.group(3)):04d}-{months[match.group(2).lower()]:02d}-{int(match.group(1)):02d}T00:00:00+03:00"
+    return date, match.group(4).strip()
+
+
+class _LinkParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__()
+        self.links: list[tuple[str, str]] = []
+        self._href = ""
+        self._text: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() == "a":
+            self._href = dict(attrs).get("href") or ""
+            self._text = []
+
+    def handle_data(self, data: str) -> None:
+        if self._href:
+            self._text.append(data)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag.lower() == "a" and self._href:
+            self.links.append((self._href, " ".join(self._text)))
+            self._href = ""
+            self._text = []

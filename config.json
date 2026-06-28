@@ -78,16 +78,52 @@
     "news_provider": "Google News RSS",
     "news_lookback": "1d",
     "catchup_lookback": "3d",
+    "archive_lookback": "90d",
+    "max_archive_items_per_query": 40,
     "max_news_per_company": 8,
     "max_deal_news_per_query": 15
   },
-  "sources": [],
+  "primary_sources": {
+    "moex": {
+      "enabled": true,
+      "max_items": 100,
+      "include_terms": ["облигац", "размещ", "выпуск", "эмисси", "ipo", "spo", "приобрет", "сделк"]
+    },
+    "issuers": [
+      {
+        "name": "Yandex Investor Relations",
+        "ticker": "YDEX",
+        "url": "https://ir.yandex.ru/press-releases?year=2026",
+        "enabled": true,
+        "max_items": 15,
+        "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
+      },
+      {
+        "name": "VK Company Press Centre",
+        "ticker": "VKCO",
+        "url": "https://vk.company/ru/press/releases/",
+        "enabled": true,
+        "max_items": 15,
+        "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
+      }
+    ]
+  },
+  "sources": [
+    {
+      "name": "Банк России",
+      "url": "https://www.cbr.ru/rss/RssPress",
+      "source_type": "official_regulator",
+      "enabled": true,
+      "include_terms": ["облигац", "эмисси", "размещ", "рынок капитала", "ценн", "акци", "выпуск"]
+    }
+  ],
   "telegram": {
     "enabled": false,
     "max_items": 5
   },
   "thresholds": {
     "dashboard_min_score": 4,
+    "archive_min_score": 3,
     "telegram_min_score": 6
   }
 }
