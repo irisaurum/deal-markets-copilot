@@ -98,7 +98,7 @@
     "score": 7,
     "source_event_id": "moex-101492",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -132,7 +132,7 @@
     "score": 7,
     "source_event_id": "moex-101473",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -166,7 +166,7 @@
     "score": 7,
     "source_event_id": "moex-101468",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -197,10 +197,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101457",
     "evidence_label": "confirmed",
-    "score": 7,
+    "score": 6,
     "source_event_id": "moex-101457",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -234,7 +234,7 @@
     "score": 6,
     "source_event_id": "moex-101454",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -268,7 +268,7 @@
     "score": 6,
     "source_event_id": "moex-101451",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -302,7 +302,7 @@
     "score": 6,
     "source_event_id": "moex-101450",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-28T15:09:41+00:00",
+    "last_seen_at": "2026-06-28T15:22:24+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {

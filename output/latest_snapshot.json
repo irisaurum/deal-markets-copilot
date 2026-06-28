@@ -125,7 +125,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 7,
+      "score": 6,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",

@@ -57,13 +57,14 @@ class CoreTests(unittest.TestCase):
                 items, {"report_title": "Test"}, Path(directory) / "report.html", "demo", workflow=workflow
             )
             text = path.read_text(encoding="utf-8")
-            self.assertIn("EVIDENCE LEDGER", text)
-            self.assertIn("DEMO DATA", text)
-            self.assertIn("Не является Bloomberg Terminal", text)
-            self.assertIn("BANKER ACTION QUEUE", text)
-            self.assertIn("Рынок сегодня", text)
+            self.assertIn("Источники и подтверждения", text)
+            self.assertIn("Демо-режим", text)
+            self.assertIn("Что происходит на рынке сделок", text)
+            self.assertIn("Что проверить сегодня", text)
+            self.assertIn("Последние сделки рынка", text)
             self.assertIn("AUTO_REFRESH_MS", text)
-            self.assertIn("ДВА РЕЖИМА", text)
+            self.assertIn('class="deal-grid"', text)
+            self.assertNotIn('class="sidebar"', text)
 
     def test_workflow_detects_new_events_and_keeps_stable_tasks(self) -> None:
         event = Event(
@@ -165,11 +166,11 @@ class CoreTests(unittest.TestCase):
                 precedent_transactions=[record.to_dict()],
             )
             text = path.read_text(encoding="utf-8")
-            self.assertIn("LATEST DEAL CARD", text)
-            self.assertIn("LAST 10 KEY DEALS", text)
+            self.assertIn('class="deal-tile"', text)
+            self.assertIn("КЛЮЧЕВЫЕ СДЕЛКИ", text)
             self.assertIn("precedent_transactions.xlsx", text)
-            self.assertIn("10 последних ключевых сделок", text)
-            self.assertIn("Свежие события за", text)
+            self.assertIn("Последние сделки рынка", text)
+            self.assertIn("Свежие события", text)
             self.assertIn("Подтверждение ↗", text)
 
     def test_extracts_explicit_precedent_analytics_only(self) -> None:
