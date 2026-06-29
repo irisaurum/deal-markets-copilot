@@ -189,6 +189,80 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(record.ev_revenue, 3)
         self.assertEqual(record.ev_ebitda, 10)
 
+    def test_quality_gate_rejects_price_target_as_deal_value(self) -> None:
+        event = Event(
+            event_id="nebius-price-target", published_at="2026-06-27T08:00:00+03:00",
+            title="Nebius completes Eigen AI acquisition, analyst lifts stock price target to $280",
+            summary="Analyst commentary after the acquisition",
+            source="Market blog", url="https://example.com/nebius", confidence="unverified",
+        )
+        record = extract_deal_record(classify_event(event, self.coverage), self.coverage)
+        self.assertIsNotNone(record)
+        self.assertIsNone(record.transaction_value)
+        self.assertEqual(record.acquirer_or_investor, "Not disclosed")
+        self.assertEqual(record.quality_status, "rejected")
+        self.assertIn("price_target_context", record.quality_flags)
+
+    def test_normalized_deal_statuses(self) -> None:
+        talks = Event(
+            event_id="talks", published_at="2026-06-27T08:00:00+03:00",
+            title="Yandex ведет переговоры о покупке Авто.ру", summary="",
+            source="Press", url="https://example.com/talks", confidence="unverified",
+        )
+        closed = Event(
+            event_id="closed", published_at="2026-06-27T08:00:00+03:00",
+            title="Yandex завершил приобретение Авто.ру", summary="",
+            source="Company", url="https://example.com/closed", confidence="confirmed",
+        )
+        denied = Event(
+            event_id="denied", published_at="2026-06-27T08:00:00+03:00",
+            title="Греф опроверг договоренность Сбера о покупке доли в Ozon", summary="Сделку оценивали в 300 млрд руб.",
+            source="Press", url="https://example.com/denied", confidence="unverified",
+        )
+        talks_record = extract_deal_record(classify_event(talks, self.coverage), self.coverage)
+        closed_record = extract_deal_record(classify_event(closed, self.coverage), self.coverage)
+        denied_record = extract_deal_record(classify_event(denied, self.coverage), self.coverage)
+        self.assertEqual(talks_record.status, "In talks")
+        self.assertEqual(closed_record.status, "Closed")
+        self.assertEqual(denied_record.status, "Denied")
+        self.assertIsNone(denied_record.transaction_value)
+        self.assertEqual(denied_record.quality_status, "review")
+
+    def test_seller_is_not_mislabeled_as_acquirer(self) -> None:
+        event = Event(
+            event_id="vk-sale", published_at="2026-04-16T08:00:00+03:00",
+            title="VK продал 25% акций Точка Банка: сделку оценили в 21,2 млрд ₽",
+            summary="", source="Press", url="https://example.com/vk-sale", confidence="unverified",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.target_or_issuer, "Точка Банка")
+        self.assertEqual(record.acquirer_or_investor, "Not disclosed")
+        self.assertEqual(record.quality_status, "review")
+
+    def test_same_deal_aggregates_multiple_sources(self) -> None:
+        first = Event(
+            event_id="source-a", published_at="2026-06-27T08:00:00+03:00",
+            title="Яндекс закрыл сделку по покупке Авто.ру", summary="",
+            source="Yandex IR", url="https://example.com/primary", confidence="confirmed", source_type="issuer_ir",
+        )
+        second = Event(
+            event_id="source-b", published_at="2026-06-28T08:00:00+03:00",
+            title="Яндекс завершил приобретение Авто.ру", summary="",
+            source="Newswire", url="https://example.com/secondary", confidence="unverified",
+        )
+        records = [
+            extract_deal_record(classify_event(first, self.coverage), self.coverage),
+            extract_deal_record(classify_event(second, self.coverage), self.coverage),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            rows = update_precedent_database(records, Path(directory) / "precedents.json")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["source_count"], 2)
+        self.assertEqual(rows[0]["evidence_label"], "confirmed")
+        self.assertEqual({source["url"] for source in rows[0]["sources"]}, {
+            "https://example.com/primary", "https://example.com/secondary",
+        })
+
     def test_medians_use_valid_ma_multiples(self) -> None:
         stats = median_multiples([
             {"deal_type": "M&A", "ev_revenue": 2.0, "ev_ebitda": 8.0},

@@ -64,6 +64,11 @@ class DealRecord:
     ev_ebitda: float | None
     instrument: str
     rationale: str
+    quality_status: str
+    quality_score: int
+    quality_flags: list[str]
+    sources: list[dict]
+    source_count: int
     matched_coverage: list[str]
     source_name: str
     source_url: str
