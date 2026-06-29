@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3567.5,
-      "change_percent": -0.79,
-      "turnover": 1653954001,
-      "updated": "12:55:00",
+      "price": 3559,
+      "change_percent": -1.03,
+      "turnover": 1802983708,
+      "updated": "13:49:27",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3418,
-      "change_percent": -0.9,
-      "turnover": 1005355522,
-      "updated": "12:53:54",
+      "price": 3419,
+      "change_percent": -0.87,
+      "turnover": 1117987861,
+      "updated": "13:49:29",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 189.9,
-      "change_percent": -3.01,
-      "turnover": 743011366,
-      "updated": "12:55:03",
+      "price": 190.1,
+      "change_percent": -2.91,
+      "turnover": 815226105,
+      "updated": "13:48:46",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -85,45 +85,20 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101468",
-        "published_at": "2026-06-26 16:40:21",
-        "title": "О регистрации изменений в эмиссионные документы",
-        "summary": "О регистрации изменений в эмиссионные документы 2026-06-26 16:40:21 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления \"26\" июня 2026 года приняты следующие решения: зарегистрировать изменения в программу биржевых облигаций серии 002Р Общества с ограниченной ответственностью \"Сэтл Групп\", регистрационный номер программы биржевых облигаций – 4-36160-R-002P-02E от 18.05.2022. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101468",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 6,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [
-      "moex-101536"
-    ],
-    "new_signals": 1,
+    "new_event_ids": [],
+    "new_signals": 0,
     "market_moves": [
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 189.9,
-        "change_percent": -3.01,
-        "turnover": 743011366,
-        "updated": "12:55:03",
+        "price": 190.1,
+        "change_percent": -2.91,
+        "turnover": 815226105,
+        "updated": "13:48:46",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -168,7 +143,7 @@
       {
         "id": "TASK-a5a1ed9796fc",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -190,22 +165,10 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-a429bc8e0bc5",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101468",
-        "source_title": "О регистрации изменений в эмиссионные документы",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-02bdb3153843",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-3.01%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-2.91%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -215,15 +178,15 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "1 новых сигналов с прошлого запуска; 4 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "Итоги выпуска биржевых облигаций"
+        "text": "Новых событий после предыдущего запуска не обнаружено."
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -3.01% к предыдущему закрытию."
+        "text": "VKCO: -2.91% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
