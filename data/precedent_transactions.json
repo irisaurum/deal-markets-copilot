@@ -43,7 +43,57 @@
     "score": 7,
     "source_event_id": "moex-101536",
     "first_seen_at": "2026-06-29T10:10:04+00:00",
-    "last_seen_at": "2026-06-29T13:10:33+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-884a90d63a74113a",
+    "announced_date": "2026-06-29",
+    "deal_type": "DCM",
+    "status": "Reported",
+    "target_or_issuer": "Выпуск облигаций SpaceX на $25 млрд вызвал опасения инвесторов",
+    "acquirer_or_investor": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Not disclosed",
+    "headline": "Выпуск облигаций SpaceX на $25 млрд вызвал опасения инвесторов - Финансы Mail",
+    "transaction_value": 25000000000.0,
+    "enterprise_value": null,
+    "currency": "USD",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 67,
+    "quality_flags": [
+      "unverified_source",
+      "aggregator_link"
+    ],
+    "sources": [
+      {
+        "name": "Финансы Mail",
+        "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPWUR4bzZnZ2lmZG50NjRhZ0xlODRSRVNicW9xVkszWHFPQ2dqSUNzWHVzbG9qVkU3bmRBUWp4QlF1X3lBY0dycVBodG94YVhyalVscktnY0VOeVpBN1pzVXFJa1Faa3JxVzhCNkVaRk9ibThTTFpEeDRyUlgxdDlRc25WX21lZ0lCQkU0eG5xakFwTW5hSmE1YmpzS0xqdW8yUm5YcnVUREJuRW8?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 29 Jun 2026 11:23:06 GMT"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [],
+    "source_name": "Финансы Mail",
+    "source_url": "https://finance.mail.ru/article/vyipusk-obligatsij-spacex-na-25-mlrd-vyizval-opaseniya-investorov-69215522/",
+    "evidence_label": "unverified",
+    "score": 3,
+    "source_event_id": "884a90d63a74113a",
+    "first_seen_at": "2026-06-29T13:14:59+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -288,7 +338,7 @@
     "score": 6,
     "source_event_id": "moex-101492",
     "first_seen_at": "2026-06-28T00:41:49+00:00",
-    "last_seen_at": "2026-06-29T13:10:33+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -603,17 +653,9 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "частных инвесторов Яндекса содержит информацию про бизнесы и технологии компании, а также географию присутствия, финансовые результаты, важные новости и многое другое о компании и её рынках",
-    "matched_coverage": [
-      "YDEX"
-    ],
-    "source_name": "Yandex Investor Relations",
-    "source_url": "https://ir.yandex.ru/press-releases?year=2026&id=19-06-2026-03",
-    "evidence_label": "confirmed",
-    "score": 7,
-    "source_event_id": "7a721642a53e0f1d",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
     "sources": [
       {
         "name": "Yandex Investor Relations",
@@ -624,9 +666,17 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [],
-    "quality_score": 100,
-    "quality_status": "approved"
+    "matched_coverage": [
+      "YDEX"
+    ],
+    "source_name": "Yandex Investor Relations",
+    "source_url": "https://ir.yandex.ru/press-releases?year=2026&id=19-06-2026-03",
+    "evidence_label": "confirmed",
+    "score": 7,
+    "source_event_id": "7a721642a53e0f1d",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-9092ffd6a36a0a81",
@@ -652,15 +702,12 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Интерфакс",
-    "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1YcWRJT1pJS3JQYUlDcVBxQmRrd2JFXzdidEJQMkRoTFVIRlBDUnQ5ZjNSMFZGamhRQ1hoTXFwaUVQMW1PZldFWWhvSzdOdmtSQnfSAUtBVV95cUxQWkQ5UHd5NFJieHBKUTVCZURpX1dEWmM4a2FnOXJ3aUREYi04ZGFUclFMNUxBdU1EMFVYWUU4MlhCaXJfTy1NZlVNXzg?oc=5",
-    "evidence_label": "unverified",
-    "score": 3,
-    "source_event_id": "9092ffd6a36a0a81",
-    "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "review",
+    "quality_score": 67,
+    "quality_flags": [
+      "unverified_source",
+      "aggregator_link"
+    ],
     "sources": [
       {
         "name": "Интерфакс",
@@ -671,12 +718,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [
-      "unverified_source",
-      "aggregator_link"
-    ],
-    "quality_score": 67,
-    "quality_status": "review"
+    "matched_coverage": [],
+    "source_name": "Интерфакс",
+    "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1YcWRJT1pJS3JQYUlDcVBxQmRrd2JFXzdidEJQMkRoTFVIRlBDUnQ5ZjNSMFZGamhRQ1hoTXFwaUVQMW1PZldFWWhvSzdOdmtSQnfSAUtBVV95cUxQWkQ5UHd5NFJieHBKUTVCZURpX1dEWmM4a2FnOXJ3aUREYi04ZGFUclFMNUxBdU1EMFVYWUU4MlhCaXJfTy1NZlVNXzg?oc=5",
+    "evidence_label": "unverified",
+    "score": 3,
+    "source_event_id": "9092ffd6a36a0a81",
+    "first_seen_at": "2026-06-28T04:28:06+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-f71ff729dc9f5af4",
@@ -702,6 +752,28 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 75,
+    "quality_flags": [
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "Финам",
+        "url": "https://www.finam.ru/publications/item/yandeks-vnov-vykhodit-na-dolgovoy-rynok-razbor-dvoynogo-razmeshcheniya-obligatsiy-20260608-1729/",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-06-08"
+      },
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOSmlOMWRURDFvUlZqYktKazJXOFhWR1ZMamNuTGF2QlJ0YmIxTmF6RDMtSHF1Y2RTRkc5QWlnZXQ3WUdUMTB4QUNzUy0zT3I2eGJZSW1DWUxaVDlvR1lrNVhZZ3kybDNrb0tXd0FqMkxHQXNWRFhjcFp0MUI3alRKN1BWdlBSN2V2VWphOUxBQkNjc0l1UDF4WTRKZXkxNHlzSmhIRkhmR2pXc1pKLVV4MzJIN0pLZlVkQ3JvZ2d4aFphcXJkd0F3Z1VKYmdPUUdJ?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 08 Jun 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "YDEX"
     ],
@@ -711,23 +783,8 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Финам",
-        "url": "https://www.finam.ru/publications/item/yandeks-vnov-vykhodit-na-dolgovoy-rynok-razbor-dvoynogo-razmeshcheniya-obligatsiy-20260608-1729/",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-06-08"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "unverified_source"
-    ],
-    "quality_score": 75,
-    "quality_status": "review"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-c0e4b0469b5eb473",
@@ -762,7 +819,7 @@
     "score": 4,
     "source_event_id": "c0e4b0469b5eb473",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
@@ -813,9 +870,23 @@
         "evidence_label": "unverified",
         "source_type": "public_web",
         "published_at": "2026-05-28"
+      },
+      {
+        "name": "Сибирское информационное агентство",
+        "url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9USzZyMG9pZVA0SGstbWJZRGRwOGxWLTNrc0Vva0xDU1lJV3ZlUDRGTURxZXd0LVVUZXFELWdzM2tVVHB3MHlHNjQzSDFyN3JnbHRRYlFnQnJjX1pqMzB5V3dGTnBUcGc?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Fri, 29 May 2026 07:00:00 GMT"
+      },
+      {
+        "name": "Альфа-Банк",
+        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOVVc5b2xRd2dWREJQMEVGcEVKSlhNdFFmTjNGYWVnRkRNbHlmZ29zRGdzUjlrS2VQQjJxM0RhUTh4bnhIWnhNb3ZnQ2VhYmJqdEI1Q0dpVHZOWlNCLXNUanVlYTdhNmQ2TkpGZ1hFVG0xclRWNWZvZUhmeXdua1BtUDNpMm9LZw?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Thu, 28 May 2026 07:00:00 GMT"
       }
     ],
-    "source_count": 7,
+    "source_count": 9,
     "quality_flags": [
       "unverified_source",
       "denied_or_disputed"
@@ -847,17 +918,9 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "частных инвесторов Яндекса содержит информацию про бизнесы и технологии компании, а также географию присутствия, финансовые результаты, важные новости и многое другое о компании и её рынках",
-    "matched_coverage": [
-      "YDEX"
-    ],
-    "source_name": "Yandex Investor Relations",
-    "source_url": "https://ir.yandex.ru/press-releases?year=2026&id=02-06-2026-04",
-    "evidence_label": "confirmed",
-    "score": 9,
-    "source_event_id": "5eba3b27a4e84dd3",
-    "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
     "sources": [
       {
         "name": "Yandex Investor Relations",
@@ -879,12 +942,34 @@
         "evidence_label": "unverified",
         "source_type": "public_web",
         "published_at": "2026-06-02"
+      },
+      {
+        "name": "БКС Экспресс",
+        "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNQ0ZvSEhWU1BqUzkyWi1YOWNOR0lab1kxRldxMFV5YllQQWp4Y0xFcjNLTXpHMUFJcnhicWI2RGNuUWRpUndBS0ZlQ2U0c05yWDlTeWZnWG05QjhZR0VWVW5IV19aSkdwa0d1UWpMWC1tLWdicjNtUVk4M2QtbFhsQkFxejdjZ2lLNDYxWTlwUWwyMzhqZ20zelY5SkZpZjBjYzZv?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Wed, 03 Jun 2026 07:00:00 GMT"
+      },
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQWFk5YjhpaHc0S3BiTEpUVzFndHdkTDVmY0EtRDhFQ0pYcjBvWUF3V3FZUFhaUjhEQ1FXT0FDdWU1dGdtVmJ1Z1l5bmhGcVBwdjhsWTZVNG10dWhmTlNGbGZqV2cwRUoyaEdZS3c0dEx1MV8ySGpfX2ljQnhfemFELThnSDc3T09JZ1lOZW45Yk93YmYyb3c?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Tue, 02 Jun 2026 07:00:00 GMT"
       }
     ],
-    "source_count": 3,
-    "quality_flags": [],
-    "quality_score": 100,
-    "quality_status": "approved"
+    "source_count": 5,
+    "matched_coverage": [
+      "YDEX"
+    ],
+    "source_name": "Yandex Investor Relations",
+    "source_url": "https://ir.yandex.ru/press-releases?year=2026&id=02-06-2026-04",
+    "evidence_label": "confirmed",
+    "score": 9,
+    "source_event_id": "5eba3b27a4e84dd3",
+    "first_seen_at": "2026-06-28T04:28:06+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-e08040bba3b952c1",
@@ -919,7 +1004,7 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
@@ -928,9 +1013,16 @@
         "evidence_label": "unverified",
         "source_type": "public_web",
         "published_at": "2026-05-28"
+      },
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxNSlk2WU9xYjNqM1AwRkNGOV9BYnhzQVg3VlRaaWJlT01VVDNrYklwUjY4SFZfdjZQLVlHZEpxYm0tVmpDUFN5a190bUU0MnFnb2VFMFMyQ2E1OWlyQ2djRWwtdWMyN3F5NXRYamZkUmFhMkk4UlFZQXFDOVB2RE9uNjZkdFFMbGZFT0dWOTN4MjZDbXZmMzNSOUNlOXVaZjJGcmM4QnZiM0I3QUhM?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Thu, 28 May 2026 07:00:00 GMT"
       }
     ],
-    "source_count": 1,
+    "source_count": 2,
     "quality_flags": [
       "unverified_source"
     ],
@@ -1066,6 +1158,29 @@
     "ev_ebitda": null,
     "instrument": "Equity issuance",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 15,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "Финам",
+        "url": "https://www.finam.ru/publications/item/otchetnosti-zaymera-bsp-i-sovkombanka-dividendnyy-vopros-u-ozona-i-md-medikal-osnovnye-sobytiya-15-maya-20260515-0900/",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-05-15"
+      },
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxOVkF3VWdna082MXVoUDVVTnpvUjV1Y2tnMGRwRkYwRlhnUE1RZldyUGVCcklzSWdXQmhMYkRaNi1nZGp5LVdzU3RRWV9kTnpJbFFxU2lCSGR1clk5R3NIaDZHeDRxTUF6VkZHV2F4dTAtS0Jjd1FEM281dU5YZ3lMRWROOVNiT29mVG1EcXRCcmdmaDZ5OFpzTmRHRWpidFMzdjktZHhRMGpxZ0pUZmw0MDRGNjZEMWFPVC1EcFFFa1NFNzJlNk1oUnI1cGFpc2ZDYWk0LUxuaVN1LUdvU25hTXpINjhQZGNHdzJIdElR?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Fri, 15 May 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1075,24 +1190,8 @@
     "score": 4,
     "source_event_id": "38b5154e2b53df8c",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T15:49:10+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Финам",
-        "url": "https://www.finam.ru/publications/item/otchetnosti-zaymera-bsp-i-sovkombanka-dividendnyy-vopros-u-ozona-i-md-medikal-osnovnye-sobytiya-15-maya-20260515-0900/",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-05-15"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source"
-    ],
-    "quality_score": 15,
-    "quality_status": "rejected"
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-32f044efd41bc454",
@@ -1100,7 +1199,7 @@
     "deal_type": "M&A",
     "status": "Reported",
     "target_or_issuer": "Not disclosed",
-    "acquirer_or_investor": "VKCO",
+    "acquirer_or_investor": "Not disclosed",
     "sector": "Not classified",
     "geography": "Not disclosed",
     "headline": "Трамп в I квартале совершал сделки с акциями Nvidia и Boeing - Интерфакс",
@@ -1118,15 +1217,14 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Интерфакс",
-    "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1SRWp6YUhObThSanNWWnBCQjlnX0xPVW1fQzJPSlJxM3JxcVhVTWlJaWZVcW5VNXFTQjU0RkJ6cC0wem9DTUNLZWlXeXZmMDhyUlHSAUtBVV95cUxPaFhNLWM1eThHQVJpOEg0TEpxT1BjRk5IdTEyYmFOdzNCOEluQmtLU3pmcXViOW5PM1gwR3ZsT2RhZEVCLTkwQ1RMZk0?oc=5",
-    "evidence_label": "unverified",
-    "score": 3,
-    "source_event_id": "32f044efd41bc454",
-    "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "rejected",
+    "quality_score": 0,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "aggregator_link",
+      "missing_both_parties"
+    ],
     "sources": [
       {
         "name": "Интерфакс",
@@ -1137,14 +1235,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source",
-      "aggregator_link",
-      "missing_target"
-    ],
-    "quality_score": 0,
-    "quality_status": "rejected"
+    "matched_coverage": [],
+    "source_name": "Интерфакс",
+    "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE1SRWp6YUhObThSanNWWnBCQjlnX0xPVW1fQzJPSlJxM3JxcVhVTWlJaWZVcW5VNXFTQjU0RkJ6cC0wem9DTUNLZWlXeXZmMDhyUlHSAUtBVV95cUxPaFhNLWM1eThHQVJpOEg0TEpxT1BjRk5IdTEyYmFOdzNCOEluQmtLU3pmcXViOW5PM1gwR3ZsT2RhZEVCLTkwQ1RMZk0?oc=5",
+    "evidence_label": "unverified",
+    "score": 3,
+    "source_event_id": "32f044efd41bc454",
+    "first_seen_at": "2026-06-28T04:28:06+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-71608263fecb5e53",
@@ -1170,15 +1269,13 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "погашения выпуска облигаций на 1,9 млрд рублей",
-    "matched_coverage": [],
-    "source_name": "Интерфакс",
-    "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5rRHd6NXMzNkpDcVZDdVR4NXhZN185LXRRSDMzVzZiUGd4cmNqV1BydzRLTnh4cHJnU19qNnQ1X05XMDl6VnBjVlBXY0NUOUZ3VlHSAUtBVV95cUxQOHVvOS00aURkZ3lDUGZ6Sk9kYTVFSDJhcGNJQk1PVVR2ZFJwWnZlRGZ4eW85TS15QUs4bmkxOWUzQW5PbGpDeUVnOVk?oc=5",
-    "evidence_label": "unverified",
-    "score": 3,
-    "source_event_id": "71608263fecb5e53",
-    "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "rejected",
+    "quality_score": 7,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "aggregator_link"
+    ],
     "sources": [
       {
         "name": "Интерфакс",
@@ -1189,13 +1286,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source",
-      "aggregator_link"
-    ],
-    "quality_score": 7,
-    "quality_status": "rejected"
+    "matched_coverage": [],
+    "source_name": "Интерфакс",
+    "source_url": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5rRHd6NXMzNkpDcVZDdVR4NXhZN185LXRRSDMzVzZiUGd4cmNqV1BydzRLTnh4cHJnU19qNnQ1X05XMDl6VnBjVlBXY0NUOUZ3VlHSAUtBVV95cUxQOHVvOS00aURkZ3lDUGZ6Sk9kYTVFSDJhcGNJQk1PVVR2ZFJwWnZlRGZ4eW85TS15QUs4bmkxOWUzQW5PbGpDeUVnOVk?oc=5",
+    "evidence_label": "unverified",
+    "score": 3,
+    "source_event_id": "71608263fecb5e53",
+    "first_seen_at": "2026-06-28T04:28:06+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-2848bdd8b067faa2",
@@ -1221,6 +1320,28 @@
     "ev_ebitda": null,
     "instrument": "Equity issuance",
     "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 75,
+    "quality_flags": [
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "БКС Экспресс",
+        "url": "https://bcs-express.ru/novosti-i-analitika/iandeks-odobril-vykup-aktsii-na-50-mlrd-rublei",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-05-05"
+      },
+      {
+        "name": "БКС Экспресс",
+        "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPbkRNMVpoTFN4cXlrOWRya3A4SW1Dd09IUHIzMUw3emMzY1hZckpPRWtMclI2aTllZTRQTlRwUmNGNVp4X1hPV041elJSWGhtVS1kM0VGMFpWdmZIcDRmTS04MjBSb3FoVG5xZWdhY0REZkxLMTMxTE1PeF92VW5SRkxDYVNrVGVuNVFTSlRfaFFFeWc?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Tue, 05 May 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "YDEX"
     ],
@@ -1230,23 +1351,8 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "БКС Экспресс",
-        "url": "https://bcs-express.ru/novosti-i-analitika/iandeks-odobril-vykup-aktsii-na-50-mlrd-rublei",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-05-05"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "unverified_source"
-    ],
-    "quality_score": 75,
-    "quality_status": "review"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-3d4a31cc3b7936d0",
@@ -1272,6 +1378,29 @@
     "ev_ebitda": null,
     "instrument": "Equity issuance",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 15,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "SberCIB",
+        "url": "https://sbercib.ru/publication/rezultati-ozon-dom-rf-dividendi-yandeksa-i-tatnefti-i-drugie-novosti-nedeli",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-05-04"
+      },
+      {
+        "name": "SberCIB",
+        "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQZEltanhoOVlVS2FSRnNObHRXRkJnUEpjZ1VRXzB4czdNUFJOVzVxNU1XcGdxX1gxNmhYcHVrWFh1bXZMRTA5UUZHczhJNlJLYl8wVzdtZmdWYjRQZVB4TDVRNHNURVI1UkhkeVFpNXN4WnhUekFURDhiSlFyZDAtUFMtNW1VR3JEZFUwMEktbmFIYk52Uy02ay1IQTdYZHE2Zm10Vkw1LVBLdw?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 04 May 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "YDEX",
       "OZON"
@@ -1282,24 +1411,8 @@
     "score": 4,
     "source_event_id": "3d4a31cc3b7936d0",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T15:49:10+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "SberCIB",
-        "url": "https://sbercib.ru/publication/rezultati-ozon-dom-rf-dividendi-yandeksa-i-tatnefti-i-drugie-novosti-nedeli",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-05-04"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source"
-    ],
-    "quality_score": 15,
-    "quality_status": "rejected"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-6bc0569f7ac374fe",
@@ -1307,7 +1420,7 @@
     "deal_type": "M&A",
     "status": "Reported",
     "target_or_issuer": "Not disclosed",
-    "acquirer_or_investor": "Ozon",
+    "acquirer_or_investor": "Not disclosed",
     "sector": "Financials",
     "geography": "Not disclosed",
     "headline": "Путин исключил «Озон банк» из списка с запретом на сделки с акциями и долями - Ведомости",
@@ -1325,6 +1438,30 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 0,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "missing_both_parties"
+    ],
+    "sources": [
+      {
+        "name": "Ведомости",
+        "url": "https://www.vedomosti.ru/finance/news/2026/04/27/1193355-putin-isklyuchil",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-27"
+      },
+      {
+        "name": "Ведомости",
+        "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE5wcVN1bk9QeWE3N3kxMkdGdndraERVOGhyUndZcTkwSVVWdlhXUkVldXUtRWR5QTlCR3owOHN1QzFPZVVDR0JWMGkweTM2ekRobml3MzJqT3ZyTGFCSTZtTk0yZ3FxOG52ZjA3c203bEJ4UGVIN18xQUJxenBLQQ?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 27 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1334,25 +1471,8 @@
     "score": 4,
     "source_event_id": "6bc0569f7ac374fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Ведомости",
-        "url": "https://www.vedomosti.ru/finance/news/2026/04/27/1193355-putin-isklyuchil",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-27"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source",
-      "missing_target"
-    ],
-    "quality_score": 0,
-    "quality_status": "rejected"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-cc671fa6b14f8f28",
@@ -1360,7 +1480,7 @@
     "deal_type": "M&A",
     "status": "Reported",
     "target_or_issuer": "Not disclosed",
-    "acquirer_or_investor": "Ozon",
+    "acquirer_or_investor": "Not disclosed",
     "sector": "Financials",
     "geography": "Not disclosed",
     "headline": "Ozon Банк исключен из перечня банков, с акциями которых запрещены сделки - БКС Экспресс",
@@ -1378,6 +1498,30 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 0,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "missing_both_parties"
+    ],
+    "sources": [
+      {
+        "name": "БКС Экспресс",
+        "url": "https://bcs-express.ru/novosti-i-analitika/ozon-bank-iskliuchen-iz-perechnia-bankov-s-aktsiiami-kotorykh-zapreshcheny-sdelki",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-27"
+      },
+      {
+        "name": "БКС Экспресс",
+        "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxORlpPNHotYkNzQVpwd2ptLTRIVmJmelQwVHY5Vjc2Rmd1YzFnMW52R3h3aXlFYkpzc0NfY0NPdWk3RnhUSXhudGhZUWxXeE90WlNpVmRkYlhxSlNHLXFkZ1pLMllFY3VBQUx6bDJUcG13VEVINVlKOTFMUkRkUUx0bllTQ2NQdzBaMENTM3FrN2dMNVFjQ2NKRTVUNG92QWlpcEdtWVFuMWx1dnJRTTFWS1paVllydW9oeUU0NjNUVjhCUQ?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 27 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1387,25 +1531,8 @@
     "score": 4,
     "source_event_id": "cc671fa6b14f8f28",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "БКС Экспресс",
-        "url": "https://bcs-express.ru/novosti-i-analitika/ozon-bank-iskliuchen-iz-perechnia-bankov-s-aktsiiami-kotorykh-zapreshcheny-sdelki",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-27"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source",
-      "missing_target"
-    ],
-    "quality_score": 0,
-    "quality_status": "rejected"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-2d1ef3023240f32a",
@@ -1440,7 +1567,7 @@
     "score": 4,
     "source_event_id": "2d1ef3023240f32a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
@@ -1456,9 +1583,16 @@
         "evidence_label": "unverified",
         "source_type": "public_web",
         "published_at": "2026-04-27"
+      },
+      {
+        "name": "InvestFuture",
+        "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQcU81OEdseHRmbS1zNlgwaDB4VWRLbVp1eGRLdTZ0R0RZOXpvRU1uRmE0MHRVVFlrNHFobW1mQlJleE1ZOFRaWjB3WWoyVldwR1dMRlM1Z2l5MUZiQnNsX0JJdXZRLUFrV2cxVS04ZmtfNUNtaVR3M21XbGw5N0I5ZWxqOHktNnJyZ1ZuMGc5UTZMc2cxOU5OU0VQUkJVVjFTenhmLVdlQQ?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 27 Apr 2026 07:00:00 GMT"
       }
     ],
-    "source_count": 2,
+    "source_count": 3,
     "quality_flags": [
       "non_transaction_or_technical_notice",
       "unverified_source",
@@ -1473,7 +1607,7 @@
     "deal_type": "M&A",
     "status": "Reported",
     "target_or_issuer": "Not disclosed",
-    "acquirer_or_investor": "Ozon",
+    "acquirer_or_investor": "Not disclosed",
     "sector": "Financials",
     "geography": "Not disclosed",
     "headline": "С «Озон банка» сняли ограничения на сделки с акциями — распоряжение Путина - Реальное время",
@@ -1491,6 +1625,30 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 0,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "missing_both_parties"
+    ],
+    "sources": [
+      {
+        "name": "Реальное время",
+        "url": "https://realnoevremya.ru/news/394463-s-ozon-banka-snyali-ogranicheniya-na-sdelki-s-akciyami-rasporyazhenie-putina",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-27"
+      },
+      {
+        "name": "Реальное время",
+        "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPdUFBdHZlVG53aElMZ1BtWGh4VzZmSEg1OFU4UzJqTnlOanFmYW5RLUV3OXR3cFFrdmhJalBhZWFPMmFPTjlObnRyY2c4T3dYZTc3MjBfWHFrUU00RVBxMnFreVNkQ19vNVBGbnlDSktCZXJGTmFWUmJtWllmX2xraTRsM093aHdoWGo2QW0zNGg5VkxyRFk5YnU1QWtYOFMxMzhLNTBQbWxLQjNkbXl6cWY3RQ?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 27 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1500,25 +1658,8 @@
     "score": 4,
     "source_event_id": "dd21f961f579e55a",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Реальное время",
-        "url": "https://realnoevremya.ru/news/394463-s-ozon-banka-snyali-ogranicheniya-na-sdelki-s-akciyami-rasporyazhenie-putina",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-27"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source",
-      "missing_target"
-    ],
-    "quality_score": 0,
-    "quality_status": "rejected"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-0bceebeca9933dc3",
@@ -1544,6 +1685,29 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 15,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "Альфа-Банк",
+        "url": "https://alfabank.ru/alfa-investor/t/obligatsii-ozona-zarabotay-na-marketpleyse/",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-20"
+      },
+      {
+        "name": "Альфа-Банк",
+        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOR21Vd1RCOGpSRktSR2g3Mm11emdNTHVpLTlESXFfUVc5SFZFYkZYTWcwZ1kxc2ZUU1lPVWo3UmRjQXl4SFREaElpVTZvZktVMW43QXhNU2ZHal9hSHQ0bkttRV8xa1BVbHRHSENoSE5GblYwZElISUxNbG1fSG1uWUJ0QVgtZw?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 20 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1553,24 +1717,114 @@
     "score": 4,
     "source_event_id": "0bceebeca9933dc3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-e65aa610a439e531",
+    "announced_date": "2026-04-20",
+    "deal_type": "ECM",
+    "status": "Reported",
+    "target_or_issuer": "Yandex",
+    "acquirer_or_investor": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Russia",
+    "headline": "Акционеры «Яндекса» утвердили дивиденды за 2025 год в размере 110 рублей - https://expert.ru",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "NOT DISCLOSED",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "за 2025 год в размере 110 рублей - https:/",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Equity issuance",
+    "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 7,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "aggregator_link"
+    ],
     "sources": [
       {
-        "name": "Альфа-Банк",
-        "url": "https://alfabank.ru/alfa-investor/t/obligatsii-ozona-zarabotay-na-marketpleyse/",
+        "name": "https://expert.ru",
+        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPWGhKZDBJT19jSHlMQlI2Z3RWU2NzOUlEekZlamVwMnNmV0JXZ2dNeXZWaWF1eEEzRlVzTE5pd1JNZUNlRkV3OVB3QUZzU1B4Tm1HYjNkcV9oWE1RQlY0dGIyNkUwdm05RTlfM1ZLQzJiNldVLWNSRGQ5aUNrRUdmc1dBMEVORThSVnNVTEl3d3JMLUFBak5OZjNhMA?oc=5",
         "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-20"
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 20 Apr 2026 07:00:00 GMT"
       }
     ],
     "source_count": 1,
+    "matched_coverage": [
+      "YDEX"
+    ],
+    "source_name": "https://expert.ru",
+    "source_url": "https://expert.ru/news/aktsionery-yandeksa-utverdili-dividendy-za-2025-god-v-razmere-110-rubley",
+    "evidence_label": "unverified",
+    "score": 4,
+    "source_event_id": "e65aa610a439e531",
+    "first_seen_at": "2026-06-29T13:14:59+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-0e547964381c1356",
+    "announced_date": "2026-04-20",
+    "deal_type": "ECM",
+    "status": "Reported",
+    "target_or_issuer": "Yandex",
+    "acquirer_or_investor": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Not disclosed",
+    "headline": "Яндекс утвердил дивиденды по итогам 2025 года — выплаты составят 110 ₽ за акцию - RB.RU",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "NOT DISCLOSED",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Equity issuance",
+    "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 7,
     "quality_flags": [
       "non_transaction_or_technical_notice",
-      "unverified_source"
+      "unverified_source",
+      "aggregator_link"
     ],
-    "quality_score": 15,
-    "quality_status": "rejected"
+    "sources": [
+      {
+        "name": "RB.RU",
+        "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxPM0l6REZfX1FWR3FiY1RBQlJUbzdaNDVTZTB5UklOalA3Vk1qYzRsQWhkZDNScTZWOHVaY0hNaTNRdDNHWU1jR1hhUV9GT1dES3daWVFhTFJ3M3lHTmJSSnZzN19ETGtJbExzNk0ybFdHdWs2ZkprOUd5X25HYWFnb29qZTRMMDBidkhaRG01WTNSMGMxUHJQS1k2Y19Za2NLQlExZWFyUk94aUZGcTVKZ2toSWxBVkg2WFFic3hxcHFQNEphVmlFZkpoMXJLQVB1?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 20 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [
+      "YDEX"
+    ],
+    "source_name": "RB.RU",
+    "source_url": "https://rb.ru/news/yandeks-odobril-dividendy-po-itogam-2025-go-vyplaty-sostavyat-110-za-akciyu-pochti-na-40-vyshe-chem-v-proshlom-godu/",
+    "evidence_label": "unverified",
+    "score": 4,
+    "source_event_id": "0e547964381c1356",
+    "first_seen_at": "2026-06-29T13:14:59+00:00",
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-c10daba8af8e67d8",
@@ -1596,17 +1850,12 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "предпринимателей",
-    "matched_coverage": [
-      "VKCO"
+    "quality_status": "review",
+    "quality_score": 60,
+    "quality_flags": [
+      "unverified_source",
+      "missing_acquirer"
     ],
-    "source_name": "RB.RU",
-    "source_url": "https://rb.ru/news/vk-prodal-25-akcij-tochka-banka-sdelku-ocenili-v-212-mlrd-vdvoe-vyshe-iznachalnoj-stoimosti-bumag/",
-    "evidence_label": "unverified",
-    "score": 6,
-    "source_event_id": "c10daba8af8e67d8",
-    "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
         "name": "RB.RU",
@@ -1628,15 +1877,41 @@
         "evidence_label": "unverified",
         "source_type": "public_web",
         "published_at": "2026-04-16"
+      },
+      {
+        "name": "RB.RU",
+        "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNQlJkLWo5eXZTSkZxSWU5NjF5TVJ0N1lYdXJqSzlFUGFMdk5jVEZMak1HeDE2SDZNcDduc3hENHkzaW8wWTVfWjN1QmpodGdYdDRLVXpua0pBUUs0MzVBX3lnOHlkVkJhVGdLNDlESDNRYmNmaDFaamJZVHdJRGhpX25lSkNmcmZ2dWZhZnhja2NwcXVnelJZVjg0Z1Flakd2VGl0MGRwUVdTTGtYYlNFcUYxSXdYaGY5?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Thu, 16 Apr 2026 07:00:00 GMT"
+      },
+      {
+        "name": "Ведомости",
+        "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE1vSUlEOTl2cU5jckxzemNzN2oyNVZaX203N1VWRkpuZXNwYV9sdUNGMTZPTHhiNm5LWFBmdFM0QkFTRjFPczd4VEFlTEZpRzhiakF2ZGh5UU5kamRvbnFRTDE5dG8zOF9HRkk5MDUwVzBWbU9qWEN0MDhIdTJNUQ?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Thu, 16 Apr 2026 07:00:00 GMT"
+      },
+      {
+        "name": "CNews.ru",
+        "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOeU1NOHJNay1uUm9TdlpGcWh4YkNXN3J0clFCT2JrM0t5T3hwTmtTRlJXUWpyeVBYbnltZlB0dnpqLWxhTUxQNW9wQU1LeG5sTjVzT1NNQlFlY0Jpb1REMGhyWG1wSUM0STZXbFFaNndzQ1A1MlVvMFN3RmlmOW4tXw?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Thu, 16 Apr 2026 07:00:00 GMT"
       }
     ],
-    "source_count": 3,
-    "quality_flags": [
-      "unverified_source",
-      "missing_acquirer"
+    "source_count": 6,
+    "matched_coverage": [
+      "VKCO"
     ],
-    "quality_score": 60,
-    "quality_status": "review"
+    "source_name": "RB.RU",
+    "source_url": "https://rb.ru/news/vk-prodal-25-akcij-tochka-banka-sdelku-ocenili-v-212-mlrd-vdvoe-vyshe-iznachalnoj-stoimosti-bumag/",
+    "evidence_label": "unverified",
+    "score": 6,
+    "source_event_id": "c10daba8af8e67d8",
+    "first_seen_at": "2026-06-28T04:28:06+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-4774de17c61c14e4",
@@ -1713,6 +1988,29 @@
     "ev_ebitda": null,
     "instrument": "Equity issuance",
     "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 15,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "Альфа-Банк",
+        "url": "https://alfabank.ru/alfa-investor/posts/t/1238104e-fa34-f111-91c8-0050569ebac3/",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-10"
+      },
+      {
+        "name": "Альфа-Банк",
+        "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNbVZjUURpZDgxcTE2VG9jRktkMVZHRmpqSG9jclBJZU45SVNzS3VLTUFyYkhnUWdpQl9pb1Jvd1p5Ni12Z1pFQWlKeDQtUDUxY0xCSVA0dno3ZjJzWnZkS3RLVWh3UjNGWVJXd29rbjFBUjdVUnZwa1RGdk9hQTIxMHBCRzFPdw?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Fri, 10 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1722,24 +2020,8 @@
     "score": 4,
     "source_event_id": "87f81143148d7276",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Альфа-Банк",
-        "url": "https://alfabank.ru/alfa-investor/posts/t/1238104e-fa34-f111-91c8-0050569ebac3/",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-10"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source"
-    ],
-    "quality_score": 15,
-    "quality_status": "rejected"
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-1363a495ec14164a",
@@ -1765,6 +2047,28 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 75,
+    "quality_flags": [
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "https://expert.ru",
+        "url": "https://expert.ru/news/ozon-anonsiroval-razmeshchenie-obligatsiy-na-15-mlrd-rubley",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-03"
+      },
+      {
+        "name": "https://expert.ru",
+        "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNVmVRdkQ4RElHdURKbmVDQU9NbVRmZTd0Z3NiM3JzMjFhZzNzQzVPMnhzNHFER2VsYVAyWEpwVlg4c24zZUozY1ZNUFQxNDMxakR1Q1J0RFhhbkRxbUZYTmgtc3N3UzhsckljT1lpZTFvaXJKeGlTblNyNlNWb2JhOWFSVXZJWjZ0Rmc?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Fri, 03 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1774,23 +2078,8 @@
     "score": 4,
     "source_event_id": "1363a495ec14164a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "https://expert.ru",
-        "url": "https://expert.ru/news/ozon-anonsiroval-razmeshchenie-obligatsiy-na-15-mlrd-rubley",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-03"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "unverified_source"
-    ],
-    "quality_score": 75,
-    "quality_status": "review"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-12855c6275c496fe",
@@ -1816,6 +2105,28 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 75,
+    "quality_flags": [
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "БКС Экспресс",
+        "url": "https://bcs-express.ru/novosti-i-analitika/ozon-planiruet-debiutnoe-razmeshchenie-birzhevykh-obligatsii",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-03"
+      },
+      {
+        "name": "БКС Экспресс",
+        "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNTmtrN3N0YVN0c0NuVnBscUJvbzdVbWZ5OXczRTkySkx1T1hKdWJvZlFWNEFqbkxhRmpXVEVQZUdIcjdOZkNFRnJhX1huRGRmelhla1RRTURfejMzd2FIMU9ZcmQ4REtOWWEyZ3JhLUgwSmI2UDhJM2s4TkNRekY0T3ZtcEJNbUYzNTQzOXRITGxsN1A0N1duQ3FKeE5fTXIxMUVJTlh3?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Fri, 03 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
     "matched_coverage": [
       "OZON"
     ],
@@ -1825,23 +2136,8 @@
     "score": 4,
     "source_event_id": "12855c6275c496fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "БКС Экспресс",
-        "url": "https://bcs-express.ru/novosti-i-analitika/ozon-planiruet-debiutnoe-razmeshchenie-birzhevykh-obligatsii",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-03"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "unverified_source"
-    ],
-    "quality_score": 75,
-    "quality_status": "review"
+    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-d39c99c4c2dfa45c",
@@ -1969,15 +2265,9 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Selectel Newsroom",
-    "source_url": "https://selectel.ru/about/newsroom/news/selectel-razmestil-novyj-vypusk-obligaczij-i-privlek-7-milliardov-rublej-na-razvitie-biznesa/",
-    "evidence_label": "confirmed",
-    "score": 5,
-    "source_event_id": "238a83afad61e805",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
     "sources": [
       {
         "name": "Selectel Newsroom",
@@ -1988,9 +2278,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [],
-    "quality_score": 100,
-    "quality_status": "approved"
+    "matched_coverage": [],
+    "source_name": "Selectel Newsroom",
+    "source_url": "https://selectel.ru/about/newsroom/news/selectel-razmestil-novyj-vypusk-obligaczij-i-privlek-7-milliardov-rublej-na-razvitie-biznesa/",
+    "evidence_label": "confirmed",
+    "score": 5,
+    "source_event_id": "238a83afad61e805",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-251bf0d0b7b600c1",
@@ -1998,7 +2294,7 @@
     "deal_type": "M&A",
     "status": "Confirmed",
     "target_or_issuer": "Not disclosed",
-    "acquirer_or_investor": "SELECTEL",
+    "acquirer_or_investor": "Not disclosed",
     "sector": "Technology",
     "geography": "Not disclosed",
     "headline": "Selectel сообщает о приобретении облачного провайдера Servers.ru Selectel сообщает о приобретении 100% компании ООО «Единая сеть», работающей под брендами Servers.ru, Exepto.ru и Fozzy.ru. Сделка позволит ускорить рост бизнеса и усилить лидерские позиции Selectel на рынке облачных инфраструктурных сервисов.",
@@ -2016,15 +2312,11 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Selectel Newsroom",
-    "source_url": "https://selectel.ru/about/newsroom/news/selectel-soobshchaet-o-priobretenii-oblachnogo-provajdera-servers-ru/",
-    "evidence_label": "confirmed",
-    "score": 7,
-    "source_event_id": "251bf0d0b7b600c1",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "review",
+    "quality_score": 65,
+    "quality_flags": [
+      "missing_both_parties"
+    ],
     "sources": [
       {
         "name": "Selectel Newsroom",
@@ -2035,11 +2327,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [
-      "missing_target"
-    ],
-    "quality_score": 85,
-    "quality_status": "approved"
+    "matched_coverage": [],
+    "source_name": "Selectel Newsroom",
+    "source_url": "https://selectel.ru/about/newsroom/news/selectel-soobshchaet-o-priobretenii-oblachnogo-provajdera-servers-ru/",
+    "evidence_label": "confirmed",
+    "score": 7,
+    "source_event_id": "251bf0d0b7b600c1",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-aa5a93661389a659",
@@ -2065,15 +2361,9 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "целей финансирования инвестиционной программы",
-    "matched_coverage": [],
-    "source_name": "Selectel Newsroom",
-    "source_url": "https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej-2/",
-    "evidence_label": "confirmed",
-    "score": 5,
-    "source_event_id": "aa5a93661389a659",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
     "sources": [
       {
         "name": "Selectel Newsroom",
@@ -2084,9 +2374,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [],
-    "quality_score": 100,
-    "quality_status": "approved"
+    "matched_coverage": [],
+    "source_name": "Selectel Newsroom",
+    "source_url": "https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej-2/",
+    "evidence_label": "confirmed",
+    "score": 5,
+    "source_event_id": "aa5a93661389a659",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-c898acc93d60813b",
@@ -2112,15 +2408,9 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Selectel Newsroom",
-    "source_url": "https://selectel.ru/about/newsroom/news/selectel-na-fone-povyshennogo-sprosa-na-obligaczii-chetvertogo-vypuska-uvelichil-obem-razmeshheniya-do-4-mlrd-rublej/",
-    "evidence_label": "confirmed",
-    "score": 5,
-    "source_event_id": "c898acc93d60813b",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
     "sources": [
       {
         "name": "Selectel Newsroom",
@@ -2131,9 +2421,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [],
-    "quality_score": 100,
-    "quality_status": "approved"
+    "matched_coverage": [],
+    "source_name": "Selectel Newsroom",
+    "source_url": "https://selectel.ru/about/newsroom/news/selectel-na-fone-povyshennogo-sprosa-na-obligaczii-chetvertogo-vypuska-uvelichil-obem-razmeshheniya-do-4-mlrd-rublej/",
+    "evidence_label": "confirmed",
+    "score": 5,
+    "source_event_id": "c898acc93d60813b",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-3b4a4419ab6b81bf",
@@ -2159,15 +2455,9 @@
     "ev_ebitda": null,
     "instrument": "Bonds",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Selectel Newsroom",
-    "source_url": "https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej/",
-    "evidence_label": "confirmed",
-    "score": 5,
-    "source_event_id": "3b4a4419ab6b81bf",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
     "sources": [
       {
         "name": "Selectel Newsroom",
@@ -2178,9 +2468,15 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [],
-    "quality_score": 100,
-    "quality_status": "approved"
+    "matched_coverage": [],
+    "source_name": "Selectel Newsroom",
+    "source_url": "https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej/",
+    "evidence_label": "confirmed",
+    "score": 5,
+    "source_event_id": "3b4a4419ab6b81bf",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-0242cf80b3f97c9c",
@@ -2206,15 +2502,11 @@
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
     "rationale": "Not disclosed",
-    "matched_coverage": [],
-    "source_name": "Selectel Newsroom",
-    "source_url": "https://selectel.ru/about/newsroom/news/investicionnyj-fond-tier-5-priobrel-25-provajdera-it-infrastruktury-selectel/",
-    "evidence_label": "confirmed",
-    "score": 5,
-    "source_event_id": "0242cf80b3f97c9c",
-    "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T11:04:31+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
+    "quality_status": "review",
+    "quality_score": 40,
+    "quality_flags": [
+      "non_transaction_or_technical_notice"
+    ],
     "sources": [
       {
         "name": "Selectel Newsroom",
@@ -2225,10 +2517,14 @@
       }
     ],
     "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice"
-    ],
-    "quality_score": 40,
-    "quality_status": "review"
+    "matched_coverage": [],
+    "source_name": "Selectel Newsroom",
+    "source_url": "https://selectel.ru/about/newsroom/news/investicionnyj-fond-tier-5-priobrel-25-provajdera-it-infrastruktury-selectel/",
+    "evidence_label": "confirmed",
+    "score": 5,
+    "source_event_id": "0242cf80b3f97c9c",
+    "first_seen_at": "2026-06-28T05:10:25+00:00",
+    "last_seen_at": "2026-06-29T13:15:00+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   }
 ]
