@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3571.5,
-      "change_percent": -0.68,
-      "turnover": 2925120553,
-      "updated": "17:44:26",
+      "price": 3609.5,
+      "change_percent": 0.38,
+      "turnover": 4174495320,
+      "updated": "20:16:34",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3444.5,
-      "change_percent": -0.13,
-      "turnover": 1659455832,
-      "updated": "17:44:26",
+      "price": 3457,
+      "change_percent": 0.23,
+      "turnover": 1961083709,
+      "updated": "20:16:33",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 194.85,
-      "change_percent": -0.49,
-      "turnover": 1180072702,
-      "updated": "17:44:27",
+      "price": 196.35,
+      "change_percent": 0.28,
+      "turnover": 1318173311,
+      "updated": "20:16:35",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,7 +56,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -79,7 +79,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -102,7 +102,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -125,7 +125,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -158,13 +158,8 @@
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [
-      "moex-101559",
-      "moex-101561",
-      "moex-101562",
-      "moex-101565"
-    ],
-    "new_signals": 4,
+    "new_event_ids": [],
+    "new_signals": 0,
     "market_moves": [],
     "hypotheses": [
       {
@@ -204,7 +199,7 @@
       {
         "id": "TASK-668323b4fb1d",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -216,7 +211,7 @@
       {
         "id": "TASK-93cbfaf4d779",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -228,7 +223,7 @@
       {
         "id": "TASK-a969f78a0d12",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -240,7 +235,7 @@
       {
         "id": "TASK-0227a971c2b8",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -263,11 +258,11 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "4 новых сигналов с прошлого запуска; 5 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 5 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера"
+        "text": "Новых событий после предыдущего запуска не обнаружено."
       },
       {
         "label": "Рынок",

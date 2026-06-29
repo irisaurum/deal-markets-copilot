@@ -43,7 +43,7 @@
     "score": 7,
     "source_event_id": "moex-101536",
     "first_seen_at": "2026-06-29T10:10:04+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -89,10 +89,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101565",
     "evidence_label": "confirmed",
-    "score": 6,
+    "score": 7,
     "source_event_id": "moex-101565",
     "first_seen_at": "2026-06-29T14:59:28+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -138,10 +138,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101562",
     "evidence_label": "confirmed",
-    "score": 6,
+    "score": 7,
     "source_event_id": "moex-101562",
     "first_seen_at": "2026-06-29T14:59:28+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -187,10 +187,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101561",
     "evidence_label": "confirmed",
-    "score": 6,
+    "score": 7,
     "source_event_id": "moex-101561",
     "first_seen_at": "2026-06-29T14:59:28+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -236,10 +236,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101559",
     "evidence_label": "confirmed",
-    "score": 6,
+    "score": 7,
     "source_event_id": "moex-101559",
     "first_seen_at": "2026-06-29T14:59:28+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -295,7 +295,57 @@
     "score": 3,
     "source_event_id": "884a90d63a74113a",
     "first_seen_at": "2026-06-29T13:14:59+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-b10ff92f48cadefa",
+    "announced_date": "2026-06-29",
+    "deal_type": "ECM",
+    "status": "Reported",
+    "target_or_issuer": "VKCO",
+    "acquirer_or_investor": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Not disclosed",
+    "headline": "Объем IPO и продаж акций в США в 1 полугодии составил рекордные $251 млрд благодаря SpaceX - Финам",
+    "transaction_value": 251000000000.0,
+    "enterprise_value": null,
+    "currency": "USD",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "IPO",
+    "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 67,
+    "quality_flags": [
+      "unverified_source",
+      "aggregator_link"
+    ],
+    "sources": [
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQMUluQnhHVzdTZ2hQMG5XNU9YQzl1bmYySTlyTzllSURESWR5dWZIbXJ1Q2lyWFRpSm5QcjNpazQzeVFlbm9OanNzbzl3bU1ZQnV2ZnpjM3B1eTJuX1lwYlFIa01aRU1YWjFCUmhycUpuQTF1bXQwT1Q2RGJsUzhUT2ZJSmdXTUtTYVZjLW4tWllONS0yQXg1WjJuVER6NVRxUjh1d0l1TTQ0TUZOcTBINlRETEVreHA4ZF8zWTRTWU1vTmdOYWkzMlVqVkJFTDJoX1dFaWdfN04zdE0?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 29 Jun 2026 13:02:20 GMT"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [],
+    "source_name": "Финам",
+    "source_url": "https://www.finam.ru/publications/item/razmeshcheniya-aktsiy-v-ssha-v-1-polugodii-sostavili-rekordnye-251-mlrd-blagodarya-spacex-20260629-1601/",
+    "evidence_label": "unverified",
+    "score": 3,
+    "source_event_id": "b10ff92f48cadefa",
+    "first_seen_at": "2026-06-29T17:31:37+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -398,7 +448,7 @@
     "score": 3,
     "source_event_id": "bfcdac2063ce29e4",
     "first_seen_at": "2026-06-28T15:09:41+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -884,7 +934,7 @@
     "score": 7,
     "source_event_id": "7a721642a53e0f1d",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -934,7 +984,7 @@
     "score": 3,
     "source_event_id": "9092ffd6a36a0a81",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -992,7 +1042,7 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1028,7 +1078,7 @@
     "score": 4,
     "source_event_id": "c0e4b0469b5eb473",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
@@ -1116,7 +1166,7 @@
     "deal_type": "M&A",
     "status": "Closed",
     "target_or_issuer": "Авто.ру",
-    "acquirer_or_investor": "Т-Технологии",
+    "acquirer_or_investor": "Not disclosed",
     "sector": "Technology",
     "geography": "Russia",
     "headline": "Яндекс закрыл сделку по продаже Авто.ру",
@@ -1135,8 +1185,10 @@
     "instrument": "Acquisition / disposal",
     "rationale": "частных инвесторов Яндекса содержит информацию про бизнесы и технологии компании, а также географию присутствия, финансовые результаты, важные новости и многое другое о компании и её рынках",
     "quality_status": "approved",
-    "quality_score": 100,
-    "quality_flags": [],
+    "quality_score": 85,
+    "quality_flags": [
+      "missing_acquirer"
+    ],
     "sources": [
       {
         "name": "Yandex Investor Relations",
@@ -1184,7 +1236,7 @@
     "score": 9,
     "source_event_id": "5eba3b27a4e84dd3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1220,7 +1272,7 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
@@ -1458,7 +1510,7 @@
     "score": 3,
     "source_event_id": "32f044efd41bc454",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1509,7 +1561,7 @@
     "score": 3,
     "source_event_id": "71608263fecb5e53",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1567,7 +1619,7 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1687,7 +1739,7 @@
     "score": 4,
     "source_event_id": "6bc0569f7ac374fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1747,7 +1799,7 @@
     "score": 4,
     "source_event_id": "cc671fa6b14f8f28",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1783,7 +1835,7 @@
     "score": 4,
     "source_event_id": "2d1ef3023240f32a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "sources": [
       {
@@ -1874,7 +1926,7 @@
     "score": 4,
     "source_event_id": "dd21f961f579e55a",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1933,7 +1985,7 @@
     "score": 4,
     "source_event_id": "0bceebeca9933dc3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2138,7 +2190,7 @@
     "score": 6,
     "source_event_id": "c10daba8af8e67d8",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2248,7 +2300,7 @@
     "score": 4,
     "source_event_id": "87f81143148d7276",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2306,7 +2358,7 @@
     "score": 4,
     "source_event_id": "1363a495ec14164a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2364,7 +2416,7 @@
     "score": 4,
     "source_event_id": "12855c6275c496fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2513,7 +2565,7 @@
     "score": 5,
     "source_event_id": "238a83afad61e805",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2562,7 +2614,7 @@
     "score": 7,
     "source_event_id": "251bf0d0b7b600c1",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2609,7 +2661,7 @@
     "score": 5,
     "source_event_id": "aa5a93661389a659",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2656,7 +2708,7 @@
     "score": 5,
     "source_event_id": "c898acc93d60813b",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2703,7 +2755,7 @@
     "score": 5,
     "source_event_id": "3b4a4419ab6b81bf",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2752,7 +2804,7 @@
     "score": 5,
     "source_event_id": "0242cf80b3f97c9c",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-29T14:59:28+00:00",
+    "last_seen_at": "2026-06-29T17:31:37+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   }
 ]
