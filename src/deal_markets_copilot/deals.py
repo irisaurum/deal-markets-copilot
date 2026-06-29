@@ -13,11 +13,14 @@ from .models import ClassifiedEvent, DealRecord
 
 DEAL_CATEGORIES = {"M&A", "ECM", "DCM"}
 CSV_FIELDS = [
-    "deal_id", "announced_date", "deal_type", "status", "target_or_issuer",
-    "acquirer_or_investor", "sector", "geography", "transaction_value",
+    "deal_id", "announced_date", "deal_type", "record_kind", "status", "target_or_issuer",
+    "acquirer_or_investor", "seller", "sector", "geography", "transaction_value",
     "enterprise_value", "currency", "stake_percent", "payment_form", "advisors",
     "revenue_ltm", "ebitda_ltm", "financials_as_of", "financials_currency",
-    "ev_revenue", "ev_ebitda", "instrument", "rationale", "quality_status",
+    "ev_revenue", "ev_ebitda", "instrument", "security_code", "isin", "coupon_rate",
+    "coupon_type", "yield_rate", "maturity_date", "tenor", "issue_price",
+    "price_per_share", "discount_percent", "bookrunners", "free_float_percent",
+    "rationale", "quality_status",
     "quality_score", "quality_flags", "source_count", "sources", "score",
     "evidence_label", "matched_coverage", "source_name", "source_url",
     "headline", "first_seen_at", "last_seen_at", "notes",
@@ -30,17 +33,36 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
     event = item.event
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
     text = f"{event.title}. {event.summary}".strip()
+    headline = _clean_headline(event.title)
     covered_company = _covered_company(item, coverage)
     enterprise_value, ev_currency = _extract_labeled_amount(text, ("enterprise value", "ev", "стоимость предприятия"))
-    value, currency = (event.amount, event.currency or "") if event.amount else _extract_amount(text)
+    if event.amount:
+        value, currency = event.amount, event.currency or ""
+    elif item.category == "DCM":
+        value, currency = _extract_dcm_volume(text)
+        if value is None:
+            value, currency = _extract_amount(text)
+    else:
+        value, currency = _extract_amount(text)
     if item.category == "M&A" and enterprise_value == value and not _has_explicit_transaction_value(text):
         value, currency = None, ""
     revenue, revenue_currency = _extract_labeled_amount(text, ("revenue", "выручка"))
     ebitda, ebitda_currency = _extract_labeled_amount(text, ("ebitda", "ебитда"))
     financials_currency = revenue_currency or ebitda_currency or ""
     aligned_currency = bool(enterprise_value and financials_currency and ev_currency == financials_currency)
-    target, acquirer = _extract_parties(item.category, event.title, covered_company)
+    target, acquirer = _extract_parties(item.category, headline, covered_company)
+    if item.category in {"DCM", "ECM"} and _is_blank(target):
+        target = _extract_issuer(text)
+    seller = _extract_seller(headline) if item.category == "M&A" else "Not applicable"
     status = _status(text, item.category, item.evidence_label)
+    record_kind = _record_kind({
+        "headline": headline,
+        "summary": event.summary,
+        "deal_type": item.category,
+        "status": status,
+        "evidence_label": item.evidence_label,
+        "source_type": event.source_type,
+    })
     if status == "Denied":
         value, currency = None, ""
         enterprise_value, ev_currency = None, ""
@@ -53,8 +75,9 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
     }
     quality_score, quality_status, quality_flags = _quality_gate({
         "deal_type": item.category,
+        "record_kind": record_kind,
         "status": status,
-        "headline": event.title.strip(),
+        "headline": headline,
         "summary": event.summary,
         "target_or_issuer": target,
         "acquirer_or_investor": acquirer,
@@ -68,16 +91,18 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         deal_id=f"DL-{event.event_id}",
         announced_date=_iso_date(event.published_at),
         deal_type=item.category,
+        record_kind=record_kind,
         status=status,
         target_or_issuer=target,
         acquirer_or_investor=acquirer,
+        seller=seller,
         sector=_sector(text),
         geography="Russia" if re.search(r"\b(руб|росси|москва|moex)\w*", text, re.I) else "Not disclosed",
-        headline=event.title.strip(),
+        headline=headline,
         transaction_value=float(value) if value is not None else None,
         enterprise_value=enterprise_value,
-        currency=(currency or "Not disclosed").upper(),
-        stake_percent=_extract_stake(text),
+        currency=_normalize_currency(currency),
+        stake_percent=_extract_stake(text) if item.category == "M&A" else None,
         payment_form=_payment_form(text) if item.category == "M&A" else "Not applicable",
         advisors=_advisors(text),
         revenue_ltm=revenue,
@@ -87,6 +112,18 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         ev_revenue=(enterprise_value / revenue) if aligned_currency and revenue and revenue > 0 else None,
         ev_ebitda=(enterprise_value / ebitda) if aligned_currency and ebitda and ebitda > 0 else None,
         instrument=_instrument(text, item.category),
+        security_code=_security_code(text),
+        isin=_isin(text),
+        coupon_rate=_coupon_rate(text),
+        coupon_type=_coupon_type(text),
+        yield_rate=_yield_rate(text),
+        maturity_date=_maturity_date(text),
+        tenor=_tenor(text),
+        issue_price=_issue_price(text) if item.category == "DCM" else None,
+        price_per_share=_price_per_share(text) if item.category == "ECM" else None,
+        discount_percent=_discount_percent(text) if item.category == "ECM" else None,
+        bookrunners=_bookrunners(text) if item.category == "ECM" else "Not applicable",
+        free_float_percent=_free_float(text) if item.category == "ECM" else None,
         rationale=_rationale(text),
         quality_status=quality_status,
         quality_score=quality_score,
@@ -169,6 +206,8 @@ def select_key_deals(rows: list[dict], limit: int = 10) -> list[dict]:
     """Return material transaction records, excluding technical exchange notices."""
     selected: list[dict] = []
     for row in rows:
+        if row.get("record_kind") not in {None, "deal"}:
+            continue
         if row.get("quality_status") == "rejected":
             continue
         category = row.get("deal_type")
@@ -199,6 +238,22 @@ def select_key_deals(rows: list[dict], limit: int = 10) -> list[dict]:
     return clusters[:limit]
 
 
+def select_deal_buckets(rows: list[dict], limit: int = 10) -> dict[str, list[dict]]:
+    """Build mutually exclusive UI streams with transactions separated from monitoring items."""
+    migrated = [_migrate_row(row) for row in rows]
+    deals = select_key_deals(migrated, limit)
+    result = {"deal": deals, "watchlist": [], "denial": [], "technical_filing": []}
+    for kind in ("watchlist", "denial", "technical_filing"):
+        candidates = [row for row in migrated if row.get("record_kind") == kind and row.get("quality_status") != "rejected"]
+        candidates.sort(key=lambda row: (
+            row.get("announced_date", ""),
+            row.get("quality_score", 0),
+            row.get("score", 0),
+        ), reverse=True)
+        result[kind] = candidates[:limit]
+    return result
+
+
 def _is_material_transaction(row: dict) -> bool:
     title = str(row.get("headline") or "").lower()
     category = row.get("deal_type")
@@ -209,12 +264,44 @@ def _is_material_transaction(row: dict) -> bool:
     if category == "DCM":
         if re.search(r"погашен|погашения|перечислил.+погаш|заработай", title):
             return False
-        if re.search(r"выкуп|разбор", title) and not re.search(r"размещ|анонс|план", title):
+        if re.search(r"разбор|чего ждать|инвестор\w*.+(?:вложен|вклад)|как заработать", title):
+            return False
+        if re.search(r"выкуп", title) and not re.search(r"размещ|анонс|план", title):
             return False
         return bool(re.search(r"размещ|выпуск|облигац|bond|notes", title))
     if category == "ECM":
         return bool(re.search(r"\bipo\b|\bspo\b|размещ|выкуп акций|buyback|эмисси", title))
     return False
+
+
+def _record_kind(row: dict) -> str:
+    text = f"{row.get('headline','')}. {row.get('summary','')}".lower()
+    if row.get("status") == "Denied":
+        return "denial"
+    if _is_technical_filing(text, row.get("source_type", "")):
+        return "technical_filing"
+    if row.get("evidence_label") != "confirmed":
+        return "watchlist"
+    if row.get("status") in {"Rumor", "In talks"}:
+        return "watchlist"
+    if row.get("status") == "Reported" and row.get("evidence_label") != "confirmed":
+        return "watchlist"
+    return "deal"
+
+
+def _is_technical_filing(text: str, source_type: str = "") -> bool:
+    patterns = (
+        r"^\s*итоги выпуска биржевых облигаций",
+        r"^\s*о регистрации (?:выпуска|проспекта|изменений)",
+        r"^\s*о порядке (?:сбора заявок|приобретения облигаций|заключения сделок)",
+        r"^\s*дополнительные условия проведения торгов",
+        r"^\s*о включении.+список ценных бумаг",
+        r"^\s*о проведении выкупа облигаций",
+        r"^\s*о проведении .{0,80}размещени\w* .{0,80}облигац",
+        r"^\s*о признании выпуск\w* облигац\w* несостоявш",
+        r"^\s*информация о кодах расчетов",
+    )
+    return bool(any(re.search(pattern, text, re.I) for pattern in patterns))
 
 
 def _record_quality(row: dict) -> tuple[int, int, int]:
@@ -280,6 +367,20 @@ def _normalize_headline(value: str) -> str:
     return " ".join(sorted(_headline_tokens(value)))
 
 
+def _clean_headline(value: str) -> str:
+    text = re.sub(r"\s+", " ", str(value or "")).strip()
+    lead = re.match(r"^[\"«]?([A-Za-zА-Яа-яЁё0-9.-]{3,30})", text)
+    if lead and len(text) > 100:
+        repeated = re.search(rf"\s+(?:компания\s+)?{re.escape(lead.group(1))}\s+", text[60:], re.I)
+        if repeated:
+            text = text[:60 + repeated.start()].strip(" .,:;—-")
+    sentence = re.split(r"(?<=[.!?])\s+", text, maxsplit=1)[0]
+    if len(sentence) <= 220:
+        return sentence
+    clipped = sentence[:217].rsplit(" ", 1)[0]
+    return f"{clipped}…"
+
+
 def _amount_has_transaction_context(context: str) -> bool:
     return bool(re.search(
         r"стоимост\w*\s+сделк|цена\s+сделк|сумм\w*\s+сделк|deal value|transaction value|consideration|"
@@ -293,10 +394,14 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     category = row.get("deal_type")
     score = 100
     flags: list[str] = []
+    record_kind = row.get("record_kind") or _record_kind(row)
 
     material_probe = dict(row)
     material_probe["headline"] = row.get("headline", "")
-    if not _is_material_transaction(material_probe):
+    if record_kind == "technical_filing":
+        score -= 40
+        flags.append("technical_filing")
+    elif not _is_material_transaction(material_probe):
         score -= 60
         flags.append("non_transaction_or_technical_notice")
     if row.get("evidence_label") != "confirmed":
@@ -338,16 +443,33 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     if row.get("status") == "Denied":
         score -= 10
         flags.append("denied_or_disputed")
+    if row.get("status") == "In talks":
+        score -= 5
+        flags.append("talks_only")
+    if row.get("currency") not in {None, "", "Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF"}:
+        score -= 25
+        flags.append("invalid_currency")
 
     score = max(0, min(100, score))
     status = "rejected" if score < 40 else "review" if score < 75 else "approved"
+    blocking_flags = {
+        "technical_filing", "missing_both_parties", "missing_target", "missing_acquirer",
+        "missing_issuer", "price_target_context", "invalid_currency",
+    }
     if row.get("evidence_label") != "confirmed" and status == "approved":
         status = "review"
+    if record_kind != "deal" and status == "approved":
+        status = "review"
+    if blocking_flags.intersection(flags) and status == "approved":
+        status = "review"
+    if record_kind == "technical_filing" and row.get("evidence_label") == "confirmed":
+        score, status = max(score, 40), "review"
     return score, status, flags
 
 
 def _migrate_row(source: dict) -> dict:
     row = dict(source)
+    row["currency"] = _normalize_currency(row.get("currency"))
     legacy_status = row.get("status")
     if legacy_status == "Completed":
         row["status"] = "Closed"
@@ -358,7 +480,7 @@ def _migrate_row(source: dict) -> dict:
 
     headline = str(row.get("headline") or "")
     inferred_status = _status(headline, row.get("deal_type", ""), row.get("evidence_label", "unverified"))
-    if inferred_status in {"Denied", "Closed", "Issued", "In talks", "Announced"} or row.get("status") not in {"Denied", "Closed", "Issued", "In talks", "Announced", "Confirmed", "Reported", "Rumor"} or (row.get("status") == "Rumor" and inferred_status == "Reported"):
+    if inferred_status in {"Denied", "Closed", "Issued", "In talks", "Rumor", "Announced"} or row.get("status") not in {"Denied", "Closed", "Issued", "In talks", "Announced", "Confirmed", "Reported", "Rumor"}:
         row["status"] = inferred_status
     if row.get("status") == "Denied":
         row["transaction_value"] = None
@@ -382,8 +504,39 @@ def _migrate_row(source: dict) -> dict:
             row["acquirer_or_investor"] = parsed_acquirer
         elif re.search(r"продал|продаж|sold|divest", headline, re.I):
             row["acquirer_or_investor"] = "Not disclosed"
+        row["seller"] = _extract_seller(headline)
+        row["stake_percent"] = _extract_stake(headline) if row.get("stake_percent") is None else row.get("stake_percent")
+    else:
+        row["seller"] = "Not applicable"
+        row["stake_percent"] = None
+        parsed_issuer, _ = _extract_parties(row.get("deal_type", ""), headline, "Not disclosed")
+        current_issuer = row.get("target_or_issuer")
+        if not _is_blank(parsed_issuer) and (_is_blank(current_issuer) or _is_generic_party(current_issuer)):
+            row["target_or_issuer"] = parsed_issuer
+        if row.get("deal_type") == "DCM":
+            parsed_value, parsed_currency = _extract_dcm_volume(headline)
+            if parsed_value is None:
+                parsed_value, parsed_currency = _extract_amount(headline)
+            if parsed_value is not None:
+                row["transaction_value"] = parsed_value
+                row["currency"] = _normalize_currency(parsed_currency)
     if _is_generic_party(row.get("target_or_issuer")):
         row["target_or_issuer"] = "Not disclosed"
+    row["headline"] = _clean_headline(headline)
+
+    row["record_kind"] = _record_kind(row)
+    row.setdefault("security_code", _security_code(headline))
+    row.setdefault("isin", _isin(headline))
+    row.setdefault("coupon_rate", _coupon_rate(headline))
+    row.setdefault("coupon_type", _coupon_type(headline))
+    row.setdefault("yield_rate", _yield_rate(headline))
+    row.setdefault("maturity_date", _maturity_date(headline))
+    row.setdefault("tenor", _tenor(headline))
+    row.setdefault("issue_price", _issue_price(headline) if row.get("deal_type") == "DCM" else None)
+    row.setdefault("price_per_share", _price_per_share(headline) if row.get("deal_type") == "ECM" else None)
+    row.setdefault("discount_percent", _discount_percent(headline) if row.get("deal_type") == "ECM" else None)
+    row.setdefault("bookrunners", _bookrunners(headline) if row.get("deal_type") == "ECM" else "Not applicable")
+    row.setdefault("free_float_percent", _free_float(headline) if row.get("deal_type") == "ECM" else None)
 
     row["sources"] = _merge_sources(row.get("sources", []), [{
         "name": row.get("source_name", "Unknown source"),
@@ -400,10 +553,15 @@ def _migrate_row(source: dict) -> dict:
 
 
 def _is_generic_party(value) -> bool:
-    return bool(re.match(
-        r"^(?:о регистрации|о порядке|о проведении|дополнительные условия|информация|сообщение|уведомление)",
-        str(value or "").strip(), re.I,
-    ))
+    text = str(value or "").strip()
+    return bool(
+        len(text) > 100
+        or re.match(
+            r"^(?:и\s+привлек|итоги выпуска|о регистрации|о порядке|о проведении|о включении|дополнительные условия|информация|сообщение|уведомление)",
+            text, re.I,
+        )
+        or re.search(r"\s(?:разместил\w*|закрыл\w*\s+книг\w*|привлек\w*)\s", text, re.I)
+    )
 
 
 def _merge_sources(*source_groups: list[dict]) -> list[dict]:
@@ -457,9 +615,11 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
     winner, other = (left, right) if _record_quality(left) >= _record_quality(right) else (right, left)
     merged = dict(winner)
     for field in (
-        "target_or_issuer", "acquirer_or_investor", "transaction_value", "enterprise_value", "currency",
+        "target_or_issuer", "acquirer_or_investor", "seller", "transaction_value", "enterprise_value", "currency",
         "stake_percent", "payment_form", "advisors", "rationale", "revenue_ltm", "ebitda_ltm",
         "financials_as_of", "financials_currency", "ev_revenue", "ev_ebitda", "sector", "geography",
+        "security_code", "isin", "coupon_rate", "coupon_type", "yield_rate", "maturity_date",
+        "tenor", "issue_price", "price_per_share", "discount_percent", "bookrunners", "free_float_percent",
     ):
         if _is_blank(merged.get(field)) or merged.get(field) == "Not applicable":
             if not _is_blank(other.get(field)):
@@ -475,6 +635,7 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
         merged["transaction_value"] = None
         merged["enterprise_value"] = None
         merged["currency"] = "Not disclosed"
+    merged["record_kind"] = _record_kind(merged)
     _apply_primary_source(merged)
     _apply_quality(merged)
     return merged
@@ -501,8 +662,18 @@ def _covered_company(item: ClassifiedEvent, coverage: list[dict]) -> str:
 def _extract_parties(category: str, title: str, covered_company: str) -> tuple[str, str]:
     clean = re.sub(r"\s+[—-]\s+[^—-]+$", "", title).strip()
     if category in {"ECM", "DCM"}:
-        issuer = covered_company if covered_company != "Not disclosed" else _leading_entity(clean)
+        issuer = covered_company if covered_company != "Not disclosed" else _extract_issuer(clean)
+        if _is_blank(issuer):
+            issuer = _leading_entity(clean)
         return issuer, "Not applicable"
+    sale_to_patterns = [
+        r"^(.+?)\s+продал\w*\s+(?:\d+(?:[.,]\d+)?%\s+)?(?:акци\w*|дол\w*|пакет\w*)?\s*(.+?)\s+(?:компании|группе)\s+(.+?)(?:\s+за\s+|$)",
+        r"^(.+?)\s+(?:sold|divested)\s+(?:a\s+)?(?:\d+(?:[.,]\d+)?%\s+)?(?:stake\s+in|shares?\s+of)?\s*(.+?)\s+to\s+(.+?)(?:\s+for\s+|$)",
+    ]
+    for pattern in sale_to_patterns:
+        match = re.search(pattern, clean, re.I)
+        if match:
+            return _clean_party(match.group(2)), _clean_party(match.group(3))
     disposal_patterns = [
         r"^(.+?)\s+закрыл\w*\s+сделк\w*\s+по\s+продаж\w*\s+(.+?)(?:\s+за\s+|:|$)",
         r"^(.+?)\s+(?:продал\w*|sold|divested)\s+(?:свою\s+)?(?:\d+(?:[.,]\d+)?%\s+)?(?:акци\w*|дол\w*|stake\s+in|shares?\s+of)?\s*(?:в\s+)?(.+?)(?:\s+за\s+|:|$)",
@@ -514,6 +685,8 @@ def _extract_parties(category: str, title: str, covered_company: str) -> tuple[s
     contextual_patterns = [
         r"договоренност\w*\s+(.+?)\s+о\s+покупк\w*\s+(?:дол\w*\s+в\s+)?(.+?)(?:\s+[—-]\s+|$)",
         r"^(.+?)\s+(?:стал\w*\s+)?(?:основн\w*\s+)?претендент\w*\s+на\s+покупк\w*\s+(.+?)(?:\s+[—-]\s+|$)",
+        r"^(.+?)\s+(?:может|планирует|намерен\w*)\s+(?:купить|приобрести)\s+(.+?)(?:\s+[—-]\s+|$)",
+        r"^(.+?)\s+опроверг\w*\s+(?:покупк\w*|приобретени\w*)\s+(.+?)(?:\s+[—-]\s+|$)",
     ]
     for pattern in contextual_patterns:
         match = re.search(pattern, clean, re.I)
@@ -531,13 +704,15 @@ def _extract_parties(category: str, title: str, covered_company: str) -> tuple[s
 
 
 def _leading_entity(title: str) -> str:
-    if _is_generic_party(title):
-        return "Not disclosed"
     quoted = re.match(r"^[«\"]([^»\"]+)[»\"]", title)
     if quoted:
         return quoted.group(1).strip()
-    words = re.split(r"\s+(?:размест|выпуст|планир|рассматрива|considers|explores|announces)\w*", title, maxsplit=1, flags=re.I)
-    return _clean_party(words[0]) if words and len(words[0]) <= 80 else "Not disclosed"
+    words = re.split(
+        r"\s+(?:(?:успешно\s+)?закрыл\w*\s+книг\w*|размест\w*|выпуст\w*|планир\w*|рассматрива\w*|considers|explores|announces)",
+        title, maxsplit=1, flags=re.I,
+    )
+    candidate = _clean_party(words[0]) if words and len(words[0]) <= 80 else "Not disclosed"
+    return "Not disclosed" if _is_generic_party(candidate) else candidate
 
 
 def _clean_party(value: str) -> str:
@@ -552,9 +727,87 @@ def _clean_party(value: str) -> str:
     return cleaned or "Not disclosed"
 
 
+def _extract_seller(title: str) -> str:
+    clean = re.sub(r"\s+[—-]\s+[^—-]+$", "", title).strip()
+    patterns = (
+        r"^(.+?)\s+закрыл\w*\s+сделк\w*\s+по\s+продаж\w*\s+",
+        r"^(.+?)\s+(?:продал\w*|sold|divested)\s+",
+        r"\s+у\s+(.+?)(?:\s+за\s+|$)",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, clean, re.I)
+        if match:
+            return _clean_party(match.group(1))
+    return "Not disclosed"
+
+
+def _extract_issuer(text: str) -> str:
+    patterns = (
+        r"наименование эмитента\s+(.+?)\s+наименование ценной бумаги",
+        r"следующих эмитентов\s*:\s*[\"«]?(.+?)[\"»]?\s*\(",
+        r"^\s*выпуск\s+облигаций\s+(.+?)\s+(?:на|объем|объ[её]мом)",
+        r"эмитент(?:ом|а)?\s*[:—-]\s*(.+?)(?:[.;]|\s+серии\s+)",
+        r"облигаци\w*\s+(.+?)\s+серии\s+[A-ZА-Я0-9-]+",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, re.I | re.S)
+        if match:
+            value = re.sub(r"\s+", " ", match.group(1)).strip(" .,:;")
+            if 2 < len(value) <= 180 and not _is_generic_party(value):
+                return value
+    return "Not disclosed"
+
+
+def _parse_number(value: str) -> float:
+    compact = re.sub(r"\s+", "", value).replace(",", ".")
+    return float(compact)
+
+
+def _currency_from_token(value: str) -> str:
+    token = str(value or "").upper()
+    if "CNY" in token or "RMB" in token or "ЮАН" in token:
+        return "CNY"
+    if "$" in token or "USD" in token or "ДОЛЛАР" in token:
+        return "USD"
+    if "€" in token or "EUR" in token or "ЕВРО" in token:
+        return "EUR"
+    if "GBP" in token or "ФУНТ" in token:
+        return "GBP"
+    return "RUB" if re.search(r"RUB|РУБ|₽", token) else "Not disclosed"
+
+
+def _normalize_currency(value) -> str:
+    token = str(value or "").strip()
+    if not token or token.upper() in {"NOT DISCLOSED", "NONE", "N/A"}:
+        return "Not disclosed"
+    normalized = _currency_from_token(token)
+    return normalized if normalized != "Not disclosed" else token.upper()
+
+
+def _extract_dcm_volume(text: str) -> tuple[float | None, str]:
+    match = re.search(
+        r"(?:об[ъь]ем\s+(?:размещенн\w+\s+биржев\w+\s+облигац\w+(?:\s+по\s+номинальн\w+\s+стоимост\w+)?|размещени\w*|выпуск\w*)|"
+        r"общ(?:ая|ую)\s+сумм\w*|issue\s+size|offering\s+size)"
+        r"[^\d$€₽]{0,100}((?:\d[\d\s]*)(?:[.,]\d+)?)\s*"
+        r"(трлн|trillion|млрд|billion|млн|million)?\s*"
+        r"(CNY|RMB|USD|EUR|RUB|юан\w*|руб\w*|доллар\w*|евро|₽|\$|€)?",
+        text, re.I,
+    )
+    if not match:
+        return None, ""
+    number = _parse_number(match.group(1))
+    unit = (match.group(2) or "").lower()
+    multiplier = 1_000_000_000_000 if unit in {"трлн", "trillion"} else 1_000_000_000 if unit in {"млрд", "billion"} else 1_000_000 if unit in {"млн", "million"} else 1
+    if multiplier == 1 and number < 1_000_000:
+        return None, ""
+    currency_token = match.group(3) or text[match.end():match.end() + 180]
+    currency = _currency_from_token(currency_token)
+    return number * multiplier, currency
+
+
 def _extract_amount(text: str) -> tuple[float | None, str]:
     pattern = re.compile(
-        r"(?:(USD|EUR|RUB|\$|€|₽)\s*)?(\d+(?:[.,]\d+)?)\s*(трлн|trillion|млрд|billion|млн|million)?\s*(руб(?:лей|ля|\.)?|rub|usd|доллар\w*|eur|евро|₽|\$|€)?",
+        r"(?:(CNY|RMB|USD|EUR|RUB|\$|€|₽)\s*)?(\d+(?:[.,]\d+)?)\s*(трлн|trillion|млрд|billion|млн|million)?\s*(юан\w*|cny|rmb|руб(?:лей|ля|\.)?|rub|usd|доллар\w*|eur|евро|₽|\$|€)?",
         re.I,
     )
     for match in pattern.finditer(text):
@@ -571,7 +824,7 @@ def _extract_amount(text: str) -> tuple[float | None, str]:
         if multiplier == 1 and number < 1_000_000 and not _amount_has_transaction_context(context):
             continue
         token = f"{prefix} {suffix}"
-        currency = "USD" if "$" in token or "USD" in token or "доллар" in token else "EUR" if "€" in token or "EUR" in token or "евро" in token else "RUB"
+        currency = _currency_from_token(token)
         return number * multiplier, currency
     return None, ""
 
@@ -603,8 +856,8 @@ def _has_explicit_transaction_value(text: str) -> bool:
 
 def _payment_form(text: str) -> str:
     lowered = text.lower()
-    cash = bool(re.search(r"\b(cash|денежн\w*\s+средств|за\s+наличн)\b", lowered))
-    shares = bool(re.search(r"\b(shares?|stock|акци\w*|обмен\w*\s+акци)\b", lowered))
+    cash = bool(re.search(r"(?:consideration|оплат\w*|расчет\w*)[^.;]{0,60}\bcash\b|денежн\w*\s+средств|за\s+наличн", lowered))
+    shares = bool(re.search(r"(?:consideration|оплат\w*|расчет\w*)[^.;]{0,60}\b(?:shares?|stock)\b|обмен\w*\s+акци|оплат\w*\s+акци", lowered))
     if cash and shares:
         return "Cash and shares"
     if cash:
@@ -621,6 +874,89 @@ def _advisors(text: str) -> str:
         re.I,
     )
     return _clean_party(match.group(1))[:180] if match else "Not disclosed"
+
+
+def _security_code(text: str) -> str:
+    match = re.search(
+        r"(?:регистрационн\w*\s+номер(?:\s+выпуска)?(?:\s+биржев\w*\s+облигац\w*)?|registration\s+number)(?:\s*[:№]\s*|\s+)([0-9][A-Z0-9-]{7,39})",
+        text, re.I,
+    )
+    return match.group(1).upper() if match else "Not disclosed"
+
+
+def _isin(text: str) -> str:
+    match = re.search(r"\b([A-Z]{2}[A-Z0-9]{10})\b", text, re.I)
+    return match.group(1).upper() if match else "Not disclosed"
+
+
+def _coupon_rate(text: str) -> float | None:
+    match = re.search(
+        r"(?:ставк\w*\s+(?:первого\s+)?купон\w*|купонн\w*\s+ставк\w*|coupon\s+rate)"
+        r"[^\d]{0,45}(\d{1,2}(?:[.,]\d+)?)\s*%",
+        text, re.I,
+    )
+    return float(match.group(1).replace(",", ".")) if match else None
+
+
+def _coupon_type(text: str) -> str:
+    lowered = text.lower()
+    if re.search(r"переменн\w*\s+купон|ключев\w*\s+ставк\w*.+преми|floating|float rate", lowered):
+        return "Floating"
+    if re.search(r"фиксированн\w*\s+купон|fixed[- ]rate", lowered):
+        return "Fixed"
+    if re.search(r"дисконтн\w*\s+облигац|zero[- ]coupon", lowered):
+        return "Discount"
+    return "Not disclosed"
+
+
+def _yield_rate(text: str) -> float | None:
+    match = re.search(r"(?:доходност\w*|yield)[^\d]{0,35}(\d{1,2}(?:[.,]\d+)?)\s*%", text, re.I)
+    return float(match.group(1).replace(",", ".")) if match else None
+
+
+def _maturity_date(text: str) -> str:
+    match = re.search(
+        r"(?:дата\s+погашения|погашени\w*\s+ожидается|maturity(?:\s+date)?)\s*[:—-]?\s*"
+        r"(\d{1,2}[./-]\d{1,2}[./-]\d{4}|\d{4}-\d{2}-\d{2})",
+        text, re.I,
+    )
+    if not match:
+        return "Not disclosed"
+    value = match.group(1)
+    if re.match(r"^\d{4}-", value):
+        return value
+    parts = re.split(r"[./-]", value)
+    return f"{parts[2]}-{int(parts[1]):02d}-{int(parts[0]):02d}"
+
+
+def _tenor(text: str) -> str:
+    match = re.search(r"(?:срок\s+обращения|сроком\s+на|tenor)[^\d]{0,30}(\d+(?:[.,]\d+)?)\s*(лет|год\w*|месяц\w*|years?|months?)", text, re.I)
+    return f"{match.group(1).replace(',', '.')} {match.group(2)}" if match else "Not disclosed"
+
+
+def _issue_price(text: str) -> float | None:
+    match = re.search(r"(?:цена\s+размещения|фактическ\w*\s+цена\s+размещения|issue\s+price)[^\d]{0,25}(\d+(?:[.,]\d+)?)", text, re.I)
+    return float(match.group(1).replace(",", ".")) if match else None
+
+
+def _price_per_share(text: str) -> float | None:
+    match = re.search(r"(?:цена\s+размещения|цена\s+за\s+акци\w*|offering\s+price|price\s+per\s+share)[^\d]{0,30}(\d+(?:[.,]\d+)?)", text, re.I)
+    return float(match.group(1).replace(",", ".")) if match else None
+
+
+def _discount_percent(text: str) -> float | None:
+    match = re.search(r"(?:дисконт\w*|discount)[^\d]{0,30}(\d+(?:[.,]\d+)?)\s*%", text, re.I)
+    return float(match.group(1).replace(",", ".")) if match else None
+
+
+def _bookrunners(text: str) -> str:
+    match = re.search(r"(?:bookrunners?|букраннер\w*|организатор\w*\s+размещения)\s*(?:выступил[аи]?|were|was|:)?\s*([^.;]+)", text, re.I)
+    return re.sub(r"\s+", " ", match.group(1)).strip()[:180] if match else "Not disclosed"
+
+
+def _free_float(text: str) -> float | None:
+    match = re.search(r"(?:free[- ]float|дол\w*\s+акци\w*\s+в\s+свободн\w*\s+обращени\w*)[^\d]{0,30}(\d+(?:[.,]\d+)?)\s*%", text, re.I)
+    return float(match.group(1).replace(",", ".")) if match else None
 
 
 def _financials_as_of(text: str) -> str:
@@ -652,8 +988,13 @@ def _is_navigation_record(row: dict) -> bool:
 
 
 def _extract_stake(text: str) -> float | None:
-    match = re.search(r"(?:пакет\s+|stake\s+of\s+|покупк\w*\s+)?(\d+(?:[.,]\d+)?)\s*%", text, re.I)
-    return float(match.group(1).replace(",", ".")) if match else None
+    match = re.search(
+        r"(?:дол\w*|пакет\w*|stake(?:\s+of)?|приобрета\w*|покупк\w*)[^\d%]{0,30}(\d+(?:[.,]\d+)?)\s*%|"
+        r"(\d+(?:[.,]\d+)?)\s*%\s*(?:акци\w*|дол\w*|stake|of\s+(?:the\s+)?target)",
+        text, re.I,
+    )
+    value = match.group(1) or match.group(2) if match else None
+    return float(value.replace(",", ".")) if value else None
 
 
 def _status(text: str, category: str, evidence_label: str = "unverified") -> str:
@@ -698,10 +1039,18 @@ def _sector(text: str) -> str:
 
 
 def _rationale(text: str) -> str:
-    match = re.search(r"(?:to|для|чтобы)\s+(.+?)(?:[.;]|$)", text, re.I)
+    patterns = (
+        r"для\s+(?:целей\s+)?((?:рефинансирования|финансирования|инвестиций|развития).+?)(?:[.;]|$)",
+        r"средства\s+(?:будут\s+)?направлены\s+на\s+(.+?)(?:[.;]|$)",
+        r"целью\s+(?:сделки|размещения)\s+является\s+(.+?)(?:[.;]|$)",
+        r"use\s+of\s+proceeds\s*:?\s*(.+?)(?:[.;]|$)",
+        r"to\s+(?:fund|finance|refinance)\s+(.+?)(?:[.;]|$)",
+    )
+    match = next((candidate for pattern in patterns if (candidate := re.search(pattern, text, re.I))), None)
     if not match:
         return "Not disclosed"
-    value = re.split(r"\s+[—-]\s+", match.group(1).strip(), maxsplit=1)[0]
+    value = match.group(1).strip()
+    value = re.split(r"\s+[—-]\s+", value, maxsplit=1)[0]
     if "@" in value or sum(character.isdigit() for character in value) >= 6:
         return "Not disclosed"
     return value[:240]

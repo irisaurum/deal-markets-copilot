@@ -44,9 +44,11 @@ class DealRecord:
     deal_id: str
     announced_date: str
     deal_type: str
+    record_kind: str
     status: str
     target_or_issuer: str
     acquirer_or_investor: str
+    seller: str
     sector: str
     geography: str
     headline: str
@@ -63,6 +65,18 @@ class DealRecord:
     ev_revenue: float | None
     ev_ebitda: float | None
     instrument: str
+    security_code: str
+    isin: str
+    coupon_rate: float | None
+    coupon_type: str
+    yield_rate: float | None
+    maturity_date: str
+    tenor: str
+    issue_price: float | None
+    price_per_share: float | None
+    discount_percent: float | None
+    bookrunners: str
+    free_float_percent: float | None
     rationale: str
     quality_status: str
     quality_score: int

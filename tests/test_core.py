@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, stable_event_id
-from deal_markets_copilot.deals import extract_deal_record, median_multiples, select_key_deals, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import extract_deal_record, median_multiples, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
@@ -342,6 +342,92 @@ class CoreTests(unittest.TestCase):
             {"deal_id": "dcm", "announced_date": "2026-06-26", "deal_type": "DCM", "status": "Announced", "target_or_issuer": "Selectel", "acquirer_or_investor": "Not applicable", "transaction_value": 5_000_000_000, "score": 5, "headline": "Selectel анонсировал размещение облигаций"},
         ]
         self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["ma", "dcm"])
+
+    def test_moex_results_are_structured_filing_not_top_deal(self) -> None:
+        event = Event(
+            "moex-results", "2026-06-29T12:19:22+03:00", "Итоги выпуска биржевых облигаций",
+            'Извещаем об итогах размещения следующих эмитентов: "Газпромбанк" (Акционерное общество). '
+            'Регистрационный номер выпуска биржевых облигаций: 4B02-05-00354-B-006P. '
+            'Объем размещенных биржевых облигаций по номинальной стоимости: 3 930 247 000 руб. '
+            'Доля размещенных облигаций: 78,6%.',
+            "MOEX disclosure", "https://www.moex.com/n1", source_type="official_exchange", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.record_kind, "technical_filing")
+        self.assertEqual(record.target_or_issuer, "Газпромбанк")
+        self.assertEqual(record.transaction_value, 3_930_247_000)
+        self.assertEqual(record.currency, "RUB")
+        self.assertIsNone(record.stake_percent)
+        self.assertEqual(record.quality_status, "review")
+        self.assertEqual(select_key_deals([record.to_dict()]), [])
+
+    def test_dcm_yuan_currency_is_not_converted_to_rubles(self) -> None:
+        event = Event(
+            "yuan-bond", "2026-06-10T10:00:00+03:00",
+            '"Норникель" зафиксировал объем размещения облигаций на уровне 3 млрд юаней', "",
+            "Интерфакс", "https://example.com/yuan",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.transaction_value, 3_000_000_000)
+        self.assertEqual(record.currency, "CNY")
+
+    def test_dcm_card_extracts_coupon_maturity_and_isin(self) -> None:
+        event = Event(
+            "bond-terms", "2026-06-29T10:00:00+03:00",
+            "Selectel разместил облигации объемом 3 млрд рублей",
+            "Купонная ставка 18,5%. Дата погашения 30.06.2029. Срок обращения 3 года. ISIN RU000A10TEST.",
+            "Issuer IR", "https://example.com/bond", source_type="issuer_ir", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.coupon_rate, 18.5)
+        self.assertEqual(record.maturity_date, "2029-06-30")
+        self.assertEqual(record.tenor, "3 года")
+        self.assertEqual(record.isin, "RU000A10TEST")
+
+    def test_ma_card_separates_buyer_target_and_seller(self) -> None:
+        event = Event(
+            "sale-parties", "2026-06-29T10:00:00+03:00",
+            "Yandex продал 25% акций Auto.ru компании T-Tech за 35 млрд рублей", "",
+            "Company release", "https://example.com/sale", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.target_or_issuer, "Auto.ru")
+        self.assertEqual(record.acquirer_or_investor, "T-Tech")
+        self.assertEqual(record.seller, "Yandex")
+        self.assertEqual(record.stake_percent, 25)
+        self.assertEqual(record.payment_form, "Not disclosed")
+
+    def test_ecm_card_extracts_transaction_terms(self) -> None:
+        event = Event(
+            "ecm-terms", "2026-06-29T10:00:00+03:00", "Ozon объявил SPO объемом 20 млрд рублей",
+            "Offering price 3200 RUB per share; discount 5.5%; free float 18%; Bookrunners: VTB Capital and Alfa Bank.",
+            "Issuer IR", "https://example.com/spo", source_type="issuer_ir", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, self.coverage), self.coverage)
+        self.assertEqual(record.price_per_share, 3200)
+        self.assertEqual(record.discount_percent, 5.5)
+        self.assertEqual(record.free_float_percent, 18)
+        self.assertEqual(record.bookrunners, "VTB Capital and Alfa Bank")
+
+    def test_report_separates_deal_monitoring_streams(self) -> None:
+        events = [
+            Event("deal", "2026-06-29T10:00:00+03:00", "Ozon разместил облигации на 5 млрд рублей", "", "IR", "https://example.com/deal", confidence="confirmed"),
+            Event("rumor", "2026-06-29T09:00:00+03:00", "Yandex может купить Ozon", "", "Press", "https://example.com/rumor"),
+            Event("denial", "2026-06-29T08:00:00+03:00", "Yandex опроверг покупку Ozon", "", "Press", "https://example.com/denial"),
+            Event("filing", "2026-06-29T07:00:00+03:00", "О регистрации выпуска биржевых облигаций", "Наименование Эмитента Ozon Наименование ценной бумаги облигации", "MOEX", "https://example.com/filing", source_type="official_exchange", confidence="confirmed"),
+        ]
+        records = [extract_deal_record(classify_event(event, self.coverage), self.coverage) for event in events]
+        buckets = select_deal_buckets([record.to_dict() for record in records])
+        self.assertEqual({key: len(value) for key, value in buckets.items()}, {"deal": 1, "watchlist": 1, "denial": 1, "technical_filing": 1})
+        with tempfile.TemporaryDirectory() as directory:
+            items = [classify_event(event, self.coverage) for event in events]
+            path = build_html_report(items, {}, Path(directory) / "report.html", "live", precedent_transactions=[record.to_dict() for record in records])
+            text = path.read_text(encoding="utf-8")
+            self.assertIn("Подтверждённые сделки", text)
+            self.assertIn("Слухи и переговоры", text)
+            self.assertIn("Опровержения", text)
+            self.assertIn("Technical filings", text)
+            self.assertIn("Купон", text)
 
 
 if __name__ == "__main__":

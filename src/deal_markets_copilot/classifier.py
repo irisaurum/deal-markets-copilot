@@ -16,7 +16,8 @@ CATEGORY_KEYWORDS: dict[str, tuple[str, ...]] = {
     ),
     "ECM": (
         "ipo", "follow-on", "secondary offering", "rights issue", "share placement",
-        "размещен акций", "публичн размещен", "допэмисс", "spо", "buyback",
+        "размещен акций", "размещение акций", "публичн размещен", "допэмисс", "spo", "spо",
+        "offering price", "free float", "buyback",
         "выкуп акций", "дивиденд",
     ),
     "DCM": (
