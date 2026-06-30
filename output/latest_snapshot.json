@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3674.5,
-      "change_percent": 1.11,
-      "turnover": 3513846628,
-      "updated": "17:57:49",
+      "price": 3644.5,
+      "change_percent": 0.29,
+      "turnover": 3947572043,
+      "updated": "19:47:32",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3402,
-      "change_percent": -2.38,
-      "turnover": 2335564970,
-      "updated": "17:57:50",
+      "price": 3430,
+      "change_percent": -1.58,
+      "turnover": 2608144384,
+      "updated": "19:47:35",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 191,
-      "change_percent": -3.19,
-      "turnover": 734288002,
-      "updated": "17:57:51",
+      "price": 190.85,
+      "change_percent": -3.27,
+      "turnover": 821752122,
+      "updated": "19:47:35",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -79,7 +79,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -133,41 +133,53 @@
         "YDEX"
       ],
       "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "98cc1ca454b70046",
+        "published_at": "Tue, 30 Jun 2026 15:49:51 GMT",
+        "title": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON - БКС Экспресс",
+        "summary": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON БКС Экспресс",
+        "source": "БКС Экспресс",
+        "url": "https://bcs-express.ru/profit/post/c04797af-4e2e-4910-8d54-2d182d38008c",
+        "companies": [
+          "OZON"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "OZON"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [
-      "moex-101632",
-      "moex-101636",
-      "moex-101641",
-      "moex-101644"
+      "98cc1ca454b70046"
     ],
-    "new_signals": 4,
+    "new_signals": 1,
     "market_moves": [
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 191,
-        "change_percent": -3.19,
-        "turnover": 734288002,
-        "updated": "17:57:51",
+        "price": 190.85,
+        "change_percent": -3.27,
+        "turnover": 821752122,
+        "updated": "19:47:35",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
         "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
-      },
-      {
-        "ticker": "OZON",
-        "company": "Ozon",
-        "price": 3402,
-        "change_percent": -2.38,
-        "turnover": 2335564970,
-        "updated": "17:57:50",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
       }
     ],
     "hypotheses": [
@@ -208,7 +220,7 @@
       {
         "id": "TASK-f368beb3413e",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "YDEX",
@@ -218,9 +230,21 @@
         "hypothesis_ids": []
       },
       {
+        "id": "TASK-04dff4411325",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101641",
+        "source_title": "О проведении 01 июля 2026 года размещения биржевых облигаций серии 006Р-05Р (Дополнительный выпуск № 6) \"Газпромбанк\" (АО)",
+        "hypothesis_ids": []
+      },
+      {
         "id": "TASK-cc4f6a9a138c",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -232,7 +256,7 @@
       {
         "id": "TASK-46f6625006c2",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -242,34 +266,22 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-04dff4411325",
-        "priority": "P1",
-        "state": "new",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101641",
-        "source_title": "О проведении 01 июля 2026 года размещения биржевых облигаций серии 006Р-05Р (Дополнительный выпуск № 6) \"Газпромбанк\" (АО)",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-566158f8fbf9",
+        "id": "TASK-db9fc1c07b25",
         "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения OZON (-2.38%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
+        "state": "new",
+        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+        "deliverable": "Transaction snapshot + precedent transactions",
         "coverage": "OZON",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "source_title": "MOEX quote for OZON",
+        "category": "M&A",
+        "source_url": "https://bcs-express.ru/profit/post/c04797af-4e2e-4910-8d54-2d182d38008c",
+        "source_title": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON - БКС Экспресс",
         "hypothesis_ids": []
       },
       {
         "id": "TASK-02bdb3153843",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-3.19%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-3.27%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -279,15 +291,15 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "4 новых сигналов с прошлого запуска; 6 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "1 новых сигналов с прошлого запуска; 6 действий в очереди; 0 гипотез требуют внимания.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "О порядке сбора заявок и заключения сделок при размещении облигаций серии ИОС-YDEX-BNR-1Y-001Р-808R ПАО \"Сбербанк России\" с 1 июля 2026 года"
+        "text": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON - БКС Экспресс"
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -3.19% к предыдущему закрытию."
+        "text": "VKCO: -3.27% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
