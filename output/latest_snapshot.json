@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3636,
-      "change_percent": 0.06,
-      "turnover": 793778175,
-      "updated": "11:28:14",
+      "price": 3707.5,
+      "change_percent": 2.02,
+      "turnover": 1314390746,
+      "updated": "12:25:15",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3455.5,
-      "change_percent": -0.85,
-      "turnover": 380180311,
-      "updated": "11:28:15",
+      "price": 3524,
+      "change_percent": 1.12,
+      "turnover": 650545841,
+      "updated": "12:24:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 195.3,
-      "change_percent": -1.01,
-      "turnover": 212937794,
-      "updated": "11:28:15",
+      "price": 199.1,
+      "change_percent": 0.91,
+      "turnover": 306488063,
+      "updated": "12:25:16",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -131,36 +131,26 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101536",
-        "published_at": "2026-06-29 12:19:22",
-        "title": "Итоги выпуска биржевых облигаций",
-        "summary": "Итоги выпуска биржевых облигаций 2026-06-29 12:19:22 Извещаем об итогах размещения биржевых облигаций следующих эмитентов: \"Газпромбанк\" (Акционерное общество) (Место нахождения эмитента биржевых облигаций: Российская Федерация, г. Москва): 1.1 Регистрационный номер выпуска биржевых облигаций: 4B02-05-00354-B-006P (Дополнительный выпуск № 5) от 30.03.2026 года. Номинальная стоимость биржевых облигаций: 1 000 (Одна тысяча) руб. каждая. Объем размещенных биржевых облигаций по номинальной стоимости: 3 930 247 000 (Три миллиарда девятьсот тридцать миллионов двести сорок семь тысяч) руб. Дата начала размещения биржевых облигаций: 17.06.2026 г. Дата окончания размещения биржевых облигаций: 26.06.2026 г. Фактическая цена размещения биржевых облигаций: 560 руб. Количество размещенных биржевых облигаций: 3 930 247 штук. Доля размещенных и неразмещенных биржевых облигаций: 78,6 %, 21,4 % Общая стоимость имущества, внесенного в оплату за размещенные биржевые облигации, в том числе: денежные средства в валюте Российской Федерации: 2 200 938 320 руб.; денежные средства в иностранной валюте, выраженные в валюте Российской Федерации по курсу Банка России на момент внесения: 0 руб.; стоимость иного имущества, выраженная в валюте Российской Федерации: 0 руб. Сделки, признаваемые федеральными законами крупными сделками и сделками, в совершении которых имеется заинтересованность, и которые совершены в процессе размещения ценных бумаг (информация, приведенная в данном абзаце, представлена эмитен",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101536",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [],
+    "market_moves": [
+      {
+        "ticker": "YDEX",
+        "company": "Yandex",
+        "price": 3707.5,
+        "change_percent": 2.02,
+        "turnover": 1314390746,
+        "updated": "12:25:15",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      }
+    ],
     "hypotheses": [
       {
         "id": "H-01",
@@ -245,15 +235,15 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-a5a1ed9796fc",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101536",
-        "source_title": "Итоги выпуска биржевых облигаций",
+        "id": "TASK-28a9f9582d0b",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения YDEX (+2.02%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "YDEX",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "source_title": "MOEX quote for YDEX",
         "hypothesis_ids": []
       }
     ],
@@ -266,7 +256,7 @@
       },
       {
         "label": "Рынок",
-        "text": "Движений выше установленного порога нет."
+        "text": "YDEX: +2.02% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
