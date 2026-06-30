@@ -1,5 +1,257 @@
 [
   {
+    "deal_id": "DL-moex-101632",
+    "announced_date": "2026-06-30",
+    "deal_type": "DCM",
+    "record_kind": "technical_filing",
+    "status": "Confirmed",
+    "target_or_issuer": "Yandex",
+    "acquirer_or_investor": "Not applicable",
+    "seller": "Not applicable",
+    "sector": "Financials",
+    "geography": "Russia",
+    "headline": "О порядке сбора заявок и заключения сделок при размещении облигаций серии ИОС-YDEX-BNR-1Y-001Р-808R ПАО \"Сбербанк России\" с 1 июля 2026 года",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "Not disclosed",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "security_code": "Not disclosed",
+    "isin": "Not disclosed",
+    "coupon_rate": null,
+    "coupon_type": "Not disclosed",
+    "yield_rate": null,
+    "maturity_date": "Not disclosed",
+    "tenor": "Not disclosed",
+    "issue_price": null,
+    "price_per_share": null,
+    "discount_percent": null,
+    "bookrunners": "Not applicable",
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 60,
+    "quality_flags": [
+      "technical_filing"
+    ],
+    "sources": [
+      {
+        "name": "MOEX disclosure",
+        "url": "https://www.moex.com/n101632",
+        "evidence_label": "confirmed",
+        "source_type": "official_exchange",
+        "published_at": "2026-06-30 16:08:51"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [
+      "YDEX"
+    ],
+    "source_name": "MOEX disclosure",
+    "source_url": "https://www.moex.com/n101632",
+    "evidence_label": "confirmed",
+    "score": 9,
+    "source_event_id": "moex-101632",
+    "first_seen_at": "2026-06-30T15:12:52+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-moex-101636",
+    "announced_date": "2026-06-30",
+    "deal_type": "DCM",
+    "record_kind": "deal",
+    "status": "Confirmed",
+    "target_or_issuer": "Министерство финансов Российской Федерации",
+    "acquirer_or_investor": "Not applicable",
+    "seller": "Not applicable",
+    "sector": "Financials",
+    "geography": "Russia",
+    "headline": "О проведении 01 июля 2026 года аукциона по размещению ОФЗ выпусков № 26251RMFS",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "Not disclosed",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "security_code": "26251RMFS",
+    "isin": "SU26251RMFS7",
+    "coupon_rate": null,
+    "coupon_type": "Not disclosed",
+    "yield_rate": null,
+    "maturity_date": "Not disclosed",
+    "tenor": "Not disclosed",
+    "issue_price": null,
+    "price_per_share": null,
+    "discount_percent": null,
+    "bookrunners": "Not applicable",
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
+    "sources": [
+      {
+        "name": "MOEX disclosure",
+        "url": "https://www.moex.com/n101636",
+        "evidence_label": "confirmed",
+        "source_type": "official_exchange",
+        "published_at": "2026-06-30 16:11:15"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [],
+    "source_name": "MOEX disclosure",
+    "source_url": "https://www.moex.com/n101636",
+    "evidence_label": "confirmed",
+    "score": 7,
+    "source_event_id": "moex-101636",
+    "first_seen_at": "2026-06-30T15:12:52+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-moex-101644",
+    "announced_date": "2026-06-30",
+    "deal_type": "DCM",
+    "record_kind": "technical_filing",
+    "status": "Confirmed",
+    "target_or_issuer": "Банк ВТБ",
+    "acquirer_or_investor": "Not applicable",
+    "seller": "Not applicable",
+    "sector": "Financials",
+    "geography": "Russia",
+    "headline": "Итоги выпуска биржевых облигаций",
+    "transaction_value": 8520970000.0,
+    "enterprise_value": null,
+    "currency": "RUB",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "security_code": "4B02-1232-01000-B-005P",
+    "isin": "Not disclosed",
+    "coupon_rate": null,
+    "coupon_type": "Not disclosed",
+    "yield_rate": null,
+    "maturity_date": "Not disclosed",
+    "tenor": "Not disclosed",
+    "issue_price": 999.627,
+    "price_per_share": null,
+    "discount_percent": null,
+    "bookrunners": "Not applicable",
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 60,
+    "quality_flags": [
+      "technical_filing"
+    ],
+    "sources": [
+      {
+        "name": "MOEX disclosure",
+        "url": "https://www.moex.com/n101644",
+        "evidence_label": "confirmed",
+        "source_type": "official_exchange",
+        "published_at": "2026-06-30 18:04:10"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [],
+    "source_name": "MOEX disclosure",
+    "source_url": "https://www.moex.com/n101644",
+    "evidence_label": "confirmed",
+    "score": 6,
+    "source_event_id": "moex-101644",
+    "first_seen_at": "2026-06-30T15:12:52+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
+    "deal_id": "DL-moex-101641",
+    "announced_date": "2026-06-30",
+    "deal_type": "DCM",
+    "record_kind": "technical_filing",
+    "status": "Confirmed",
+    "target_or_issuer": "\"Газпромбанк\" (Акционерное общество)",
+    "acquirer_or_investor": "Not applicable",
+    "seller": "Not applicable",
+    "sector": "Financials",
+    "geography": "Russia",
+    "headline": "О проведении 01 июля 2026 года размещения биржевых облигаций серии 006Р-05Р (Дополнительный выпуск № 6) \"Газпромбанк\" (АО)",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "Not disclosed",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "security_code": "4B02-05-00354-B-006P",
+    "isin": "RU000A10EH76",
+    "coupon_rate": null,
+    "coupon_type": "Not disclosed",
+    "yield_rate": null,
+    "maturity_date": "Not disclosed",
+    "tenor": "Not disclosed",
+    "issue_price": null,
+    "price_per_share": null,
+    "discount_percent": null,
+    "bookrunners": "Not applicable",
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 60,
+    "quality_flags": [
+      "technical_filing"
+    ],
+    "sources": [
+      {
+        "name": "MOEX disclosure",
+        "url": "https://www.moex.com/n101641",
+        "evidence_label": "confirmed",
+        "source_type": "official_exchange",
+        "published_at": "2026-06-30 17:58:14"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [],
+    "source_name": "MOEX disclosure",
+    "source_url": "https://www.moex.com/n101641",
+    "evidence_label": "confirmed",
+    "score": 6,
+    "source_event_id": "moex-101641",
+    "first_seen_at": "2026-06-30T15:12:52+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
     "deal_id": "DL-c76896181d89cde6",
     "announced_date": "2026-06-30",
     "deal_type": "DCM",
@@ -38,12 +290,18 @@
     "free_float_percent": null,
     "rationale": "Not disclosed",
     "quality_status": "review",
-    "quality_score": 67,
+    "quality_score": 75,
     "quality_flags": [
-      "unverified_source",
-      "aggregator_link"
+      "unverified_source"
     ],
     "sources": [
+      {
+        "name": "БКС Экспресс",
+        "url": "https://bcs-express.ru/novosti-i-analitika/vush-zavershil-pervyi-etap-razmeshcheniia-obligatsii",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-06-30"
+      },
       {
         "name": "БКС Экспресс",
         "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNRV9jMHp5WjVNUWp0Wk0ydlNWT0NhcXVqaldIcVNJbXBBaTBWcW9nTUo5ZnlleF9WOFUxUmVqUGlfNlVObGVmTHNMNVlGenZEUXdmSE1Xa3RDWkpwXy1tZjdyXzdFbUw1SDdpQ2lQOF80Q0pFNmZmVjh1Q2xsU0NoX3VZUjVCSGFjNWZkeGdOSlVoYzFHOWtFeXptSQ?oc=5",
@@ -52,7 +310,7 @@
         "published_at": "Tue, 30 Jun 2026 08:16:35 GMT"
       }
     ],
-    "source_count": 1,
+    "source_count": 2,
     "matched_coverage": [],
     "source_name": "БКС Экспресс",
     "source_url": "https://bcs-express.ru/novosti-i-analitika/vush-zavershil-pervyi-etap-razmeshcheniia-obligatsii",
@@ -60,7 +318,7 @@
     "score": 3,
     "source_event_id": "c76896181d89cde6",
     "first_seen_at": "2026-06-30T12:11:22+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1278,7 +1536,7 @@
     "score": 7,
     "source_event_id": "7a721642a53e0f1d",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1342,7 +1600,7 @@
     "score": 3,
     "source_event_id": "9092ffd6a36a0a81",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1415,7 +1673,7 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1551,7 +1809,7 @@
     "score": 4,
     "source_event_id": "c0e4b0469b5eb473",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1644,7 +1902,7 @@
     "score": 9,
     "source_event_id": "5eba3b27a4e84dd3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1717,7 +1975,7 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1996,7 +2254,7 @@
     "score": 3,
     "source_event_id": "32f044efd41bc454",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2133,7 +2391,7 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2281,7 +2539,7 @@
     "score": 4,
     "source_event_id": "6bc0569f7ac374fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2355,7 +2613,7 @@
     "score": 4,
     "source_event_id": "cc671fa6b14f8f28",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2443,7 +2701,7 @@
     "score": 4,
     "source_event_id": "2d1ef3023240f32a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2517,7 +2775,7 @@
     "score": 4,
     "source_event_id": "dd21f961f579e55a",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2590,7 +2848,7 @@
     "score": 4,
     "source_event_id": "0bceebeca9933dc3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2837,16 +3095,18 @@
     "score": 6,
     "source_event_id": "c10daba8af8e67d8",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-4774de17c61c14e4",
     "announced_date": "2026-04-10",
     "deal_type": "DCM",
+    "record_kind": "watchlist",
     "status": "Reported",
     "target_or_issuer": "VK",
     "acquirer_or_investor": "Not applicable",
+    "seller": "Not applicable",
     "sector": "Not classified",
     "geography": "Not disclosed",
     "headline": "Двойное размещение облигаций VK.",
@@ -2863,35 +3123,6 @@
     "ev_revenue": null,
     "ev_ebitda": null,
     "instrument": "Bonds",
-    "rationale": "Not disclosed",
-    "matched_coverage": [
-      "VKCO"
-    ],
-    "source_name": "Финам",
-    "source_url": "https://www.finam.ru/publications/item/dvoynoe-razmeshchenie-obligatsiy-vk-chego-zhdat-chastnym-investoram-20260410-1829/",
-    "evidence_label": "unverified",
-    "score": 4,
-    "source_event_id": "4774de17c61c14e4",
-    "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-28T05:08:15+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Финам",
-        "url": "https://www.finam.ru/publications/item/dvoynoe-razmeshchenie-obligatsiy-vk-chego-zhdat-chastnym-investoram-20260410-1829/",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-04-10"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "unverified_source"
-    ],
-    "quality_score": 75,
-    "quality_status": "review",
-    "seller": "Not applicable",
-    "record_kind": "watchlist",
     "security_code": "Not disclosed",
     "isin": "Not disclosed",
     "coupon_rate": null,
@@ -2903,7 +3134,41 @@
     "price_per_share": null,
     "discount_percent": null,
     "bookrunners": "Not applicable",
-    "free_float_percent": null
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "review",
+    "quality_score": 75,
+    "quality_flags": [
+      "unverified_source"
+    ],
+    "sources": [
+      {
+        "name": "Финам",
+        "url": "https://www.finam.ru/publications/item/dvoynoe-razmeshchenie-obligatsiy-vk-chego-zhdat-chastnym-investoram-20260410-1829/",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-04-10"
+      },
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNT2pxcWtLNl9tQmhsRlFJVXF0QWNfNGxNLXdRVU9CNXNFRnZXTmtQUVAxVVZWNHBrZ1dRd000Z3FZT0FxTVpISnZSTXZCdUs1Q1A3cnVPdk5UY0tGS3ZvdjNIcE9EUDBGY2NwLWpjWDg1czZZbzZtVDRJM3V3UW1ZOWRZWEktTUk2aU1xajF5YmwwbVVwZW9MUUh0SDR0QTRlRkMxLUxtcmNLNGlPbzVpZi1ycmdvLTdNYzFURnF3?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Fri, 10 Apr 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
+    "matched_coverage": [
+      "VKCO"
+    ],
+    "source_name": "Финам",
+    "source_url": "https://www.finam.ru/publications/item/dvoynoe-razmeshchenie-obligatsiy-vk-chego-zhdat-chastnym-investoram-20260410-1829/",
+    "evidence_label": "unverified",
+    "score": 4,
+    "source_event_id": "4774de17c61c14e4",
+    "first_seen_at": "2026-06-28T05:07:01+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-87f81143148d7276",
@@ -2975,7 +3240,7 @@
     "score": 4,
     "source_event_id": "87f81143148d7276",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3054,7 +3319,7 @@
     "score": 4,
     "source_event_id": "1363a495ec14164a",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3126,7 +3391,7 @@
     "score": 4,
     "source_event_id": "12855c6275c496fe",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3317,7 +3582,7 @@
     "score": 5,
     "source_event_id": "238a83afad61e805",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3380,7 +3645,7 @@
     "score": 7,
     "source_event_id": "251bf0d0b7b600c1",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3441,7 +3706,7 @@
     "score": 5,
     "source_event_id": "aa5a93661389a659",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3502,7 +3767,7 @@
     "score": 5,
     "source_event_id": "c898acc93d60813b",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3563,7 +3828,7 @@
     "score": 5,
     "source_event_id": "3b4a4419ab6b81bf",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3626,7 +3891,7 @@
     "score": 5,
     "source_event_id": "0242cf80b3f97c9c",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-06-30T12:11:22+00:00",
+    "last_seen_at": "2026-06-30T15:12:52+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   }
 ]
