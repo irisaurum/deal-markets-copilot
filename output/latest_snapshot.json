@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3667,
-      "change_percent": 0.77,
-      "turnover": 944730011,
-      "updated": "11:49:03",
+      "price": 3709.5,
+      "change_percent": 1.94,
+      "turnover": 1325035615,
+      "updated": "12:36:39",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3352,
-      "change_percent": -2.22,
-      "turnover": 994530808,
-      "updated": "11:49:04",
+      "price": 3408.5,
+      "change_percent": -0.57,
+      "turnover": 1278871457,
+      "updated": "12:36:41",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 190.45,
-      "change_percent": -0.1,
-      "turnover": 196322829,
-      "updated": "11:49:06",
+      "price": 192.25,
+      "change_percent": 0.84,
+      "turnover": 266493348,
+      "updated": "12:36:42",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -185,26 +185,9 @@
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [
-      "e230736ec0b08733",
-      "moex-101663",
-      "moex-101666"
-    ],
-    "new_signals": 3,
-    "market_moves": [
-      {
-        "ticker": "OZON",
-        "company": "Ozon",
-        "price": 3352,
-        "change_percent": -2.22,
-        "turnover": 994530808,
-        "updated": "11:49:04",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
-      }
-    ],
+    "new_event_ids": [],
+    "new_signals": 0,
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -243,25 +226,13 @@
       {
         "id": "TASK-41cef17272fe",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
         "category": "DCM",
         "source_url": "https://www.moex.com/n101663",
         "source_title": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-6f860afd16bf",
-        "priority": "P1",
-        "state": "new",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101666",
-        "source_title": "Итоги выпуска биржевых облигаций",
         "hypothesis_ids": []
       },
       {
@@ -301,9 +272,21 @@
         "hypothesis_ids": []
       },
       {
+        "id": "TASK-6f860afd16bf",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101666",
+        "source_title": "Итоги выпуска биржевых облигаций",
+        "hypothesis_ids": []
+      },
+      {
         "id": "TASK-be9acb355511",
         "priority": "P2",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "YDEX",
@@ -311,30 +294,18 @@
         "source_url": "https://tradersunion.com/ru/news/institutions/show/2532310-moscow-exchange-sberbank-bonds-ios-ydex/",
         "source_title": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R - Traders Union",
         "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-566158f8fbf9",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения OZON (-2.22%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "OZON",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "source_title": "MOEX quote for OZON",
-        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "3 новых сигналов с прошлого запуска; 7 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 6 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)"
+        "text": "Новых событий после предыдущего запуска не обнаружено."
       },
       {
         "label": "Рынок",
-        "text": "OZON: -2.22% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
