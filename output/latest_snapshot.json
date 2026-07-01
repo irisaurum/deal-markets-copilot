@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3709.5,
-      "change_percent": 1.94,
-      "turnover": 1325035615,
-      "updated": "12:36:39",
+      "price": 3691.5,
+      "change_percent": 1.44,
+      "turnover": 1757113717,
+      "updated": "15:21:01",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3408.5,
-      "change_percent": -0.57,
-      "turnover": 1278871457,
-      "updated": "12:36:41",
+      "price": 3416.5,
+      "change_percent": -0.34,
+      "turnover": 1807510826,
+      "updated": "15:21:03",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 192.25,
-      "change_percent": 0.84,
-      "turnover": 266493348,
-      "updated": "12:36:42",
+      "price": 189.5,
+      "change_percent": -0.6,
+      "turnover": 341033372,
+      "updated": "15:21:03",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,7 +56,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -181,12 +181,41 @@
         "YDEX"
       ],
       "evidence_label": "unverified"
+    },
+    {
+      "event": {
+        "event_id": "fbdcfe31695d48a2",
+        "published_at": "Wed, 01 Jul 2026 12:04:23 GMT",
+        "title": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 - InvestFuture",
+        "summary": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 InvestFuture",
+        "source": "InvestFuture",
+        "url": "https://investfuture.ru/articles/vtb-poluchaet-v-zalog-krupniy-paket-aktsiy-ozona-v-sdelke-na-300-0-mlrd-rubley-37123084",
+        "companies": [
+          "OZON"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "OZON"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [],
-    "new_signals": 0,
+    "new_event_ids": [
+      "fbdcfe31695d48a2"
+    ],
+    "new_signals": 1,
     "market_moves": [],
     "hypotheses": [
       {
@@ -248,6 +277,18 @@
         "hypothesis_ids": []
       },
       {
+        "id": "TASK-6f860afd16bf",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101666",
+        "source_title": "Итоги выпуска биржевых облигаций",
+        "hypothesis_ids": []
+      },
+      {
         "id": "TASK-04dff4411325",
         "priority": "P1",
         "state": "open",
@@ -272,15 +313,15 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-6f860afd16bf",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101666",
-        "source_title": "Итоги выпуска биржевых облигаций",
+        "id": "TASK-fd69702f18cd",
+        "priority": "P2",
+        "state": "new",
+        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+        "deliverable": "Transaction snapshot + precedent transactions",
+        "coverage": "OZON",
+        "category": "M&A",
+        "source_url": "https://investfuture.ru/articles/vtb-poluchaet-v-zalog-krupniy-paket-aktsiy-ozona-v-sdelke-na-300-0-mlrd-rubley-37123084",
+        "source_title": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 - InvestFuture",
         "hypothesis_ids": []
       },
       {
@@ -297,11 +338,11 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 6 действий по текущему покрытию.",
+    "summary": "1 новых сигналов с прошлого запуска; 7 действий в очереди; 0 гипотез требуют внимания.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "Новых событий после предыдущего запуска не обнаружено."
+        "text": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 - InvestFuture"
       },
       {
         "label": "Рынок",
