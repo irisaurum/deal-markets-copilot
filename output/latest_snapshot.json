@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3667,
-      "change_percent": 0.77,
-      "turnover": 2166951586,
-      "updated": "18:29:27",
+      "price": 3672.5,
+      "change_percent": 0.92,
+      "turnover": 2239375131,
+      "updated": "19:54:24",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3430,
-      "change_percent": 0.06,
-      "turnover": 2260600527,
-      "updated": "18:29:28",
+      "price": 3437,
+      "change_percent": 0.26,
+      "turnover": 2405642155,
+      "updated": "19:54:29",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 185.55,
-      "change_percent": -2.68,
-      "turnover": 586248716,
-      "updated": "18:29:26",
+      "price": 187.15,
+      "change_percent": -1.84,
+      "turnover": 630225871,
+      "updated": "19:54:30",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,7 +56,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -79,7 +79,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -102,7 +102,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -204,27 +204,9 @@
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [
-      "moex-101684",
-      "moex-101688",
-      "moex-101690",
-      "moex-101691"
-    ],
-    "new_signals": 4,
-    "market_moves": [
-      {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 185.55,
-        "change_percent": -2.68,
-        "turnover": 586248716,
-        "updated": "18:29:26",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
-      }
-    ],
+    "new_event_ids": [],
+    "new_signals": 0,
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -261,21 +243,21 @@
     ],
     "tasks": [
       {
-        "id": "TASK-00033ab6a9d4",
+        "id": "TASK-41cef17272fe",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
         "category": "DCM",
-        "source_url": "https://www.moex.com/n101684",
-        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
+        "source_url": "https://www.moex.com/n101663",
+        "source_title": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)",
         "hypothesis_ids": []
       },
       {
         "id": "TASK-8e00eaa5bdc6",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -287,7 +269,7 @@
       {
         "id": "TASK-fd4ca2203c62",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -299,7 +281,7 @@
       {
         "id": "TASK-9c7a8d6af7f1",
         "priority": "P1",
-        "state": "new",
+        "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
@@ -309,15 +291,15 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-41cef17272fe",
+        "id": "TASK-00033ab6a9d4",
         "priority": "P1",
         "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
         "category": "DCM",
-        "source_url": "https://www.moex.com/n101663",
-        "source_title": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)",
+        "source_url": "https://www.moex.com/n101684",
+        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
         "hypothesis_ids": []
       },
       {
@@ -343,30 +325,18 @@
         "source_url": "https://www.moex.com/n101641",
         "source_title": "О проведении 01 июля 2026 года размещения биржевых облигаций серии 006Р-05Р (Дополнительный выпуск № 6) \"Газпромбанк\" (АО)",
         "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-02bdb3153843",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения VKCO (-2.68%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
-        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "4 новых сигналов с прошлого запуска; 8 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 7 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера"
+        "text": "Новых событий после предыдущего запуска не обнаружено."
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -2.68% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
