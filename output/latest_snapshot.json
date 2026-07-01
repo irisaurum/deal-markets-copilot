@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3644.5,
-      "change_percent": 0.29,
-      "turnover": 3947572043,
-      "updated": "19:47:32",
+      "price": 3667,
+      "change_percent": 0.77,
+      "turnover": 944730011,
+      "updated": "11:49:03",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3430,
-      "change_percent": -1.58,
-      "turnover": 2608144384,
-      "updated": "19:47:35",
+      "price": 3352,
+      "change_percent": -2.22,
+      "turnover": 994530808,
+      "updated": "11:49:04",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 190.85,
-      "change_percent": -3.27,
-      "turnover": 821752122,
-      "updated": "19:47:35",
+      "price": 190.45,
+      "change_percent": -0.1,
+      "turnover": 196322829,
+      "updated": "11:49:06",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -42,12 +42,12 @@
   "events": [
     {
       "event": {
-        "event_id": "moex-101644",
-        "published_at": "2026-06-30 18:04:10",
+        "event_id": "moex-101666",
+        "published_at": "2026-07-01 11:10:08",
         "title": "Итоги выпуска биржевых облигаций",
-        "summary": "Итоги выпуска биржевых облигаций 2026-06-30 18:04:10 Извещаем об итогах размещения биржевых облигаций следующих эмитентов: Банк ВТБ (публичное акционерное общество) (Место нахождения эмитента биржевых облигаций: Российская Федерация, город Санкт-Петербург): Регистрационный номер выпуска биржевых облигаций: 4B02-1232-01000-B-005P от 30.04.2026 года. Номинальная стоимость биржевых облигаций: 1 000 (Одна тысяча) руб. каждая. Объем размещенных биржевых облигаций по номинальной стоимости: 8 520 970 000 (Восемь миллиардов пятьсот двадцать миллионов девятьсот семьдесят тысяч) руб. Дата начала размещения биржевых облигаций: 29.06.2026 г. Дата окончания размещения биржевых облигаций: 29.06.2026 г. Фактическая цена размещения биржевых облигаций: 999,627 руб. Количество размещенных биржевых облигаций: 8 520 970 штук. Доля размещенных и неразмещенных биржевых облигаций: 8,52 %, 91,48 % Общая стоимость имущества, внесенного в оплату за размещенные биржевые облигации, в том числе: денежные средства в валюте Российской Федерации: 8 517 791 678,19 руб.; денежные средства в иностранной валюте, выраженные в валюте Российской Федерации по курсу Банка России на момент внесения: 0 руб.; стоимость иного имущества, выраженная в валюте Российской Федерации: 0 руб. Сделки, признаваемые федеральными законами крупными сделками и сделками, в совершении которых имеется заинтересованность, и которые совершены в процессе размещения ценных бумаг (информация, приведенная в данном абзаце, представлена эмитент",
+        "summary": "Итоги выпуска биржевых облигаций 2026-07-01 11:10:08 Извещаем об итогах размещения биржевых облигаций следующих эмитентов: Банк ВТБ (публичное акционерное общество) (Место нахождения эмитента биржевых облигаций: Российская Федерация, город Санкт-Петербург): Регистрационный номер выпуска биржевых облигаций: 4B02-1233-01000-B-005P от 30.04.2026 года. Номинальная стоимость биржевых облигаций: 1 000 (Одна тысяча) руб. каждая. Объем размещенных биржевых облигаций по номинальной стоимости: 8 821 850 000 (Восемь миллиардов восемьсот двадцать один миллион восемьсот пятьдесят тысяч) руб. Дата начала размещения биржевых облигаций: 30.06.2026 г. Дата окончания размещения биржевых облигаций: 30.06.2026 г. Фактическая цена размещения биржевых облигаций: 999,625 руб. Количество размещенных биржевых облигаций: 8 821 850 штук. Доля размещенных и неразмещенных биржевых облигаций: 8,82 %, 91,18 % Общая стоимость имущества, внесенного в оплату за размещенные биржевые облигации, в том числе: денежные средства в валюте Российской Федерации: 8 818 541 806,25 руб.; денежные средства в иностранной валюте, выраженные в валюте Российской Федерации по курсу Банка России на момент внесения: 0 руб.; стоимость иного имущества, выраженная в валюте Российской Федерации: 0 руб. Сделки, признаваемые федеральными законами крупными сделками и сделками, в совершении которых имеется заинтересованность, и которые совершены в процессе размещения ценных бумаг (информация, приведенная в данном абзаце, представлена эм",
         "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101644",
+        "url": "https://www.moex.com/n101666",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -58,6 +58,29 @@
       "category": "DCM",
       "score": 6,
       "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "moex-101663",
+        "published_at": "2026-07-01 09:48:38",
+        "title": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)",
+        "summary": "Информация о приобретении инвестиционных паёв ИПИФ \"Синара - Валютные облигации\" под управлением ООО \"УК СГБ\" (RU000A10D7W9) 2026-07-01 09:48:38 Наименование Эмитента ООО \"УК СГБ\" Наименование ценной бумаги Инвестиционные паи Интервального паевого инвестиционного комбинированного фонда \"Синара – Валютные Облигации\" Идентификационный/регистрационный номер выпуска 7371-СД Торговый код RU000A10D7W9 ISIN код RU000A10D7W9 Покупатель Идентификатор покупателя в системе торгов – EC0106000000 Размер лота 1 пай Шаг цены 100 рублей Дата начала сбора заявок 01.07.2026 Дата окончания сбора заявок 07.07.2026 Дата активации и заключения сделок 13.07.2026 Информация о покупке (Режим торгов, форма продажи) С предварительным сбором адресных заявок с датой активации в режиме торгов \"Выкуп : Адресные заявки\". (Расчеты: Рубль, код режима - PSBB) Допустимые виды заявок Цена + количество: с указанием цены, не ниже которой потенциальный продавец готов продать ценные бумаги и количества ценных бумаг в лотах (максимальное количество ценных бумаг, которое потенциальный продавец хотел бы продать) Код расчетов Z0 Подача заявок на условиях \"Частичное обеспечение/отступное\" (возможна только с указанием в заявке Торгово-клирингового счета Т+) Нет Время сбора заявок в ходе периода сбора заявок (снятие заявок допускается в течение периода сбора заявок) 10:00 - 19:00 – с 01.07.2026 по 06.07.2026 10:00 - 15:00 07.07.2026 Время контроля и блокировки частичного обеспечения (предактивация) - Размер частичного обес",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101663",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 9,
+      "severity": "critical",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
@@ -136,28 +159,26 @@
     },
     {
       "event": {
-        "event_id": "98cc1ca454b70046",
-        "published_at": "Tue, 30 Jun 2026 15:49:51 GMT",
-        "title": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON - БКС Экспресс",
-        "summary": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON БКС Экспресс",
-        "source": "БКС Экспресс",
-        "url": "https://bcs-express.ru/profit/post/c04797af-4e2e-4910-8d54-2d182d38008c",
-        "companies": [
-          "OZON"
-        ],
-        "source_type": "public_news",
+        "event_id": "e230736ec0b08733",
+        "published_at": "Tue, 30 Jun 2026 14:28:54 GMT",
+        "title": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R - Traders Union",
+        "summary": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R Traders Union",
+        "source": "Traders Union",
+        "url": "https://tradersunion.com/ru/news/institutions/show/2532310-moscow-exchange-sberbank-bonds-ios-ydex/",
+        "companies": [],
+        "source_type": "public_deal_news",
         "confidence": "unverified",
         "amount": null,
         "currency": null,
         "demo": false
       },
-      "category": "M&A",
+      "category": "DCM",
       "score": 5,
       "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [
-        "OZON"
+        "YDEX"
       ],
       "evidence_label": "unverified"
     }
@@ -165,21 +186,23 @@
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [
-      "98cc1ca454b70046"
+      "e230736ec0b08733",
+      "moex-101663",
+      "moex-101666"
     ],
-    "new_signals": 1,
+    "new_signals": 3,
     "market_moves": [
       {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 190.85,
-        "change_percent": -3.27,
-        "turnover": 821752122,
-        "updated": "19:47:35",
+        "ticker": "OZON",
+        "company": "Ozon",
+        "price": 3352,
+        "change_percent": -2.22,
+        "turnover": 994530808,
+        "updated": "11:49:04",
         "currency": "RUB",
         "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
       }
     ],
     "hypotheses": [
@@ -218,6 +241,30 @@
     ],
     "tasks": [
       {
+        "id": "TASK-41cef17272fe",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101663",
+        "source_title": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-6f860afd16bf",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101666",
+        "source_title": "Итоги выпуска биржевых облигаций",
+        "hypothesis_ids": []
+      },
+      {
         "id": "TASK-f368beb3413e",
         "priority": "P1",
         "state": "open",
@@ -254,52 +301,40 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-46f6625006c2",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101644",
-        "source_title": "Итоги выпуска биржевых облигаций",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-db9fc1c07b25",
+        "id": "TASK-be9acb355511",
         "priority": "P2",
         "state": "new",
-        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-        "deliverable": "Transaction snapshot + precedent transactions",
-        "coverage": "OZON",
-        "category": "M&A",
-        "source_url": "https://bcs-express.ru/profit/post/c04797af-4e2e-4910-8d54-2d182d38008c",
-        "source_title": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON - БКС Экспресс",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "YDEX",
+        "category": "DCM",
+        "source_url": "https://tradersunion.com/ru/news/institutions/show/2532310-moscow-exchange-sberbank-bonds-ios-ydex/",
+        "source_title": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R - Traders Union",
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-02bdb3153843",
+        "id": "TASK-566158f8fbf9",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-3.27%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-2.22%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
+        "coverage": "OZON",
         "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "source_title": "MOEX quote for OZON",
         "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "1 новых сигналов с прошлого запуска; 6 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "3 новых сигналов с прошлого запуска; 7 действий в очереди; 0 гипотез требуют внимания.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "☄️АФК Система намерена в ближайшее время заключить финансовую сделку на — идея в Профите по AFKS, OZON - БКС Экспресс"
+        "text": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)"
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -3.27% к предыдущему закрытию."
+        "text": "OZON: -2.22% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
