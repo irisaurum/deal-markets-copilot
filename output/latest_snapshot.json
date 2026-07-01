@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3691.5,
-      "change_percent": 1.44,
-      "turnover": 1757113717,
-      "updated": "15:21:01",
+      "price": 3667,
+      "change_percent": 0.77,
+      "turnover": 2166951586,
+      "updated": "18:29:27",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3416.5,
-      "change_percent": -0.34,
-      "turnover": 1807510826,
-      "updated": "15:21:03",
+      "price": 3430,
+      "change_percent": 0.06,
+      "turnover": 2260600527,
+      "updated": "18:29:28",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 189.5,
-      "change_percent": -0.6,
-      "turnover": 341033372,
-      "updated": "15:21:03",
+      "price": 185.55,
+      "change_percent": -2.68,
+      "turnover": 586248716,
+      "updated": "18:29:26",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -40,6 +40,98 @@
     }
   ],
   "events": [
+    {
+      "event": {
+        "event_id": "moex-101691",
+        "published_at": "2026-07-01 17:02:32",
+        "title": "О регистрации изменений в эмиссионные документы",
+        "summary": "О регистрации изменений в эмиссионные документы 2026-07-01 17:02:32 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления ПАО Московская Биржа \"01\" июля 2026 года приняты следующие решения: Зарегистрировать изменения в решение о выпуске биржевых облигаций серии БО-01 Общества с ограниченной ответственностью \"С-Принт\", регистрационный номер выпуска - 4B02-01-00778-R от 08.04.2025. Зарегистрировать изменения в решение о выпуске биржевых облигаций серии БО-02 Общества с ограниченной ответственностью \"С-Принт\", регистрационный номер выпуска - 4B02-02-00778-R от 29.05.2025. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101691",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "moex-101690",
+        "published_at": "2026-07-01 16:59:19",
+        "title": "О признании выпусков облигаций несостоявшимися, об аннулировании регистрации выпусков, об исключении их из Списка ценных бумаг, допущенных к торгам",
+        "summary": "О признании выпусков облигаций несостоявшимися, об аннулировании регистрации выпусков, об исключении их из Списка ценных бумаг, допущенных к торгам 2026-07-01 16:59:19 В соответствии с Правилами листинга ПАО Московская Биржа Председателем Правления 01.07.2026 приняты следующие решения: в связи с неразмещением ни одной ценной бумаги следующих выпусков биржевых облигаций: Наименование эмитента/организации Публичное акционерное общество \"Сбербанк России\" Наименование ценной бумаги Биржевые облигации процентные неконвертируемые бездокументарные серии ИОС-IMOEX-BNR-5Q-001Р-801R Идентификационный/Регистрационный номер выпуска 4B02-829-01481-B-001P от 25.05.2026 Торговый код RU000A10F8Y1 ISIN код RU000A10F8Y1 Раздел Списка Третий уровень · признать несостоявшимися указанные выпуски биржевых облигаций; · аннулировать регистрацию указанных выпусков биржевых облигаций; · исключить 01.07.2026 данные биржевые облигации из Списка ценных бумаг, допущенных к торгам в ПАО Московская Биржа. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101690",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "moex-101688",
+        "published_at": "2026-07-01 16:56:01",
+        "title": "О порядке приобретения облигаций серии 001Р-09 ПАО \"ТрансФин-М\" с 02 июля 2026 год",
+        "summary": "О порядке приобретения облигаций серии 001Р-09 ПАО \"ТрансФин-М\" с 02 июля 2026 год 2026-07-01 16:56:01 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и на основании уведомления о выкупе, полученного от ПАО \"ТрансФин-М\", установлены следующие форма, время, срок и порядок проведения приобретения облигаций ПАО \"ТрансФин-М\" в режиме торгов \"Выкуп: Адресные заявки\": Наименование Эмитента ПАО \"ТрансФин-М\" Полное наименование ценных бумаг (вид и тип) биржевые облигации процентные неконвертируемые бездокументарные с централизованным учетом прав серии 001Р-09 Регистрационный номер выпуска 4B02-09-50156-A-001P Торговый код RU000A106J38 ISIN RU000A106J38 Информация о приобретении (Режим торгов, форма приобретения) С предварительным сбором адресных заявок с датой активации в режиме торгов \"Выкуп: Адресные заявки\". (Расчеты: Рубль) Код расчетов T0 Цена приобретения 100% от номинальной стоимости Облигации Наименование Агента, выкупающего облигации ПАО \"Совкомбанк\" (идентификатор в системе торгов – MC025380",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101688",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "moex-101684",
+        "published_at": "2026-07-01 16:44:00",
+        "title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
+        "summary": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера 2026-07-01 16:44:00 В соответствии с Правилами листинга ПАО Московская Биржа Председателем Правления 01.07.2026 приняты следующие решения: зарегистрировать выпуск биржевых облигаций; присвоить выпуску регистрационный номер; включить в Список ценных бумаг, допущенных к торгам в ПАО Московская Биржа, в отношении следующих ценных бумаг: Наименование Эмитента Публичное акционерное общество \"Сбербанк России\" Наименование ценной бумаги Биржевые облигации процентные неконвертируемые бездокументарные серии ИОС-USDRUB-BNR-1Y-001Р-810R Регистрационный номер выпуска 4B02-839-01481-B-001P от 01.07.2026 Раздел Списка Третий уровень Основание принятия решения Заявление Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101684",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 7,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
     {
       "event": {
         "event_id": "moex-101666",
@@ -108,115 +200,31 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101636",
-        "published_at": "2026-06-30 16:11:15",
-        "title": "О проведении 01 июля 2026 года аукциона по размещению ОФЗ выпусков № 26251RMFS",
-        "summary": "О проведении 01 июля 2026 года аукциона по размещению ОФЗ выпусков № 26251RMFS 2026-06-30 16:11:15 Участникам торгов Информируем Вас о том, что на основании письма Банка России и в соответствии с Частью I. Общая часть и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО Московская Биржа, приказом установлены форма, время, срок и порядок проведения аукционов по размещению и торгов следующими облигациями федерального займа: 1. Наименование Эмитента Министерство финансов Российской Федерации Наименование ценной бумаги облигации федерального займа с постоянным купонным доходом Государственный регистрационный номер выпуска 26251RMFS от 19.08.2025 Дата проведения аукциона 1 июля 2026 г. Информация о размещении (Режим торгов, форма размещения) Размещение Облигаций будет осуществляться в Режиме торгов \"Размещение: Аукцион\" путем проведения Аукциона по определению цены размещения. BoardId: PACT (Расчеты: Рубль) Торговый код SU26251RMFS7 ISIN код RU000A10CKT3 Код расчетов B01 Дополнительные условия размещения Доля неконкурентных заявок по отношению к общему объему заявок, поданному Участником торгов, не может превышать 90%. Время проведения торгов Время проведения торгов: период сбора заявок: 12:00 - 12:30; период удовлетворения заявок: 13:00 - 18:00. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101636",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101632",
-        "published_at": "2026-06-30 16:08:51",
-        "title": "О порядке сбора заявок и заключения сделок при размещении облигаций серии ИОС-YDEX-BNR-1Y-001Р-808R ПАО \"Сбербанк России\" с 1 июля 2026 года",
-        "summary": "О порядке сбора заявок и заключения сделок при размещении облигаций серии ИОС-YDEX-BNR-1Y-001Р-808R ПАО \"Сбербанк России\" с 1 июля 2026 года 2026-06-30 16:08:51 Участникам торгов На основании письма, полученного от Публичного акционерного общества \"Сбербанк России\", и в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов Публичного акционерного общества \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета 15 мая 2026 года (Протокол №17), п. 1.7.2, п. 1.8.5, п.1.8.8, п. 1.8.10 и п. 1.8.11 Части II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов Публичного акционерного общества \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета 23 января 2026 года (Протокол №11), установлены следующие условия, время, срок и порядок подачи заявок с датой активации и заключения сделок с биржевыми облигациями процентными неконвертируемыми бездокументарными серии ИОС-YDEX-BNR-1Y-001Р-808R Публичное акционерное общество \"Сбербанк России\" Наименование Эмитента Публичное акционерное общество \"Сбербанк России\" Наименование ценной бумаги Биржевые облигации процентные неконвертируемые бездокументарные серии ИОС-YDEX-BNR-1Y-001Р-808R Идентификационный номер выпуска 4B02-838-01481-B-001P от 25.06.2026 Дата начала размещения 30 июля 2026 г. Информация о размещении (Режим торгов, форма размещения) Режим торгов \"Размещение: Адресные заявки\" путем заключ",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101632",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 9,
-      "severity": "critical",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [
-        "YDEX"
-      ],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "e230736ec0b08733",
-        "published_at": "Tue, 30 Jun 2026 14:28:54 GMT",
-        "title": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R - Traders Union",
-        "summary": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R Traders Union",
-        "source": "Traders Union",
-        "url": "https://tradersunion.com/ru/news/institutions/show/2532310-moscow-exchange-sberbank-bonds-ios-ydex/",
-        "companies": [],
-        "source_type": "public_deal_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 5,
-      "severity": "medium",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [
-        "YDEX"
-      ],
-      "evidence_label": "unverified"
-    },
-    {
-      "event": {
-        "event_id": "fbdcfe31695d48a2",
-        "published_at": "Wed, 01 Jul 2026 12:04:23 GMT",
-        "title": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 - InvestFuture",
-        "summary": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 InvestFuture",
-        "source": "InvestFuture",
-        "url": "https://investfuture.ru/articles/vtb-poluchaet-v-zalog-krupniy-paket-aktsiy-ozona-v-sdelke-na-300-0-mlrd-rubley-37123084",
-        "companies": [
-          "OZON"
-        ],
-        "source_type": "public_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "M&A",
-      "score": 5,
-      "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "OZON"
-      ],
-      "evidence_label": "unverified"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [
-      "fbdcfe31695d48a2"
+      "moex-101684",
+      "moex-101688",
+      "moex-101690",
+      "moex-101691"
     ],
-    "new_signals": 1,
-    "market_moves": [],
+    "new_signals": 4,
+    "market_moves": [
+      {
+        "ticker": "VKCO",
+        "company": "VK",
+        "price": 185.55,
+        "change_percent": -2.68,
+        "turnover": 586248716,
+        "updated": "18:29:26",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      }
+    ],
     "hypotheses": [
       {
         "id": "H-01",
@@ -253,6 +261,54 @@
     ],
     "tasks": [
       {
+        "id": "TASK-00033ab6a9d4",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101684",
+        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-8e00eaa5bdc6",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101691",
+        "source_title": "О регистрации изменений в эмиссионные документы",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-fd4ca2203c62",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101690",
+        "source_title": "О признании выпусков облигаций несостоявшимися, об аннулировании регистрации выпусков, об исключении их из Списка ценных бумаг, допущенных к торгам",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-9c7a8d6af7f1",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101688",
+        "source_title": "О порядке приобретения облигаций серии 001Р-09 ПАО \"ТрансФин-М\" с 02 июля 2026 год",
+        "hypothesis_ids": []
+      },
+      {
         "id": "TASK-41cef17272fe",
         "priority": "P1",
         "state": "open",
@@ -262,18 +318,6 @@
         "category": "DCM",
         "source_url": "https://www.moex.com/n101663",
         "source_title": "Информация о приобретении  инвестиционных паёв ИПИФ \"Синара - Валютные облигации\"  под управлением ООО \"УК СГБ\" (RU000A10D7W9)",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-f368beb3413e",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "YDEX",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101632",
-        "source_title": "О порядке сбора заявок и заключения сделок при размещении облигаций серии ИОС-YDEX-BNR-1Y-001Р-808R ПАО \"Сбербанк России\" с 1 июля 2026 года",
         "hypothesis_ids": []
       },
       {
@@ -301,52 +345,28 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-cc4f6a9a138c",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101636",
-        "source_title": "О проведении 01 июля 2026 года аукциона по размещению ОФЗ выпусков № 26251RMFS",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-fd69702f18cd",
+        "id": "TASK-02bdb3153843",
         "priority": "P2",
-        "state": "new",
-        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-        "deliverable": "Transaction snapshot + precedent transactions",
-        "coverage": "OZON",
-        "category": "M&A",
-        "source_url": "https://investfuture.ru/articles/vtb-poluchaet-v-zalog-krupniy-paket-aktsiy-ozona-v-sdelke-na-300-0-mlrd-rubley-37123084",
-        "source_title": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 - InvestFuture",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-be9acb355511",
-        "priority": "P2",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "YDEX",
-        "category": "DCM",
-        "source_url": "https://tradersunion.com/ru/news/institutions/show/2532310-moscow-exchange-sberbank-bonds-ios-ydex/",
-        "source_title": "Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R - Traders Union",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (-2.68%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
         "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "1 новых сигналов с прошлого запуска; 7 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "4 новых сигналов с прошлого запуска; 8 действий в очереди; 0 гипотез требуют внимания.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "ВТБ получает в залог крупный пакет акций Озона в сделке на 300,0 млрд рублей | IF | 01.07.2026 - InvestFuture"
+        "text": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера"
       },
       {
         "label": "Рынок",
-        "text": "Движений выше установленного порога нет."
+        "text": "VKCO: -2.68% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
