@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, stable_event_id
-from deal_markets_copilot.deals import extract_deal_record, median_multiples, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
@@ -428,6 +428,46 @@ class CoreTests(unittest.TestCase):
             self.assertIn("Опровержения", text)
             self.assertIn("Technical filings", text)
             self.assertIn("Купон", text)
+
+    def test_financial_enrichment_calculates_only_aligned_currency_multiples(self) -> None:
+        deals = [{
+            "deal_id": "curated-1", "announced_date": "2022-05-26", "deal_type": "M&A",
+            "record_kind": "deal", "status": "Closed", "target_or_issuer": "Target",
+            "acquirer_or_investor": "Buyer", "seller": "Shareholders", "headline": "Buyer acquired Target",
+            "enterprise_value": 1200, "transaction_value": 1000, "currency": "USD",
+            "evidence_label": "confirmed", "source_name": "Deal release", "source_url": "https://example.com/deal",
+            "sources": [{"name": "Deal release", "url": "https://example.com/deal", "evidence_label": "confirmed", "source_type": "issuer_ir"}],
+        }]
+        financials = [{
+            "deal_id": "curated-1", "period_end": "2021-12-31", "available_at": "2022-03-01",
+            "currency": "USD", "revenue": 400, "ebitda": 100, "metric_basis": "Audited GAAP",
+            "source_name": "10-K", "source_url": "https://www.sec.gov/example",
+        }]
+        row = enrich_precedent_financials(deals, financials)[0]
+        self.assertEqual(row["ev_revenue"], 3.0)
+        self.assertEqual(row["ev_ebitda"], 12.0)
+        self.assertEqual(row["financials_as_of"], "2021-12-31")
+        self.assertEqual(row["source_count"], 2)
+        financials[0]["currency"] = "EUR"
+        mismatch = enrich_precedent_financials(deals, financials)[0]
+        self.assertIsNone(mismatch["ev_revenue"])
+        self.assertIsNone(mismatch["ev_ebitda"])
+
+    def test_curated_precedents_merge_by_stable_id(self) -> None:
+        existing = [{"deal_id": "same", "headline": "Buyer acquired Target", "deal_type": "M&A", "status": "Closed", "target_or_issuer": "Target", "acquirer_or_investor": "Buyer", "evidence_label": "confirmed", "source_url": "https://example.com/a", "source_name": "A"}]
+        curated = [{"deal_id": "same", "headline": "Buyer acquired Target", "deal_type": "M&A", "status": "Closed", "target_or_issuer": "Target", "acquirer_or_investor": "Buyer", "enterprise_value": 100, "currency": "USD", "evidence_label": "confirmed", "source_url": "https://example.com/b", "source_name": "B"}]
+        merged = merge_curated_precedents(existing, curated)
+        self.assertEqual(len(merged), 1)
+        self.assertEqual(merged[0]["enterprise_value"], 100)
+
+    def test_report_contains_advanced_deal_filters_and_sorting(self) -> None:
+        event = Event("filters", "2026-06-29T10:00:00+03:00", "Ozon разместил облигации на 5 млрд рублей", "", "IR", "https://example.com/deal", confidence="confirmed")
+        record = extract_deal_record(classify_event(event, self.coverage), self.coverage)
+        with tempfile.TemporaryDirectory() as directory:
+            path = build_html_report([classify_event(event, self.coverage)], {}, Path(directory) / "report.html", "live", precedent_transactions=[record.to_dict()])
+            text = path.read_text(encoding="utf-8")
+            for control in ("deal-type-filter", "deal-period-filter", "deal-sector-filter", "deal-status-filter", "deal-size-filter", "deal-sort"):
+                self.assertIn(f'id="{control}"', text)
 
 
 if __name__ == "__main__":

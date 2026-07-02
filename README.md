@@ -66,13 +66,14 @@ Docker или платный API.
 - 🧩 несколько публикаций об одной транзакции объединяются в одну запись со всеми прямыми ссылками на источники
 - 🗂 подтверждённые сделки, слухи/переговоры, опровержения и технические filings отображаются раздельно
 - 🧱 карточки зависят от типа сделки: M&A показывает buyer / seller / target, DCM — issuer / volume / coupon / maturity / ISIN, ECM — offering size / price / discount / bookrunners / free float
+- 🔎 сделки фильтруются по типу, периоду, сектору, статусу и размеру; доступны сортировки по дате, сумме и quality score
 
 **Deal execution toolkit:**
 
 - 🧾 **Deal card** — стороны, статус, сумма, доля, форма оплаты, advisors и rationale / use of proceeds
 - 🗂 **Precedent transactions database** — накопительная JSON/CSV-база без дублей, с quality score, флагами проверки и массивом источников
-- 📐 **Precedent analytics** — EV/Revenue, EV/EBITDA и медианы только по валидным M&A-наблюдениям
-- 📥 **Excel-export** — banker-style workbook с формулами, Dashboard, Deal Card, полной базой и Sources & QA
+- 📐 **Precedent analytics** — EV/Revenue, EV/EBITDA и медианы только по валидным M&A-наблюдениям с датой financials, metric basis и прямой ссылкой на отчётность
+- 📥 **Excel-export** — banker-style workbook с формулами и листами `Summary`, `Deals`, `Financials`, `Multiples`, `Sources & QA`
 - ✅ неизвестные параметры остаются `Not disclosed`: система не придумывает отсутствующую экономику сделки
 
 ## Что ты получишь
@@ -109,11 +110,10 @@ python3 run.py --live
 - `output/precedent_transactions.csv` обновляется при каждом запуске;
 - `output/precedent_transactions.xlsx` — готовый Excel-файл для анализа и precedent screen.
 
-HTML, JSON и CSV обновляются в GitHub Actions в течение рабочего дня. `.xlsx`
-пересобирается отдельной ежедневной автоматизацией в 08:45 по Москве, проходит
-визуальный QA и публикуется в тот же GitHub Pages release. Скрипт сборки оставлен
-в репозитории; для локальной пересборки нужен совместимый Codex workspace с
-`@oai/artifact-tool`.
+HTML, JSON, CSV и XLSX пересобираются одним запуском GitHub Actions и публикуются
+в одном GitHub Pages release. Поэтому Excel соответствует той же версии данных,
+что и dashboard. Для локального аналитического QA используется
+`@oai/artifact-tool`; на публичном GitHub runner работает совместимый CI-builder.
 
 Ничего устанавливать не требуется: достаточно Python 3.11+. Полная инструкция —
 [`docs/SETUP.md`](docs/SETUP.md).
@@ -124,12 +124,10 @@ Workflow [`.github/workflows/deal-desk.yml`](.github/workflows/deal-desk.yml):
 
 - запускает тесты;
 - получает свежий deal flow;
+- пересобирает пятилистный XLSX и проверяет, что файл создан;
 - сохраняет baseline для change detection;
 - публикует dashboard в GitHub Pages;
 - повторяет цикл по будням с 08:30 до 18:30 по Москве.
-
-Дополнительно локальная Codex-автоматизация `Deal Markets Copilot — daily XLSX`
-каждый день в 08:45 обновляет `.xlsx`, запускает тесты и публикует проверенный файл.
 
 Для облачного запуска включи **Settings → Pages → Source: GitHub Actions** и запусти
 workflow вручную один раз.

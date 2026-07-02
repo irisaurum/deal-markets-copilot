@@ -17,7 +17,10 @@ CSV_FIELDS = [
     "acquirer_or_investor", "seller", "sector", "geography", "transaction_value",
     "enterprise_value", "currency", "stake_percent", "payment_form", "advisors",
     "revenue_ltm", "ebitda_ltm", "financials_as_of", "financials_currency",
-    "ev_revenue", "ev_ebitda", "instrument", "security_code", "isin", "coupon_rate",
+    "financials_available_at", "operating_income", "depreciation", "amortization",
+    "financials_metric_basis", "financials_source_name",
+    "financials_source_url", "ev_revenue", "ev_ebitda", "multiple_notes",
+    "instrument", "security_code", "isin", "coupon_rate",
     "coupon_type", "yield_rate", "maturity_date", "tenor", "issue_price",
     "price_per_share", "discount_percent", "bookrunners", "free_float_percent",
     "rationale", "quality_status",
@@ -109,8 +112,13 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         ebitda_ltm=ebitda,
         financials_as_of=_financials_as_of(text),
         financials_currency=financials_currency or "Not disclosed",
+        financials_available_at="Not disclosed",
+        financials_metric_basis="Headline extraction" if revenue or ebitda else "Not disclosed",
+        financials_source_name=event.source.strip() if revenue or ebitda else "Not disclosed",
+        financials_source_url=_safe_public_url(event.url) if revenue or ebitda else "",
         ev_revenue=(enterprise_value / revenue) if aligned_currency and revenue and revenue > 0 else None,
         ev_ebitda=(enterprise_value / ebitda) if aligned_currency and ebitda and ebitda > 0 else None,
+        multiple_notes="Calculated from disclosed EV and aligned-currency financials" if aligned_currency else "N/M: EV and aligned-currency financials are required",
         instrument=_instrument(text, item.category),
         security_code=_security_code(text),
         isin=_isin(text),
@@ -187,6 +195,86 @@ def update_precedent_database(records: list[DealRecord], path: str | Path) -> li
     return output
 
 
+def load_public_dataset(path: str | Path) -> list[dict]:
+    """Load a version-controlled public JSON dataset without accepting other shapes."""
+    return [_migrate_row(row) for row in _load_database(Path(path)) if isinstance(row, dict)]
+
+
+def merge_curated_precedents(rows: list[dict], curated_rows: list[dict]) -> list[dict]:
+    """Merge analyst-reviewed precedents by stable deal id and retain their primary sources."""
+    merged = {row.get("deal_id"): _migrate_row(row) for row in rows if row.get("deal_id")}
+    for source in curated_rows:
+        row = _migrate_row(source)
+        deal_id = row.get("deal_id")
+        if not deal_id:
+            continue
+        if deal_id in merged:
+            row = _merge_transaction_rows(merged[deal_id], row)
+        _apply_primary_source(row)
+        _apply_quality(row)
+        merged[deal_id] = row
+    return sorted(merged.values(), key=lambda row: (row.get("announced_date", ""), row.get("score", 0)), reverse=True)
+
+
+def enrich_precedent_financials(rows: list[dict], financial_rows: list[dict]) -> list[dict]:
+    """Attach audited financial inputs and calculate multiples only when units and currencies align."""
+    by_deal = {str(item.get("deal_id")): item for item in financial_rows if item.get("deal_id")}
+    enriched: list[dict] = []
+    for source in rows:
+        row = _migrate_row(source)
+        financial = by_deal.get(str(row.get("deal_id")))
+        if not financial:
+            row["ev_revenue"] = _valid_multiple(row.get("enterprise_value"), row.get("revenue_ltm"), row.get("currency"), row.get("financials_currency"))
+            row["ev_ebitda"] = _valid_multiple(row.get("enterprise_value"), row.get("ebitda_ltm"), row.get("currency"), row.get("financials_currency"))
+            enriched.append(row)
+            continue
+        revenue = _positive_number(financial.get("revenue"))
+        ebitda = _positive_number(financial.get("ebitda"))
+        currency = _normalize_currency(financial.get("currency"))
+        row.update({
+            "revenue_ltm": revenue,
+            "ebitda_ltm": ebitda,
+            "operating_income": _positive_number(financial.get("operating_income")),
+            "depreciation": _positive_number(financial.get("depreciation")),
+            "amortization": _positive_number(financial.get("amortization")),
+            "financials_as_of": financial.get("period_end") or "Not disclosed",
+            "financials_available_at": financial.get("available_at") or "Not disclosed",
+            "financials_currency": currency,
+            "financials_metric_basis": financial.get("metric_basis") or "Not disclosed",
+            "financials_source_name": financial.get("source_name") or "Not disclosed",
+            "financials_source_url": _safe_public_url(financial.get("source_url", "")),
+        })
+        row["ev_revenue"] = _valid_multiple(row.get("enterprise_value"), revenue, row.get("currency"), currency)
+        row["ev_ebitda"] = _valid_multiple(row.get("enterprise_value"), ebitda, row.get("currency"), currency)
+        available_after_announcement = bool(
+            row.get("announced_date") and financial.get("available_at")
+            and str(financial["available_at"]) > str(row["announced_date"])
+        )
+        row["multiple_notes"] = (
+            "Calculated from disclosed EV and audited financials; report became available after announcement"
+            if available_after_announcement else
+            "Calculated from disclosed EV and latest audited financials available at announcement"
+        )
+        financial_source = {
+            "name": row["financials_source_name"],
+            "url": row["financials_source_url"],
+            "evidence_label": "confirmed",
+            "source_type": "sec_filing",
+            "published_at": row["financials_available_at"],
+        }
+        row["sources"] = _merge_sources(row.get("sources", []), [financial_source])
+        row["source_count"] = len(row["sources"])
+        enriched.append(row)
+    return enriched
+
+
+def write_precedent_database(rows: list[dict], path: str | Path) -> Path:
+    destination = Path(path)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    destination.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+    return destination
+
+
 def write_precedents_csv(rows: list[dict], path: str | Path) -> Path:
     destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -260,7 +348,7 @@ def _is_material_transaction(row: dict) -> bool:
     if category == "M&A":
         if "последний день покупки акций" in title:
             return False
-        return bool(re.search(r"покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquisition|merger|buyout", title))
+        return bool(re.search(r"покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout", title))
     if category == "DCM":
         if re.search(r"погашен|погашения|перечислил.+погаш|заработай", title):
             return False
@@ -300,6 +388,8 @@ def _is_technical_filing(text: str, source_type: str = "") -> bool:
         r"^\s*о проведении .{0,80}размещени\w* .{0,80}облигац",
         r"^\s*о признании выпуск\w* облигац\w* несостоявш",
         r"^\s*информация о кодах расчетов",
+        r"^\s*московская биржа начала торги паями",
+        r"\bбпиф\b.+\bторг",
     )
     return bool(any(re.search(pattern, text, re.I) for pattern in patterns))
 
@@ -504,7 +594,11 @@ def _migrate_row(source: dict) -> dict:
             row["acquirer_or_investor"] = parsed_acquirer
         elif re.search(r"продал|продаж|sold|divest", headline, re.I):
             row["acquirer_or_investor"] = "Not disclosed"
-        row["seller"] = _extract_seller(headline)
+        parsed_seller = _extract_seller(headline)
+        if not _is_blank(parsed_seller):
+            row["seller"] = parsed_seller
+        else:
+            row.setdefault("seller", "Not disclosed")
         row["stake_percent"] = _extract_stake(headline) if row.get("stake_percent") is None else row.get("stake_percent")
     else:
         row["seller"] = "Not applicable"
@@ -537,6 +631,14 @@ def _migrate_row(source: dict) -> dict:
     row.setdefault("discount_percent", _discount_percent(headline) if row.get("deal_type") == "ECM" else None)
     row.setdefault("bookrunners", _bookrunners(headline) if row.get("deal_type") == "ECM" else "Not applicable")
     row.setdefault("free_float_percent", _free_float(headline) if row.get("deal_type") == "ECM" else None)
+    row.setdefault("financials_available_at", "Not disclosed")
+    row.setdefault("operating_income", None)
+    row.setdefault("depreciation", None)
+    row.setdefault("amortization", None)
+    row.setdefault("financials_metric_basis", "Not disclosed")
+    row.setdefault("financials_source_name", "Not disclosed")
+    row.setdefault("financials_source_url", "")
+    row.setdefault("multiple_notes", "N/M: EV and aligned-currency financials are required")
 
     row["sources"] = _merge_sources(row.get("sources", []), [{
         "name": row.get("source_name", "Unknown source"),
@@ -627,8 +729,9 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
     merged["sources"] = _merge_sources(left.get("sources", []), right.get("sources", []))
     merged["source_count"] = len(merged["sources"])
     merged["matched_coverage"] = sorted(set(left.get("matched_coverage", [])) | set(right.get("matched_coverage", [])))
-    merged["first_seen_at"] = min(value for value in (left.get("first_seen_at"), right.get("first_seen_at")) if value)
-    merged["last_seen_at"] = max(left.get("last_seen_at", ""), right.get("last_seen_at", ""))
+    first_seen = [value for value in (left.get("first_seen_at"), right.get("first_seen_at")) if value]
+    merged["first_seen_at"] = min(first_seen) if first_seen else ""
+    merged["last_seen_at"] = max(left.get("last_seen_at") or "", right.get("last_seen_at") or "")
     status_rank = {"Rumor": 0, "Reported": 1, "In talks": 2, "Confirmed": 3, "Announced": 4, "Issued": 5, "Closed": 6, "Denied": 7}
     merged["status"] = max((left.get("status", "Rumor"), right.get("status", "Rumor")), key=lambda value: status_rank.get(value, 0))
     if merged["status"] == "Denied":
@@ -980,6 +1083,24 @@ def median_multiples(rows: list[dict]) -> dict[str, float | int | None]:
 
 def _is_blank(value) -> bool:
     return value is None or value == "" or value == "Not disclosed"
+
+
+def _positive_number(value) -> float | None:
+    try:
+        number = float(value)
+        return number if number > 0 else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _valid_multiple(enterprise_value, metric, deal_currency, metric_currency) -> float | None:
+    ev = _positive_number(enterprise_value)
+    denominator = _positive_number(metric)
+    if not ev or not denominator:
+        return None
+    if _normalize_currency(deal_currency) != _normalize_currency(metric_currency):
+        return None
+    return ev / denominator
 
 
 def _is_navigation_record(row: dict) -> bool:

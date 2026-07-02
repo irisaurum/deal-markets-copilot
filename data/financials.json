@@ -1,0 +1,40 @@
+[
+  {
+    "financial_id": "FIN-VMWARE-FY2022",
+    "deal_id": "CURATED-MA-BROADCOM-VMWARE-2022",
+    "company": "VMware",
+    "aliases": ["VMware", "VMW"],
+    "period_end": "2022-01-28",
+    "available_at": "2022-03-24",
+    "currency": "USD",
+    "units": "absolute",
+    "revenue": 12851000000,
+    "operating_income": 2387000000,
+    "depreciation": 276000000,
+    "amortization": 303000000,
+    "ebitda": 2966000000,
+    "metric_basis": "GAAP EBITDA calculated as operating income plus depreciation and definite-lived intangible amortization",
+    "source_name": "VMware FY2022 Form 10-K",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/1124610/000112461022000009/vmw-20220128.htm",
+    "notes": "Latest full-year financial period publicly available before the transaction announcement."
+  },
+  {
+    "financial_id": "FIN-ACTIVISION-FY2021",
+    "deal_id": "CURATED-MA-MICROSOFT-ACTIVISION-2022",
+    "company": "Activision Blizzard",
+    "aliases": ["Activision Blizzard", "Activision", "ATVI"],
+    "period_end": "2021-12-31",
+    "available_at": "2022-02-25",
+    "currency": "USD",
+    "units": "absolute",
+    "revenue": 8803000000,
+    "operating_income": 3259000000,
+    "depreciation": 116000000,
+    "amortization": 324000000,
+    "ebitda": 3699000000,
+    "metric_basis": "GAAP EBITDA calculated as operating income plus depreciation/amortization and capitalized software amortization",
+    "source_name": "Activision Blizzard 2022 Form 10-K comparative FY2021 data",
+    "source_url": "https://www.sec.gov/Archives/edgar/data/718877/000162828023004842/atvi-20221231.htm",
+    "notes": "The financial period ended before announcement; the audited comparative figures were filed after announcement and are flagged accordingly."
+  }
+]

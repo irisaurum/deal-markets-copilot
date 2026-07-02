@@ -17,6 +17,14 @@ python3 run.py --live
 Live-режим получает публичные новости и данные MOEX. Первый запуск создаёт baseline;
 следующие запуски показывают новые события относительно него.
 
+Локальная пересборка аналитического Excel в совместимом Codex workspace:
+
+```bash
+node scripts/build_precedents_workbook.mjs
+```
+
+В GitHub Actions XLSX пересобирается автоматически после каждого live-запуска.
+
 ## 3. Настройка покрытия
 
 В `config.json` измените:

@@ -62,8 +62,13 @@ class DealRecord:
     ebitda_ltm: float | None
     financials_as_of: str
     financials_currency: str
+    financials_available_at: str
+    financials_metric_basis: str
+    financials_source_name: str
+    financials_source_url: str
     ev_revenue: float | None
     ev_ebitda: float | None
+    multiple_notes: str
     instrument: str
     security_code: str
     isin: str

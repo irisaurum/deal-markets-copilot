@@ -10,7 +10,15 @@ ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate
-from deal_markets_copilot.deals import extract_deal_record, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import (
+    enrich_precedent_financials,
+    extract_deal_record,
+    load_public_dataset,
+    merge_curated_precedents,
+    update_precedent_database,
+    write_precedent_database,
+    write_precedents_csv,
+)
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import (
@@ -106,12 +114,17 @@ def main() -> int:
         if selected_mode == "live"
         else [record.to_dict() for record in current_deals]
     )
+    if selected_mode == "live":
+        curated = load_public_dataset(ROOT / "data" / "curated_precedents.json")
+        financials = json.loads((ROOT / "data" / "financials.json").read_text(encoding="utf-8"))
+        precedents = enrich_precedent_financials(merge_curated_precedents(precedents, curated), financials)
+        write_precedent_database(precedents, precedent_path)
     upgraded_links = resolve_google_news_rows(
         precedents,
         limit=int(config.get("live_data", {}).get("max_archive_link_resolutions", 30)),
     ) if args.live else 0
     if upgraded_links:
-        precedent_path.write_text(json.dumps(precedents, ensure_ascii=False, indent=2), encoding="utf-8")
+        write_precedent_database(precedents, precedent_path)
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
 
     report_path = build_html_report(
