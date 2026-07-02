@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3619.5,
-      "change_percent": -1.55,
-      "turnover": 384537403,
-      "updated": "12:01:50",
+      "price": 3578,
+      "change_percent": -2.68,
+      "turnover": 977159951,
+      "updated": "14:38:54",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3363.5,
-      "change_percent": -1.68,
-      "turnover": 229181523,
-      "updated": "12:01:51",
+      "price": 3330.5,
+      "change_percent": -2.65,
+      "turnover": 414826033,
+      "updated": "14:38:54",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 182.45,
-      "change_percent": -1.91,
-      "turnover": 227703713,
-      "updated": "12:01:50",
+      "price": 176.35,
+      "change_percent": -5.19,
+      "turnover": 523444030,
+      "updated": "14:38:55",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,7 +56,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -183,11 +183,46 @@
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [
-      "moex-101722"
+    "new_event_ids": [],
+    "new_signals": 0,
+    "market_moves": [
+      {
+        "ticker": "VKCO",
+        "company": "VK",
+        "price": 176.35,
+        "change_percent": -5.19,
+        "turnover": 523444030,
+        "updated": "14:38:55",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      },
+      {
+        "ticker": "YDEX",
+        "company": "Yandex",
+        "price": 3578,
+        "change_percent": -2.68,
+        "turnover": 977159951,
+        "updated": "14:38:54",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      },
+      {
+        "ticker": "OZON",
+        "company": "Ozon",
+        "price": 3330.5,
+        "change_percent": -2.65,
+        "turnover": 414826033,
+        "updated": "14:38:54",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      }
     ],
-    "new_signals": 1,
-    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -226,18 +261,6 @@
     ],
     "tasks": [
       {
-        "id": "TASK-f6651d1336cf",
-        "priority": "P1",
-        "state": "new",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101722",
-        "source_title": "Итоги выпуска биржевых облигаций",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-5b3108da5a9f",
         "priority": "P1",
         "state": "open",
@@ -250,6 +273,18 @@
         "hypothesis_ids": [
           "H-02"
         ]
+      },
+      {
+        "id": "TASK-f6651d1336cf",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101722",
+        "source_title": "Итоги выпуска биржевых облигаций",
+        "hypothesis_ids": []
       },
       {
         "id": "TASK-8e00eaa5bdc6",
@@ -298,18 +333,42 @@
         "source_url": "https://www.moex.com/n101684",
         "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
         "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-02bdb3153843",
+        "priority": "P1",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (-5.19%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-28a9f9582d0b",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения YDEX (-2.68%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "YDEX",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "source_title": "MOEX quote for YDEX",
+        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "1 новых сигналов с прошлого запуска; 6 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 8 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "Итоги выпуска биржевых облигаций"
+        "text": "Новых событий после предыдущего запуска не обнаружено."
       },
       {
         "label": "Рынок",
-        "text": "Движений выше установленного порога нет."
+        "text": "VKCO: -5.19% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",

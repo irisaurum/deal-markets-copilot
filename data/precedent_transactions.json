@@ -59,7 +59,7 @@
     "score": 9,
     "source_event_id": "moex-101717",
     "first_seen_at": "2026-07-02T08:29:59+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -119,10 +119,10 @@
     "source_name": "MOEX disclosure",
     "source_url": "https://www.moex.com/n101722",
     "evidence_label": "confirmed",
-    "score": 6,
+    "score": 7,
     "source_event_id": "moex-101722",
     "first_seen_at": "2026-07-02T09:16:52+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -309,7 +309,7 @@
     "score": 7,
     "source_event_id": "moex-101684",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -373,7 +373,7 @@
     "score": 7,
     "source_event_id": "moex-101691",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -437,7 +437,7 @@
     "score": 7,
     "source_event_id": "moex-101690",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -500,7 +500,7 @@
     "score": 7,
     "source_event_id": "moex-101688",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -1114,7 +1114,7 @@
     "score": 3,
     "source_event_id": "c76896181d89cde6",
     "first_seen_at": "2026-06-30T12:11:22+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2332,7 +2332,7 @@
     "score": 7,
     "source_event_id": "7a721642a53e0f1d",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2396,7 +2396,7 @@
     "score": 3,
     "source_event_id": "9092ffd6a36a0a81",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2469,7 +2469,7 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2698,7 +2698,7 @@
     "score": 9,
     "source_event_id": "5eba3b27a4e84dd3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2771,7 +2771,7 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3057,7 +3057,7 @@
     "score": 3,
     "source_event_id": "32f044efd41bc454",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3122,7 +3122,7 @@
     "score": 3,
     "source_event_id": "71608263fecb5e53",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3194,7 +3194,7 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3578,7 +3578,7 @@
     "score": 4,
     "source_event_id": "dd21f961f579e55a",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3772,9 +3772,16 @@
         "evidence_label": "unverified",
         "source_type": "archive_discovery",
         "published_at": "Mon, 20 Apr 2026 07:00:00 GMT"
+      },
+      {
+        "name": "Эксперт",
+        "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxPWGhKZDBJT19jSHlMQlI2Z3RWU2NzOUlEekZlamVwMnNmV0JXZ2dNeXZWaWF1eEEzRlVzTE5pd1JNZUNlRkV3OVB3QUZzU1B4Tm1HYjNkcV9oWE1RQlY0dGIyNkUwdm05RTlfM1ZLQzJiNldVLWNSRGQ5aUNrRUdmc1dBMEVORThSVnNVTEl3d3JMLUFBak5OZjNhMA?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 20 Apr 2026 07:00:00 GMT"
       }
     ],
-    "source_count": 2,
+    "source_count": 3,
     "matched_coverage": [
       "YDEX"
     ],
@@ -3784,7 +3791,7 @@
     "score": 4,
     "source_event_id": "e65aa610a439e531",
     "first_seen_at": "2026-06-29T13:14:59+00:00",
-    "last_seen_at": "2026-06-29T13:14:59+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents.",
     "seller": "Not applicable",
     "record_kind": "watchlist",
@@ -3871,7 +3878,7 @@
     "score": 4,
     "source_event_id": "0e547964381c1356",
     "first_seen_at": "2026-06-29T13:14:59+00:00",
-    "last_seen_at": "2026-06-30T09:40:17+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3972,7 +3979,7 @@
     "score": 6,
     "source_event_id": "c10daba8af8e67d8",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4459,7 +4466,7 @@
     "score": 5,
     "source_event_id": "238a83afad61e805",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4522,7 +4529,7 @@
     "score": 7,
     "source_event_id": "251bf0d0b7b600c1",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4583,7 +4590,7 @@
     "score": 5,
     "source_event_id": "aa5a93661389a659",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4644,7 +4651,7 @@
     "score": 5,
     "source_event_id": "c898acc93d60813b",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4705,7 +4712,7 @@
     "score": 5,
     "source_event_id": "3b4a4419ab6b81bf",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4768,7 +4775,7 @@
     "score": 5,
     "source_event_id": "0242cf80b3f97c9c",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T11:53:57+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   }
 ]
