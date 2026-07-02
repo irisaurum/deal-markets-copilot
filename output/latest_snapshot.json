@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3507,
-      "change_percent": -4.61,
-      "turnover": 2109012701,
-      "updated": "16:50:19",
+      "price": 3498.5,
+      "change_percent": -4.84,
+      "turnover": 2616818561,
+      "updated": "19:05:45",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3317,
-      "change_percent": -3.04,
-      "turnover": 901002736,
-      "updated": "16:49:39",
+      "price": 3294.5,
+      "change_percent": -3.7,
+      "turnover": 1112365704,
+      "updated": "19:05:45",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 174.9,
-      "change_percent": -5.97,
-      "turnover": 717885358,
-      "updated": "16:50:20",
+      "price": 174.95,
+      "change_percent": -5.94,
+      "turnover": 877427393,
+      "updated": "19:05:45",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -40,6 +40,52 @@
     }
   ],
   "events": [
+    {
+      "event": {
+        "event_id": "moex-101737",
+        "published_at": "2026-07-02 19:13:28",
+        "title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера",
+        "summary": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера 2026-07-02 19:13:28 В соответствии с Правилами листинга ПАО Московская Биржа Председателем Правления 02.07.2026 приняты следующие решения: 1. зарегистрировать выпуск биржевых облигаций; присвоить выпуску регистрационный номер; включить в Список ценных бумаг, допущенных к торгам в ПАО Московская Биржа, в отношении следующих ценных бумаг: Наименование Эмитента Публичное акционерное общество \"ГЛОРАКС\" Наименование ценной бумаги Биржевые облигации зеленые процентные неконвертируемые бездокументарные серии 002Р-01 Регистрационный номер выпуска 4B02-01-16806-A-002P от 02.07.2026 Раздел Списка Второй уровень Основание принятия решения Заявление 2. Включить ценные бумаги, указанные в пункте 1, в Сегмент облигаций устойчивого развития Сектора устойчивого развития в связи с получением соответствующего письма организации. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101737",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "moex-101734",
+        "published_at": "2026-07-02 18:39:40",
+        "title": "О регистрации программы и проспекта биржевых облигаций",
+        "summary": "О регистрации программы и проспекта биржевых облигаций 2026-07-02 18:39:40 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления \"02\" июля 2026 года приняты следующие решения: зарегистрировать программу биржевых облигаций, присвоить программе регистрационный номер, зарегистрировать проспект биржевых облигаций, в отношении следующих ценных бумаг: Наименование Эмитента Акционерное общество \"ЗАСЛОН\" Наименование ценной бумаги Программа биржевых облигаций неконвертируемых бездокументарных серии 002Р Регистрационный номер программы 4-02289-D-002P-02E от 02.07.2026 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101734",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
     {
       "event": {
         "event_id": "moex-101722",
@@ -156,43 +202,23 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101684",
-        "published_at": "2026-07-01 16:44:00",
-        "title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
-        "summary": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера 2026-07-01 16:44:00 В соответствии с Правилами листинга ПАО Московская Биржа Председателем Правления 01.07.2026 приняты следующие решения: зарегистрировать выпуск биржевых облигаций; присвоить выпуску регистрационный номер; включить в Список ценных бумаг, допущенных к торгам в ПАО Московская Биржа, в отношении следующих ценных бумаг: Наименование Эмитента Публичное акционерное общество \"Сбербанк России\" Наименование ценной бумаги Биржевые облигации процентные неконвертируемые бездокументарные серии ИОС-USDRUB-BNR-1Y-001Р-810R Регистрационный номер выпуска 4B02-839-01481-B-001P от 01.07.2026 Раздел Списка Третий уровень Основание принятия решения Заявление Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101684",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [],
-    "new_signals": 0,
+    "new_event_ids": [
+      "moex-101734",
+      "moex-101737"
+    ],
+    "new_signals": 2,
     "market_moves": [
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 174.9,
-        "change_percent": -5.97,
-        "turnover": 717885358,
-        "updated": "16:50:20",
+        "price": 174.95,
+        "change_percent": -5.94,
+        "turnover": 877427393,
+        "updated": "19:05:45",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -201,10 +227,10 @@
       {
         "ticker": "YDEX",
         "company": "Yandex",
-        "price": 3507,
-        "change_percent": -4.61,
-        "turnover": 2109012701,
-        "updated": "16:50:19",
+        "price": 3498.5,
+        "change_percent": -4.84,
+        "turnover": 2616818561,
+        "updated": "19:05:45",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -213,10 +239,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3317,
-        "change_percent": -3.04,
-        "turnover": 901002736,
-        "updated": "16:49:39",
+        "price": 3294.5,
+        "change_percent": -3.7,
+        "turnover": 1112365704,
+        "updated": "19:05:45",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -260,6 +286,30 @@
       }
     ],
     "tasks": [
+      {
+        "id": "TASK-0de639869390",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101737",
+        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-ed68a8023168",
+        "priority": "P1",
+        "state": "new",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101734",
+        "source_title": "О регистрации программы и проспекта биржевых облигаций",
+        "hypothesis_ids": []
+      },
       {
         "id": "TASK-5b3108da5a9f",
         "priority": "P1",
@@ -323,52 +373,28 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-00033ab6a9d4",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101684",
-        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам, и о присвоении указанным биржевым облигациям регистрационного номера",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-02bdb3153843",
         "priority": "P1",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-5.97%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-5.94%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
         "source_title": "MOEX quote for VKCO",
         "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-28a9f9582d0b",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения YDEX (-4.61%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "YDEX",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-        "source_title": "MOEX quote for YDEX",
-        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 8 действий по текущему покрытию.",
+    "summary": "2 новых сигналов с прошлого запуска; 8 действий в очереди; 0 гипотез требуют внимания.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "Новых событий после предыдущего запуска не обнаружено."
+        "text": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера"
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -5.97% к предыдущему закрытию."
+        "text": "VKCO: -5.94% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
