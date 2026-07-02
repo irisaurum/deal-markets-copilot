@@ -20,7 +20,7 @@
 <header class="site-header"><div class="nav-wrap">
   <a class="brand" href="#brief"><span class="brand-mark">DM</span><span><strong>Deal Market Monitor</strong><small>M&amp;A · ECM · DCM</small></span></a>
   <nav><a href="#deals">Сделки</a><a href="#signals">Свежие события</a><a href="#analytics">Аналитика</a></nav>
-  <div class="status"><span class="dot live"></span><span><strong>Данные обновлены</strong><small>03.07.2026 · 02:19</small></span></div>
+  <div class="status"><span class="dot live"></span><span><strong>Данные обновлены</strong><small>03.07.2026 · 02:24</small></span></div>
 </div></header>
 
 <main class="page">
@@ -37,10 +37,16 @@
     </div></div>
   </section>
 
-  <section class="market-strip" aria-label="Котировки покрытия"><div class="tape-empty">MOEX MARKET TAPE · Данные временно недоступны</div></section>
+  <section class="market-strip" aria-label="Котировки покрытия"><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">
+        <div><strong>YDEX</strong><small>Yandex</small></div>
+        <span class="quote-price">— ₽</span><span class="quote-change flat">—</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">
+        <div><strong>OZON</strong><small>Ozon</small></div>
+        <span class="quote-price">— ₽</span><span class="quote-change flat">—</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">
+        <div><strong>VKCO</strong><small>VK</small></div>
+        <span class="quote-price">— ₽</span><span class="quote-change flat">—</span></a></section>
 
   <section class="health-panel ok" aria-label="Состояние системы">
-      <div><span class="health-dot"></span><strong>Система готова</strong><small>Последний успешный сбор: 2026-07-03T02:19+03:00</small></div>
+      <div><span class="health-dot"></span><strong>Система готова</strong><small>Последний успешный сбор: 2026-07-03T02:24+03:00</small></div>
       <dl><div><dt>Build ID</dt><dd>a4432f860b74</dd></div><div><dt>Записей</dt><dd>82</dd></div><div><dt>Approved</dt><dd>16</dd></div><div><dt>Прямых источников</dt><dd>100</dd></div><div><dt>QA issues</dt><dd>0</dd></div><div><dt>Excel</dt><dd>синхронизирован</dd></div></dl>
     </section>
 
@@ -324,12 +330,18 @@
   </section>
 
   <section class="utility-grid">
-    <details class="data-drawer"><summary>Котировки покрытия <span>MOEX ISS</span></summary><div class="empty">Запусти <code>python3 run.py --live</code>, чтобы получить реальные котировки.</div></details>
+    <details class="data-drawer"><summary>Котировки покрытия <span>MOEX ISS</span></summary><div class="table-wrap"><table><thead><tr><th>Security</th><th>Last</th><th>Change</th><th>Turnover</th><th>Updated</th><th>Source</th></tr></thead><tbody><tr><td><strong>YDEX</strong><small>Yandex</small></td>
+        <td>— ₽</td><td class="">—</td>
+        <td>—</td><td>unavailable</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>OZON</strong><small>Ozon</small></td>
+        <td>— ₽</td><td class="">—</td>
+        <td>—</td><td>unavailable</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>VKCO</strong><small>VK</small></td>
+        <td>— ₽</td><td class="">—</td>
+        <td>—</td><td>unavailable</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr></tbody></table></div></details>
     <details class="data-drawer" id="sources"><summary>Источники и подтверждения <span>0 свежих записей</span></summary><div class="table-wrap"><table><thead><tr><th>ID</th><th>Источник</th><th>Дата</th><th>Статус</th><th>Тип</th><th>Claim</th><th>Ссылка</th></tr></thead><tbody></tbody></table></div></details>
   </section>
   <footer><strong>Deal Market Monitor</strong><span>Публичные данные · выводы требуют проверки аналитиком · не является инвестиционной рекомендацией</span><small>YDEX · OZON · VKCO</small></footer>
 </main>
-<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 03.07.2026 · 02:19\nНовых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Очередь действий пуста.\nActions:";
+<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 03.07.2026 · 02:24\nНовых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Очередь действий пуста.\nActions:";
 const AUTO_REFRESH_MS=5*60*1000;
 const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
 function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}

@@ -112,11 +112,12 @@ def main() -> int:
         ]
         current_deals.extend(archive_deals)
     precedent_path = ROOT / "data" / "precedent_transactions.json"
-    precedents = (
-        update_precedent_database(current_deals, precedent_path)
-        if selected_mode == "live"
-        else [record.to_dict() for record in current_deals]
-    )
+    if args.replay:
+        precedents = load_public_dataset(precedent_path)
+    elif selected_mode == "live":
+        precedents = update_precedent_database(current_deals, precedent_path)
+    else:
+        precedents = [record.to_dict() for record in current_deals]
     if selected_mode == "live":
         curated = load_public_dataset(ROOT / "data" / "curated_precedents.json")
         financials = json.loads((ROOT / "data" / "financials.json").read_text(encoding="utf-8"))
