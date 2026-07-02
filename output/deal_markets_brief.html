@@ -20,40 +20,34 @@
 <header class="site-header"><div class="nav-wrap">
   <a class="brand" href="#brief"><span class="brand-mark">DM</span><span><strong>Deal Market Monitor</strong><small>M&amp;A · ECM · DCM</small></span></a>
   <nav><a href="#deals">Сделки</a><a href="#signals">Свежие события</a><a href="#analytics">Аналитика</a></nav>
-  <div class="status"><span class="dot live"></span><span><strong>Данные обновлены</strong><small>02.07.2026 · 23:10</small></span></div>
+  <div class="status"><span class="dot live"></span><span><strong>Данные обновлены</strong><small>03.07.2026 · 02:19</small></span></div>
 </div></header>
 
 <main class="page">
   <section class="overview" id="brief">
     <div class="overview-copy"><span class="eyebrow">ЕЖЕДНЕВНЫЙ МОНИТОРИНГ СДЕЛОК</span><h1>Что происходит на рынке сделок</h1>
-    <p>Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию. Последние подтверждённые сделки сохраняются в архиве и не исчезают после обновления.</p>
+    <p>Новых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию. Последние подтверждённые сделки сохраняются в архиве и не исчезают после обновления.</p>
     <div class="overview-actions"><a class="button primary" href="#deals">Смотреть сделки</a><button class="button ghost" id="copy-brief">Скопировать сводку</button></div></div>
     <div class="overview-side"><div class="freshness"><span class="dot live"></span><div><strong>Свежие данные · 24H</strong><small>Автообновление каждые 30 минут в рабочее время</small></div></div>
     <div class="metric-grid">
       <article><span>Свежих событий</span><strong>0</strong><small>24h</small></article>
-      <article><span>Сделок в фокусе</span><strong>10</strong><small>последние ключевые</small></article>
-      <article><span>M&amp;A</span><strong>4</strong><small>в текущей выборке</small></article>
-      <article><span>Архив</span><strong>82</strong><small>всего записей</small></article>
+      <article><span>Сделок в фокусе</span><strong>4</strong><small>последние ключевые</small></article>
+      <article><span>M&amp;A</span><strong>1</strong><small>в текущей выборке</small></article>
+      <article><span>База данных</span><strong>82</strong><small>live + precedents</small></article>
     </div></div>
   </section>
 
-  <section class="market-strip" aria-label="Котировки покрытия"><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">
-        <div><strong>YDEX</strong><small>Yandex</small></div>
-        <span class="quote-price">3 511.00 ₽</span><span class="quote-change down">-4.50%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">
-        <div><strong>OZON</strong><small>Ozon</small></div>
-        <span class="quote-price">3 264.00 ₽</span><span class="quote-change down">-4.59%</span></a><a class="quote-card" href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">
-        <div><strong>VKCO</strong><small>VK</small></div>
-        <span class="quote-price">174.70 ₽</span><span class="quote-change down">-6.08%</span></a></section>
+  <section class="market-strip" aria-label="Котировки покрытия"><div class="tape-empty">MOEX MARKET TAPE · Данные временно недоступны</div></section>
 
   <section class="health-panel ok" aria-label="Состояние системы">
-      <div><span class="health-dot"></span><strong>Система готова</strong><small>Последний успешный сбор: 2026-07-02T23:10+00:00</small></div>
+      <div><span class="health-dot"></span><strong>Система готова</strong><small>Последний успешный сбор: 2026-07-03T02:19+03:00</small></div>
       <dl><div><dt>Build ID</dt><dd>a4432f860b74</dd></div><div><dt>Записей</dt><dd>82</dd></div><div><dt>Approved</dt><dd>16</dd></div><div><dt>Прямых источников</dt><dd>100</dd></div><div><dt>QA issues</dt><dd>0</dd></div><div><dt>Excel</dt><dd>синхронизирован</dd></div></dl>
     </section>
 
   <section class="section" id="deals">
     <div class="section-head"><div><span class="eyebrow">КЛЮЧЕВЫЕ СДЕЛКИ</span><h2>Последние сделки рынка</h2><p>Самое важное — стороны, сумма, статус и ссылка на подтверждение. Без технических сообщений биржи.</p></div>
     <div class="export-actions"><a class="button primary" href="precedent_transactions.xlsx" download>Скачать Excel</a><a class="button ghost" href="precedent_transactions.csv" download>CSV</a></div></div>
-    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Подтверждённые <span>10</span></button><button class="deal-filter" data-deal-filter="watchlist">Слухи и переговоры <span>10</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>1</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>10</span></button></div>
+    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Подтверждённые <span>4</span></button><button class="deal-filter" data-deal-filter="watchlist">Слухи и переговоры <span>10</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>1</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>10</span></button></div>
     <label class="search"><span>⌕</span><input id="deal-search" placeholder="Найти компанию или сделку"></label></div>
     <div class="deal-advanced-filters" aria-label="Фильтры сделок">
       <label>Тип<select id="deal-type-filter"><option value="all">Все типы</option><option value="M&A">M&A</option><option value="DCM">DCM</option><option value="ECM">ECM</option></select></label>
@@ -64,8 +58,8 @@
       <label>Сортировка<select id="deal-sort"><option value="date-desc">Сначала новые</option><option value="date-asc">Сначала старые</option><option value="amount-desc">По сумме внутри валюты</option><option value="score-desc">По качеству ↓</option></select></label>
       <button class="reset-filters" id="deal-filter-reset" type="button">Сбросить</button>
     </div>
-    <div class="deal-stats"><span><b>82</b> записей в архиве</span><span><b>9</b> из 10 прошли quality gate</span><span>Медиана EV/Revenue <b>10.2x</b></span><span>Медиана EV/EBITDA <b>63.1x</b></span></div>
-    <div class="deal-panels"><section class="bucket-panel" data-bucket-panel="deal"><div class="bucket-head"><div><h3>Подтверждённые сделки</h3><p>Фактические сделки и размещения, прошедшие первичную проверку.</p></div><span>10</span></div><div class="deal-grid"><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Closed" data-deal-date="2026-06-28" data-deal-amount="20000000000.0" data-deal-currency="RUB" data-deal-score="100" data-deal-search="мтс успешно закрыла книгу биржевых облигаций 003р-03 на 20 млрд руб. mtss not applicable not applicable mts investor relations not disclosed not disclosed">
+    <div class="deal-stats"><span><b>4</b> актуальных сделок за 12 месяцев</span><span><b>3</b> прошли quality gate</span><span>Медиана EV/Revenue <b>10.2x</b></span><span>Медиана EV/EBITDA <b>63.1x</b></span></div>
+    <div class="deal-panels"><section class="bucket-panel" data-bucket-panel="deal"><div class="bucket-head"><div><h3>Подтверждённые сделки</h3><p>Фактические сделки и размещения, прошедшие первичную проверку.</p></div><span>4</span></div><div class="deal-grid"><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Closed" data-deal-date="2026-06-28" data-deal-amount="20000000000.0" data-deal-currency="RUB" data-deal-score="100" data-deal-search="мтс успешно закрыла книгу биржевых облигаций 003р-03 на 20 млрд руб. mtss not applicable not applicable mts investor relations not disclosed not disclosed">
           <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Закрыто</span><span class="quality-badge approved">Проверено</span><time>2026-06-28</time></div>
           <h3>МТС успешно закрыла книгу биржевых облигаций 003Р-03 на 20 млрд руб.</h3>
           <div class="entity-grid"><div><span>Эмитент</span><strong>MTSS</strong></div><div><span>Инструмент</span><strong>Bonds</strong></div></div><div class="deal-facts typed-facts"><div><span>Объём</span><strong>20.0 млрд ₽</strong></div><div><span>Купон</span><strong>Не раскрыт</strong></div><div><span>Погашение / срок</span><strong>Не раскрыто</strong></div><div><span>ISIN / номер</span><strong>Не раскрыто</strong></div></div>
@@ -93,48 +87,6 @@
 
           <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>RUB</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>Не раскрыто</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
           <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://selectel.ru/about/newsroom/news/selectel-razmestil-novyj-vypusk-obligaczij-i-privlek-7-milliardov-rublej-na-razvitie-biznesa/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></div>
-        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Financials" data-deal-status="Announced" data-deal-date="2024-11-15" data-deal-amount="3000000000.0" data-deal-currency="RUB" data-deal-score="100" data-deal-search="selectel планирует размещение облигаций объемом 3 миллиарда рублей selectel not applicable not applicable selectel newsroom not disclosed not disclosed">
-          <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Объявлено</span><span class="quality-badge approved">Проверено</span><time>2024-11-15</time></div>
-          <h3>Selectel планирует размещение облигаций объемом 3 миллиарда рублей</h3>
-          <div class="entity-grid"><div><span>Эмитент</span><strong>SELECTEL</strong></div><div><span>Инструмент</span><strong>Bonds</strong></div></div><div class="deal-facts typed-facts"><div><span>Объём</span><strong>3.0 млрд ₽</strong></div><div><span>Купон</span><strong>Плавающий</strong></div><div><span>Погашение / срок</span><strong>2.5 года</strong></div><div><span>ISIN / номер</span><strong>Не раскрыто</strong></div></div>
-
-          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>RUB</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>2.5 года</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
-          <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej-2/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></div>
-        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Confirmed" data-deal-date="2024-04-09" data-deal-amount="4000000000.0" data-deal-currency="RUB" data-deal-score="100" data-deal-search="selectel на фоне повышенного спроса на облигации четвертого выпуска увеличил объем размещения до 4 млрд рублей selectel not applicable not applicable selectel newsroom not disclosed not disclosed">
-          <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Подтверждено</span><span class="quality-badge approved">Проверено</span><time>2024-04-09</time></div>
-          <h3>Selectel на фоне повышенного спроса на облигации четвертого выпуска увеличил объем размещения до 4 млрд рублей</h3>
-          <div class="entity-grid"><div><span>Эмитент</span><strong>SELECTEL</strong></div><div><span>Инструмент</span><strong>Bonds</strong></div></div><div class="deal-facts typed-facts"><div><span>Объём</span><strong>4.0 млрд ₽</strong></div><div><span>Купон</span><strong>15.0%</strong></div><div><span>Погашение / срок</span><strong>2 года</strong></div><div><span>ISIN / номер</span><strong>Не раскрыто</strong></div></div>
-
-          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>RUB</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>2 года</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
-          <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://selectel.ru/about/newsroom/news/selectel-na-fone-povyshennogo-sprosa-na-obligaczii-chetvertogo-vypuska-uvelichil-obem-razmeshheniya-do-4-mlrd-rublej/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></div>
-        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Announced" data-deal-date="2024-03-06" data-deal-amount="3000000000.0" data-deal-currency="RUB" data-deal-score="100" data-deal-search="selectel планирует размещение облигаций объемом 3 миллиарда рублей selectel not applicable not applicable selectel newsroom not disclosed not disclosed">
-          <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Объявлено</span><span class="quality-badge approved">Проверено</span><time>2024-03-06</time></div>
-          <h3>Selectel планирует размещение облигаций объемом 3 миллиарда рублей</h3>
-          <div class="entity-grid"><div><span>Эмитент</span><strong>SELECTEL</strong></div><div><span>Инструмент</span><strong>Bonds</strong></div></div><div class="deal-facts typed-facts"><div><span>Объём</span><strong>3.0 млрд ₽</strong></div><div><span>Купон</span><strong>Не раскрыт</strong></div><div><span>Погашение / срок</span><strong>Не раскрыто</strong></div><div><span>ISIN / номер</span><strong>Не раскрыто</strong></div></div>
-
-          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>RUB</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>Не раскрыто</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
-          <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></div>
-        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="M&amp;A" data-deal-sector="Technology" data-deal-status="Closed" data-deal-date="2023-09-21" data-deal-amount="28000000000" data-deal-currency="USD" data-deal-score="100" data-deal-search="cisco acquired splunk in an all-cash transaction splunk cisco public shareholders cisco transaction announcement not applicable not applicable">
-          <div class="deal-tile-top"><span class="type-badge type-ma">M&amp;A</span><span class="deal-status">Закрыто</span><span class="quality-badge approved">Проверено</span><time>2023-09-21</time></div>
-          <h3>Cisco acquired Splunk in an all-cash transaction</h3>
-          <div class="entity-grid"><div><span>Покупатель</span><strong>Cisco</strong></div><div><span>Target</span><strong>Splunk</strong></div><div><span>Продавец</span><strong>Public shareholders</strong></div></div><div class="deal-facts typed-facts"><div><span>Стоимость</span><strong>28.0 млрд $</strong></div><div><span>Доля</span><strong>100.0%</strong></div><div><span>Форма оплаты</span><strong>Cash</strong></div><div><span>EV/EBITDA</span><strong>N/M</strong></div></div>
-
-          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Advisors</span><strong>Не раскрыто</strong></div><div><span>Rationale</span><strong>Create a scaled security and observability platform</strong></div><div><span>EV</span><strong>Не раскрыто</strong></div><div><span>Revenue LTM</span><strong>3.7 bn $</strong></div><div><span>EBITDA LTM</span><strong>Не раскрыто</strong></div><div><span>Financials as of</span><strong>2023-01-31</strong></div><div><span>Financial source</span><strong>Splunk FY2023 Form 10-K</strong></div><div><span>Multiple note</span><strong>Calculated from disclosed EV and latest audited financials available at announcement</strong></div></div></details>
-          <div class="deal-tile-foot"><span>Источники · 2</span><div class="source-list"><a href="https://investor.cisco.com/news/news-details/2023/Cisco-to-Acquire-Splunk-to-Help-Make-Organizations-More-Secure-and-Resilient-in-an-AI-Powered-World/default.aspx" target="_blank" rel="noopener">Cisco transaction announcement ✓</a><a href="https://www.sec.gov/Archives/edgar/data/1353283/000135328323000011/splk-20230131.htm" target="_blank" rel="noopener">Splunk FY2023 Form 10-K ✓</a></div></div>
-        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="M&amp;A" data-deal-sector="Technology" data-deal-status="Closed" data-deal-date="2022-05-26" data-deal-amount="61000000000" data-deal-currency="USD" data-deal-score="100" data-deal-search="broadcom acquired vmware in a cash-and-stock transaction vmware broadcom public shareholders broadcom transaction announcement not applicable not applicable">
-          <div class="deal-tile-top"><span class="type-badge type-ma">M&amp;A</span><span class="deal-status">Закрыто</span><span class="quality-badge approved">Проверено</span><time>2022-05-26</time></div>
-          <h3>Broadcom acquired VMware in a cash-and-stock transaction</h3>
-          <div class="entity-grid"><div><span>Покупатель</span><strong>Broadcom</strong></div><div><span>Target</span><strong>VMware</strong></div><div><span>Продавец</span><strong>Public shareholders</strong></div></div><div class="deal-facts typed-facts"><div><span>Стоимость</span><strong>61.0 млрд $</strong></div><div><span>Доля</span><strong>100.0%</strong></div><div><span>Форма оплаты</span><strong>Cash and shares</strong></div><div><span>EV/EBITDA</span><strong>23.3x</strong></div></div>
-
-          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Advisors</span><strong>Barclays, Morgan Stanley, Citi, Goldman Sachs, J.P. Morgan, BofA Securities</strong></div><div><span>Rationale</span><strong>Scale Broadcom&#x27;s infrastructure software business and expand enterprise software exposure</strong></div><div><span>EV</span><strong>69.0 bn $</strong></div><div><span>Revenue LTM</span><strong>12.9 bn $</strong></div><div><span>EBITDA LTM</span><strong>3.0 bn $</strong></div><div><span>Financials as of</span><strong>2022-01-28</strong></div><div><span>Financial source</span><strong>VMware FY2022 Form 10-K</strong></div><div><span>Multiple note</span><strong>Calculated from disclosed EV and latest audited financials available at announcement</strong></div></div></details>
-          <div class="deal-tile-foot"><span>Источники · 2</span><div class="source-list"><a href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-acquire-vmware-approximately-61-billion-cash-and-stock" target="_blank" rel="noopener">Broadcom transaction announcement ✓</a><a href="https://www.sec.gov/Archives/edgar/data/1124610/000112461022000009/vmw-20220128.htm" target="_blank" rel="noopener">VMware FY2022 Form 10-K ✓</a></div></div>
-        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="M&amp;A" data-deal-sector="Technology" data-deal-status="Closed" data-deal-date="2022-03-20" data-deal-amount="10400000000" data-deal-currency="USD" data-deal-score="100" data-deal-search="thoma bravo acquired anaplan in an all-cash transaction anaplan thoma bravo public shareholders anaplan completion announcement not applicable not applicable">
-          <div class="deal-tile-top"><span class="type-badge type-ma">M&amp;A</span><span class="deal-status">Закрыто</span><span class="quality-badge approved">Проверено</span><time>2022-03-20</time></div>
-          <h3>Thoma Bravo acquired Anaplan in an all-cash transaction</h3>
-          <div class="entity-grid"><div><span>Покупатель</span><strong>Thoma Bravo</strong></div><div><span>Target</span><strong>Anaplan</strong></div><div><span>Продавец</span><strong>Public shareholders</strong></div></div><div class="deal-facts typed-facts"><div><span>Стоимость</span><strong>10.4 млрд $</strong></div><div><span>Доля</span><strong>100.0%</strong></div><div><span>Форма оплаты</span><strong>Cash</strong></div><div><span>EV/EBITDA</span><strong>N/M</strong></div></div>
-
-          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Advisors</span><strong>Не раскрыто</strong></div><div><span>Rationale</span><strong>Accelerate Anaplan&#x27;s connected planning platform as a private company</strong></div><div><span>EV</span><strong>Не раскрыто</strong></div><div><span>Revenue LTM</span><strong>592.2 mm $</strong></div><div><span>EBITDA LTM</span><strong>Не раскрыто</strong></div><div><span>Financials as of</span><strong>2022-01-31</strong></div><div><span>Financial source</span><strong>Anaplan FY2022 Form 10-K</strong></div><div><span>Multiple note</span><strong>Calculated from disclosed EV and audited financials; report became available after announcement</strong></div></div></details>
-          <div class="deal-tile-foot"><span>Источники · 2</span><div class="source-list"><a href="https://www.anaplan.com/news/thoma-bravo-completes-acquisition-of-anaplan/" target="_blank" rel="noopener">Anaplan completion announcement ✓</a><a href="https://www.sec.gov/Archives/edgar/data/1540755/000154075522000018/plan-20220131.htm" target="_blank" rel="noopener">Anaplan FY2022 Form 10-K ✓</a></div></div>
         </article></div><div class="filter-empty" hidden>По выбранным фильтрам записей нет. Сбросьте фильтры или выберите другой поток.</div></section><section class="bucket-panel" data-bucket-panel="watchlist" hidden><div class="bucket-head"><div><h3>Слухи и переговоры</h3><p>Сценарии, которые нельзя использовать как свершившийся факт.</p></div><span>10</span></div><div class="deal-grid"><article class="deal-tile" data-deal-bucket="watchlist" data-deal-type="DCM" data-deal-sector="Financials" data-deal-status="Reported" data-deal-date="2026-06-30" data-deal-amount="" data-deal-currency="Not disclosed" data-deal-score="75" data-deal-search="московская биржа установила порядок размещения облигаций сбербанка серии иос-ydex-bnr-1y-001р-808r - traders union yandex not applicable not applicable traders union not disclosed not disclosed">
           <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Сообщается</span><span class="quality-badge review">Требует проверки</span><time>2026-06-30</time></div>
           <h3>Московская биржа установила порядок размещения облигаций Сбербанка серии ИОС-YDEX-BNR-1Y-001Р-808R - Traders Union</h3>
@@ -307,43 +259,7 @@
         <td>7.0 bn ₽</td><td>Not disclosed</td>
         <td>N/M</td><td>N/M</td><td>Not applicable</td>
         <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://selectel.ru/about/newsroom/news/selectel-razmestil-novyj-vypusk-obligaczij-i-privlek-7-milliardov-rublej-na-razvitie-biznesa/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></td></tr><tr><td>2024-11-15</td><td><b>DCM</b><small>Объявлено</small></td>
-        <td class="deal-headline"><b>Selectel планирует размещение облигаций объемом 3 миллиарда рублей</b></td>
-        <td>SELECTEL</td><td>Not applicable</td>
-        <td>3.0 bn ₽</td><td>Not disclosed</td>
-        <td>N/M</td><td>N/M</td><td>Not applicable</td>
-        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej-2/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></td></tr><tr><td>2024-04-09</td><td><b>DCM</b><small>Подтверждено</small></td>
-        <td class="deal-headline"><b>Selectel на фоне повышенного спроса на облигации четвертого выпуска увеличил объем размещения до 4 млрд рублей</b></td>
-        <td>SELECTEL</td><td>Not applicable</td>
-        <td>4.0 bn ₽</td><td>Not disclosed</td>
-        <td>N/M</td><td>N/M</td><td>Not applicable</td>
-        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://selectel.ru/about/newsroom/news/selectel-na-fone-povyshennogo-sprosa-na-obligaczii-chetvertogo-vypuska-uvelichil-obem-razmeshheniya-do-4-mlrd-rublej/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></td></tr><tr><td>2024-03-06</td><td><b>DCM</b><small>Объявлено</small></td>
-        <td class="deal-headline"><b>Selectel планирует размещение облигаций объемом 3 миллиарда рублей</b></td>
-        <td>SELECTEL</td><td>Not applicable</td>
-        <td>3.0 bn ₽</td><td>Not disclosed</td>
-        <td>N/M</td><td>N/M</td><td>Not applicable</td>
-        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://selectel.ru/about/newsroom/news/selectel-planiruet-razmeshhenie-obligaczij-obemom-3-milliarda-rublej/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></td></tr><tr><td>2023-09-21</td><td><b>M&amp;A</b><small>Закрыто</small></td>
-        <td class="deal-headline"><b>Cisco acquired Splunk in an all-cash transaction</b></td>
-        <td>Splunk</td><td>Cisco</td>
-        <td>28.0 bn $</td><td>100.0%</td>
-        <td>N/M</td><td>N/M</td><td>Cash</td>
-        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://investor.cisco.com/news/news-details/2023/Cisco-to-Acquire-Splunk-to-Help-Make-Organizations-More-Secure-and-Resilient-in-an-AI-Powered-World/default.aspx" target="_blank" rel="noopener">Cisco transaction announcement ✓</a><a href="https://www.sec.gov/Archives/edgar/data/1353283/000135328323000011/splk-20230131.htm" target="_blank" rel="noopener">Splunk FY2023 Form 10-K ✓</a></div></td></tr><tr><td>2022-05-26</td><td><b>M&amp;A</b><small>Закрыто</small></td>
-        <td class="deal-headline"><b>Broadcom acquired VMware in a cash-and-stock transaction</b></td>
-        <td>VMware</td><td>Broadcom</td>
-        <td>61.0 bn $</td><td>100.0%</td>
-        <td>5.4x</td><td>23.3x</td><td>Cash and shares</td>
-        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://investors.broadcom.com/news-releases/news-release-details/broadcom-acquire-vmware-approximately-61-billion-cash-and-stock" target="_blank" rel="noopener">Broadcom transaction announcement ✓</a><a href="https://www.sec.gov/Archives/edgar/data/1124610/000112461022000009/vmw-20220128.htm" target="_blank" rel="noopener">VMware FY2022 Form 10-K ✓</a></div></td></tr><tr><td>2022-03-20</td><td><b>M&amp;A</b><small>Закрыто</small></td>
-        <td class="deal-headline"><b>Thoma Bravo acquired Anaplan in an all-cash transaction</b></td>
-        <td>Anaplan</td><td>Thoma Bravo</td>
-        <td>10.4 bn $</td><td>100.0%</td>
-        <td>N/M</td><td>N/M</td><td>Cash</td>
-        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://www.anaplan.com/news/thoma-bravo-completes-acquisition-of-anaplan/" target="_blank" rel="noopener">Anaplan completion announcement ✓</a><a href="https://www.sec.gov/Archives/edgar/data/1540755/000154075522000018/plan-20220131.htm" target="_blank" rel="noopener">Anaplan FY2022 Form 10-K ✓</a></div></td></tr></tbody></table></div></details>
+        <td><div class="source-list table-sources"><a href="https://selectel.ru/about/newsroom/news/selectel-razmestil-novyj-vypusk-obligaczij-i-privlek-7-milliardov-rublej-na-razvitie-biznesa/" target="_blank" rel="noopener">Selectel Newsroom ✓</a></div></td></tr></tbody></table></div></details>
     <details class="data-drawer"><summary>Precedent multiples <span>6 сделок · только проверяемые расчёты</span></summary><div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Сделка / событие</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Stake</th><th>EV/Revenue</th><th>EV/EBITDA</th><th>Payment</th><th>Quality</th><th>Sources</th></tr></thead><tbody><tr><td>2022-05-26</td><td><b>M&amp;A</b><small>Закрыто</small></td>
         <td class="deal-headline"><b>Broadcom acquired VMware in a cash-and-stock transaction</b></td>
         <td>VMware</td><td>Broadcom</td>
@@ -392,26 +308,8 @@
 
   <section class="section analytics" id="analytics">
     <div class="section-head"><div><span class="eyebrow">АНАЛИТИКА</span><h2>Вывод и следующие действия</h2><p>Рабочая зона вынесена отдельно от ленты сделок.</p></div><button class="button ghost" onclick="window.print()">Печать / PDF</button></div>
-    <div class="analytics-grid"><div class="readout"><h3>Короткий вывод</h3><div class="readout-row"><span>Главный сигнал</span><p>Новых событий после предыдущего запуска не обнаружено.</p></div><div class="readout-row"><span>Рынок</span><p>VKCO: -6.08% к предыдущему закрытию.</p></div><div class="readout-row"><span>Первое действие</span><p>Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.</p></div></div>
-    <div class="action-panel"><div class="subhead"><h3>Что проверить сегодня</h3><span><b id="open-count">3</b> открыто</span></div><div class="task-list"><label class="task" data-task-id="TASK-02bdb3153843">
-        <input class="task-check" type="checkbox"><span class="checkmark">✓</span>
-        <span class="priority p1">P1</span>
-        <span class="task-body"><strong>Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.</strong>
-        <small>VKCO · Market · DELIVERABLE: Trading comps + market movement note</small></span>
-        <span class="state market">MARKET</span>
-        <a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener" title="Источник">↗</a></label><label class="task" data-task-id="TASK-28a9f9582d0b">
-        <input class="task-check" type="checkbox"><span class="checkmark">✓</span>
-        <span class="priority p2">P2</span>
-        <span class="task-body"><strong>Проверить драйвер движения YDEX (-4.50%) и обновить trading comps.</strong>
-        <small>YDEX · Market · DELIVERABLE: Trading comps + market movement note</small></span>
-        <span class="state market">MARKET</span>
-        <a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener" title="Источник">↗</a></label><label class="task" data-task-id="TASK-566158f8fbf9">
-        <input class="task-check" type="checkbox"><span class="checkmark">✓</span>
-        <span class="priority p2">P2</span>
-        <span class="task-body"><strong>Проверить драйвер движения OZON (-4.59%) и обновить trading comps.</strong>
-        <small>OZON · Market · DELIVERABLE: Trading comps + market movement note</small></span>
-        <span class="state market">MARKET</span>
-        <a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener" title="Источник">↗</a></label></div></div></div>
+    <div class="analytics-grid"><div class="readout"><h3>Короткий вывод</h3><div class="readout-row"><span>Главный сигнал</span><p>Новых событий после предыдущего запуска не обнаружено.</p></div><div class="readout-row"><span>Рынок</span><p>Движений выше установленного порога нет.</p></div><div class="readout-row"><span>Первое действие</span><p>Очередь действий пуста.</p></div></div>
+    <div class="action-panel"><div class="subhead"><h3>Что проверить сегодня</h3><span><b id="open-count">0</b> открыто</span></div><div class="task-list"><div class="empty">Нет действий выше заданного порога.</div></div></div></div>
     <details class="data-drawer"><summary>Сценарии и гипотезы <span>внутренняя аналитика, не факты</span></summary><div class="hypothesis-grid"><article class="hypothesis-card active">
         <div class="hypothesis-top"><span>H-01 · Opportunity screening</span><b>ACTIVE</b></div>
         <h3>Yandex — inorganic travel expansion</h3><p>Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.</p>
@@ -426,18 +324,12 @@
   </section>
 
   <section class="utility-grid">
-    <details class="data-drawer"><summary>Котировки покрытия <span>MOEX ISS</span></summary><div class="table-wrap"><table><thead><tr><th>Security</th><th>Last</th><th>Change</th><th>Turnover</th><th>Updated</th><th>Source</th></tr></thead><tbody><tr><td><strong>YDEX</strong><small>Yandex</small></td>
-        <td>3 511.00 ₽</td><td class="negative">-4.50%</td>
-        <td>3.05 млрд ₽</td><td>23:50:20</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=YDEX" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>OZON</strong><small>Ozon</small></td>
-        <td>3 264.00 ₽</td><td class="negative">-4.59%</td>
-        <td>1.48 млрд ₽</td><td>23:50:20</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=OZON" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr><tr><td><strong>VKCO</strong><small>VK</small></td>
-        <td>174.70 ₽</td><td class="negative">-6.08%</td>
-        <td>962.0 млн ₽</td><td>23:50:20</td><td><a href="https://www.moex.com/ru/issue.aspx?board=TQBR&amp;code=VKCO" target="_blank" rel="noopener">MOEX ISS ↗</a></td></tr></tbody></table></div></details>
+    <details class="data-drawer"><summary>Котировки покрытия <span>MOEX ISS</span></summary><div class="empty">Запусти <code>python3 run.py --live</code>, чтобы получить реальные котировки.</div></details>
     <details class="data-drawer" id="sources"><summary>Источники и подтверждения <span>0 свежих записей</span></summary><div class="table-wrap"><table><thead><tr><th>ID</th><th>Источник</th><th>Дата</th><th>Статус</th><th>Тип</th><th>Claim</th><th>Ссылка</th></tr></thead><tbody></tbody></table></div></details>
   </section>
   <footer><strong>Deal Market Monitor</strong><span>Публичные данные · выводы требуют проверки аналитиком · не является инвестиционной рекомендацией</span><small>YDEX · OZON · VKCO</small></footer>
 </main>
-<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 02.07.2026 · 23:10\nНовых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: VKCO: -6.08% к предыдущему закрытию.\nПервое действие: Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.\nActions:\n- P1 · VKCO · Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.\n- P2 · YDEX · Проверить драйвер движения YDEX (-4.50%) и обновить trading comps.\n- P2 · OZON · Проверить драйвер движения OZON (-4.59%) и обновить trading comps.";
+<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 03.07.2026 · 02:19\nНовых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Очередь действий пуста.\nActions:";
 const AUTO_REFRESH_MS=5*60*1000;
 const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
 function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}

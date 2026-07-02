@@ -375,6 +375,13 @@ class CoreTests(unittest.TestCase):
         ]
         self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["real"])
 
+    def test_key_deals_never_mix_historical_curated_precedents_into_live_flow(self) -> None:
+        rows = [
+            {"deal_id": "CURATED-MA-OLD-2022", "announced_date": "2022-01-01", "deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "headline": "Buyer acquired Old Target", "target_or_issuer": "Old Target", "acquirer_or_investor": "Buyer", "score": 10},
+            {"deal_id": "LIVE-2026", "announced_date": "2026-06-01", "deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "headline": "Buyer acquired Current Target", "target_or_issuer": "Current Target", "acquirer_or_investor": "Buyer", "score": 8},
+        ]
+        self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["LIVE-2026"])
+
     def test_database_clears_fields_that_do_not_belong_to_deal_type(self) -> None:
         event = Event("typed-dcm", "2026-07-01T10:00:00+03:00", "Selectel разместил облигации на 5 млрд рублей", "ISIN RU000A10TEST", "Issuer IR", "https://example.com/dcm", source_type="issuer_ir", confidence="confirmed")
         record = extract_deal_record(classify_event(event, []), [])

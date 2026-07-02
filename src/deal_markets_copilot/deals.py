@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import json
 import re
+from datetime import date, timedelta
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
@@ -293,9 +294,11 @@ def write_precedents_csv(rows: list[dict], path: str | Path) -> Path:
 
 
 def select_key_deals(rows: list[dict], limit: int = 10) -> list[dict]:
-    """Return material transaction records, excluding technical exchange notices."""
+    """Return recent live deal flow; historical curated precedents stay analytical-only."""
     selected: list[dict] = []
     for row in rows:
+        if not _is_recent_live_record(row):
+            continue
         if row.get("record_kind") not in {None, "deal"}:
             continue
         if row.get("quality_status") == "rejected":
@@ -328,13 +331,29 @@ def select_key_deals(rows: list[dict], limit: int = 10) -> list[dict]:
     return clusters[:limit]
 
 
+def _is_recent_live_record(row: dict, max_age_days: int = 365) -> bool:
+    if str(row.get("deal_id") or "").startswith("CURATED-"):
+        return False
+    announced = str(row.get("announced_date") or "")[:10]
+    try:
+        announced_date = date.fromisoformat(announced)
+    except ValueError:
+        return False
+    return announced_date >= date.today() - timedelta(days=max_age_days)
+
+
 def select_deal_buckets(rows: list[dict], limit: int = 10) -> dict[str, list[dict]]:
     """Build mutually exclusive UI streams with transactions separated from monitoring items."""
     migrated = [_migrate_row(row) for row in rows]
     deals = select_key_deals(migrated, limit)
     result = {"deal": deals, "watchlist": [], "denial": [], "technical_filing": []}
     for kind in ("watchlist", "denial", "technical_filing"):
-        candidates = [row for row in migrated if row.get("record_kind") == kind and row.get("quality_status") != "rejected"]
+        candidates = [
+            row for row in migrated
+            if row.get("record_kind") == kind
+            and row.get("quality_status") != "rejected"
+            and _is_recent_live_record(row)
+        ]
         candidates.sort(key=lambda row: (
             row.get("announced_date", ""),
             row.get("quality_score", 0),

@@ -72,7 +72,7 @@ def build_html_report(
       {_metric("Свежих событий", len(ranked), news_window.lower())}
       {_metric("Сделок в фокусе", len(key_deals), "последние ключевые")}
       {_metric("M&A", sum(1 for row in key_deals if row.get('deal_type') == 'M&A'), "в текущей выборке")}
-      {_metric("Архив", len(precedents), "всего записей")}
+      {_metric("База данных", len(precedents), "live + precedents")}
     </div></div>
   </section>
 
@@ -94,7 +94,7 @@ def build_html_report(
       <label>Сортировка<select id="deal-sort"><option value="date-desc">Сначала новые</option><option value="date-asc">Сначала старые</option><option value="amount-desc">По сумме внутри валюты</option><option value="score-desc">По качеству ↓</option></select></label>
       <button class="reset-filters" id="deal-filter-reset" type="button">Сбросить</button>
     </div>
-    <div class="deal-stats"><span><b>{len(precedents)}</b> записей в архиве</span><span><b>{sum(1 for row in key_deals if row.get('quality_status') == 'approved')}</b> из {len(key_deals)} прошли quality gate</span><span>Медиана EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b></span><span>Медиана EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda'))}</b></span></div>
+    <div class="deal-stats"><span><b>{len(key_deals)}</b> актуальных сделок за 12 месяцев</span><span><b>{sum(1 for row in key_deals if row.get('quality_status') == 'approved')}</b> прошли quality gate</span><span>Медиана EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b></span><span>Медиана EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda'))}</b></span></div>
     <div class="deal-panels">{_deal_bucket_panels(deal_buckets)}</div>
     <details class="data-drawer"><summary>Открыть полную сравнительную таблицу <span>10 строк · все параметры</span></summary>{_precedent_table(key_deals)}</details>
     <details class="data-drawer"><summary>Precedent multiples <span>{len(multiple_deals)} сделок · только проверяемые расчёты</span></summary>{_precedent_table(multiple_deals[:10])}</details>
