@@ -47,6 +47,14 @@ jobs:
       - name: Rebuild Excel workbook
         run: python scripts/build_precedents_workbook_ci.py
 
+      - name: Synchronize dashboard health with Excel
+        run: python run.py --replay
+
+      - name: Verify synchronized public artifacts
+        run: |
+          python -m unittest discover -s tests -v
+          python scripts/verify_public_artifacts.py
+
       - name: Prepare site
         run: |
           mkdir -p site
@@ -54,13 +62,14 @@ jobs:
           cp output/precedent_transactions.csv site/precedent_transactions.csv
           test -s output/precedent_transactions.xlsx
           cp output/precedent_transactions.xlsx site/precedent_transactions.xlsx
+          cp output/build_manifest.json site/build_manifest.json
           touch site/.nojekyll
 
       - name: Persist change-detection baseline
         run: |
           git config user.name "deal-desk-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add output/deal_markets_brief.html output/latest_snapshot.json output/precedent_transactions.csv output/precedent_transactions.xlsx data/precedent_transactions.json
+          git add output/deal_markets_brief.html output/latest_snapshot.json output/precedent_transactions.csv output/precedent_transactions.xlsx output/build_manifest.json data/precedent_transactions.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh deal desk"
             git push

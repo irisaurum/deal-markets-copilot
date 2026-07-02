@@ -84,6 +84,8 @@ class CoreTests(unittest.TestCase):
         second = build_morning_workflow([item], [], config, previous)
         self.assertEqual(second["new_signals"], 0)
         self.assertEqual(first["tasks"][0]["id"], second["tasks"][0]["id"])
+        version_two = build_morning_workflow([item], [], config, {"workflow_version": 2, "events": [item.to_dict()]})
+        self.assertEqual(version_two["new_signals"], 0)
 
     def test_telegram_digest_escapes_html(self) -> None:
         event = Event("1", "", "A < B", "", "Source", "")
@@ -264,13 +266,23 @@ class CoreTests(unittest.TestCase):
         })
 
     def test_medians_use_valid_ma_multiples(self) -> None:
+        eligible = {"record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "financials_available_at": "2023-12-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50}
         stats = median_multiples([
-            {"deal_type": "M&A", "ev_revenue": 2.0, "ev_ebitda": 8.0},
-            {"deal_type": "M&A", "ev_revenue": 4.0, "ev_ebitda": 12.0},
-            {"deal_type": "DCM", "ev_revenue": 99.0, "ev_ebitda": 99.0},
+            {**eligible, "deal_type": "M&A", "ev_revenue": 2.0, "ev_ebitda": 8.0, "ebitda_ltm": 12.5},
+            {**eligible, "deal_type": "M&A", "ev_revenue": 4.0, "ev_ebitda": 12.0, "ebitda_ltm": 8.3},
+            {**eligible, "deal_type": "M&A", "quality_status": "review", "ev_revenue": 99.0, "ev_ebitda": 99.0},
         ])
         self.assertEqual(stats["ev_revenue"], 3.0)
         self.assertEqual(stats["ev_ebitda"], 10.0)
+
+    def test_medians_exclude_financials_published_after_announcement(self) -> None:
+        base = {"deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50, "ev_revenue": 2.0}
+        stats = median_multiples([
+            {**base, "financials_available_at": "2023-12-15"},
+            {**base, "deal_id": "late", "financials_available_at": "2024-02-01", "ev_revenue": 20.0},
+        ])
+        self.assertEqual(stats["ev_revenue"], 2.0)
+        self.assertEqual(stats["coverage"], 1)
 
     def test_official_moex_disclosure_uses_direct_url(self) -> None:
         payloads = [
@@ -286,6 +298,18 @@ class CoreTests(unittest.TestCase):
     def test_bond_buyback_is_dcm_not_ma(self) -> None:
         event = Event("bond-1", "2026-06-27T08:00:00+03:00", "О порядке приобретения облигаций серии 001P", "", "MOEX disclosure", "https://www.moex.com/n1", source_type="official_exchange", confidence="confirmed")
         self.assertEqual(classify_event(event, []).category, "DCM")
+        self.assertEqual(classify_event(event, []).score, 0)
+
+    def test_classifier_routes_funds_ofz_and_registration_notices_out_of_deals(self) -> None:
+        titles = (
+            "Московская биржа начала торги паями активно управляемого БПИФ",
+            "Итоги аукциона ОФЗ Минфина",
+            "О регистрации программы и проспекта биржевых облигаций",
+            "ВТБ получил в залог крупный пакет акций Ozon",
+        )
+        for index, title in enumerate(titles):
+            item = classify_event(Event(str(index), "2026-07-03", title, "", "MOEX", "https://example.com"), self.coverage)
+            self.assertEqual(item.score, 0)
 
     def test_official_issuer_parser_extracts_date_and_direct_link(self) -> None:
         config = {"primary_sources": {"issuers": [{"name": "Issuer IR", "ticker": "TEST", "url": "https://issuer.example/news", "include_terms": ["сделк"]}]}}
@@ -342,6 +366,25 @@ class CoreTests(unittest.TestCase):
             {"deal_id": "dcm", "announced_date": "2026-06-26", "deal_type": "DCM", "status": "Announced", "target_or_issuer": "Selectel", "acquirer_or_investor": "Not applicable", "transaction_value": 5_000_000_000, "score": 5, "headline": "Selectel анонсировал размещение облигаций"},
         ]
         self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["ma", "dcm"])
+
+    def test_key_deals_exclude_funds_units_and_ofz_auctions(self) -> None:
+        rows = [
+            {"deal_id": "fund", "announced_date": "2026-07-01", "deal_type": "ECM", "record_kind": "deal", "quality_status": "approved", "headline": "Московская биржа начала торги паями БПИФ", "score": 9},
+            {"deal_id": "ofz", "announced_date": "2026-07-01", "deal_type": "DCM", "record_kind": "deal", "quality_status": "approved", "headline": "Итоги аукциона ОФЗ Минфина", "score": 9},
+            {"deal_id": "real", "announced_date": "2026-07-01", "deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "headline": "Buyer acquired Target", "target_or_issuer": "Target", "acquirer_or_investor": "Buyer", "score": 7},
+        ]
+        self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["real"])
+
+    def test_database_clears_fields_that_do_not_belong_to_deal_type(self) -> None:
+        event = Event("typed-dcm", "2026-07-01T10:00:00+03:00", "Selectel разместил облигации на 5 млрд рублей", "ISIN RU000A10TEST", "Issuer IR", "https://example.com/dcm", source_type="issuer_ir", confidence="confirmed")
+        record = extract_deal_record(classify_event(event, []), [])
+        with tempfile.TemporaryDirectory() as directory:
+            row = update_precedent_database([record], Path(directory) / "precedents.json")[0]
+        self.assertEqual(row["deal_type"], "DCM")
+        self.assertIsNone(row["stake_percent"])
+        self.assertEqual(row["payment_form"], "Not applicable")
+        self.assertEqual(row["seller"], "Not applicable")
+        self.assertIsNone(row["enterprise_value"])
 
     def test_moex_results_are_structured_filing_not_top_deal(self) -> None:
         event = Event(
@@ -468,6 +511,22 @@ class CoreTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             for control in ("deal-type-filter", "deal-period-filter", "deal-sector-filter", "deal-status-filter", "deal-size-filter", "deal-sort"):
                 self.assertIn(f'id="{control}"', text)
+            self.assertIn("По сумме внутри валюты", text)
+            self.assertIn("filter-empty", text)
+
+    def test_report_exposes_data_health_and_build_id(self) -> None:
+        health = {"build_id": "abc123def456", "last_success_at": "2026-07-03T09:00+03:00", "record_count": 10, "key_deal_count": 10, "approved_count": 8, "review_count": 2, "rejected_count": 0, "source_count": 15, "direct_source_count": 12, "aggregator_source_count": 3, "critical_qa_issues": 0, "xlsx_synced": True, "xlsx_generated_at": "2026-07-03T09:01+03:00"}
+        with tempfile.TemporaryDirectory() as directory:
+            path = build_html_report([], {}, Path(directory) / "report.html", "live", precedent_transactions=[], health=health)
+            text = path.read_text(encoding="utf-8")
+        self.assertIn("abc123def456", text)
+        self.assertIn("синхронизирован", text)
+
+    def test_curated_technology_benchmark_has_ten_transactions(self) -> None:
+        curated = json.loads((ROOT / "data" / "curated_precedents.json").read_text(encoding="utf-8"))
+        technology = [row for row in curated if row.get("sector") == "Technology"]
+        self.assertGreaterEqual(len(technology), 10)
+        self.assertTrue(all(str(row.get("source_url", "")).startswith("https://") for row in technology))
 
 
 if __name__ == "__main__":

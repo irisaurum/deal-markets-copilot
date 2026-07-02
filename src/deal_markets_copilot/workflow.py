@@ -37,7 +37,7 @@ def build_morning_workflow(
 ) -> dict:
     """Turn public signals into a repeatable junior-banker morning workflow."""
     previous = previous_snapshot or {}
-    valid_baseline = previous.get("workflow_version") == 1
+    valid_baseline = previous.get("workflow_version") in {1, 2}
     previous_ids = {
         row.get("event", {}).get("event_id")
         for row in previous.get("events", [])

@@ -77,6 +77,10 @@ def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
             category = candidate
             keyword_hits = hits
 
+    non_transaction_notice = _is_non_transaction_notice(text)
+    if non_transaction_notice:
+        keyword_hits = 0
+
     if re.search(r"\b(bond|notes)\b|облигац", text, re.I) and not re.search(r"acquisition\s+of\s+(?:a\s+)?company|покупк\w*\s+(?:компани|бизнес)", text, re.I):
         category = "DCM"
 
@@ -106,6 +110,8 @@ def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
         score += 1
     score += _recency_bonus(event.published_at)
     score = max(0, min(score, 10))
+    if non_transaction_notice:
+        score = 0
 
     severity = "critical" if score >= 8 else "high" if score >= 6 else "medium" if score >= 3 else "low"
     evidence = event.confidence if event.confidence in {"confirmed", "inferred", "unverified", "conflicting"} else "unverified"
@@ -120,6 +126,23 @@ def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
         matched_coverage=matched,
         evidence_label=evidence,
     )
+
+
+def _is_non_transaction_notice(text: str) -> bool:
+    """Keep exchange administration and fund trading out of deal workflows."""
+    patterns = (
+        r"московская биржа начала торги (?:паями|акциями|облигациями)",
+        r"\b(?:бпиф|ипиф|пиф)\b",
+        r"инвестиционн\w*\s+па[йё]",
+        r"(?:итоги|проведени\w*)\s+аукцион\w*.+\bофз\b",
+        r"\bофз\b.+аукцион",
+        r"^о регистрации (?:выпуска|проспекта|программы|изменений)",
+        r"^о признании выпуск\w* облигац\w* несостоявш",
+        r"^итоги выпуска биржевых облигаций",
+        r"^о порядке (?:сбора заявок|приобретения облигаций|заключения сделок)",
+        r"получил\w*\s+в\s+залог.+(?:акци|дол)",
+    )
+    return any(re.search(pattern, text, re.I) for pattern in patterns)
 
 
 def deduplicate(events: list[Event]) -> list[Event]:

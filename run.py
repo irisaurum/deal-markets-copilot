@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import sys
+from datetime import datetime
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -15,6 +17,7 @@ from deal_markets_copilot.deals import (
     extract_deal_record,
     load_public_dataset,
     merge_curated_precedents,
+    select_key_deals,
     update_precedent_database,
     write_precedent_database,
     write_precedents_csv,
@@ -126,6 +129,7 @@ def main() -> int:
     if upgraded_links:
         write_precedent_database(precedents, precedent_path)
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
+    health = _build_health(precedents, ROOT / "output" / "build_manifest.json")
 
     report_path = build_html_report(
         classified,
@@ -135,9 +139,12 @@ def main() -> int:
         market_snapshot=market_snapshot,
         workflow=workflow,
         precedent_transactions=precedents,
+        health=health,
     )
     snapshot_path.write_text(json.dumps({
-        "workflow_version": 1,
+        "workflow_version": 2,
+        "generated_at": health["last_success_at"],
+        "health": health,
         "mode": selected_mode,
         "market": market_snapshot,
         "events": [item.to_dict() for item in classified],
@@ -149,6 +156,7 @@ def main() -> int:
     print(f"Precedent transactions: {len(precedents)}")
     print(f"Direct source links upgraded: {upgraded_links}")
     print(f"Excel-compatible export: {csv_path}")
+    print(f"Build ID: {health['build_id']} | XLSX synced: {health['xlsx_synced']}")
 
     if args.telegram:
         load_dotenv(ROOT / ".env")
@@ -169,6 +177,47 @@ def main() -> int:
         except KeyboardInterrupt:
             pass
     return 0
+
+
+def _build_health(rows: list[dict], manifest_path: Path) -> dict:
+    payload = "\n".join(
+        "|".join(str(row.get(field) or "") for field in (
+            "deal_id", "record_kind", "quality_status", "source_count", "headline",
+        ))
+        for row in sorted(rows, key=lambda item: str(item.get("deal_id") or ""))
+    )
+    build_id = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
+    sources = [source for row in rows for source in row.get("sources", []) if isinstance(source, dict)]
+    direct_sources = [source for source in sources if source.get("url") and "news.google.com" not in str(source.get("url"))]
+    critical = 0
+    for row in rows:
+        if row.get("quality_status") == "approved" and row.get("record_kind") != "deal":
+            critical += 1
+        if row.get("deal_type") != "M&A" and row.get("stake_percent") not in {None, "", 0}:
+            critical += 1
+        if row.get("deal_type") == "DCM" and row.get("acquirer_or_investor") not in {None, "", "Not applicable", "Not disclosed"}:
+            critical += 1
+    manifest = {}
+    if manifest_path.exists():
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            manifest = {}
+    return {
+        "last_success_at": datetime.now().astimezone().isoformat(timespec="minutes"),
+        "build_id": build_id,
+        "record_count": len(rows),
+        "key_deal_count": len(select_key_deals(rows, 10)),
+        "approved_count": sum(row.get("quality_status") == "approved" for row in rows),
+        "review_count": sum(row.get("quality_status") == "review" for row in rows),
+        "rejected_count": sum(row.get("quality_status") == "rejected" for row in rows),
+        "source_count": len(sources),
+        "direct_source_count": len(direct_sources),
+        "aggregator_source_count": len(sources) - len(direct_sources),
+        "critical_qa_issues": critical,
+        "xlsx_synced": manifest.get("build_id") == build_id and manifest.get("record_count") == len(rows),
+        "xlsx_generated_at": manifest.get("generated_at"),
+    }
 
 
 if __name__ == "__main__":

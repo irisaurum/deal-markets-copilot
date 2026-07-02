@@ -1,14 +1,30 @@
 {
-  "workflow_version": 1,
+  "workflow_version": 2,
+  "generated_at": "2026-07-03T02:03+03:00",
+  "health": {
+    "last_success_at": "2026-07-03T02:03+03:00",
+    "build_id": "a4432f860b74",
+    "record_count": 82,
+    "key_deal_count": 10,
+    "approved_count": 16,
+    "review_count": 45,
+    "rejected_count": 21,
+    "source_count": 144,
+    "direct_source_count": 100,
+    "aggregator_source_count": 44,
+    "critical_qa_issues": 0,
+    "xlsx_synced": true,
+    "xlsx_generated_at": "2026-07-02T23:02:35.266Z"
+  },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3492.5,
-      "change_percent": -5,
-      "turnover": 2683984878,
-      "updated": "19:32:28",
+      "price": 3511,
+      "change_percent": -4.5,
+      "turnover": 3046303029,
+      "updated": "23:50:20",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +33,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3292.5,
-      "change_percent": -3.76,
-      "turnover": 1140153316,
-      "updated": "19:32:28",
+      "price": 3264,
+      "change_percent": -4.59,
+      "turnover": 1482315654,
+      "updated": "23:50:20",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,250 +45,57 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 175.05,
-      "change_percent": -5.89,
-      "turnover": 883655059,
-      "updated": "19:32:30",
+      "price": 174.7,
+      "change_percent": -6.08,
+      "turnover": 962016018,
+      "updated": "23:50:20",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
       "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
     }
   ],
-  "events": [
-    {
-      "event": {
-        "event_id": "moex-101737",
-        "published_at": "2026-07-02 19:13:28",
-        "title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера",
-        "summary": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера 2026-07-02 19:13:28 В соответствии с Правилами листинга ПАО Московская Биржа Председателем Правления 02.07.2026 приняты следующие решения: 1. зарегистрировать выпуск биржевых облигаций; присвоить выпуску регистрационный номер; включить в Список ценных бумаг, допущенных к торгам в ПАО Московская Биржа, в отношении следующих ценных бумаг: Наименование Эмитента Публичное акционерное общество \"ГЛОРАКС\" Наименование ценной бумаги Биржевые облигации зеленые процентные неконвертируемые бездокументарные серии 002Р-01 Регистрационный номер выпуска 4B02-01-16806-A-002P от 02.07.2026 Раздел Списка Второй уровень Основание принятия решения Заявление 2. Включить ценные бумаги, указанные в пункте 1, в Сегмент облигаций устойчивого развития Сектора устойчивого развития в связи с получением соответствующего письма организации. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101737",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 6,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101734",
-        "published_at": "2026-07-02 18:39:40",
-        "title": "О регистрации программы и проспекта биржевых облигаций",
-        "summary": "О регистрации программы и проспекта биржевых облигаций 2026-07-02 18:39:40 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления \"02\" июля 2026 года приняты следующие решения: зарегистрировать программу биржевых облигаций, присвоить программе регистрационный номер, зарегистрировать проспект биржевых облигаций, в отношении следующих ценных бумаг: Наименование Эмитента Акционерное общество \"ЗАСЛОН\" Наименование ценной бумаги Программа биржевых облигаций неконвертируемых бездокументарных серии 002Р Регистрационный номер программы 4-02289-D-002P-02E от 02.07.2026 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101734",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 6,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101722",
-        "published_at": "2026-07-02 11:57:55",
-        "title": "Итоги выпуска биржевых облигаций",
-        "summary": "Итоги выпуска биржевых облигаций 2026-07-02 11:57:55 Извещаем об итогах размещения биржевых облигаций следующих эмитентов: Банк ВТБ (публичное акционерное общество) (Место нахождения эмитента биржевых облигаций: Российская Федерация, город Санкт-Петербург): Регистрационный номер выпуска биржевых облигаций: 4B02-1234-01000-B-005P от 30.04.2026 года. Номинальная стоимость биржевых облигаций: 1 000 (Одна тысяча) руб. каждая. Объем размещенных биржевых облигаций по номинальной стоимости: 9 148 870 000 (Девять миллиардов сто сорок восемь миллионов восемьсот семьдесят тысяч) руб. Дата начала размещения биржевых облигаций: 01.07.2026 г. Дата окончания размещения биржевых облигаций: 01.07.2026 г. Фактическая цена размещения биржевых облигаций: 999,628 руб. Количество размещенных биржевых облигаций: 9 148 870 штук. Доля размещенных и неразмещенных биржевых облигаций: 9,15 %, 90,85 % Общая стоимость имущества, внесенного в оплату за размещенные биржевые облигации, в том числе: денежные средства в валюте Российской Федерации: 9 145 466 620,36 руб.; денежные средства в иностранной валюте, выраженные в валюте Российской Федерации по курсу Банка России на момент внесения: 0 руб.; стоимость иного имущества, выраженная в валюте Российской Федерации: 0 руб. Сделки, признаваемые федеральными законами крупными сделками и сделками, в совершении которых имеется заинтересованность, и которые совершены в процессе размещения ценных бумаг (информация, приведенная в данном абзаце, представлена эмитент",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101722",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101717",
-        "published_at": "2026-07-02 10:06:12",
-        "title": "Московская биржа начала торги паями активно управляемого БПИФ на российские гособлигации",
-        "summary": "Московская биржа начала торги паями активно управляемого БПИФ на российские гособлигации 2026-07-02 10:06:12 2 июля 2026 года Московская биржа начала торги паями биржевого паевого инвестиционного фонда (БПИФ) \"Российские государственные облигации\" под управлением УК \"Озон управление активами\". Торговый код – OFZS. Новый фонд инвестирует в государственные ценные бумаги Российской Федерации по стратегии активного управления. Паи \"Российские государственные облигации\" доступны на фондовом рынке Московской биржи в основной торговой сессии, на утренних и вечерних торгах, а также в выходные. Фонд могут приобретать неквалифицированные инвесторы, в том числе на индивидуальный инвестиционный счет (ИИС). По истечении трех лет владения паями фондов с листингом на Московской бирже инвестор может воспользоваться налоговой льготой по долгосрочному владению ценными бумагами. Управляющая компания УК \"Озон управление активами\" планирует вывести на Московскую биржу пять биржевых паевых инвестиционных фондов (БПИФ) . Первым стал доступен биржевой фонд рыночных финансовых инструментов \"Озон Денежный рынок\" (OLIQ), торги паями которого начались 25 июня 2026 года. На фондовом рынке Московской биржи доступны бумаги более 100 биржевых паевых инвестиционных фондов . На фондовом рынке Московской биржи доступны более 230 паевых инвестиционных фондов 44 управляющих компаний. Базовыми активами фондов выступают индексы, акции, облигации, золото, инструменты денежного рынка и товарные активы. Контактная ин",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101717",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 9,
-      "severity": "critical",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [
-        "OZON"
-      ],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101691",
-        "published_at": "2026-07-01 17:02:32",
-        "title": "О регистрации изменений в эмиссионные документы",
-        "summary": "О регистрации изменений в эмиссионные документы 2026-07-01 17:02:32 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления ПАО Московская Биржа \"01\" июля 2026 года приняты следующие решения: Зарегистрировать изменения в решение о выпуске биржевых облигаций серии БО-01 Общества с ограниченной ответственностью \"С-Принт\", регистрационный номер выпуска - 4B02-01-00778-R от 08.04.2025. Зарегистрировать изменения в решение о выпуске биржевых облигаций серии БО-02 Общества с ограниченной ответственностью \"С-Принт\", регистрационный номер выпуска - 4B02-02-00778-R от 29.05.2025. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101691",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101690",
-        "published_at": "2026-07-01 16:59:19",
-        "title": "О признании выпусков облигаций несостоявшимися, об аннулировании регистрации выпусков, об исключении их из Списка ценных бумаг, допущенных к торгам",
-        "summary": "О признании выпусков облигаций несостоявшимися, об аннулировании регистрации выпусков, об исключении их из Списка ценных бумаг, допущенных к торгам 2026-07-01 16:59:19 В соответствии с Правилами листинга ПАО Московская Биржа Председателем Правления 01.07.2026 приняты следующие решения: в связи с неразмещением ни одной ценной бумаги следующих выпусков биржевых облигаций: Наименование эмитента/организации Публичное акционерное общество \"Сбербанк России\" Наименование ценной бумаги Биржевые облигации процентные неконвертируемые бездокументарные серии ИОС-IMOEX-BNR-5Q-001Р-801R Идентификационный/Регистрационный номер выпуска 4B02-829-01481-B-001P от 25.05.2026 Торговый код RU000A10F8Y1 ISIN код RU000A10F8Y1 Раздел Списка Третий уровень · признать несостоявшимися указанные выпуски биржевых облигаций; · аннулировать регистрацию указанных выпусков биржевых облигаций; · исключить 01.07.2026 данные биржевые облигации из Списка ценных бумаг, допущенных к торгам в ПАО Московская Биржа. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101690",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101688",
-        "published_at": "2026-07-01 16:56:01",
-        "title": "О порядке приобретения облигаций серии 001Р-09 ПАО \"ТрансФин-М\" с 02 июля 2026 год",
-        "summary": "О порядке приобретения облигаций серии 001Р-09 ПАО \"ТрансФин-М\" с 02 июля 2026 год 2026-07-01 16:56:01 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и на основании уведомления о выкупе, полученного от ПАО \"ТрансФин-М\", установлены следующие форма, время, срок и порядок проведения приобретения облигаций ПАО \"ТрансФин-М\" в режиме торгов \"Выкуп: Адресные заявки\": Наименование Эмитента ПАО \"ТрансФин-М\" Полное наименование ценных бумаг (вид и тип) биржевые облигации процентные неконвертируемые бездокументарные с централизованным учетом прав серии 001Р-09 Регистрационный номер выпуска 4B02-09-50156-A-001P Торговый код RU000A106J38 ISIN RU000A106J38 Информация о приобретении (Режим торгов, форма приобретения) С предварительным сбором адресных заявок с датой активации в режиме торгов \"Выкуп: Адресные заявки\". (Расчеты: Рубль) Код расчетов T0 Цена приобретения 100% от номинальной стоимости Облигации Наименование Агента, выкупающего облигации ПАО \"Совкомбанк\" (идентификатор в системе торгов – MC025380",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101688",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "cbb51327e56451ae",
-        "published_at": "Thu, 02 Jul 2026 08:31:13 GMT",
-        "title": "ВТБ получил в залог крупный пакет акций Ozon. Сумма сделки — 320 миллиардов рублей - prospect.com.ru",
-        "summary": "ВТБ получил в залог крупный пакет акций Ozon. Сумма сделки — 320 миллиардов рублей prospect.com.ru",
-        "source": "prospect.com.ru",
-        "url": "https://prospect.com.ru/news/6836117/vtb-poluchil-v-zalog-krupnyj-paket-aktsij-ozon-summa-sdelki-320-milliardov-rublej.html",
-        "companies": [
-          "YDEX"
-        ],
-        "source_type": "public_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "M&A",
-      "score": 5,
-      "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "OZON"
-      ],
-      "evidence_label": "unverified"
-    }
-  ],
+  "events": [],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
-    "new_event_ids": [
-      "cbb51327e56451ae"
-    ],
-    "new_signals": 1,
+    "new_event_ids": [],
+    "new_signals": 0,
     "market_moves": [
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 175.05,
-        "change_percent": -5.89,
-        "turnover": 883655059,
-        "updated": "19:32:30",
+        "price": 174.7,
+        "change_percent": -6.08,
+        "turnover": 962016018,
+        "updated": "23:50:20",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
         "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
       },
       {
-        "ticker": "YDEX",
-        "company": "Yandex",
-        "price": 3492.5,
-        "change_percent": -5,
-        "turnover": 2683984878,
-        "updated": "19:32:28",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
-      },
-      {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3292.5,
-        "change_percent": -3.76,
-        "turnover": 1140153316,
-        "updated": "19:32:28",
+        "price": 3264,
+        "change_percent": -4.59,
+        "turnover": 1482315654,
+        "updated": "23:50:20",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
         "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      },
+      {
+        "ticker": "YDEX",
+        "company": "Yandex",
+        "price": 3511,
+        "change_percent": -4.5,
+        "turnover": 3046303029,
+        "updated": "23:50:20",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
       }
     ],
     "hypotheses": [
@@ -303,128 +126,64 @@
         "thesis": "Отслеживать, как financial performance и capital allocation меняют доступные equity/debt financing сценарии.",
         "decision_question": "Какое окно финансирования и banker angle выглядят наиболее актуальными сейчас?",
         "deliverable": "Funding options screen + trading comps + capital structure note",
-        "signal_count": 1,
+        "signal_count": 0,
         "new_signal_count": 0,
-        "signal_ids": [
-          "moex-101717"
-        ],
-        "latest_signal": "Московская биржа начала торги паями активно управляемого БПИФ на российские гособлигации"
+        "signal_ids": [],
+        "latest_signal": "Новых подтверждающих сигналов нет"
       }
     ],
     "tasks": [
       {
-        "id": "TASK-5b3108da5a9f",
+        "id": "TASK-02bdb3153843",
         "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "OZON",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101717",
-        "source_title": "Московская биржа начала торги паями активно управляемого БПИФ на российские гособлигации",
-        "hypothesis_ids": [
-          "H-02"
-        ]
-      },
-      {
-        "id": "TASK-f6651d1336cf",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101722",
-        "source_title": "Итоги выпуска биржевых облигаций",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-8e00eaa5bdc6",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101691",
-        "source_title": "О регистрации изменений в эмиссионные документы",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-fd4ca2203c62",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101690",
-        "source_title": "О признании выпусков облигаций несостоявшимися, об аннулировании регистрации выпусков, об исключении их из Списка ценных бумаг, допущенных к торгам",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-9c7a8d6af7f1",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101688",
-        "source_title": "О порядке приобретения облигаций серии 001Р-09 ПАО \"ТрансФин-М\" с 02 июля 2026 год",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-0de639869390",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101737",
-        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-ed68a8023168",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101734",
-        "source_title": "О регистрации программы и проспекта биржевых облигаций",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
         "hypothesis_ids": []
       },
       {
         "id": "TASK-28a9f9582d0b",
-        "priority": "P1",
+        "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения YDEX (-5.00%) и обновить trading comps.",
+        "title": "Проверить драйвер движения YDEX (-4.50%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "YDEX",
         "category": "Market",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
         "source_title": "MOEX quote for YDEX",
         "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-566158f8fbf9",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения OZON (-4.59%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "OZON",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "source_title": "MOEX quote for OZON",
+        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "1 новых сигналов с прошлого запуска; 8 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "ВТБ получил в залог крупный пакет акций Ozon. Сумма сделки — 320 миллиардов рублей - prospect.com.ru"
+        "text": "Новых событий после предыдущего запуска не обнаружено."
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -5.89% к предыдущему закрытию."
+        "text": "VKCO: -6.08% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Обновить debt comps и проверить ближайшие погашения."
+        "text": "Проверить драйвер движения VKCO (-6.08%) и обновить trading comps."
       }
     ]
   }

@@ -19,7 +19,7 @@ CSV_FIELDS = [
     "revenue_ltm", "ebitda_ltm", "financials_as_of", "financials_currency",
     "financials_available_at", "operating_income", "depreciation", "amortization",
     "financials_metric_basis", "financials_source_name",
-    "financials_source_url", "ev_revenue", "ev_ebitda", "multiple_notes",
+    "financials_source_url", "ev_revenue", "ev_ebitda", "multiple_eligible", "multiple_notes",
     "instrument", "security_code", "isin", "coupon_rate",
     "coupon_type", "yield_rate", "maturity_date", "tenor", "issue_price",
     "price_per_share", "discount_percent", "bookrunners", "free_float_percent",
@@ -226,6 +226,7 @@ def enrich_precedent_financials(rows: list[dict], financial_rows: list[dict]) ->
         if not financial:
             row["ev_revenue"] = _valid_multiple(row.get("enterprise_value"), row.get("revenue_ltm"), row.get("currency"), row.get("financials_currency"))
             row["ev_ebitda"] = _valid_multiple(row.get("enterprise_value"), row.get("ebitda_ltm"), row.get("currency"), row.get("financials_currency"))
+            row["multiple_eligible"] = _multiple_is_eligible(row)
             enriched.append(row)
             continue
         revenue = _positive_number(financial.get("revenue"))
@@ -255,6 +256,7 @@ def enrich_precedent_financials(rows: list[dict], financial_rows: list[dict]) ->
             if available_after_announcement else
             "Calculated from disclosed EV and latest audited financials available at announcement"
         )
+        row["multiple_eligible"] = _multiple_is_eligible(row) and not available_after_announcement
         financial_source = {
             "name": row["financials_source_name"],
             "url": row["financials_source_url"],
@@ -345,11 +347,15 @@ def select_deal_buckets(rows: list[dict], limit: int = 10) -> dict[str, list[dic
 def _is_material_transaction(row: dict) -> bool:
     title = str(row.get("headline") or "").lower()
     category = row.get("deal_type")
+    if re.search(r"\b(?:бпиф|ипиф|пиф)\b|инвестиционн\w*\s+па[йё]|аукцион\w*.+\bофз\b|\bофз\b.+аукцион", title):
+        return False
     if category == "M&A":
         if "последний день покупки акций" in title:
             return False
         return bool(re.search(r"покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout", title))
     if category == "DCM":
+        if _is_technical_filing(title, str(row.get("source_type") or "")):
+            return False
         if re.search(r"погашен|погашения|перечислил.+погаш|заработай", title):
             return False
         if re.search(r"разбор|чего ждать|инвестор\w*.+(?:вложен|вклад)|как заработать", title):
@@ -380,7 +386,7 @@ def _record_kind(row: dict) -> str:
 def _is_technical_filing(text: str, source_type: str = "") -> bool:
     patterns = (
         r"^\s*итоги выпуска биржевых облигаций",
-        r"^\s*о регистрации (?:выпуска|проспекта|изменений)",
+        r"^\s*о регистрации (?:выпуска|проспекта|программы|изменений)",
         r"^\s*о порядке (?:сбора заявок|приобретения облигаций|заключения сделок)",
         r"^\s*дополнительные условия проведения торгов",
         r"^\s*о включении.+список ценных бумаг",
@@ -390,6 +396,11 @@ def _is_technical_filing(text: str, source_type: str = "") -> bool:
         r"^\s*информация о кодах расчетов",
         r"^\s*московская биржа начала торги паями",
         r"\bбпиф\b.+\bторг",
+        r"^\s*информация о приобретении инвестиционн\w* па[йё]",
+        r"\b(?:ипиф|пиф)\b.+\bпа[йё]",
+        r"^\s*о проведении .{0,40}аукцион\w* .{0,80}\bофз\b",
+        r"\bаукцион\w*\b.{0,80}\bофз\b",
+        r"^\s*московская биржа начала торги",
     )
     return bool(any(re.search(pattern, text, re.I) for pattern in patterns))
 
@@ -603,6 +614,7 @@ def _migrate_row(source: dict) -> dict:
     else:
         row["seller"] = "Not applicable"
         row["stake_percent"] = None
+        row["payment_form"] = "Not applicable"
         parsed_issuer, _ = _extract_parties(row.get("deal_type", ""), headline, "Not disclosed")
         current_issuer = row.get("target_or_issuer")
         if not _is_blank(parsed_issuer) and (_is_blank(current_issuer) or _is_generic_party(current_issuer)):
@@ -619,6 +631,23 @@ def _migrate_row(source: dict) -> dict:
     row["headline"] = _clean_headline(headline)
 
     row["record_kind"] = _record_kind(row)
+    if row["record_kind"] == "technical_filing":
+        issuer = str(row.get("target_or_issuer") or "")
+        if issuer not in {"", "Not disclosed", "Not applicable"} and issuer.lower() not in row["headline"].lower():
+            row["target_or_issuer"] = "Not disclosed"
+    if row.get("deal_type") != "M&A":
+        row["enterprise_value"] = None
+        row["ev_revenue"] = None
+        row["ev_ebitda"] = None
+        row["multiple_eligible"] = False
+    if row.get("deal_type") != "DCM":
+        for field in ("security_code", "isin", "coupon_rate", "coupon_type", "yield_rate", "maturity_date", "tenor", "issue_price"):
+            row[field] = None if field in {"coupon_rate", "yield_rate", "issue_price"} else "Not applicable"
+    if row.get("deal_type") != "ECM":
+        row["price_per_share"] = None
+        row["discount_percent"] = None
+        row["bookrunners"] = "Not applicable"
+        row["free_float_percent"] = None
     row.setdefault("security_code", _security_code(headline))
     row.setdefault("isin", _isin(headline))
     row.setdefault("coupon_rate", _coupon_rate(headline))
@@ -639,6 +668,7 @@ def _migrate_row(source: dict) -> dict:
     row.setdefault("financials_source_name", "Not disclosed")
     row.setdefault("financials_source_url", "")
     row.setdefault("multiple_notes", "N/M: EV and aligned-currency financials are required")
+    row.setdefault("multiple_eligible", False)
 
     row["sources"] = _merge_sources(row.get("sources", []), [{
         "name": row.get("source_name", "Unknown source"),
@@ -1069,7 +1099,12 @@ def _financials_as_of(text: str) -> str:
 
 def median_multiples(rows: list[dict]) -> dict[str, float | int | None]:
     def values(field: str) -> list[float]:
-        result = sorted(float(row[field]) for row in rows if row.get("deal_type") == "M&A" and isinstance(row.get(field), (int, float)) and row[field] > 0)
+        result = sorted(
+            float(row[field]) for row in rows
+            if _multiple_is_eligible(row)
+            and isinstance(row.get(field), (int, float))
+            and row[field] > 0
+        )
         return result
     def median(items: list[float]) -> float | None:
         if not items:
@@ -1078,7 +1113,8 @@ def median_multiples(rows: list[dict]) -> dict[str, float | int | None]:
         return items[middle] if len(items) % 2 else (items[middle - 1] + items[middle]) / 2
     revenue = values("ev_revenue")
     ebitda = values("ev_ebitda")
-    return {"ev_revenue": median(revenue), "ev_ebitda": median(ebitda), "coverage": len(set(id(row) for row in rows if row.get("ev_revenue") or row.get("ev_ebitda")))}
+    eligible = [row for row in rows if _multiple_is_eligible(row) and (row.get("ev_revenue") or row.get("ev_ebitda"))]
+    return {"ev_revenue": median(revenue), "ev_ebitda": median(ebitda), "coverage": len(eligible)}
 
 
 def _is_blank(value) -> bool:
@@ -1101,6 +1137,26 @@ def _valid_multiple(enterprise_value, metric, deal_currency, metric_currency) ->
     if _normalize_currency(deal_currency) != _normalize_currency(metric_currency):
         return None
     return ev / denominator
+
+
+def _multiple_is_eligible(row: dict) -> bool:
+    """Use only approved, source-backed M&A observations available by announcement."""
+    if row.get("deal_type") != "M&A" or row.get("record_kind") not in {None, "deal"}:
+        return False
+    if row.get("quality_status") != "approved" or row.get("status") == "Denied":
+        return False
+    announced = str(row.get("announced_date") or "")[:10]
+    available_raw = row.get("financials_available_at")
+    available = str(available_raw or "")[:10]
+    if not announced or _is_blank(available_raw) or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", available):
+        return False
+    if available > announced:
+        return False
+    return bool(
+        _positive_number(row.get("enterprise_value"))
+        and _normalize_currency(row.get("currency")) == _normalize_currency(row.get("financials_currency"))
+        and (_positive_number(row.get("revenue_ltm")) or _positive_number(row.get("ebitda_ltm")))
+    )
 
 
 def _is_navigation_record(row: dict) -> bool:

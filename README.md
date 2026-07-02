@@ -67,12 +67,15 @@ Docker или платный API.
 - 🗂 подтверждённые сделки, слухи/переговоры, опровержения и технические filings отображаются раздельно
 - 🧱 карточки зависят от типа сделки: M&A показывает buyer / seller / target, DCM — issuer / volume / coupon / maturity / ISIN, ECM — offering size / price / discount / bookrunners / free float
 - 🔎 сделки фильтруются по типу, периоду, сектору, статусу и размеру; доступны сортировки по дате, сумме и quality score
+- 🟢 блок `Состояние данных` показывает время последней успешной сборки, Build ID, число записей, QA-ошибки и синхронизацию Excel
+- 💱 суммы сортируются только внутри одной валюты: RUB, USD, EUR и другие валюты не сравниваются как будто они эквивалентны
 
 **Deal execution toolkit:**
 
 - 🧾 **Deal card** — стороны, статус, сумма, доля, форма оплаты, advisors и rationale / use of proceeds
 - 🗂 **Precedent transactions database** — накопительная JSON/CSV-база без дублей, с quality score, флагами проверки и массивом источников
-- 📐 **Precedent analytics** — EV/Revenue, EV/EBITDA и медианы только по валидным M&A-наблюдениям с датой financials, metric basis и прямой ссылкой на отчётность
+- 📐 **Precedent analytics** — EV/Revenue, EV/EBITDA и медианы только по подтверждённым M&A-наблюдениям; отчётность должна быть опубликована не позже даты объявления сделки
+- 🧪 **Technology benchmark set** — 10 крупных публичных software / TMT транзакций с официальными deal releases и SEC-отчётностью; наблюдения без раскрытого EV не подменяются equity value
 - 📥 **Excel-export** — banker-style workbook с формулами и листами `Summary`, `Deals`, `Financials`, `Multiples`, `Sources & QA`
 - ✅ неизвестные параметры остаются `Not disclosed`: система не придумывает отсутствующую экономику сделки
 
@@ -112,7 +115,8 @@ python3 run.py --live
 
 HTML, JSON, CSV и XLSX пересобираются одним запуском GitHub Actions и публикуются
 в одном GitHub Pages release. Поэтому Excel соответствует той же версии данных,
-что и dashboard. Для локального аналитического QA используется
+что и dashboard: общий `Build ID` и число записей проверяет
+`scripts/verify_public_artifacts.py`. Для локального аналитического QA используется
 `@oai/artifact-tool`; на публичном GitHub runner работает совместимый CI-builder.
 
 Ничего устанавливать не требуется: достаточно Python 3.11+. Полная инструкция —
@@ -152,6 +156,9 @@ workflow вручную один раз.
 - Небольшой coverage universe не гарантирует новую сделку каждый день.
 - Мультипликатор считается только при явно раскрытых EV и LTM financials в одной валюте;
   иначе отображается `N/M`.
+- Готовая сопоставимая выборка сейчас глубже всего покрывает Technology / TMT (10 сделок).
+  Для других отраслей live-архив собирается, но медиана не считается над неподтверждёнными
+  или несопоставимыми наблюдениями.
 - Это screen-grade monitoring tool и precedent screen, а не fairness opinion.
 
 ## Дисклеймер
