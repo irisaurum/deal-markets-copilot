@@ -1,8 +1,8 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T02:03+03:00",
+  "generated_at": "2026-07-02T23:10+00:00",
   "health": {
-    "last_success_at": "2026-07-03T02:03+03:00",
+    "last_success_at": "2026-07-02T23:10+00:00",
     "build_id": "a4432f860b74",
     "record_count": 82,
     "key_deal_count": 10,
@@ -14,7 +14,7 @@
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-02T23:02:35.266Z"
+    "xlsx_generated_at": "2026-07-02T23:10:17+00:00"
   },
   "mode": "live",
   "market": [

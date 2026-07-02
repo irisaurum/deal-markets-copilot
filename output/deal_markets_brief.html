@@ -20,7 +20,7 @@
 <header class="site-header"><div class="nav-wrap">
   <a class="brand" href="#brief"><span class="brand-mark">DM</span><span><strong>Deal Market Monitor</strong><small>M&amp;A · ECM · DCM</small></span></a>
   <nav><a href="#deals">Сделки</a><a href="#signals">Свежие события</a><a href="#analytics">Аналитика</a></nav>
-  <div class="status"><span class="dot live"></span><span><strong>Данные обновлены</strong><small>03.07.2026 · 02:03</small></span></div>
+  <div class="status"><span class="dot live"></span><span><strong>Данные обновлены</strong><small>02.07.2026 · 23:10</small></span></div>
 </div></header>
 
 <main class="page">
@@ -46,7 +46,7 @@
         <span class="quote-price">174.70 ₽</span><span class="quote-change down">-6.08%</span></a></section>
 
   <section class="health-panel ok" aria-label="Состояние системы">
-      <div><span class="health-dot"></span><strong>Система готова</strong><small>Последний успешный сбор: 2026-07-03T02:03+03:00</small></div>
+      <div><span class="health-dot"></span><strong>Система готова</strong><small>Последний успешный сбор: 2026-07-02T23:10+00:00</small></div>
       <dl><div><dt>Build ID</dt><dd>a4432f860b74</dd></div><div><dt>Записей</dt><dd>82</dd></div><div><dt>Approved</dt><dd>16</dd></div><div><dt>Прямых источников</dt><dd>100</dd></div><div><dt>QA issues</dt><dd>0</dd></div><div><dt>Excel</dt><dd>синхронизирован</dd></div></dl>
     </section>
 
@@ -437,7 +437,7 @@
   </section>
   <footer><strong>Deal Market Monitor</strong><span>Публичные данные · выводы требуют проверки аналитиком · не является инвестиционной рекомендацией</span><small>YDEX · OZON · VKCO</small></footer>
 </main>
-<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 03.07.2026 · 02:03\nНовых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: VKCO: -6.08% к предыдущему закрытию.\nПервое действие: Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.\nActions:\n- P1 · VKCO · Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.\n- P2 · YDEX · Проверить драйвер движения YDEX (-4.50%) и обновить trading comps.\n- P2 · OZON · Проверить драйвер движения OZON (-4.59%) и обновить trading comps.";
+<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 02.07.2026 · 23:10\nНовых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: VKCO: -6.08% к предыдущему закрытию.\nПервое действие: Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.\nActions:\n- P1 · VKCO · Проверить драйвер движения VKCO (-6.08%) и обновить trading comps.\n- P2 · YDEX · Проверить драйвер движения YDEX (-4.50%) и обновить trading comps.\n- P2 · OZON · Проверить драйвер движения OZON (-4.59%) и обновить trading comps.";
 const AUTO_REFRESH_MS=5*60*1000;
 const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
 function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}
