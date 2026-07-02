@@ -1,5 +1,68 @@
 [
   {
+    "deal_id": "DL-moex-101717",
+    "announced_date": "2026-07-02",
+    "deal_type": "DCM",
+    "record_kind": "deal",
+    "status": "Announced",
+    "target_or_issuer": "Ozon",
+    "acquirer_or_investor": "Not applicable",
+    "seller": "Not applicable",
+    "sector": "Not classified",
+    "geography": "Russia",
+    "headline": "Московская биржа начала торги паями активно управляемого БПИФ на российские гособлигации",
+    "transaction_value": null,
+    "enterprise_value": null,
+    "currency": "Not disclosed",
+    "stake_percent": null,
+    "payment_form": "Not applicable",
+    "advisors": "Not disclosed",
+    "revenue_ltm": null,
+    "ebitda_ltm": null,
+    "financials_as_of": "Not disclosed",
+    "financials_currency": "Not disclosed",
+    "ev_revenue": null,
+    "ev_ebitda": null,
+    "instrument": "Bonds",
+    "security_code": "Not disclosed",
+    "isin": "Not disclosed",
+    "coupon_rate": null,
+    "coupon_type": "Not disclosed",
+    "yield_rate": null,
+    "maturity_date": "Not disclosed",
+    "tenor": "Not disclosed",
+    "issue_price": null,
+    "price_per_share": null,
+    "discount_percent": null,
+    "bookrunners": "Not applicable",
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "approved",
+    "quality_score": 100,
+    "quality_flags": [],
+    "sources": [
+      {
+        "name": "MOEX disclosure",
+        "url": "https://www.moex.com/n101717",
+        "evidence_label": "confirmed",
+        "source_type": "official_exchange",
+        "published_at": "2026-07-02 10:06:12"
+      }
+    ],
+    "source_count": 1,
+    "matched_coverage": [
+      "OZON"
+    ],
+    "source_name": "MOEX disclosure",
+    "source_url": "https://www.moex.com/n101717",
+    "evidence_label": "confirmed",
+    "score": 8,
+    "source_event_id": "moex-101717",
+    "first_seen_at": "2026-07-02T08:29:59+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
+  },
+  {
     "deal_id": "DL-moex-101663",
     "announced_date": "2026-07-01",
     "deal_type": "DCM",
@@ -57,7 +120,7 @@
     "score": 9,
     "source_event_id": "moex-101663",
     "first_seen_at": "2026-07-01T09:04:07+00:00",
-    "last_seen_at": "2026-07-01T17:09:31+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -120,7 +183,7 @@
     "score": 7,
     "source_event_id": "moex-101666",
     "first_seen_at": "2026-07-01T09:04:07+00:00",
-    "last_seen_at": "2026-07-01T17:09:31+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -183,7 +246,7 @@
     "score": 7,
     "source_event_id": "moex-101684",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-01T17:09:31+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -247,7 +310,7 @@
     "score": 7,
     "source_event_id": "moex-101691",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-01T17:09:31+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -311,7 +374,7 @@
     "score": 7,
     "source_event_id": "moex-101690",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-01T17:09:31+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -374,7 +437,7 @@
     "score": 7,
     "source_event_id": "moex-101688",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-01T17:09:31+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -436,9 +499,16 @@
         "evidence_label": "unverified",
         "source_type": "archive_discovery",
         "published_at": "Wed, 01 Jul 2026 12:04:23 GMT"
+      },
+      {
+        "name": "InvestFuture",
+        "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNUUFGSWNSdEZMRWFsMmN4THZGWWMtcUpNc1JTTk8waEFwRWpNUG5zQ1JqeUlSWUVwaEJuU1pQeFd0ajJ4LXEyZ2hpUVBVRW9NT2lMSlRjRm41Rm52UTRXVVVGQ1pQcmxvUml3enBUT05KT1pxNU5JdVBDamV5TjFxd3BzazZPYmpIaHJyN3FPN2ExWGNlVjItSmJyTmxtWHZkWlBpRjJBNU8tTk0zUVlv?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Wed, 01 Jul 2026 13:24:44 GMT"
       }
     ],
-    "source_count": 2,
+    "source_count": 3,
     "matched_coverage": [
       "OZON"
     ],
@@ -448,7 +518,7 @@
     "score": 5,
     "source_event_id": "fbdcfe31695d48a2",
     "first_seen_at": "2026-07-01T12:36:05+00:00",
-    "last_seen_at": "2026-07-01T15:44:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -520,7 +590,7 @@
     "score": 3,
     "source_event_id": "3d3c82bb59e25b8e",
     "first_seen_at": "2026-07-01T09:04:07+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -981,7 +1051,7 @@
     "score": 3,
     "source_event_id": "c76896181d89cde6",
     "first_seen_at": "2026-06-30T12:11:22+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2199,7 +2269,7 @@
     "score": 7,
     "source_event_id": "7a721642a53e0f1d",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2263,7 +2333,7 @@
     "score": 3,
     "source_event_id": "9092ffd6a36a0a81",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2336,7 +2406,7 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2472,7 +2542,7 @@
     "score": 4,
     "source_event_id": "c0e4b0469b5eb473",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2565,7 +2635,7 @@
     "score": 9,
     "source_event_id": "5eba3b27a4e84dd3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2638,16 +2708,18 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-54c26c1e05d520bd",
     "announced_date": "2026-05-25",
     "deal_type": "M&A",
+    "record_kind": "watchlist",
     "status": "Reported",
     "target_or_issuer": "Not disclosed",
-    "acquirer_or_investor": "Ozon",
+    "acquirer_or_investor": "Not disclosed",
+    "seller": "Not disclosed",
     "sector": "Not classified",
     "geography": "Not disclosed",
     "headline": "25.05.26 Последний день покупки акций “Озона” под дивиденды - 25 мая - Финам",
@@ -2664,37 +2736,6 @@
     "ev_revenue": null,
     "ev_ebitda": null,
     "instrument": "Acquisition / disposal",
-    "rationale": "Not disclosed",
-    "matched_coverage": [
-      "OZON"
-    ],
-    "source_name": "Финам",
-    "source_url": "https://www.finam.ru/publications/item/posledniy-den-pokupki-aktsiy-ozona-pod-dividendy-25-maya-20260525-0652/",
-    "evidence_label": "unverified",
-    "score": 4,
-    "source_event_id": "54c26c1e05d520bd",
-    "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-06-28T15:49:10+00:00",
-    "notes": "Screening record; verify against primary transaction documents.",
-    "sources": [
-      {
-        "name": "Финам",
-        "url": "https://www.finam.ru/publications/item/posledniy-den-pokupki-aktsiy-ozona-pod-dividendy-25-maya-20260525-0652/",
-        "evidence_label": "unverified",
-        "source_type": "public_web",
-        "published_at": "2026-05-25"
-      }
-    ],
-    "source_count": 1,
-    "quality_flags": [
-      "non_transaction_or_technical_notice",
-      "unverified_source",
-      "missing_target"
-    ],
-    "quality_score": 0,
-    "quality_status": "rejected",
-    "seller": "Not disclosed",
-    "record_kind": "watchlist",
     "security_code": "Not disclosed",
     "isin": "Not disclosed",
     "coupon_rate": null,
@@ -2706,7 +2747,43 @@
     "price_per_share": null,
     "discount_percent": null,
     "bookrunners": "Not applicable",
-    "free_float_percent": null
+    "free_float_percent": null,
+    "rationale": "Not disclosed",
+    "quality_status": "rejected",
+    "quality_score": 0,
+    "quality_flags": [
+      "non_transaction_or_technical_notice",
+      "unverified_source",
+      "missing_both_parties"
+    ],
+    "sources": [
+      {
+        "name": "Финам",
+        "url": "https://www.finam.ru/publications/item/posledniy-den-pokupki-aktsiy-ozona-pod-dividendy-25-maya-20260525-0652/",
+        "evidence_label": "unverified",
+        "source_type": "public_web",
+        "published_at": "2026-05-25"
+      },
+      {
+        "name": "Финам",
+        "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNckFiOGoyLVd2REpiUVVDaWp6NzF5Y1laekdUZnhnWUJYS3ZteHpxSGd6OElyTUwyZXVFWjgwWmRFclVXbV9FR2xKS2dHZDdoZEZsUEMycy01ZUxUMU03eTBybC1NQlZ5dDVtZHp4NTdVdEhzak9jVlgwZ2ZXTVA0SnIyM0RUTG5saEdQWG5FTDIwUmE1MHllN2xOek1HeXlRS2RtSDhCeFZfaElpRy1F?oc=5",
+        "evidence_label": "unverified",
+        "source_type": "archive_discovery",
+        "published_at": "Mon, 25 May 2026 07:00:00 GMT"
+      }
+    ],
+    "source_count": 2,
+    "matched_coverage": [
+      "OZON"
+    ],
+    "source_name": "Финам",
+    "source_url": "https://www.finam.ru/publications/item/posledniy-den-pokupki-aktsiy-ozona-pod-dividendy-25-maya-20260525-0652/",
+    "evidence_label": "unverified",
+    "score": 4,
+    "source_event_id": "54c26c1e05d520bd",
+    "first_seen_at": "2026-06-28T04:28:06+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
+    "notes": "Screening record; verify against primary transaction documents."
   },
   {
     "deal_id": "DL-71b6decbb78f4293",
@@ -2851,7 +2928,7 @@
     "score": 4,
     "source_event_id": "38b5154e2b53df8c",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T15:44:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2917,7 +2994,7 @@
     "score": 3,
     "source_event_id": "32f044efd41bc454",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2982,7 +3059,7 @@
     "score": 3,
     "source_event_id": "71608263fecb5e53",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3054,7 +3131,7 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3276,7 +3353,7 @@
     "score": 4,
     "source_event_id": "cc671fa6b14f8f28",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3438,7 +3515,7 @@
     "score": 4,
     "source_event_id": "dd21f961f579e55a",
     "first_seen_at": "2026-06-28T05:07:01+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3512,7 +3589,7 @@
     "score": 4,
     "source_event_id": "276fe11e133d5a4b",
     "first_seen_at": "2026-07-01T12:36:05+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3744,7 +3821,7 @@
     "acquirer_or_investor": "Not disclosed",
     "seller": "VK",
     "sector": "Financials",
-    "geography": "Russia",
+    "geography": "Not disclosed",
     "headline": "VK продал 25% акций Точка Банка: сделку оценили в 21,2 млрд ₽ — вдвое выше изначальной стоимости бумаг - RB.RU",
     "transaction_value": 21200000000.0,
     "enterprise_value": null,
@@ -3832,7 +3909,7 @@
     "score": 6,
     "source_event_id": "c10daba8af8e67d8",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4319,7 +4396,7 @@
     "score": 5,
     "source_event_id": "238a83afad61e805",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4382,7 +4459,7 @@
     "score": 7,
     "source_event_id": "251bf0d0b7b600c1",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4443,7 +4520,7 @@
     "score": 5,
     "source_event_id": "aa5a93661389a659",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4504,7 +4581,7 @@
     "score": 5,
     "source_event_id": "c898acc93d60813b",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4565,7 +4642,7 @@
     "score": 5,
     "source_event_id": "3b4a4419ab6b81bf",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4628,7 +4705,7 @@
     "score": 5,
     "source_event_id": "0242cf80b3f97c9c",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-01T17:09:32+00:00",
+    "last_seen_at": "2026-07-02T08:29:59+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   }
 ]
