@@ -5,10 +5,10 @@
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3498.5,
-      "change_percent": -4.84,
-      "turnover": 2616818561,
-      "updated": "19:05:45",
+      "price": 3492.5,
+      "change_percent": -5,
+      "turnover": 2683984878,
+      "updated": "19:32:28",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -17,10 +17,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3294.5,
-      "change_percent": -3.7,
-      "turnover": 1112365704,
-      "updated": "19:05:45",
+      "price": 3292.5,
+      "change_percent": -3.76,
+      "turnover": 1140153316,
+      "updated": "19:32:28",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -29,10 +29,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 174.95,
-      "change_percent": -5.94,
-      "turnover": 877427393,
-      "updated": "19:05:45",
+      "price": 175.05,
+      "change_percent": -5.89,
+      "turnover": 883655059,
+      "updated": "19:32:30",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -202,23 +202,49 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "cbb51327e56451ae",
+        "published_at": "Thu, 02 Jul 2026 08:31:13 GMT",
+        "title": "ВТБ получил в залог крупный пакет акций Ozon. Сумма сделки — 320 миллиардов рублей - prospect.com.ru",
+        "summary": "ВТБ получил в залог крупный пакет акций Ozon. Сумма сделки — 320 миллиардов рублей prospect.com.ru",
+        "source": "prospect.com.ru",
+        "url": "https://prospect.com.ru/news/6836117/vtb-poluchil-v-zalog-krupnyj-paket-aktsij-ozon-summa-sdelki-320-milliardov-rublej.html",
+        "companies": [
+          "YDEX"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "OZON"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [
-      "moex-101734",
-      "moex-101737"
+      "cbb51327e56451ae"
     ],
-    "new_signals": 2,
+    "new_signals": 1,
     "market_moves": [
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 174.95,
-        "change_percent": -5.94,
-        "turnover": 877427393,
-        "updated": "19:05:45",
+        "price": 175.05,
+        "change_percent": -5.89,
+        "turnover": 883655059,
+        "updated": "19:32:30",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -227,10 +253,10 @@
       {
         "ticker": "YDEX",
         "company": "Yandex",
-        "price": 3498.5,
-        "change_percent": -4.84,
-        "turnover": 2616818561,
-        "updated": "19:05:45",
+        "price": 3492.5,
+        "change_percent": -5,
+        "turnover": 2683984878,
+        "updated": "19:32:28",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -239,10 +265,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3294.5,
-        "change_percent": -3.7,
-        "turnover": 1112365704,
-        "updated": "19:05:45",
+        "price": 3292.5,
+        "change_percent": -3.76,
+        "turnover": 1140153316,
+        "updated": "19:32:28",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -286,30 +312,6 @@
       }
     ],
     "tasks": [
-      {
-        "id": "TASK-0de639869390",
-        "priority": "P1",
-        "state": "new",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101737",
-        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-ed68a8023168",
-        "priority": "P1",
-        "state": "new",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101734",
-        "source_title": "О регистрации программы и проспекта биржевых облигаций",
-        "hypothesis_ids": []
-      },
       {
         "id": "TASK-5b3108da5a9f",
         "priority": "P1",
@@ -373,28 +375,52 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-02bdb3153843",
+        "id": "TASK-0de639869390",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101737",
+        "source_title": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-ed68a8023168",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101734",
+        "source_title": "О регистрации программы и проспекта биржевых облигаций",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-28a9f9582d0b",
         "priority": "P1",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-5.94%) и обновить trading comps.",
+        "title": "Проверить драйвер движения YDEX (-5.00%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
+        "coverage": "YDEX",
         "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "source_title": "MOEX quote for YDEX",
         "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "2 новых сигналов с прошлого запуска; 8 действий в очереди; 0 гипотез требуют внимания.",
+    "summary": "1 новых сигналов с прошлого запуска; 8 действий в очереди; 0 гипотез требуют внимания.",
     "readout": [
       {
         "label": "Главный сигнал",
-        "text": "О регистрации выпуска биржевых облигаций, о включении его в Список ценных бумаг, допущенных к торгам и в Сегмент облигаций устойчивого развития Сектора устойчивого развития, и о присвоении указанным биржевым облигациям регистрационного номера"
+        "text": "ВТБ получил в залог крупный пакет акций Ozon. Сумма сделки — 320 миллиардов рублей - prospect.com.ru"
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -5.94% к предыдущему закрытию."
+        "text": "VKCO: -5.89% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",

@@ -59,7 +59,7 @@
     "score": 9,
     "source_event_id": "moex-101717",
     "first_seen_at": "2026-07-02T08:29:59+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -122,7 +122,7 @@
     "score": 7,
     "source_event_id": "moex-101722",
     "first_seen_at": "2026-07-02T09:16:52+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -185,7 +185,7 @@
     "score": 6,
     "source_event_id": "moex-101737",
     "first_seen_at": "2026-07-02T16:20:47+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -246,7 +246,7 @@
     "score": 6,
     "source_event_id": "moex-101734",
     "first_seen_at": "2026-07-02T16:20:47+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -497,7 +497,7 @@
     "score": 7,
     "source_event_id": "moex-101691",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -561,7 +561,7 @@
     "score": 7,
     "source_event_id": "moex-101690",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -624,7 +624,7 @@
     "score": 7,
     "source_event_id": "moex-101688",
     "first_seen_at": "2026-07-01T15:44:31+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -674,6 +674,13 @@
     ],
     "sources": [
       {
+        "name": "prospect.com.ru",
+        "url": "https://prospect.com.ru/news/6836117/vtb-poluchil-v-zalog-krupnyj-paket-aktsij-ozon-summa-sdelki-320-milliardov-rublej.html",
+        "evidence_label": "unverified",
+        "source_type": "public_news",
+        "published_at": "Thu, 02 Jul 2026 08:31:13 GMT"
+      },
+      {
         "name": "InvestFuture",
         "url": "https://investfuture.ru/articles/vtb-poluchaet-v-zalog-krupniy-paket-aktsiy-ozona-v-sdelke-na-300-0-mlrd-rubley-37123084",
         "evidence_label": "unverified",
@@ -695,17 +702,17 @@
         "published_at": "Wed, 01 Jul 2026 13:24:44 GMT"
       }
     ],
-    "source_count": 3,
+    "source_count": 4,
     "matched_coverage": [
       "OZON"
     ],
-    "source_name": "InvestFuture",
-    "source_url": "https://investfuture.ru/articles/vtb-poluchaet-v-zalog-krupniy-paket-aktsiy-ozona-v-sdelke-na-300-0-mlrd-rubley-37123084",
+    "source_name": "prospect.com.ru",
+    "source_url": "https://prospect.com.ru/news/6836117/vtb-poluchil-v-zalog-krupnyj-paket-aktsij-ozon-summa-sdelki-320-milliardov-rublej.html",
     "evidence_label": "unverified",
     "score": 5,
     "source_event_id": "fbdcfe31695d48a2",
     "first_seen_at": "2026-07-01T12:36:05+00:00",
-    "last_seen_at": "2026-07-02T09:16:52+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -777,7 +784,7 @@
     "score": 3,
     "source_event_id": "3d3c82bb59e25b8e",
     "first_seen_at": "2026-07-01T09:04:07+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2456,7 +2463,7 @@
     "score": 7,
     "source_event_id": "7a721642a53e0f1d",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2520,7 +2527,7 @@
     "score": 3,
     "source_event_id": "9092ffd6a36a0a81",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2593,7 +2600,7 @@
     "score": 4,
     "source_event_id": "f71ff729dc9f5af4",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2736,7 +2743,7 @@
     "score": 4,
     "source_event_id": "c0e4b0469b5eb473",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2829,7 +2836,7 @@
     "score": 9,
     "source_event_id": "5eba3b27a4e84dd3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2902,7 +2909,7 @@
     "score": 4,
     "source_event_id": "e08040bba3b952c1",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -2976,7 +2983,7 @@
     "score": 4,
     "source_event_id": "54c26c1e05d520bd",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3188,7 +3195,7 @@
     "score": 3,
     "source_event_id": "32f044efd41bc454",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3253,7 +3260,7 @@
     "score": 3,
     "source_event_id": "71608263fecb5e53",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3325,7 +3332,7 @@
     "score": 4,
     "source_event_id": "2848bdd8b067faa2",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3547,7 +3554,7 @@
     "score": 4,
     "source_event_id": "cc671fa6b14f8f28",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -3856,7 +3863,7 @@
     "score": 4,
     "source_event_id": "0bceebeca9933dc3",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4110,7 +4117,7 @@
     "score": 6,
     "source_event_id": "c10daba8af8e67d8",
     "first_seen_at": "2026-06-28T04:28:06+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4597,7 +4604,7 @@
     "score": 5,
     "source_event_id": "238a83afad61e805",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4660,7 +4667,7 @@
     "score": 7,
     "source_event_id": "251bf0d0b7b600c1",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4721,7 +4728,7 @@
     "score": 5,
     "source_event_id": "aa5a93661389a659",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4782,7 +4789,7 @@
     "score": 5,
     "source_event_id": "c898acc93d60813b",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4843,7 +4850,7 @@
     "score": 5,
     "source_event_id": "3b4a4419ab6b81bf",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   },
   {
@@ -4906,7 +4913,7 @@
     "score": 5,
     "source_event_id": "0242cf80b3f97c9c",
     "first_seen_at": "2026-06-28T05:10:25+00:00",
-    "last_seen_at": "2026-07-02T16:20:47+00:00",
+    "last_seen_at": "2026-07-02T16:47:31+00:00",
     "notes": "Screening record; verify against primary transaction documents."
   }
 ]
