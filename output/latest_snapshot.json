@@ -1,30 +1,30 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T11:51+00:00",
+  "generated_at": "2026-07-03T14:09+00:00",
   "health": {
-    "last_success_at": "2026-07-03T11:51+00:00",
-    "build_id": "86100a5e9bf2",
-    "record_count": 84,
+    "last_success_at": "2026-07-03T14:09+00:00",
+    "build_id": "7106b125a1fb",
+    "record_count": 85,
     "key_deal_count": 4,
     "approved_count": 17,
-    "review_count": 46,
-    "rejected_count": 21,
-    "source_count": 146,
-    "direct_source_count": 102,
+    "review_count": 48,
+    "rejected_count": 20,
+    "source_count": 148,
+    "direct_source_count": 104,
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-03T11:51:53+00:00"
+    "xlsx_generated_at": "2026-07-03T14:09:57+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3498,
-      "change_percent": -0.37,
-      "turnover": 1794334610,
-      "updated": "14:36:48",
+      "price": 3488.5,
+      "change_percent": -0.64,
+      "turnover": 2545466942,
+      "updated": "16:54:51",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -33,10 +33,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3211,
-      "change_percent": -1.62,
-      "turnover": 942608955,
-      "updated": "14:36:48",
+      "price": 3188.5,
+      "change_percent": -2.31,
+      "turnover": 1284226365,
+      "updated": "16:54:52",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -45,10 +45,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 178.65,
-      "change_percent": 2.26,
-      "turnover": 659185429,
-      "updated": "14:36:50",
+      "price": 175.95,
+      "change_percent": 0.72,
+      "turnover": 913905195,
+      "updated": "16:54:53",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,6 +56,29 @@
     }
   ],
   "events": [
+    {
+      "event": {
+        "event_id": "moex-101762",
+        "published_at": "2026-07-03 15:50:57",
+        "title": "О признании программы биржевых облигаций несостоявшейся и аннулировании её регистрации",
+        "summary": "О признании программы биржевых облигаций несостоявшейся и аннулировании её регистрации 2026-07-03 15:50:57 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением соответствующего заявления, Председателем Правления \"03\" июля 2026 года приняты следующие решения: признать несостоявшейся программу биржевых облигаций; аннулировать регистрацию программы биржевых облигаций: Наименование Эмитента Общество с ограниченной ответственностью \"Сейф-Финанс\" Наименование программы Программа биржевых облигаций с обеспечением процентных неконвертируемых бездокументарных серии 002Р Регистрационный номер программы 4-00609-R-001P-02E от 25.01.2024 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101762",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
     {
       "event": {
         "event_id": "moex-101755",
@@ -72,12 +95,39 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "39d2ffe37344900d",
+        "published_at": "Fri, 03 Jul 2026 13:05:08 GMT",
+        "title": "​​💼 АФК Система — заложила/продала Ozon, как меняются - Альфа-Банк",
+        "summary": "​​💼 АФК Система — заложила/продала Ozon, как меняются Альфа-Банк",
+        "source": "Альфа-Банк",
+        "url": "https://alfabank.ru/alfa-investor/posts/t/0f76d7ad-de76-f111-91c8-0050569e1fd0/",
+        "companies": [
+          "OZON"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "OZON"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
@@ -86,16 +136,16 @@
     "new_signals": 0,
     "market_moves": [
       {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 178.65,
-        "change_percent": 2.26,
-        "turnover": 659185429,
-        "updated": "14:36:50",
+        "ticker": "OZON",
+        "company": "Ozon",
+        "price": 3188.5,
+        "change_percent": -2.31,
+        "turnover": 1284226365,
+        "updated": "16:54:52",
         "currency": "RUB",
         "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
       }
     ],
     "hypotheses": [
@@ -146,20 +196,44 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-02bdb3153843",
+        "id": "TASK-5ce3447010ba",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101762",
+        "source_title": "О признании программы биржевых облигаций несостоявшейся и аннулировании её регистрации",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-8a4d252fb87f",
+        "priority": "P2",
+        "state": "open",
+        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+        "deliverable": "Transaction snapshot + precedent transactions",
+        "coverage": "OZON",
+        "category": "M&A",
+        "source_url": "https://alfabank.ru/alfa-investor/posts/t/0f76d7ad-de76-f111-91c8-0050569e1fd0/",
+        "source_title": "​​💼 АФК Система — заложила/продала Ozon, как меняются - Альфа-Банк",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-566158f8fbf9",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (+2.26%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-2.31%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
+        "coverage": "OZON",
         "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "source_title": "MOEX quote for OZON",
         "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 4 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -167,7 +241,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: +2.26% к предыдущему закрытию."
+        "text": "OZON: -2.31% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
