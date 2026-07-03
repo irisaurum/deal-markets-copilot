@@ -1,30 +1,30 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T08:38+00:00",
+  "generated_at": "2026-07-03T09:21+00:00",
   "health": {
-    "last_success_at": "2026-07-03T08:38+00:00",
-    "build_id": "a4432f860b74",
-    "record_count": 82,
+    "last_success_at": "2026-07-03T09:21+00:00",
+    "build_id": "e80bc25a208d",
+    "record_count": 83,
     "key_deal_count": 4,
-    "approved_count": 16,
+    "approved_count": 17,
     "review_count": 45,
     "rejected_count": 21,
-    "source_count": 144,
-    "direct_source_count": 100,
+    "source_count": 145,
+    "direct_source_count": 101,
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-03T08:38:54+00:00"
+    "xlsx_generated_at": "2026-07-03T09:21:41+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3460.5,
-      "change_percent": -1.44,
-      "turnover": 986883109,
-      "updated": "11:23:36",
+      "price": 3461.5,
+      "change_percent": -1.41,
+      "turnover": 1186491710,
+      "updated": "12:06:36",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -35,8 +35,8 @@
       "company": "Ozon",
       "price": 3200,
       "change_percent": -1.96,
-      "turnover": 497977828,
-      "updated": "11:23:22",
+      "turnover": 613834842,
+      "updated": "12:06:37",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -45,10 +45,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 170.95,
-      "change_percent": -2.15,
-      "turnover": 309343112,
-      "updated": "11:22:50",
+      "price": 173.2,
+      "change_percent": -0.86,
+      "turnover": 399410074,
+      "updated": "12:06:38",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -60,20 +60,7 @@
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [
-      {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 170.95,
-        "change_percent": -2.15,
-        "turnover": 309343112,
-        "updated": "11:22:50",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
-      }
-    ],
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -108,22 +95,9 @@
         "latest_signal": "Новых подтверждающих сигналов нет"
       }
     ],
-    "tasks": [
-      {
-        "id": "TASK-02bdb3153843",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения VKCO (-2.15%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
-        "hypothesis_ids": []
-      }
-    ],
+    "tasks": [],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -131,11 +105,11 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -2.15% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
-        "text": "Проверить драйвер движения VKCO (-2.15%) и обновить trading comps."
+        "text": "Очередь действий пуста."
       }
     ]
   }
