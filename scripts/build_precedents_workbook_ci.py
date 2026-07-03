@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import hashlib
 import statistics
-from datetime import datetime
+from datetime import datetime, date as calendar_date, timedelta
 from pathlib import Path
 
 import xlsxwriter
@@ -43,6 +43,17 @@ def date(value):
         return datetime.fromisoformat(str(value)[:10])
     except (TypeError, ValueError):
         return None
+
+
+def current_key_deals():
+    cutoff = (calendar_date.today() - timedelta(days=365)).isoformat()
+    return sorted((
+        row for row in ROWS
+        if row.get("record_kind") == "deal"
+        and row.get("quality_status") != "rejected"
+        and not str(row.get("deal_id") or "").startswith("CURATED-")
+        and str(row.get("announced_date") or "")[:10] >= cutoff
+    ), key=lambda row: str(row.get("announced_date") or ""), reverse=True)[:10]
 
 
 def main() -> None:
@@ -79,6 +90,13 @@ def main() -> None:
     summary.write_row("A12", ["Median EV / Revenue", "Median EV / EBITDA", "EV / Revenue observations", "EV / EBITDA observations"], header)
     summary.write_row("A13", [statistics.median(ev_rev) if len(ev_rev) >= 3 else "N/M", statistics.median(ev_ebitda) if len(ev_ebitda) >= 3 else "N/M", len(ev_rev), len(ev_ebitda)])
     summary.set_row(12, None, multiple)
+    summary.merge_range("A16:J16", "LATEST KEY TRANSACTIONS", section)
+    summary.write_row("A18", ["Date", "Type", "Status", "Target / Issuer", "Buyer / Investor", "Value", "Currency", "Quality", "Sources", "Headline"], header)
+    for row_index, row in enumerate(current_key_deals(), 18):
+        values = [date(row.get("announced_date")), row.get("deal_type"), row.get("status"), row.get("target_or_issuer"), row.get("acquirer_or_investor"), row.get("transaction_value"), row.get("currency"), row.get("quality_status"), row.get("source_count"), row.get("headline")]
+        for col, value in enumerate(values):
+            if value is not None:
+                summary.write(row_index, col, value, day if col == 0 else number if col == 5 else sourced)
     summary.set_column("A:J", 19)
 
     deals = workbook.add_worksheet("Deals")

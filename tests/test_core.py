@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -16,6 +17,7 @@ from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
 from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal
+from run import _build_health
 
 
 class CoreTests(unittest.TestCase):
@@ -100,11 +102,45 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(workflow["new_signals"], 0)
         self.assertEqual(workflow["tasks"], [])
 
+    def test_repo_trading_notice_is_not_a_deal_or_task(self) -> None:
+        event = Event(
+            event_id="moex-repo", published_at="2026-07-03T17:12:32+03:00",
+            title="Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
+            summary="Инфраструктурное уведомление", source="MOEX disclosure",
+            url="https://www.moex.com/n101768", source_type="official_exchange", confidence="confirmed",
+        )
+        item = classify_event(event, [])
+        self.assertEqual(item.score, 0)
+        self.assertFalse(is_actionable_signal(item))
+        record = extract_deal_record(item, [])
+        self.assertIsNotNone(record)
+        self.assertEqual(record.record_kind, "technical_filing")
+        self.assertEqual(select_key_deals([record.to_dict()]), [])
+
     def test_rss_transport_failure_is_not_silently_successful(self) -> None:
         config = {"sources": [{"name": "Test RSS", "url": "https://example.com/rss", "enabled": True}]}
         with patch("deal_markets_copilot.sources.fetch_feed", side_effect=OSError("offline")):
             with self.assertRaises(RuntimeError):
                 fetch_configured_sources(config)
+
+    def test_health_cannot_be_green_when_all_discovery_feeds_are_empty(self) -> None:
+        rows = [{
+            "deal_id": "one", "record_kind": "deal", "quality_status": "approved",
+            "deal_type": "M&A", "stake_percent": None, "source_count": 1,
+            "sources": [{"name": "Issuer", "url": "https://example.com", "source_type": "official_issuer"}],
+        }]
+        required = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news", "moex_quotes"}
+        source_runs = [{"name": name, "status": "ok", "records": 0, "required": True, "checked_at": "2026-07-03T12:00:00+03:00"} for name in required]
+        with tempfile.TemporaryDirectory() as directory:
+            dataset = Path(directory) / "rows.json"
+            dataset.write_text(json.dumps(rows), encoding="utf-8")
+            digest = hashlib.sha256(dataset.read_bytes()).hexdigest()
+            manifest = Path(directory) / "manifest.json"
+            manifest.write_text(json.dumps({"build_id": digest[:12], "dataset_sha256": digest, "record_count": 1}), encoding="utf-8")
+            health = _build_health(rows, manifest, dataset, source_runs)
+        self.assertEqual(health["discovery_status"], "empty")
+        self.assertEqual(health["source_status"], "error")
+        self.assertEqual(health["system_status"], "warning")
 
     def test_telegram_digest_escapes_html(self) -> None:
         event = Event("1", "", "A < B", "", "Source", "")
@@ -401,6 +437,17 @@ class CoreTests(unittest.TestCase):
             {"deal_id": "dcm", "announced_date": "2026-06-26", "deal_type": "DCM", "status": "Announced", "target_or_issuer": "Selectel", "acquirer_or_investor": "Not applicable", "transaction_value": 5_000_000_000, "score": 5, "headline": "Selectel анонсировал размещение облигаций"},
         ]
         self.assertEqual([row["deal_id"] for row in select_key_deals(rows)], ["ma", "dcm"])
+
+    def test_priced_dcm_is_a_key_deal_without_ma_closed_status(self) -> None:
+        rows = [{
+            "deal_id": "priced", "announced_date": "2026-07-03", "deal_type": "DCM",
+            "record_kind": "deal", "quality_status": "approved", "status": "Priced",
+            "target_or_issuer": "Issuer", "acquirer_or_investor": "Not applicable",
+            "transaction_value": None, "headline": "Issuer закрыл книгу заявок на облигации", "score": 8,
+        }]
+        selected = select_key_deals(rows)
+        self.assertEqual([row["deal_id"] for row in selected], ["priced"])
+        self.assertEqual(selected[0]["status"], "Priced")
 
     def test_key_deals_exclude_funds_units_and_ofz_auctions(self) -> None:
         rows = [

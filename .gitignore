@@ -10,4 +10,5 @@ __pycache__/
 *.key
 *.p12
 *.pfx
-node_modules/
+/node_modules
+*.inspect.ndjson

@@ -18,7 +18,9 @@ permissions: {}
 
 concurrency:
   group: deal-desk-pages
-  cancel-in-progress: false
+  # A newer scheduled refresh supersedes an older one. This prevents a queued
+  # stale build from publishing after a fresher dataset.
+  cancel-in-progress: true
 
 jobs:
   build:

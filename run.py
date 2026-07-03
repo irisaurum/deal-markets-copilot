@@ -247,7 +247,8 @@ def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | No
                 stale_sources.append(str(run.get("name") or "unknown"))
         except ValueError:
             stale_sources.append(str(run.get("name") or "unknown"))
-    live_sources_ok = bool(runs) and not failed_runs and not missing_required
+    discovery_ok = discovery_records > 0
+    live_sources_ok = bool(runs) and not failed_runs and not missing_required and discovery_ok
     freshness_ok = bool(runs) and not stale_sources
     xlsx_synced = manifest.get("dataset_sha256") == dataset_sha256 and manifest.get("build_id") == build_id and manifest.get("record_count") == len(rows)
     return {
@@ -266,6 +267,7 @@ def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | No
         "source_group_count": len(source_groups),
         "source_runs": runs,
         "discovery_record_count": discovery_records,
+        "discovery_status": "ok" if discovery_ok else "empty",
         "missing_required_sources": missing_required,
         "stale_sources": sorted(set(stale_sources)),
         "source_age_minutes": round(max(source_ages), 1) if source_ages else None,

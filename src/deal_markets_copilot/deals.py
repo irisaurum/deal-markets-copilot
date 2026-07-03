@@ -312,7 +312,7 @@ def select_key_deals(rows: list[dict], limit: int = 10) -> list[dict]:
         if category == "M&A" and disclosed_party:
             selected.append(row)
         elif category in {"ECM", "DCM"} and target not in {None, "", "Not disclosed"} and (
-            row.get("transaction_value") or row.get("status") in {"Announced", "Issued", "Closed", "Confirmed"}
+            row.get("transaction_value") or row.get("status") in {"Announced", "Priced", "Issued", "Confirmed"}
         ):
             selected.append(row)
     clusters: list[dict] = []
@@ -424,6 +424,7 @@ def _is_technical_filing(text: str, source_type: str = "") -> bool:
         r"^\s*о признании выпуск\w* облигац\w* несостоявш",
         r"^\s*о признании программ\w* .{0,80}облигац\w* несостоявш",
         r"^\s*информация о кодах расчетов",
+        r"^\s*операции репо .+сделки купли-продажи облигаций",
         r"^\s*московская биржа начала торги паями",
         r"\bбпиф\b.+\bторг",
         r"^\s*информация о приобретении инвестиционн\w* па[йё]",

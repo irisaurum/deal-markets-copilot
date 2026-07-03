@@ -22,6 +22,11 @@ const C = {navy:"#10243E",blue:"#1F4E78",paleBlue:"#D9EAF7",green:"#008000",pale
 const toDate = value => /^\d{4}-\d{2}-\d{2}/.test(String(value || "")) ? new Date(`${String(value).slice(0,10)}T00:00:00Z`) : null;
 const safe = value => value === undefined ? null : value;
 const lastRow = (count, start=7) => start + Math.max(count, 1) - 1;
+const liveCutoff = new Date(); liveCutoff.setUTCDate(liveCutoff.getUTCDate()-365);
+const isCurrentKeyDeal = row => row.record_kind === "deal"
+  && row.quality_status !== "rejected"
+  && !String(row.deal_id || "").startsWith("CURATED-")
+  && toDate(row.announced_date) >= liveCutoff;
 
 function titleBand(sheet, endCol, title, subtitle) {
   sheet.getRange(`A1:${endCol}1`).merge(); sheet.getRange("A1").values=[[title]];
@@ -46,7 +51,7 @@ summary.getRange("A13:D13").formulas=[["=IF(COUNTIFS('Multiples'!$M$7:$M$506,\"Y
 summary.getRange("A13:D13").format={fill:C.paleGreen,font:{bold:true,size:14},horizontalAlignment:"center",rowHeight:32}; summary.getRange("A13:B13").setNumberFormat("0.0x");
 section(summary,"A16:J16","LATEST KEY TRANSACTIONS");
 summary.getRange("A18:J18").values=[["Date","Type","Status","Target / Issuer","Buyer / Investor","Value","Currency","Quality","Sources","Headline"]]; headers(summary.getRange("A18:J18"));
-const latest=rows.filter(r=>r.record_kind==="deal"&&r.quality_status!=="rejected").slice(0,10).map(r=>[toDate(r.announced_date),r.deal_type,r.status,r.target_or_issuer,r.acquirer_or_investor,r.transaction_value,r.currency,r.quality_status,r.source_count,r.headline]);
+const latest=rows.filter(isCurrentKeyDeal).sort((a,b)=>String(b.announced_date||"").localeCompare(String(a.announced_date||""))).slice(0,10).map(r=>[toDate(r.announced_date),r.deal_type,r.status,r.target_or_issuer,r.acquirer_or_investor,r.transaction_value,r.currency,r.quality_status,r.source_count,r.headline]);
 if(latest.length) summary.getRangeByIndexes(18,0,latest.length,10).values=latest;
 summary.getRange(`A19:A${18+Math.max(latest.length,1)}`).setNumberFormat("dd-mmm-yyyy"); summary.getRange(`F19:F${18+Math.max(latest.length,1)}`).setNumberFormat("#,##0;[Red](#,##0);-");
 summary.getRange(`A19:J${18+Math.max(latest.length,1)}`).format={wrapText:true,rowHeight:30,verticalAlignment:"center"};

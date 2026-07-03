@@ -1,30 +1,125 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T16:21+00:00",
+  "generated_at": "2026-07-03T21:22+03:00",
   "health": {
-    "last_success_at": "2026-07-03T16:21+00:00",
-    "build_id": "0d5b3bb17721",
+    "last_success_at": "2026-07-03T21:22+03:00",
+    "build_id": "423332d7f89f",
+    "dataset_sha256": "423332d7f89f2a54d77e52dff8fb59ca3fe8c2c4ecd541c742b230fa7f321385",
     "record_count": 86,
     "key_deal_count": 4,
-    "approved_count": 17,
-    "review_count": 49,
-    "rejected_count": 20,
+    "approved_count": 18,
+    "review_count": 46,
+    "rejected_count": 22,
     "source_count": 150,
     "direct_source_count": 106,
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
+    "source_group_count": 8,
+    "source_runs": [
+      {
+        "name": "issuer_news",
+        "status": "ok",
+        "records": 15,
+        "required": true,
+        "checked_at": "2026-07-03T21:17:26+03:00",
+        "error": "",
+        "age_minutes": 5.5
+      },
+      {
+        "name": "gdelt",
+        "status": "ok",
+        "records": 0,
+        "required": false,
+        "checked_at": "2026-07-03T21:17:40+03:00",
+        "error": "",
+        "age_minutes": 5.3
+      },
+      {
+        "name": "moex_disclosures",
+        "status": "ok",
+        "records": 14,
+        "required": true,
+        "checked_at": "2026-07-03T21:17:40+03:00",
+        "error": "",
+        "age_minutes": 5.3
+      },
+      {
+        "name": "configured_rss",
+        "status": "ok",
+        "records": 5,
+        "required": true,
+        "checked_at": "2026-07-03T21:17:50+03:00",
+        "error": "",
+        "age_minutes": 5.1
+      },
+      {
+        "name": "deal_news",
+        "status": "ok",
+        "records": 7,
+        "required": true,
+        "checked_at": "2026-07-03T21:17:51+03:00",
+        "error": "",
+        "age_minutes": 5.1
+      },
+      {
+        "name": "company_news",
+        "status": "ok",
+        "records": 7,
+        "required": true,
+        "checked_at": "2026-07-03T21:17:53+03:00",
+        "error": "",
+        "age_minutes": 5.0
+      },
+      {
+        "name": "deal_archive",
+        "status": "ok",
+        "records": 143,
+        "required": false,
+        "checked_at": "2026-07-03T21:17:56+03:00",
+        "error": "",
+        "age_minutes": 5.0
+      },
+      {
+        "name": "sec_filings",
+        "status": "ok",
+        "records": 0,
+        "required": false,
+        "checked_at": "2026-07-03T21:18:00+03:00",
+        "error": "",
+        "age_minutes": 4.9
+      },
+      {
+        "name": "moex_quotes",
+        "status": "ok",
+        "records": 3,
+        "required": true,
+        "checked_at": "2026-07-03T21:18:00+03:00",
+        "error": "",
+        "age_minutes": 4.9
+      }
+    ],
+    "discovery_record_count": 34,
+    "discovery_status": "ok",
+    "missing_required_sources": [],
+    "stale_sources": [],
+    "source_age_minutes": 5.5,
+    "source_checked_at": "2026-07-03T21:17+03:00",
+    "freshness_limit_minutes": 4320,
+    "source_status": "ok",
+    "freshness_status": "ok",
+    "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-03T16:21:55+00:00"
+    "xlsx_generated_at": "2026-07-03T18:21:10.093Z"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3479,
-      "change_percent": -0.91,
-      "turnover": 2975964768,
-      "updated": "19:06:49",
+      "price": 3448.5,
+      "change_percent": -1.78,
+      "turnover": 3120063699,
+      "updated": "21:03:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -33,10 +128,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3174,
-      "change_percent": -2.76,
-      "turnover": 1565550495,
-      "updated": "19:06:49",
+      "price": 3165.5,
+      "change_percent": -3.02,
+      "turnover": 1615350573,
+      "updated": "21:03:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -45,10 +140,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 176.2,
-      "change_percent": 0.86,
-      "turnover": 1023669799,
-      "updated": "19:06:52",
+      "price": 175.9,
+      "change_percent": 0.69,
+      "turnover": 1052518075,
+      "updated": "21:03:01",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,75 +151,6 @@
     }
   ],
   "events": [
-    {
-      "event": {
-        "event_id": "moex-101768",
-        "published_at": "2026-07-03 17:12:32",
-        "title": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
-        "summary": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте 2026-07-03 17:12:32 Начиная с 6 июля 2026 года будут доступны операции в режимах РЕПО с ЦК и РЕПО с КСУ с расчётами в специализированной валюте и купли-продажи отдельных облигаций, номинированных в валюте, в режимах Т+ и ОТС с ЦК. Для данных операций недоступны РЕПО с плавающей ставкой, открытой датой, промежуточными выплатами, а также досрочное исполнение и отказ от сделок. Добавляется механизм передачи нетто-позиций с датой исполнения Т+1 между Фондовым и Валютным рынками: по Расчетным кодам Единого пула, распространенным на Валютный рынок, происходит автоматическая передача нетто-позиций в Специализированной валюте с датой исполнения Т+1 с Фондового рынка на Валютный в течение дня. Нетто-позиция обнуляется на Фондовом рынке и переносится на Валютный вместе с одновременным изменением профиля актива. Реализовано Поручение на перевод обязательств в специализированной валюте, подаваемое через Клиринговый терминал или Модуль НКЦ, для передачи нетто-позиции Т+1 между разными Расчетными кодами Фондового/Валютного рынков. После передачи нетто-позиция Т+1 обнуляется на рынке-отправителе и возникает на рынке-получателе. Данные поручения отражаются в новом отчёте CCX150 (Отчёт о переводах обязательств в Специализированной валюте). Подробнее о данных инструментах см. в разделе \"Управление обязательствами для операций в режимах РЕПО с ЦК\" по ссылке: https://www.moex.com/media/version-202",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101768",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101762",
-        "published_at": "2026-07-03 15:50:57",
-        "title": "О признании программы биржевых облигаций несостоявшейся и аннулировании её регистрации",
-        "summary": "О признании программы биржевых облигаций несостоявшейся и аннулировании её регистрации 2026-07-03 15:50:57 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением соответствующего заявления, Председателем Правления \"03\" июля 2026 года приняты следующие решения: признать несостоявшейся программу биржевых облигаций; аннулировать регистрацию программы биржевых облигаций: Наименование Эмитента Общество с ограниченной ответственностью \"Сейф-Финанс\" Наименование программы Программа биржевых облигаций с обеспечением процентных неконвертируемых бездокументарных серии 002Р Регистрационный номер программы 4-00609-R-001P-02E от 25.01.2024 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101762",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101755",
-        "published_at": "2026-07-03 14:33:14",
-        "title": "О проведении выкупа облигаций с 06 по 10  июля 2026 года",
-        "summary": "О проведении выкупа облигаций с 06 по 10 июля 2026 года 2026-07-03 14:33:14 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО Московская Биржа, утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО Московская Биржа, утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), установлены следующие сроки, форма и порядок проведения торгов по выкупу облигаций, указанных в Приложении №1 к настоящему Уведомлению (далее – Облигации): Проведение торгов по выкупу Облигаций будет осуществляться в Режиме торгов \"Выкуп: Адресные заявки\" в порядке, предусмотренном в Подразделе 1.9 Проведение торгов по приобретению акций и выкупу облигаций Части II. Правил торгов. Покупателем Облигаций при выкупе является Участник торгов фондового рынка, указанный в Приложении №1 к настоящему Уведомлению. Размер стандартного лота в режиме торгов \"Выкуп: Адресные заявки\" установлен равным 1 (одной) ценной бумаге. Приложение №1 Список ценных бумаг, в отношении которых определяются сроки, форма и порядок проведения торгов по выкупу облигаций № п / п Дата выкупа ISIN код выпуска ценной бумаги Наименование выпуска ценной бумаги Наименование участника торгов - покупателя ценных бумаг Идентификатор у",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101755",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
     {
       "event": {
         "event_id": "699bcabc1f99e1be",
@@ -161,10 +187,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3174,
-        "change_percent": -2.76,
-        "turnover": 1565550495,
-        "updated": "19:06:49",
+        "price": 3165.5,
+        "change_percent": -3.02,
+        "turnover": 1615350573,
+        "updated": "21:03:00",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -207,42 +233,6 @@
     ],
     "tasks": [
       {
-        "id": "TASK-6b56805e79cb",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101768",
-        "source_title": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-5ce3447010ba",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101762",
-        "source_title": "О признании программы биржевых облигаций несостоявшейся и аннулировании её регистрации",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-ea3a747e423e",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101755",
-        "source_title": "О проведении выкупа облигаций с 06 по 10  июля 2026 года",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-68158f78ad71",
         "priority": "P2",
         "state": "open",
@@ -255,10 +245,10 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-566158f8fbf9",
+        "id": "TASK-475456dd6cf9",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения OZON (-2.76%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-3.02%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
         "category": "Market",
@@ -268,7 +258,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 5 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -276,11 +266,11 @@
       },
       {
         "label": "Рынок",
-        "text": "OZON: -2.76% к предыдущему закрытию."
+        "text": "OZON: -3.02% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Обновить debt comps и проверить ближайшие погашения."
+        "text": "Добавить событие в deal log и подготовить one-page transaction snapshot."
       }
     ]
   }
