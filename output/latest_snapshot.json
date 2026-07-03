@@ -1,30 +1,30 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T09:21+00:00",
+  "generated_at": "2026-07-03T11:51+00:00",
   "health": {
-    "last_success_at": "2026-07-03T09:21+00:00",
-    "build_id": "e80bc25a208d",
-    "record_count": 83,
+    "last_success_at": "2026-07-03T11:51+00:00",
+    "build_id": "86100a5e9bf2",
+    "record_count": 84,
     "key_deal_count": 4,
     "approved_count": 17,
-    "review_count": 45,
+    "review_count": 46,
     "rejected_count": 21,
-    "source_count": 145,
-    "direct_source_count": 101,
+    "source_count": 146,
+    "direct_source_count": 102,
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-03T09:21:41+00:00"
+    "xlsx_generated_at": "2026-07-03T11:51:53+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3461.5,
-      "change_percent": -1.41,
-      "turnover": 1186491710,
-      "updated": "12:06:36",
+      "price": 3498,
+      "change_percent": -0.37,
+      "turnover": 1794334610,
+      "updated": "14:36:48",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -33,10 +33,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3200,
-      "change_percent": -1.96,
-      "turnover": 613834842,
-      "updated": "12:06:37",
+      "price": 3211,
+      "change_percent": -1.62,
+      "turnover": 942608955,
+      "updated": "14:36:48",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -45,22 +45,59 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 173.2,
-      "change_percent": -0.86,
-      "turnover": 399410074,
-      "updated": "12:06:38",
+      "price": 178.65,
+      "change_percent": 2.26,
+      "turnover": 659185429,
+      "updated": "14:36:50",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
       "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
     }
   ],
-  "events": [],
+  "events": [
+    {
+      "event": {
+        "event_id": "moex-101755",
+        "published_at": "2026-07-03 14:33:14",
+        "title": "О проведении выкупа облигаций с 06 по 10  июля 2026 года",
+        "summary": "О проведении выкупа облигаций с 06 по 10 июля 2026 года 2026-07-03 14:33:14 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО Московская Биржа, утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО Московская Биржа, утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), установлены следующие сроки, форма и порядок проведения торгов по выкупу облигаций, указанных в Приложении №1 к настоящему Уведомлению (далее – Облигации): Проведение торгов по выкупу Облигаций будет осуществляться в Режиме торгов \"Выкуп: Адресные заявки\" в порядке, предусмотренном в Подразделе 1.9 Проведение торгов по приобретению акций и выкупу облигаций Части II. Правил торгов. Покупателем Облигаций при выкупе является Участник торгов фондового рынка, указанный в Приложении №1 к настоящему Уведомлению. Размер стандартного лота в режиме торгов \"Выкуп: Адресные заявки\" установлен равным 1 (одной) ценной бумаге. Приложение №1 Список ценных бумаг, в отношении которых определяются сроки, форма и порядок проведения торгов по выкупу облигаций № п / п Дата выкупа ISIN код выпуска ценной бумаги Наименование выпуска ценной бумаги Наименование участника торгов - покупателя ценных бумаг Идентификатор у",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101755",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    }
+  ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [],
+    "market_moves": [
+      {
+        "ticker": "VKCO",
+        "company": "VK",
+        "price": 178.65,
+        "change_percent": 2.26,
+        "turnover": 659185429,
+        "updated": "14:36:50",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      }
+    ],
     "hypotheses": [
       {
         "id": "H-01",
@@ -95,9 +132,34 @@
         "latest_signal": "Новых подтверждающих сигналов нет"
       }
     ],
-    "tasks": [],
+    "tasks": [
+      {
+        "id": "TASK-ea3a747e423e",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101755",
+        "source_title": "О проведении выкупа облигаций с 06 по 10  июля 2026 года",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-02bdb3153843",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (+2.26%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
+        "hypothesis_ids": []
+      }
+    ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -105,11 +167,11 @@
       },
       {
         "label": "Рынок",
-        "text": "Движений выше установленного порога нет."
+        "text": "VKCO: +2.26% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Очередь действий пуста."
+        "text": "Обновить debt comps и проверить ближайшие погашения."
       }
     ]
   }
