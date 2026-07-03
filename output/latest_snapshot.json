@@ -1,8 +1,8 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T16:08+00:00",
+  "generated_at": "2026-07-03T16:21+00:00",
   "health": {
-    "last_success_at": "2026-07-03T16:08+00:00",
+    "last_success_at": "2026-07-03T16:21+00:00",
     "build_id": "0d5b3bb17721",
     "record_count": 86,
     "key_deal_count": 4,
@@ -14,17 +14,17 @@
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-03T16:08:08+00:00"
+    "xlsx_generated_at": "2026-07-03T16:21:55+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3489,
-      "change_percent": -0.63,
-      "turnover": 2956498686,
-      "updated": "18:53:04",
+      "price": 3479,
+      "change_percent": -0.91,
+      "turnover": 2975964768,
+      "updated": "19:06:49",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -33,10 +33,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3180.5,
-      "change_percent": -2.56,
-      "turnover": 1563298538,
-      "updated": "18:53:01",
+      "price": 3174,
+      "change_percent": -2.76,
+      "turnover": 1565550495,
+      "updated": "19:06:49",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -45,10 +45,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 176.65,
-      "change_percent": 1.12,
-      "turnover": 1020437235,
-      "updated": "18:53:04",
+      "price": 176.2,
+      "change_percent": 0.86,
+      "turnover": 1023669799,
+      "updated": "19:06:52",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -72,7 +72,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -161,10 +161,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3180.5,
-        "change_percent": -2.56,
-        "turnover": 1563298538,
-        "updated": "18:53:01",
+        "price": 3174,
+        "change_percent": -2.76,
+        "turnover": 1565550495,
+        "updated": "19:06:49",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -207,6 +207,18 @@
     ],
     "tasks": [
       {
+        "id": "TASK-6b56805e79cb",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101768",
+        "source_title": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
+        "hypothesis_ids": []
+      },
+      {
         "id": "TASK-5ce3447010ba",
         "priority": "P1",
         "state": "open",
@@ -231,18 +243,6 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-6b56805e79cb",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101768",
-        "source_title": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-68158f78ad71",
         "priority": "P2",
         "state": "open",
@@ -258,7 +258,7 @@
         "id": "TASK-566158f8fbf9",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения OZON (-2.56%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-2.76%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
         "category": "Market",
@@ -276,7 +276,7 @@
       },
       {
         "label": "Рынок",
-        "text": "OZON: -2.56% к предыдущему закрытию."
+        "text": "OZON: -2.76% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
