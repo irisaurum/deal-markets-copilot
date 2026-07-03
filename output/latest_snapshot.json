@@ -1,30 +1,30 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-03T14:09+00:00",
+  "generated_at": "2026-07-03T16:08+00:00",
   "health": {
-    "last_success_at": "2026-07-03T14:09+00:00",
-    "build_id": "7106b125a1fb",
-    "record_count": 85,
+    "last_success_at": "2026-07-03T16:08+00:00",
+    "build_id": "0d5b3bb17721",
+    "record_count": 86,
     "key_deal_count": 4,
     "approved_count": 17,
-    "review_count": 48,
+    "review_count": 49,
     "rejected_count": 20,
-    "source_count": 148,
-    "direct_source_count": 104,
+    "source_count": 150,
+    "direct_source_count": 106,
     "aggregator_source_count": 44,
     "critical_qa_issues": 0,
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-03T14:09:57+00:00"
+    "xlsx_generated_at": "2026-07-03T16:08:08+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3488.5,
-      "change_percent": -0.64,
-      "turnover": 2545466942,
-      "updated": "16:54:51",
+      "price": 3489,
+      "change_percent": -0.63,
+      "turnover": 2956498686,
+      "updated": "18:53:04",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -33,10 +33,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3188.5,
-      "change_percent": -2.31,
-      "turnover": 1284226365,
-      "updated": "16:54:52",
+      "price": 3180.5,
+      "change_percent": -2.56,
+      "turnover": 1563298538,
+      "updated": "18:53:01",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -45,10 +45,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 175.95,
-      "change_percent": 0.72,
-      "turnover": 913905195,
-      "updated": "16:54:53",
+      "price": 176.65,
+      "change_percent": 1.12,
+      "turnover": 1020437235,
+      "updated": "18:53:04",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -56,6 +56,29 @@
     }
   ],
   "events": [
+    {
+      "event": {
+        "event_id": "moex-101768",
+        "published_at": "2026-07-03 17:12:32",
+        "title": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
+        "summary": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте 2026-07-03 17:12:32 Начиная с 6 июля 2026 года будут доступны операции в режимах РЕПО с ЦК и РЕПО с КСУ с расчётами в специализированной валюте и купли-продажи отдельных облигаций, номинированных в валюте, в режимах Т+ и ОТС с ЦК. Для данных операций недоступны РЕПО с плавающей ставкой, открытой датой, промежуточными выплатами, а также досрочное исполнение и отказ от сделок. Добавляется механизм передачи нетто-позиций с датой исполнения Т+1 между Фондовым и Валютным рынками: по Расчетным кодам Единого пула, распространенным на Валютный рынок, происходит автоматическая передача нетто-позиций в Специализированной валюте с датой исполнения Т+1 с Фондового рынка на Валютный в течение дня. Нетто-позиция обнуляется на Фондовом рынке и переносится на Валютный вместе с одновременным изменением профиля актива. Реализовано Поручение на перевод обязательств в специализированной валюте, подаваемое через Клиринговый терминал или Модуль НКЦ, для передачи нетто-позиции Т+1 между разными Расчетными кодами Фондового/Валютного рынков. После передачи нетто-позиция Т+1 обнуляется на рынке-отправителе и возникает на рынке-получателе. Данные поручения отражаются в новом отчёте CCX150 (Отчёт о переводах обязательств в Специализированной валюте). Подробнее о данных инструментах см. в разделе \"Управление обязательствами для операций в режимах РЕПО с ЦК\" по ссылке: https://www.moex.com/media/version-202",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101768",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
     {
       "event": {
         "event_id": "moex-101762",
@@ -72,7 +95,7 @@
         "demo": false
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -104,12 +127,12 @@
     },
     {
       "event": {
-        "event_id": "39d2ffe37344900d",
-        "published_at": "Fri, 03 Jul 2026 13:05:08 GMT",
-        "title": "​​💼 АФК Система — заложила/продала Ozon, как меняются - Альфа-Банк",
-        "summary": "​​💼 АФК Система — заложила/продала Ozon, как меняются Альфа-Банк",
-        "source": "Альфа-Банк",
-        "url": "https://alfabank.ru/alfa-investor/posts/t/0f76d7ad-de76-f111-91c8-0050569e1fd0/",
+        "event_id": "699bcabc1f99e1be",
+        "published_at": "Fri, 03 Jul 2026 12:57:00 GMT",
+        "title": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? - Investing.com",
+        "summary": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? Investing.com",
+        "source": "Investing.com",
+        "url": "https://ru.investing.com/analysis/article-200333133",
         "companies": [
           "OZON"
         ],
@@ -138,10 +161,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3188.5,
-        "change_percent": -2.31,
-        "turnover": 1284226365,
-        "updated": "16:54:52",
+        "price": 3180.5,
+        "change_percent": -2.56,
+        "turnover": 1563298538,
+        "updated": "18:53:01",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -184,18 +207,6 @@
     ],
     "tasks": [
       {
-        "id": "TASK-ea3a747e423e",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101755",
-        "source_title": "О проведении выкупа облигаций с 06 по 10  июля 2026 года",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-5ce3447010ba",
         "priority": "P1",
         "state": "open",
@@ -208,22 +219,46 @@
         "hypothesis_ids": []
       },
       {
-        "id": "TASK-8a4d252fb87f",
+        "id": "TASK-ea3a747e423e",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101755",
+        "source_title": "О проведении выкупа облигаций с 06 по 10  июля 2026 года",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-6b56805e79cb",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101768",
+        "source_title": "Операции РЕПО с ЦК / с КСУ и сделки купли-продажи облигаций с расчётами в Специализированной валюте",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-68158f78ad71",
         "priority": "P2",
         "state": "open",
         "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
         "deliverable": "Transaction snapshot + precedent transactions",
         "coverage": "OZON",
         "category": "M&A",
-        "source_url": "https://alfabank.ru/alfa-investor/posts/t/0f76d7ad-de76-f111-91c8-0050569e1fd0/",
-        "source_title": "​​💼 АФК Система — заложила/продала Ozon, как меняются - Альфа-Банк",
+        "source_url": "https://ru.investing.com/analysis/article-200333133",
+        "source_title": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? - Investing.com",
         "hypothesis_ids": []
       },
       {
         "id": "TASK-566158f8fbf9",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения OZON (-2.31%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-2.56%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
         "category": "Market",
@@ -233,7 +268,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 4 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 5 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -241,7 +276,7 @@
       },
       {
         "label": "Рынок",
-        "text": "OZON: -2.31% к предыдущему закрытию."
+        "text": "OZON: -2.56% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
