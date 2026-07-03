@@ -68,6 +68,9 @@ def main() -> None:
     number = workbook.add_format({"font_color": "#008000", "num_format": "#,##0;[Red](#,##0);-"})
     pct = workbook.add_format({"font_color": "#008000", "num_format": "0.0%;[Red](0.0%);-"})
     multiple = workbook.add_format({"num_format": "0.0x", "font_color": "#000000"})
+    summary_value = workbook.add_format({"bg_color": "#D9EAF7", "bold": True, "align": "center", "border": 1, "border_color": "#CCD5DF"})
+    summary_multiple = workbook.add_format({"num_format": "0.0x", "bg_color": "#E2F0D9", "bold": True, "align": "center", "border": 1, "border_color": "#CCD5DF"})
+    summary_count = workbook.add_format({"num_format": "0", "bg_color": "#E2F0D9", "bold": True, "align": "center", "border": 1, "border_color": "#CCD5DF"})
     day = workbook.add_format({"font_color": "#008000", "num_format": "dd-mmm-yyyy"})
     section = workbook.add_format({"bold": True, "font_color": "white", "bg_color": "#1F4E78"})
 
@@ -85,11 +88,13 @@ def main() -> None:
     eligible_rows = [r for r in ROWS if eligible(r)]
     ev_rev = [float(r["ev_revenue"]) for r in eligible_rows if r.get("ev_revenue")]
     ev_ebitda = [float(r["ev_ebitda"]) for r in eligible_rows if r.get("ev_ebitda")]
-    summary.write_row("A7", [len(ROWS), sum(r.get("deal_type") == "M&A" for r in ROWS), sum(r.get("deal_type") == "ECM" for r in ROWS), sum(r.get("deal_type") == "DCM" for r in ROWS), sum(r.get("quality_status") == "approved" for r in ROWS), sum(r.get("quality_status") == "review" for r in ROWS), sum(bool(r.get("revenue_ltm") or r.get("ebitda_ltm")) for r in ROWS), len(ev_rev), len(ev_ebitda), "OK"])
+    summary.write_row("A7", [len(ROWS), sum(r.get("deal_type") == "M&A" for r in ROWS), sum(r.get("deal_type") == "ECM" for r in ROWS), sum(r.get("deal_type") == "DCM" for r in ROWS), sum(r.get("quality_status") == "approved" for r in ROWS), sum(r.get("quality_status") == "review" for r in ROWS), sum(bool(r.get("revenue_ltm") or r.get("ebitda_ltm")) for r in ROWS), len(ev_rev), len(ev_ebitda), "OK"], summary_value)
     summary.merge_range("A10:J10", "PRECEDENT VALUATION — APPROVED M&A ONLY", section)
     summary.write_row("A12", ["Median EV / Revenue", "Median EV / EBITDA", "EV / Revenue observations", "EV / EBITDA observations"], header)
-    summary.write_row("A13", [statistics.median(ev_rev) if len(ev_rev) >= 3 else "N/M", statistics.median(ev_ebitda) if len(ev_ebitda) >= 3 else "N/M", len(ev_rev), len(ev_ebitda)])
-    summary.set_row(12, None, multiple)
+    summary.write("A13", statistics.median(ev_rev) if len(ev_rev) >= 3 else "N/M", summary_multiple)
+    summary.write("B13", statistics.median(ev_ebitda) if len(ev_ebitda) >= 3 else "N/M", summary_multiple)
+    summary.write("C13", len(ev_rev), summary_count)
+    summary.write("D13", len(ev_ebitda), summary_count)
     summary.merge_range("A16:J16", "LATEST KEY TRANSACTIONS", section)
     summary.write_row("A18", ["Date", "Type", "Status", "Target / Issuer", "Buyer / Investor", "Value", "Currency", "Quality", "Sources", "Headline"], header)
     for row_index, row in enumerate(current_key_deals(), 18):
