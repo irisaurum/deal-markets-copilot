@@ -4,11 +4,12 @@ import { createHash } from "node:crypto";
 import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
 
 const root = process.cwd();
-const rows = JSON.parse(await fs.readFile(path.join(root, "data", "precedent_transactions.json"), "utf8"));
+const datasetRaw = await fs.readFile(path.join(root, "data", "precedent_transactions.json"));
+const rows = JSON.parse(datasetRaw.toString("utf8"));
 const outputPath = path.join(root, "output", "precedent_transactions.xlsx");
 const qaDir = path.join("/tmp", "deal-markets-copilot-xlsx-qa");
-const buildPayload = [...rows].sort((a,b)=>String(a.deal_id||"")<String(b.deal_id||"")?-1:String(a.deal_id||"")>String(b.deal_id||"")?1:0).map(r=>["deal_id","record_kind","quality_status","source_count","headline"].map(k=>String(r[k]||"")).join("|")).join("\n");
-const buildId = createHash("sha256").update(buildPayload,"utf8").digest("hex").slice(0,12);
+const datasetSha256 = createHash("sha256").update(datasetRaw).digest("hex");
+const buildId = datasetSha256.slice(0,12);
 const wb = Workbook.create();
 const summary = wb.worksheets.add("Summary");
 const deals = wb.worksheets.add("Deals");
@@ -41,7 +42,7 @@ summary.getRange("A7:J7").formulas=[["=COUNTA('Deals'!$A$7:$A$506)","=COUNTIF('D
 summary.getRange("A7:J7").format={fill:C.paleBlue,font:{bold:true,size:13},horizontalAlignment:"center",rowHeight:32,borders:{preset:"outside",style:"thin",color:C.border}};
 section(summary,"A10:J10","PRECEDENT VALUATION — APPROVED M&A ONLY");
 summary.getRange("A12:D12").values=[["Median EV / Revenue","Median EV / EBITDA","EV / Revenue observations","EV / EBITDA observations"]]; headers(summary.getRange("A12:D12"));
-summary.getRange("A13:D13").formulas=[["=IFERROR(MEDIAN(FILTER('Multiples'!$K$7:$K$506,('Multiples'!$M$7:$M$506=\"YES\")*('Multiples'!$K$7:$K$506>0))),\"N/M\")","=IFERROR(MEDIAN(FILTER('Multiples'!$L$7:$L$506,('Multiples'!$M$7:$M$506=\"YES\")*('Multiples'!$L$7:$L$506>0))),\"N/M\")","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$K$7:$K$506,\">0\")","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$L$7:$L$506,\">0\")"]];
+summary.getRange("A13:D13").formulas=[["=IF(COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$K$7:$K$506,\">0\")<3,\"N/M\",IFERROR(MEDIAN(FILTER('Multiples'!$K$7:$K$506,('Multiples'!$M$7:$M$506=\"YES\")*('Multiples'!$K$7:$K$506>0))),\"N/M\"))","=IF(COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$L$7:$L$506,\">0\")<3,\"N/M\",IFERROR(MEDIAN(FILTER('Multiples'!$L$7:$L$506,('Multiples'!$M$7:$M$506=\"YES\")*('Multiples'!$L$7:$L$506>0))),\"N/M\"))","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$K$7:$K$506,\">0\")","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$L$7:$L$506,\">0\")"]];
 summary.getRange("A13:D13").format={fill:C.paleGreen,font:{bold:true,size:14},horizontalAlignment:"center",rowHeight:32}; summary.getRange("A13:B13").setNumberFormat("0.0x");
 section(summary,"A16:J16","LATEST KEY TRANSACTIONS");
 summary.getRange("A18:J18").values=[["Date","Type","Status","Target / Issuer","Buyer / Investor","Value","Currency","Quality","Sources","Headline"]]; headers(summary.getRange("A18:J18"));
@@ -92,7 +93,7 @@ setWidths(qa,[28,14,24,30,18,13,50,14,55,3,30,12,12,12,12,14],Math.max(sourceRow
 
 await fs.mkdir(path.dirname(outputPath),{recursive:true});
 const workbookFile=await SpreadsheetFile.exportXlsx(wb); await workbookFile.save(outputPath);
-await fs.writeFile(path.join(root,"output","build_manifest.json"),JSON.stringify({build_id:buildId,record_count:rows.length,generated_at:new Date().toISOString()},null,2)+"\n","utf8");
+await fs.writeFile(path.join(root,"output","build_manifest.json"),JSON.stringify({build_id:buildId,dataset_sha256:datasetSha256,record_count:rows.length,generated_at:new Date().toISOString()},null,2)+"\n","utf8");
 const inspection=await wb.inspect({kind:"sheet,table,formula",maxChars:8000,tableMaxRows:5,tableMaxCols:12,options:{maxResults:160}}); console.log(inspection.ndjson||String(inspection));
 const errorScan=await wb.inspect({kind:"match",searchTerm:"#REF!|#DIV/0!|#VALUE!|#NAME\\?|#N/A",options:{useRegex:true,maxResults:100},summary:"final formula error scan",maxChars:4000}); const errorText=errorScan.ndjson||String(errorScan); if(!errorText.includes("matched 0")&&!errorText.includes("0 entries")) throw new Error(`Workbook formula error detected: ${errorText}`);
 await fs.mkdir(qaDir,{recursive:true});

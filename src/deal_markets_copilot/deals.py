@@ -353,6 +353,7 @@ def select_deal_buckets(rows: list[dict], limit: int = 10) -> dict[str, list[dic
             if row.get("record_kind") == kind
             and row.get("quality_status") != "rejected"
             and _is_recent_live_record(row)
+            and (kind != "watchlist" or _is_watchlist_candidate(row))
         ]
         candidates.sort(key=lambda row: (
             row.get("announced_date", ""),
@@ -361,6 +362,11 @@ def select_deal_buckets(rows: list[dict], limit: int = 10) -> dict[str, list[dic
         ), reverse=True)
         result[kind] = candidates[:limit]
     return result
+
+
+def _is_watchlist_candidate(row: dict) -> bool:
+    """Keep the review stream focused on transaction claims, not routine issuance news."""
+    return row.get("deal_type") == "M&A" and _is_material_transaction(row)
 
 
 def _is_material_transaction(row: dict) -> bool:
@@ -383,7 +389,11 @@ def _is_material_transaction(row: dict) -> bool:
             return False
         return bool(re.search(r"размещ|выпуск|облигац|bond|notes", title))
     if category == "ECM":
-        return bool(re.search(r"\bipo\b|\bspo\b|размещ|выкуп акций|buyback|эмисси", title))
+        if re.search(r"объем (?:ipo|продаж акций)|рынок ipo|полугоди|квартал|рекордн|обзор", title):
+            return False
+        if re.search(r"выкуп акций|buyback", title):
+            return False
+        return bool(re.search(r"\bipo\b|\bspo\b|размещ|эмисси", title))
     return False
 
 
@@ -412,6 +422,7 @@ def _is_technical_filing(text: str, source_type: str = "") -> bool:
         r"^\s*о проведении выкупа облигаций",
         r"^\s*о проведении .{0,80}размещени\w* .{0,80}облигац",
         r"^\s*о признании выпуск\w* облигац\w* несостоявш",
+        r"^\s*о признании программ\w* .{0,80}облигац\w* несостоявш",
         r"^\s*информация о кодах расчетов",
         r"^\s*московская биржа начала торги паями",
         r"\bбпиф\b.+\bторг",
@@ -600,7 +611,7 @@ def _migrate_row(source: dict) -> dict:
 
     headline = str(row.get("headline") or "")
     inferred_status = _status(headline, row.get("deal_type", ""), row.get("evidence_label", "unverified"))
-    if inferred_status in {"Denied", "Closed", "Issued", "In talks", "Rumor", "Announced"} or row.get("status") not in {"Denied", "Closed", "Issued", "In talks", "Announced", "Confirmed", "Reported", "Rumor"}:
+    if inferred_status in {"Denied", "Closed", "Priced", "Issued", "In talks", "Rumor", "Announced"} or row.get("status") not in {"Denied", "Closed", "Priced", "Issued", "In talks", "Announced", "Confirmed", "Reported", "Rumor"}:
         row["status"] = inferred_status
     if row.get("status") == "Denied":
         row["transaction_value"] = None
@@ -624,6 +635,9 @@ def _migrate_row(source: dict) -> dict:
             row["acquirer_or_investor"] = parsed_acquirer
         elif re.search(r"продал|продаж|sold|divest", headline, re.I):
             row["acquirer_or_investor"] = "Not disclosed"
+        source_urls = " ".join(str(item.get("url") or "") for item in row.get("sources", []) if isinstance(item, dict)).lower()
+        if _is_blank(row.get("acquirer_or_investor")) and re.search(r"(?:t-|т-)tekhnolog|t-tekhnolog|т-технолог", source_urls):
+            row["acquirer_or_investor"] = "T-Technologies"
         parsed_seller = _extract_seller(headline)
         if not _is_blank(parsed_seller):
             row["seller"] = parsed_seller
@@ -1133,7 +1147,7 @@ def median_multiples(rows: list[dict]) -> dict[str, float | int | None]:
     revenue = values("ev_revenue")
     ebitda = values("ev_ebitda")
     eligible = [row for row in rows if _multiple_is_eligible(row) and (row.get("ev_revenue") or row.get("ev_ebitda"))]
-    return {"ev_revenue": median(revenue), "ev_ebitda": median(ebitda), "coverage": len(eligible)}
+    return {"ev_revenue": median(revenue), "ev_ebitda": median(ebitda), "coverage": len(eligible), "ev_revenue_count": len(revenue), "ev_ebitda_count": len(ebitda)}
 
 
 def _is_blank(value) -> bool:
@@ -1197,6 +1211,10 @@ def _status(text: str, category: str, evidence_label: str = "unverified") -> str
     lowered = text.lower()
     if any(word in lowered for word in ("опроверг", "не подтверди", "denied", "denies", "no agreement")):
         return "Denied"
+    if category in {"ECM", "DCM"} and re.search(r"закрыл\w*\s+книг|book\w*\s+clos|priced", lowered):
+        return "Priced"
+    if category in {"ECM", "DCM"} and re.search(r"завершил\w*(?:\s+\w+){0,3}\s+размещени|размещение\s+завершено", lowered):
+        return "Issued"
     if any(word in lowered for word in ("закрыл", "закрыла", "завершил", "завершила", "completed", "closed")):
         return "Closed"
     if category in {"ECM", "DCM"} and any(word in lowered for word in ("разместил", "выпустил", "priced", "issued")):

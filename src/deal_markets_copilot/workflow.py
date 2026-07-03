@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from .models import ClassifiedEvent
 
@@ -44,7 +47,10 @@ def build_morning_workflow(
         if isinstance(row, dict)
     } if valid_baseline else set()
 
-    ranked = sorted(items, key=lambda item: (item.score, item.event.published_at), reverse=True)
+    ranked = sorted(
+        (item for item in items if is_actionable_signal(item)),
+        key=lambda item: (item.score, item.event.published_at), reverse=True,
+    )
     new_ids = {
         item.event.event_id for item in ranked
         if item.event.event_id and item.event.event_id not in previous_ids
@@ -89,6 +95,24 @@ def build_morning_workflow(
         "summary": summary,
         "readout": readout,
     }
+
+
+def is_actionable_signal(item: ClassifiedEvent) -> bool:
+    """Exclude exchange plumbing and market-roundup stories from banker actions."""
+    text = f"{item.event.title}. {item.event.summary}".lower()
+    non_actionable = (
+        r"^о проведении выкупа облигаций",
+        r"^о регистрации (?:выпуска|проспекта|программы|изменений)",
+        r"^о признании (?:выпуска|программы).+несостоявш",
+        r"^о порядке (?:сбора заявок|приобретения облигаций|заключения сделок)",
+        r"^дополнительные условия проведения торгов",
+        r"^информация о кодах расчетов",
+        r"^московская биржа начала торги",
+        r"объем (?:ipo|рынка ipo|продаж акций).+(?:полугоди|квартал|год)",
+        r"рынок (?:ipo|облигаций).+(?:обзор|итоги|рекорд)",
+        r"опасени[яй] инвесторов",
+    )
+    return not any(re.search(pattern, text, re.I) for pattern in non_actionable)
 
 
 def _build_hypotheses(
@@ -155,7 +179,7 @@ def _build_tasks(
         ticker = quote.get("ticker", "SECURITY")
         title = f"Проверить драйвер движения {ticker} ({float(change):+.2f}%) и обновить trading comps."
         tasks.append({
-            "id": _stable_task_id(ticker, "market-move"),
+            "id": _stable_task_id(ticker, f"market-move|{datetime.now(ZoneInfo('Europe/Moscow')).date().isoformat()}"),
             "priority": "P1" if abs(float(change)) >= 5 else "P2",
             "state": "market",
             "title": title,

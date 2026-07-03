@@ -16,19 +16,14 @@ import xlsxwriter
 
 
 ROOT = Path(__file__).resolve().parents[1]
-ROWS = json.loads((ROOT / "data" / "precedent_transactions.json").read_text(encoding="utf-8"))
+DATASET = ROOT / "data" / "precedent_transactions.json"
+ROWS = json.loads(DATASET.read_text(encoding="utf-8"))
 OUTPUT = ROOT / "output" / "precedent_transactions.xlsx"
 MANIFEST = ROOT / "output" / "build_manifest.json"
 
 
-def build_id(rows):
-    payload = "\n".join(
-        "|".join(str(row.get(field) or "") for field in (
-            "deal_id", "record_kind", "quality_status", "source_count", "headline",
-        ))
-        for row in sorted(rows, key=lambda item: str(item.get("deal_id") or ""))
-    )
-    return hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
+def dataset_digest():
+    return hashlib.sha256(DATASET.read_bytes()).hexdigest()
 
 
 def eligible(row):
@@ -51,7 +46,8 @@ def date(value):
 
 
 def main() -> None:
-    current_build_id = build_id(ROWS)
+    digest = dataset_digest()
+    current_build_id = digest[:12]
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     workbook = xlsxwriter.Workbook(OUTPUT)
     title = workbook.add_format({"bold": True, "font_color": "white", "bg_color": "#10243E", "font_size": 18, "align": "left", "valign": "vcenter"})
@@ -81,7 +77,7 @@ def main() -> None:
     summary.write_row("A7", [len(ROWS), sum(r.get("deal_type") == "M&A" for r in ROWS), sum(r.get("deal_type") == "ECM" for r in ROWS), sum(r.get("deal_type") == "DCM" for r in ROWS), sum(r.get("quality_status") == "approved" for r in ROWS), sum(r.get("quality_status") == "review" for r in ROWS), sum(bool(r.get("revenue_ltm") or r.get("ebitda_ltm")) for r in ROWS), len(ev_rev), len(ev_ebitda), "OK"])
     summary.merge_range("A10:J10", "PRECEDENT VALUATION — APPROVED M&A ONLY", section)
     summary.write_row("A12", ["Median EV / Revenue", "Median EV / EBITDA", "EV / Revenue observations", "EV / EBITDA observations"], header)
-    summary.write_row("A13", [statistics.median(ev_rev) if ev_rev else "N/M", statistics.median(ev_ebitda) if ev_ebitda else "N/M", len(ev_rev), len(ev_ebitda)])
+    summary.write_row("A13", [statistics.median(ev_rev) if len(ev_rev) >= 3 else "N/M", statistics.median(ev_ebitda) if len(ev_ebitda) >= 3 else "N/M", len(ev_rev), len(ev_ebitda)])
     summary.set_row(12, None, multiple)
     summary.set_column("A:J", 19)
 
@@ -171,7 +167,7 @@ def main() -> None:
     qa.merge_range("K16:O16", "Overall model status", section)
     qa.write("P16", "OK" if all((actual >= expected if name.startswith("Eligible") else actual == expected) for name, actual, expected in checks) else "REVIEW")
     workbook.close()
-    MANIFEST.write_text(json.dumps({"build_id": current_build_id, "record_count": len(ROWS), "generated_at": datetime.now().astimezone().isoformat(timespec="seconds")}, indent=2) + "\n", encoding="utf-8")
+    MANIFEST.write_text(json.dumps({"build_id": current_build_id, "dataset_sha256": digest, "record_count": len(ROWS), "generated_at": datetime.now().astimezone().isoformat(timespec="seconds")}, indent=2) + "\n", encoding="utf-8")
     print(f"Workbook created: {OUTPUT}")
 
 

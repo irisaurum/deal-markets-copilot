@@ -14,8 +14,8 @@ from deal_markets_copilot.classifier import classify_event, deduplicate, stable_
 from deal_markets_copilot.deals import enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
-from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
-from deal_markets_copilot.workflow import build_morning_workflow
+from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
+from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal
 
 
 class CoreTests(unittest.TestCase):
@@ -86,6 +86,25 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(first["tasks"][0]["id"], second["tasks"][0]["id"])
         version_two = build_morning_workflow([item], [], config, {"workflow_version": 2, "events": [item.to_dict()]})
         self.assertEqual(version_two["new_signals"], 0)
+
+    def test_workflow_suppresses_technical_exchange_notices(self) -> None:
+        event = Event(
+            event_id="moex-buyback", published_at="2026-07-03T14:33:00+03:00",
+            title="О проведении выкупа облигаций с 06 по 10 июля 2026 года",
+            summary="Техническое уведомление Московской биржи", source="MOEX",
+            url="https://www.moex.com/n101755", confidence="confirmed",
+        )
+        item = classify_event(event, [])
+        self.assertFalse(is_actionable_signal(item))
+        workflow = build_morning_workflow([item], [], {"deal_hypotheses": []})
+        self.assertEqual(workflow["new_signals"], 0)
+        self.assertEqual(workflow["tasks"], [])
+
+    def test_rss_transport_failure_is_not_silently_successful(self) -> None:
+        config = {"sources": [{"name": "Test RSS", "url": "https://example.com/rss", "enabled": True}]}
+        with patch("deal_markets_copilot.sources.fetch_feed", side_effect=OSError("offline")):
+            with self.assertRaises(RuntimeError):
+                fetch_configured_sources(config)
 
     def test_telegram_digest_escapes_html(self) -> None:
         event = Event("1", "", "A < B", "", "Source", "")
@@ -221,12 +240,26 @@ class CoreTests(unittest.TestCase):
             title="Греф опроверг договоренность Сбера о покупке доли в Ozon", summary="Сделку оценивали в 300 млрд руб.",
             source="Press", url="https://example.com/denied", confidence="unverified",
         )
+        priced = Event(
+            event_id="priced", published_at="2026-06-27T08:00:00+03:00",
+            title="МТС закрыла книгу заявок на облигации объемом 20 млрд рублей", summary="",
+            source="Company", url="https://example.com/priced", confidence="confirmed",
+        )
+        issued = Event(
+            event_id="issued", published_at="2026-06-30T08:00:00+03:00",
+            title="ВУШ завершил первый этап размещения облигаций", summary="",
+            source="Press", url="https://example.com/issued", confidence="unverified",
+        )
         talks_record = extract_deal_record(classify_event(talks, self.coverage), self.coverage)
         closed_record = extract_deal_record(classify_event(closed, self.coverage), self.coverage)
         denied_record = extract_deal_record(classify_event(denied, self.coverage), self.coverage)
+        priced_record = extract_deal_record(classify_event(priced, self.coverage), self.coverage)
+        issued_record = extract_deal_record(classify_event(issued, self.coverage), self.coverage)
         self.assertEqual(talks_record.status, "In talks")
         self.assertEqual(closed_record.status, "Closed")
         self.assertEqual(denied_record.status, "Denied")
+        self.assertEqual(priced_record.status, "Priced")
+        self.assertEqual(issued_record.status, "Issued")
         self.assertIsNone(denied_record.transaction_value)
         self.assertEqual(denied_record.quality_status, "review")
 
@@ -274,6 +307,8 @@ class CoreTests(unittest.TestCase):
         ])
         self.assertEqual(stats["ev_revenue"], 3.0)
         self.assertEqual(stats["ev_ebitda"], 10.0)
+        self.assertEqual(stats["ev_revenue_count"], 2)
+        self.assertEqual(stats["ev_ebitda_count"], 2)
 
     def test_medians_exclude_financials_published_after_announcement(self) -> None:
         base = {"deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50, "ev_revenue": 2.0}
@@ -465,6 +500,7 @@ class CoreTests(unittest.TestCase):
             Event("rumor", "2026-06-29T09:00:00+03:00", "Yandex может купить Ozon", "", "Press", "https://example.com/rumor"),
             Event("denial", "2026-06-29T08:00:00+03:00", "Yandex опроверг покупку Ozon", "", "Press", "https://example.com/denial"),
             Event("filing", "2026-06-29T07:00:00+03:00", "О регистрации выпуска биржевых облигаций", "Наименование Эмитента Ozon Наименование ценной бумаги облигации", "MOEX", "https://example.com/filing", source_type="official_exchange", confidence="confirmed"),
+            Event("routine-dcm", "2026-06-29T06:00:00+03:00", "ВУШ завершил первый этап размещения облигаций", "", "Press", "https://example.com/routine-dcm"),
         ]
         records = [extract_deal_record(classify_event(event, self.coverage), self.coverage) for event in events]
         buckets = select_deal_buckets([record.to_dict() for record in records])
@@ -473,8 +509,8 @@ class CoreTests(unittest.TestCase):
             items = [classify_event(event, self.coverage) for event in events]
             path = build_html_report(items, {}, Path(directory) / "report.html", "live", precedent_transactions=[record.to_dict() for record in records])
             text = path.read_text(encoding="utf-8")
-            self.assertIn("Подтверждённые сделки", text)
-            self.assertIn("Слухи и переговоры", text)
+            self.assertIn("Актуальные сделки", text)
+            self.assertIn("Требует проверки", text)
             self.assertIn("Опровержения", text)
             self.assertIn("Technical filings", text)
             self.assertIn("Купон", text)

@@ -112,7 +112,8 @@
         "name": "Ozon Investor Relations",
         "ticker": "OZON",
         "url": "https://ir.ozon.com/ru/sth/",
-        "enabled": true,
+        "enabled": false,
+        "disabled_reason": "The site blocks unattended requests; Ozon remains covered by market-wide and company-news feeds.",
         "max_items": 15,
         "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
       },
@@ -138,13 +139,15 @@
         "name": "ФАС России",
         "url": "https://fas.gov.ru/news",
         "source_type": "official_regulator",
-        "enabled": true,
+        "enabled": false,
+        "disabled_reason": "The regulator site is not reliably reachable from GitHub runners; re-enable after a stable official feed is available.",
         "max_items": 20,
         "include_terms": ["ходатайств", "экономическ", "концентрац", "приобрет", "сделк", "слиян"]
       }
     ],
     "sec_edgar": {
-      "enabled": true,
+      "enabled": false,
+      "disabled_reason": "SEC returns 403 from the current unattended runner; historical SEC precedents remain in the curated database.",
       "archive_days": 900,
       "max_per_company": 3,
       "user_agent": "DealMarketsCopilot 261844671+irisaurum@users.noreply.github.com",
@@ -162,7 +165,8 @@
   },
   "discovery_sources": {
     "gdelt": {
-      "enabled": true,
+      "enabled": false,
+      "disabled_reason": "GDELT rate-limits the scheduled runner; direct publisher and issuer feeds remain enabled.",
       "timespan": "7d",
       "max_items_per_company": 8
     }

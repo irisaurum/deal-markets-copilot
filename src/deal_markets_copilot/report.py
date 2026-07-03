@@ -5,6 +5,7 @@ import json
 import re
 from collections import Counter
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from email.utils import parsedate_to_datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -31,6 +32,7 @@ def build_html_report(
     flow = workflow or _empty_workflow()
     precedents = precedent_transactions or []
     health = health or {}
+    healthy = health.get("system_status") == "ok"
     deal_buckets = select_deal_buckets(precedents, 10)
     key_deals = deal_buckets["deal"]
     multiple_deals = sorted(
@@ -41,8 +43,8 @@ def build_html_report(
     sectors = sorted({str(row.get("sector")) for rows in deal_buckets.values() for row in rows if row.get("sector") not in {None, "", "Not classified"}})
     sector_options = "".join(f'<option value="{html.escape(value, quote=True)}">{html.escape(value)}</option>' for value in sectors)
     counts = Counter(item.category for item in ranked)
-    generated = datetime.now().astimezone().strftime("%d.%m.%Y · %H:%M")
-    news_window = "72H CATCH-UP" if datetime.now().astimezone().weekday() in {0, 5, 6} else "24H"
+    generated = datetime.now(ZoneInfo("Europe/Moscow")).strftime("%d.%m.%Y · %H:%M")
+    news_window = "72H CATCH-UP" if datetime.now(ZoneInfo("Europe/Moscow")).weekday() in {0, 5, 6} else "24H"
     live = mode == "live"
     new_ids = set(flow.get("new_event_ids", []))
     scope = " · ".join(row.get("ticker", "") for row in config.get("coverage", []) if row.get("ticker")) or "CUSTOM"
@@ -59,7 +61,7 @@ def build_html_report(
 <header class="site-header"><div class="nav-wrap">
   <a class="brand" href="#brief"><span class="brand-mark">DM</span><span><strong>Deal Market Monitor</strong><small>M&amp;A · ECM · DCM</small></span></a>
   <nav><a href="#deals">Сделки</a><a href="#signals">Свежие события</a><a href="#analytics">Аналитика</a></nav>
-  <div class="status"><span class="dot {'live' if live else 'demo'}"></span><span><strong>{'Данные обновлены' if live else 'Демо-режим'}</strong><small>{generated}</small></span></div>
+  <div class="status" id="global-health"><span class="dot {'live' if live and healthy else 'demo'}"></span><span><strong>{'Данные и источники проверены' if live and healthy else ('Требуется проверка данных' if live else 'Демо-режим')}</strong><small>{generated} МСК</small></span></div>
 </div></header>
 
 <main class="page">
@@ -67,7 +69,7 @@ def build_html_report(
     <div class="overview-copy"><span class="eyebrow">ЕЖЕДНЕВНЫЙ МОНИТОРИНГ СДЕЛОК</span><h1>Что происходит на рынке сделок</h1>
     <p>{html.escape(flow.get('summary', 'Запусти сборку, чтобы сформировать утреннюю сводку.'))} Последние подтверждённые сделки сохраняются в архиве и не исчезают после обновления.</p>
     <div class="overview-actions"><a class="button primary" href="#deals">Смотреть сделки</a><button class="button ghost" id="copy-brief">Скопировать сводку</button></div></div>
-    <div class="overview-side"><div class="freshness"><span class="dot {'live' if live else 'demo'}"></span><div><strong>{f'Свежие данные · {news_window}' if live else 'Демонстрационные данные'}</strong><small>Автообновление каждые 30 минут в рабочее время</small></div></div>
+    <div class="overview-side"><div class="freshness"><span class="dot {'live' if live and healthy else 'demo'}"></span><div><strong>{f'Свежие данные · {news_window}' if live and healthy else ('Источники или артефакты требуют проверки' if live else 'Демонстрационные данные')}</strong><small>Автообновление каждые 30 минут в рабочее время</small></div></div>
     <div class="metric-grid">
       {_metric("Свежих событий", len(ranked), news_window.lower())}
       {_metric("Сделок в фокусе", len(key_deals), "последние ключевые")}
@@ -83,20 +85,20 @@ def build_html_report(
   <section class="section" id="deals">
     <div class="section-head"><div><span class="eyebrow">КЛЮЧЕВЫЕ СДЕЛКИ</span><h2>Последние сделки рынка</h2><p>Самое важное — стороны, сумма, статус и ссылка на подтверждение. Без технических сообщений биржи.</p></div>
     <div class="export-actions"><a class="button primary" href="precedent_transactions.xlsx" download>Скачать Excel</a><a class="button ghost" href="precedent_transactions.csv" download>CSV</a></div></div>
-    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Подтверждённые <span>{len(deal_buckets['deal'])}</span></button><button class="deal-filter" data-deal-filter="watchlist">Слухи и переговоры <span>{len(deal_buckets['watchlist'])}</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>{len(deal_buckets['denial'])}</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>{len(deal_buckets['technical_filing'])}</span></button></div>
+    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Актуальные сделки <span>{len(deal_buckets['deal'])}</span></button><button class="deal-filter" data-deal-filter="watchlist">Требует проверки <span>{len(deal_buckets['watchlist'])}</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>{len(deal_buckets['denial'])}</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>{len(deal_buckets['technical_filing'])}</span></button></div>
     <label class="search"><span>⌕</span><input id="deal-search" placeholder="Найти компанию или сделку"></label></div>
     <div class="deal-advanced-filters" aria-label="Фильтры сделок">
       <label>Тип<select id="deal-type-filter"><option value="all">Все типы</option><option value="M&A">M&A</option><option value="DCM">DCM</option><option value="ECM">ECM</option></select></label>
       <label>Период<select id="deal-period-filter"><option value="all">Весь период</option><option value="30">30 дней</option><option value="90">90 дней</option><option value="365">12 месяцев</option></select></label>
       <label>Сектор<select id="deal-sector-filter"><option value="all">Все секторы</option>{sector_options}</select></label>
-      <label>Статус<select id="deal-status-filter"><option value="all">Все статусы</option><option value="Closed">Закрыто</option><option value="Issued">Размещено</option><option value="Announced">Объявлено</option><option value="Confirmed">Подтверждено</option><option value="In talks">Переговоры</option><option value="Rumor">Слух</option><option value="Denied">Опровергнуто</option></select></label>
+      <label>Статус<select id="deal-status-filter"><option value="all">Все статусы</option><option value="Closed">Закрыто</option><option value="Priced">Книга закрыта</option><option value="Issued">Размещено</option><option value="Announced">Объявлено</option><option value="Confirmed">Подтверждено</option><option value="In talks">Переговоры</option><option value="Rumor">Слух</option><option value="Denied">Опровергнуто</option></select></label>
       <label>Размер<select id="deal-size-filter"><option value="all">Любой</option><option value="disclosed">Сумма раскрыта</option><option value="undisclosed">Не раскрыта</option><option value="large">≥ 10 млрд в исходной валюте</option></select></label>
       <label>Сортировка<select id="deal-sort"><option value="date-desc">Сначала новые</option><option value="date-asc">Сначала старые</option><option value="amount-desc">По сумме внутри валюты</option><option value="score-desc">По качеству ↓</option></select></label>
       <button class="reset-filters" id="deal-filter-reset" type="button">Сбросить</button>
     </div>
-    <div class="deal-stats"><span><b>{len(key_deals)}</b> актуальных сделок за 12 месяцев</span><span><b>{sum(1 for row in key_deals if row.get('quality_status') == 'approved')}</b> прошли quality gate</span><span>Медиана EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b></span><span>Медиана EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda'))}</b></span></div>
+    <div class="deal-stats"><span><b>{len(key_deals)}</b> актуальных сделок за 12 месяцев</span><span><b>{sum(1 for row in key_deals if row.get('quality_status') == 'approved')}</b> прошли quality gate</span><span>Историческая медиана EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b> · n={precedent_stats.get('ev_revenue_count', 0)}</span><span>Историческая медиана EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda')) if precedent_stats.get('ev_ebitda_count', 0) >= 3 else 'N/M'}</b> · n={precedent_stats.get('ev_ebitda_count', 0)}{' · недостаточная выборка' if precedent_stats.get('ev_ebitda_count', 0) < 3 else ''}</span></div>
     <div class="deal-panels">{_deal_bucket_panels(deal_buckets)}</div>
-    <details class="data-drawer"><summary>Открыть полную сравнительную таблицу <span>10 строк · все параметры</span></summary>{_precedent_table(key_deals)}</details>
+    <details class="data-drawer"><summary>Открыть полную сравнительную таблицу <span>{len(key_deals)} строк · все параметры</span></summary>{_precedent_table(key_deals)}</details>
     <details class="data-drawer"><summary>Precedent multiples <span>{len(multiple_deals)} сделок · только проверяемые расчёты</span></summary>{_precedent_table(multiple_deals[:10])}</details>
   </section>
 
@@ -164,24 +166,27 @@ def _health_panel(health: dict) -> str:
     if not health:
         return ""
     synced = bool(health.get("xlsx_synced"))
-    status = "Система готова" if synced and not health.get("critical_qa_issues") else "Требуется проверка"
+    status = "Система готова" if health.get("system_status") == "ok" else "Требуется проверка"
     css = "ok" if status == "Система готова" else "warn"
-    updated = html.escape(str(health.get("last_success_at") or "—"))
+    updated = html.escape(str(health.get("source_checked_at") or health.get("last_success_at") or "—"))
     build_id = html.escape(str(health.get("build_id") or "—"))
     records = int(health.get("record_count") or 0)
     approved = int(health.get("approved_count") or 0)
-    direct = int(health.get("direct_source_count") or 0)
     issues = int(health.get("critical_qa_issues") or 0)
-    return f'''<section class="health-panel {css}" aria-label="Состояние системы">
-      <div><span class="health-dot"></span><strong>{status}</strong><small>Последний успешный сбор: {updated}</small></div>
-      <dl><div><dt>Build ID</dt><dd>{build_id}</dd></div><div><dt>Записей</dt><dd>{records}</dd></div><div><dt>Approved</dt><dd>{approved}</dd></div><div><dt>Прямых источников</dt><dd>{direct}</dd></div><div><dt>QA issues</dt><dd>{issues}</dd></div><div><dt>Excel</dt><dd>{'синхронизирован' if synced else 'ожидает сборки'}</dd></div></dl>
+    source_status = "OK" if health.get("source_status") == "ok" else "ошибка"
+    freshness = "свежие" if health.get("freshness_status") == "ok" else "устарели"
+    age = health.get("source_age_minutes")
+    age_label = f"{float(age):.0f} мин" if isinstance(age, (int, float)) else "—"
+    return f'''<section class="health-panel {css}" id="data-health" data-last-success="{updated}" aria-label="Состояние системы">
+      <div><span class="health-dot"></span><strong id="data-health-label">{status}</strong><small>Источники проверены: {updated}</small></div>
+      <dl><div><dt>Build ID</dt><dd>{build_id}</dd></div><div><dt>Записей</dt><dd>{records}</dd></div><div><dt>Approved</dt><dd>{approved}</dd></div><div><dt>Источники</dt><dd>{source_status}</dd></div><div><dt>Свежесть</dt><dd>{freshness} · {age_label}</dd></div><div><dt>QA issues</dt><dd>{issues}</dd></div><div><dt>Excel</dt><dd>{'синхронизирован' if synced else 'ожидает сборки'}</dd></div></dl>
     </section>'''
 
 
 def _deal_bucket_panels(buckets: dict[str, list[dict]]) -> str:
     metadata = {
-        "deal": ("Подтверждённые сделки", "Фактические сделки и размещения, прошедшие первичную проверку."),
-        "watchlist": ("Слухи и переговоры", "Сценарии, которые нельзя использовать как свершившийся факт."),
+        "deal": ("Актуальные сделки", "Сделки и размещения; уровень проверки явно указан на каждой карточке."),
+        "watchlist": ("Требует проверки", "Материальные сообщения, которые ещё нельзя использовать как подтверждённый факт."),
         "denial": ("Опровержения", "Отдельный журнал опровергнутых или спорных сообщений."),
         "technical_filing": ("Technical filings", "Официальные документы биржи: параметры выпуска без смешивания со сделками."),
     }
@@ -306,6 +311,7 @@ def _status_label(value: str) -> str:
         "Closed": "Закрыто",
         "Completed": "Закрыто",
         "Issued": "Размещено",
+        "Priced": "Книга закрыта",
         "Announced": "Объявлено",
         "In talks": "Переговоры",
         "Potential": "Переговоры",
@@ -615,6 +621,7 @@ const completed=JSON.parse(localStorage.getItem('dealDeskCompleted')||'{}');
 function refreshTasks(){document.querySelectorAll('.task').forEach(row=>{const check=row.querySelector('.task-check');check.checked=!!completed[row.dataset.taskId];row.classList.toggle('done',check.checked);});document.getElementById('open-count').textContent=document.querySelectorAll('.task:not(.done)').length;localStorage.setItem('dealDeskCompleted',JSON.stringify(completed));}
 document.querySelectorAll('.task-check').forEach(check=>check.addEventListener('change',()=>{const row=check.closest('.task');completed[row.dataset.taskId]=check.checked;if(!check.checked)delete completed[row.dataset.taskId];refreshTasks();}));refreshTasks();
 document.getElementById('copy-brief').addEventListener('click',async event=>{await navigator.clipboard.writeText(window.BRIEF_TEXT);const old=event.currentTarget.textContent;event.currentTarget.textContent='Скопировано ✓';setTimeout(()=>event.currentTarget.textContent=old,1300);});
+const healthPanel=document.getElementById('data-health');if(healthPanel){const last=Date.parse(healthPanel.dataset.lastSuccess),now=new Date(),hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',hour:'2-digit',hour12:false}).format(now)),weekday=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Moscow',weekday:'short'}).format(now),working=!['Sat','Sun'].includes(weekday)&&hour>=8&&hour<20,maxAge=working?90*60000:72*3600000;if(!last||now-last>maxAge){healthPanel.classList.remove('ok');healthPanel.classList.add('warn');document.getElementById('data-health-label').textContent='Данные устарели';const global=document.getElementById('global-health');if(global){global.querySelector('strong').textContent='Данные устарели';global.querySelector('.dot').className='dot demo';}}}
 setInterval(()=>{if(document.visibilityState==='visible')window.location.reload();},AUTO_REFRESH_MS);
 """
 

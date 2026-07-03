@@ -5,6 +5,7 @@ import hashlib
 import json
 import sys
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -41,7 +42,7 @@ from deal_markets_copilot.sources import (
     resolve_google_news_rows,
 )
 from deal_markets_copilot.telegram import load_dotenv, send_telegram
-from deal_markets_copilot.workflow import build_morning_workflow, load_previous_snapshot
+from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal, load_previous_snapshot
 
 
 def main() -> int:
@@ -58,24 +59,44 @@ def main() -> int:
     selected_mode = "live" if args.live or args.replay else "demo"
     snapshot_path = ROOT / "output" / "latest_snapshot.json"
     previous_snapshot = load_previous_snapshot(snapshot_path)
+    source_runs: list[dict] = []
+    def collect_source(name, fetcher, required=True):
+        checked_at = datetime.now(ZoneInfo("Europe/Moscow")).isoformat(timespec="seconds")
+        try:
+            result = fetcher(config)
+            row_errors = [row for row in result if isinstance(row, dict) and row.get("error")]
+            status = "error" if row_errors else "ok"
+            source_runs.append({
+                "name": name, "status": status, "records": len(result) - len(row_errors),
+                "required": required, "checked_at": checked_at,
+                "error": f"{len(row_errors)} item(s) unavailable" if row_errors else "",
+            })
+            return result
+        except Exception as exc:
+            source_runs.append({
+                "name": name, "status": "error", "records": 0, "required": required,
+                "checked_at": checked_at, "error": f"{type(exc).__name__}: {str(exc)[:160]}",
+            })
+            return []
     if args.replay:
+        source_runs = list(previous_snapshot.get("health", {}).get("source_runs", []))
         events = [Event(**row["event"]) for row in previous_snapshot.get("events", []) if row.get("event")]
         archive_events = []
         market_snapshot = previous_snapshot.get("market", [])
     elif selected_mode == "live":
-        official_events = fetch_official_issuer_news(config)
+        official_events = collect_source("issuer_news", fetch_official_issuer_news)
         lookback = effective_news_lookback(config.get("live_data", {}))
-        gdelt_events = fetch_gdelt_deal_news(config)
+        gdelt_events = collect_source("gdelt", fetch_gdelt_deal_news, required=False)
         events = (
-            fetch_moex_disclosures(config)
+            collect_source("moex_disclosures", fetch_moex_disclosures)
             + filter_recent_events(official_events, lookback)
-            + fetch_configured_sources(config)
-            + fetch_deal_news(config)
-            + fetch_company_news(config)
+            + collect_source("configured_rss", fetch_configured_sources)
+            + collect_source("deal_news", fetch_deal_news)
+            + collect_source("company_news", fetch_company_news)
             + filter_recent_events(gdelt_events, lookback)
         )
-        archive_events = fetch_deal_archive_news(config) + fetch_sec_deal_filings(config) + official_events + gdelt_events
-        market_snapshot = fetch_moex_quotes(config)
+        archive_events = collect_source("deal_archive", fetch_deal_archive_news, required=False) + collect_source("sec_filings", fetch_sec_deal_filings, required=False) + official_events + gdelt_events
+        market_snapshot = collect_source("moex_quotes", fetch_moex_quotes)
     else:
         events = load_demo_events(ROOT / "data" / "sample_events.json")
         archive_events = []
@@ -92,8 +113,9 @@ def main() -> int:
             [item.event for item in classified],
             limit=int(config.get("live_data", {}).get("max_live_link_resolutions", 12)),
         )
+    actionable = [item for item in classified if is_actionable_signal(item)]
     workflow = build_morning_workflow(
-        classified,
+        actionable,
         market_snapshot,
         config,
         previous_snapshot=previous_snapshot,
@@ -118,7 +140,7 @@ def main() -> int:
         precedents = update_precedent_database(current_deals, precedent_path)
     else:
         precedents = [record.to_dict() for record in current_deals]
-    if selected_mode == "live":
+    if selected_mode == "live" and not args.replay:
         curated = load_public_dataset(ROOT / "data" / "curated_precedents.json")
         financials = json.loads((ROOT / "data" / "financials.json").read_text(encoding="utf-8"))
         precedents = enrich_precedent_financials(merge_curated_precedents(precedents, curated), financials)
@@ -130,10 +152,10 @@ def main() -> int:
     if upgraded_links:
         write_precedent_database(precedents, precedent_path)
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
-    health = _build_health(precedents, ROOT / "output" / "build_manifest.json")
+    health = _build_health(precedents, ROOT / "output" / "build_manifest.json", precedent_path, source_runs)
 
     report_path = build_html_report(
-        classified,
+        actionable,
         config,
         ROOT / "output" / "deal_markets_brief.html",
         selected_mode,
@@ -148,12 +170,12 @@ def main() -> int:
         "health": health,
         "mode": selected_mode,
         "market": market_snapshot,
-        "events": [item.to_dict() for item in classified],
+        "events": [item.to_dict() for item in actionable],
         "workflow": workflow,
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Report created: {report_path}")
     print(f"Data snapshot: {snapshot_path}")
-    print(f"Events included: {len(classified)}")
+    print(f"Events included: {len(actionable)} ({len(classified) - len(actionable)} technical/context items suppressed)")
     print(f"Precedent transactions: {len(precedents)}")
     print(f"Direct source links upgraded: {upgraded_links}")
     print(f"Excel-compatible export: {csv_path}")
@@ -180,14 +202,10 @@ def main() -> int:
     return 0
 
 
-def _build_health(rows: list[dict], manifest_path: Path) -> dict:
-    payload = "\n".join(
-        "|".join(str(row.get(field) or "") for field in (
-            "deal_id", "record_kind", "quality_status", "source_count", "headline",
-        ))
-        for row in sorted(rows, key=lambda item: str(item.get("deal_id") or ""))
-    )
-    build_id = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:12]
+def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | None = None, source_runs: list[dict] | None = None) -> dict:
+    dataset_bytes = dataset_path.read_bytes() if dataset_path and dataset_path.exists() else json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    dataset_sha256 = hashlib.sha256(dataset_bytes).hexdigest()
+    build_id = dataset_sha256[:12]
     sources = [source for row in rows for source in row.get("sources", []) if isinstance(source, dict)]
     direct_sources = [source for source in sources if source.get("url") and "news.google.com" not in str(source.get("url"))]
     critical = 0
@@ -204,9 +222,38 @@ def _build_health(rows: list[dict], manifest_path: Path) -> dict:
             manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             manifest = {}
+    source_groups = {str(source.get("source_type") or source.get("name") or "unknown") for source in sources if source.get("url")}
+    runs = source_runs or []
+    failed_runs = [run for run in runs if run.get("status") != "ok"]
+    required_names = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news", "moex_quotes"}
+    present_names = {str(run.get("name")) for run in runs}
+    missing_required = sorted(required_names - present_names)
+    discovery_names = {"configured_rss", "deal_news", "company_news", "issuer_news", "gdelt"}
+    discovery_records = sum(int(run.get("records") or 0) for run in runs if run.get("name") in discovery_names)
+    now = datetime.now(ZoneInfo("Europe/Moscow"))
+    freshness_limit_minutes = 90 if now.weekday() < 5 and 8 <= now.hour < 20 else 72 * 60
+    source_ages: list[float] = []
+    source_checked_times: list[datetime] = []
+    stale_sources: list[str] = []
+    for run in runs:
+        raw = str(run.get("checked_at") or "")
+        try:
+            checked = datetime.fromisoformat(raw).astimezone(ZoneInfo("Europe/Moscow"))
+            age = max(0.0, (now - checked).total_seconds() / 60)
+            run["age_minutes"] = round(age, 1)
+            source_ages.append(age)
+            source_checked_times.append(checked)
+            if age > freshness_limit_minutes:
+                stale_sources.append(str(run.get("name") or "unknown"))
+        except ValueError:
+            stale_sources.append(str(run.get("name") or "unknown"))
+    live_sources_ok = bool(runs) and not failed_runs and not missing_required
+    freshness_ok = bool(runs) and not stale_sources
+    xlsx_synced = manifest.get("dataset_sha256") == dataset_sha256 and manifest.get("build_id") == build_id and manifest.get("record_count") == len(rows)
     return {
-        "last_success_at": datetime.now().astimezone().isoformat(timespec="minutes"),
+        "last_success_at": datetime.now(ZoneInfo("Europe/Moscow")).isoformat(timespec="minutes"),
         "build_id": build_id,
+        "dataset_sha256": dataset_sha256,
         "record_count": len(rows),
         "key_deal_count": len(select_key_deals(rows, 10)),
         "approved_count": sum(row.get("quality_status") == "approved" for row in rows),
@@ -216,7 +263,18 @@ def _build_health(rows: list[dict], manifest_path: Path) -> dict:
         "direct_source_count": len(direct_sources),
         "aggregator_source_count": len(sources) - len(direct_sources),
         "critical_qa_issues": critical,
-        "xlsx_synced": manifest.get("build_id") == build_id and manifest.get("record_count") == len(rows),
+        "source_group_count": len(source_groups),
+        "source_runs": runs,
+        "discovery_record_count": discovery_records,
+        "missing_required_sources": missing_required,
+        "stale_sources": sorted(set(stale_sources)),
+        "source_age_minutes": round(max(source_ages), 1) if source_ages else None,
+        "source_checked_at": min(source_checked_times).isoformat(timespec="minutes") if source_checked_times else None,
+        "freshness_limit_minutes": freshness_limit_minutes,
+        "source_status": "ok" if live_sources_ok else ("unknown" if not runs else "error"),
+        "freshness_status": "ok" if freshness_ok else "stale",
+        "system_status": "ok" if not critical and xlsx_synced and source_groups and live_sources_ok and freshness_ok else "warning",
+        "xlsx_synced": xlsx_synced,
         "xlsx_generated_at": manifest.get("generated_at"),
     }
 

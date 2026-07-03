@@ -28,6 +28,7 @@ def load_demo_events(path: str | Path) -> list[Event]:
 
 def fetch_configured_sources(config: dict, timeout: int = 15) -> list[Event]:
     events: list[Event] = []
+    failures: list[str] = []
     for source in config.get("sources", []):
         if not source.get("enabled"):
             continue
@@ -40,8 +41,10 @@ def fetch_configured_sources(config: dict, timeout: int = 15) -> list[Event]:
                 include_terms=source.get("include_terms", []),
                 exclude_terms=source.get("exclude_terms", []),
             ))
-        except Exception:
-            continue
+        except Exception as exc:
+            failures.append(f"{source.get('name', source.get('url', 'RSS'))}: {type(exc).__name__}")
+    if failures:
+        raise RuntimeError("RSS source failure: " + "; ".join(failures))
     return events
 
 
@@ -88,13 +91,17 @@ def fetch_official_issuer_news(config: dict, timeout: int = 15) -> list[Event]:
     primary = config.get("primary_sources", {})
     sources = [source for source in primary.get("issuers", []) + primary.get("regulators", []) if source.get("enabled", True)]
     events: list[Event] = []
+    failures: list[str] = []
     with ThreadPoolExecutor(max_workers=min(6, len(sources) or 1)) as pool:
-        futures = [pool.submit(_fetch_official_page, source, timeout) for source in sources]
+        futures = {pool.submit(_fetch_official_page, source, timeout): source for source in sources}
         for future in as_completed(futures):
             try:
                 events.extend(future.result())
-            except Exception:
-                continue
+            except Exception as exc:
+                source = futures[future]
+                failures.append(f"{source.get('name', source.get('url', 'issuer'))}: {type(exc).__name__}")
+    if failures:
+        raise RuntimeError("Official source failure: " + "; ".join(failures))
     return events
 
 
@@ -347,8 +354,8 @@ def _fetch_google_news(
     try:
         with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
             root = ET.fromstring(response.read())
-    except Exception:
-        return []
+    except Exception as exc:
+        raise RuntimeError(f"Google News RSS unavailable for query: {query}") from exc
 
     events: list[Event] = []
     excluded = [term.lower() for term in (exclude_terms or [])]
@@ -502,11 +509,8 @@ def _strip_html(value: str) -> str:
 
 def _get_json(url: str, timeout: int, user_agent: str = USER_AGENT) -> dict:
     request = urllib.request.Request(url, headers={"User-Agent": user_agent, "Accept": "application/json"})
-    try:
-        with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
-            return json.loads(response.read())
-    except Exception:
-        return {}
+    with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
+        return json.loads(response.read())
 
 
 def resolve_google_news_url(url: str, timeout: int = 20) -> str:
