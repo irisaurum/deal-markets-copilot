@@ -164,9 +164,13 @@ def deduplicate(events: list[Event]) -> list[Event]:
 
 
 def _title_similarity(left: str, right: str) -> float:
+    left_codes = _security_identifiers(left)
+    right_codes = _security_identifiers(right)
+    if left_codes and right_codes and left_codes.isdisjoint(right_codes):
+        return 0.0
     left_entities = _quoted_entities(left)
     right_entities = _quoted_entities(right)
-    if left_entities & right_entities:
+    if left_entities and left_entities == right_entities and len(left_entities) > 1:
         return 1.0
     stop = {"яндекс", "яндекса", "ozon", "озон", "сделка", "сделку", "сделки", "рублей", "компания", "company"}
     def tokens(value: str) -> set[str]:
@@ -175,6 +179,14 @@ def _title_similarity(left: str, right: str) -> float:
     if not a or not b:
         return 0.0
     return len(a & b) / len(a | b)
+
+
+def _security_identifiers(value: str) -> set[str]:
+    """Keep distinct bond/equity issues from collapsing into one issuer story."""
+    return {
+        token.upper()
+        for token in re.findall(r"\b(?:RU[A-Z0-9]{10}|\d{3,4}[РP]-\d{1,3}|[A-ZА-Я0-9]{2,12}-\d{1,3})\b", value, re.I)
+    }
 
 
 def _quoted_entities(value: str) -> set[str]:

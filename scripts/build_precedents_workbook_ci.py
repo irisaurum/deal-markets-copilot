@@ -9,13 +9,16 @@ from __future__ import annotations
 import json
 import hashlib
 import statistics
-from datetime import datetime, date as calendar_date, timedelta
+import sys
+from datetime import datetime
 from pathlib import Path
 
 import xlsxwriter
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+from deal_markets_copilot.deals import _multiple_is_eligible, select_key_deals
 DATASET = ROOT / "data" / "precedent_transactions.json"
 ROWS = json.loads(DATASET.read_text(encoding="utf-8"))
 OUTPUT = ROOT / "output" / "precedent_transactions.xlsx"
@@ -27,15 +30,7 @@ def dataset_digest():
 
 
 def eligible(row):
-    available = str(row.get("financials_available_at") or "")[:10]
-    announced = str(row.get("announced_date") or "")[:10]
-    return (
-        row.get("deal_type") == "M&A"
-        and row.get("record_kind") == "deal"
-        and row.get("quality_status") == "approved"
-        and bool(available and announced and available <= announced)
-        and (row.get("ev_revenue") or row.get("ev_ebitda"))
-    )
+    return _multiple_is_eligible(row) and bool(row.get("ev_revenue") or row.get("ev_ebitda"))
 
 
 def date(value):
@@ -46,14 +41,7 @@ def date(value):
 
 
 def current_key_deals():
-    cutoff = (calendar_date.today() - timedelta(days=365)).isoformat()
-    return sorted((
-        row for row in ROWS
-        if row.get("record_kind") == "deal"
-        and row.get("quality_status") != "rejected"
-        and not str(row.get("deal_id") or "").startswith("CURATED-")
-        and str(row.get("announced_date") or "")[:10] >= cutoff
-    ), key=lambda row: str(row.get("announced_date") or ""), reverse=True)[:10]
+    return select_key_deals(ROWS, 10)
 
 
 def main() -> None:
@@ -65,6 +53,7 @@ def main() -> None:
     subtitle = workbook.add_format({"italic": True, "font_color": "#52616F", "bg_color": "#F4F6F8"})
     header = workbook.add_format({"bold": True, "font_color": "white", "bg_color": "#10243E", "text_wrap": True, "valign": "vcenter"})
     sourced = workbook.add_format({"font_color": "#008000"})
+    sourced_wrap = workbook.add_format({"font_color": "#008000", "text_wrap": True, "valign": "top"})
     number = workbook.add_format({"font_color": "#008000", "num_format": "#,##0;[Red](#,##0);-"})
     pct = workbook.add_format({"font_color": "#008000", "num_format": "0.0%;[Red](0.0%);-"})
     multiple = workbook.add_format({"num_format": "0.0x", "font_color": "#000000"})
@@ -97,17 +86,21 @@ def main() -> None:
     summary.write("D13", len(ev_ebitda), summary_count)
     summary.merge_range("A16:J16", "LATEST KEY TRANSACTIONS", section)
     summary.write_row("A18", ["Date", "Type", "Status", "Target / Issuer", "Buyer / Investor", "Value", "Currency", "Quality", "Sources", "Headline"], header)
+    summary.set_row(17, 30)
     for row_index, row in enumerate(current_key_deals(), 18):
         values = [date(row.get("announced_date")), row.get("deal_type"), row.get("status"), row.get("target_or_issuer"), row.get("acquirer_or_investor"), row.get("transaction_value"), row.get("currency"), row.get("quality_status"), row.get("source_count"), row.get("headline")]
         for col, value in enumerate(values):
             if value is not None:
                 summary.write(row_index, col, value, day if col == 0 else number if col == 5 else sourced)
-    summary.set_column("A:J", 19)
+        summary.set_row(row_index, 30)
+    for col, width in enumerate([14, 10, 13, 24, 24, 18, 11, 12, 10, 58]):
+        summary.set_column(col, col, width)
 
     deals = workbook.add_worksheet("Deals")
     deal_headers = ["Deal ID", "Announced Date", "Type", "Record Kind", "Status", "Target / Issuer", "Buyer / Investor", "Seller", "Sector", "Geography", "Transaction Value", "Enterprise Value", "Currency", "Stake %", "Payment Form", "Advisors", "Instrument", "Security Code", "ISIN", "Coupon %", "Coupon Type", "Yield %", "Maturity", "Tenor", "Issue Price", "Price / Share", "Discount %", "Bookrunners", "Free Float %", "Rationale", "Revenue LTM", "EBITDA LTM", "Financials As Of", "Financials Currency", "EV / Revenue", "EV / EBITDA", "Financial Source", "Metric Basis", "Multiple Notes", "Quality", "Quality Score", "Evidence", "Source Count", "Primary Source", "Primary URL", "Headline"]
     setup(deals, len(deal_headers)-1, "DEALS", "Normalized M&A, DCM and ECM database; blanks mean not disclosed")
     deals.write_row(5, 0, deal_headers, header)
+    deals.set_row(5, 34)
     keys = ["deal_id", "announced_date", "deal_type", "record_kind", "status", "target_or_issuer", "acquirer_or_investor", "seller", "sector", "geography", "transaction_value", "enterprise_value", "currency", "stake_percent", "payment_form", "advisors", "instrument", "security_code", "isin", "coupon_rate", "coupon_type", "yield_rate", "maturity_date", "tenor", "issue_price", "price_per_share", "discount_percent", "bookrunners", "free_float_percent", "rationale", "revenue_ltm", "ebitda_ltm", "financials_as_of", "financials_currency", "ev_revenue", "ev_ebitda", "financials_source_name", "financials_metric_basis", "multiple_notes", "quality_status", "quality_score", "evidence_label", "source_count", "source_name", "source_url", "headline"]
     for idx, row in enumerate(ROWS, 6):
         for col, key in enumerate(keys):
@@ -134,19 +127,24 @@ def main() -> None:
     fin_headers = ["Deal ID", "Target", "Deal Date", "Financials As Of", "Available At", "Currency", "Revenue LTM", "Operating Income", "Depreciation", "Amortization", "EBITDA LTM", "Metric Basis", "Source", "Source URL"]
     setup(fin, len(fin_headers)-1, "FINANCIALS", "Audited inputs with metric period, availability date and source")
     fin.write_row(5, 0, fin_headers, header)
+    fin.set_row(5, 34)
     fin_rows = [r for r in ROWS if r.get("revenue_ltm") or r.get("ebitda_ltm") or r.get("financials_source_url")]
     for idx, row in enumerate(fin_rows, 6):
         values = [row.get("deal_id"), row.get("target_or_issuer"), date(row.get("announced_date")), date(row.get("financials_as_of")), date(row.get("financials_available_at")), row.get("financials_currency"), row.get("revenue_ltm"), row.get("operating_income"), row.get("depreciation"), row.get("amortization"), row.get("ebitda_ltm"), row.get("financials_metric_basis"), row.get("financials_source_name"), row.get("financials_source_url")]
         for col, value in enumerate(values):
             if value is not None:
-                fin.write(idx, col, value, day if col in {2,3,4} else number if col in {6,7,8,9,10} else sourced)
+                fin.write(idx, col, value, day if col in {2,3,4} else number if col in {6,7,8,9,10} else sourced_wrap if col in {11,12,13} else sourced)
+        fin.set_row(idx, 42)
     fin.add_table(5, 0, 5 + max(len(fin_rows), 1), len(fin_headers)-1, {"name": "FinancialsTable", "columns": [{"header": h} for h in fin_headers], "style": "Table Style Medium 2"})
-    fin.freeze_panes(6, 0); fin.set_column("A:N", 20); fin.set_column("L:N", 45)
+    fin.freeze_panes(6, 0)
+    for col, width in enumerate([28,24,14,16,16,11,18,18,16,16,18,52,30,54]):
+        fin.set_column(col, col, width)
 
     mult = workbook.add_worksheet("Multiples")
     mult_headers = ["Deal ID", "Date", "Target", "Enterprise Value", "EV Currency", "Revenue LTM", "EBITDA LTM", "Financials Currency", "Quality", "Available at announcement", "EV / Revenue", "EV / EBITDA", "Model Eligible", "Financial Source", "Notes"]
     setup(mult, len(mult_headers)-1, "MULTIPLES", "Only approved M&A with contemporaneously available financials enters the model median")
     mult.write_row(5, 0, mult_headers, header)
+    mult.set_row(5, 34)
     ma_rows = [r for r in ROWS if r.get("deal_type") == "M&A"]
     for idx, row in enumerate(ma_rows, 6):
         excel_row = idx + 1
@@ -160,20 +158,30 @@ def main() -> None:
         mult.write_formula(idx, 12, f'=IF(AND(I{excel_row}="approved",J{excel_row}="YES",OR(K{excel_row}>0,L{excel_row}>0)),"YES","NO")', None, "YES" if eligible(row) else "NO")
         mult.write(idx, 13, row.get("financials_source_name"), sourced); mult.write(idx, 14, row.get("multiple_notes"), sourced)
     mult.add_table(5, 0, 5 + max(len(ma_rows), 1), len(mult_headers)-1, {"name": "MultiplesTable", "columns": [{"header": h} for h in mult_headers], "style": "Table Style Medium 2"})
-    mult.freeze_panes(6, 0); mult.set_column("A:O", 19); mult.set_column("N:O", 45)
+    mult.freeze_panes(6, 0)
+    for col, width in enumerate([30,14,24,20,12,18,18,16,12,22,14,14,14,32,58]):
+        mult.set_column(col, col, width)
 
     qa = workbook.add_worksheet("Sources & QA")
     qa_headers = ["Deal ID", "Date", "Target / Issuer", "Source", "Type", "Evidence", "URL", "Published", "Headline"]
     setup(qa, 15, "SOURCES & QA", "One row per source plus automated workbook checks")
     qa.write_row(5, 0, qa_headers, header)
+    qa.set_row(5, 34)
     source_rows = [(r, s) for r in ROWS for s in r.get("sources", [])]
     for idx, (row, source) in enumerate(source_rows, 6):
-        qa.write_row(idx, 0, [row.get("deal_id"), date(row.get("announced_date")), row.get("target_or_issuer"), source.get("name"), source.get("source_type"), source.get("evidence_label"), source.get("url"), date(str(source.get("published_at", ""))[:10]), row.get("headline")], sourced)
+        qa.write_row(idx, 0, [row.get("deal_id"), None, row.get("target_or_issuer"), source.get("name"), source.get("source_type"), source.get("evidence_label"), source.get("url"), None, row.get("headline")], sourced)
         qa.write_datetime(idx, 1, date(row.get("announced_date")), day) if date(row.get("announced_date")) else None
+        published_date = date(str(source.get("published_at", ""))[:10])
+        qa.write_datetime(idx, 7, published_date, day) if published_date else None
+        qa.write(idx, 8, row.get("headline"), sourced_wrap)
+        qa.set_row(idx, 28)
     qa.add_table(5, 0, 5 + max(len(source_rows), 1), len(qa_headers)-1, {"name": "SourcesTable", "columns": [{"header": h} for h in qa_headers], "style": "Table Style Medium 2"})
-    qa.freeze_panes(6, 0); qa.set_column("A:I", 20); qa.set_column("G:G", 50); qa.set_column("I:I", 55)
+    qa.freeze_panes(6, 0)
+    for col, width in enumerate([28,14,24,28,18,13,54,14,58]):
+        qa.set_column(col, col, width)
     qa.merge_range("K4:P4", "MODEL CHECKS", section)
     qa.write_row("K6", ["Check", "Actual", "Expected", "Difference", "Tolerance", "Status"], header)
+    qa.set_column("K:K", 34); qa.set_column("L:P", 12)
     checks = [
         ("Duplicate deal IDs", len(ROWS) - len({r.get("deal_id") for r in ROWS}), 0),
         ("Missing primary URLs", sum(not r.get("source_url") for r in ROWS), 0),

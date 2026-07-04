@@ -23,10 +23,19 @@ const toDate = value => /^\d{4}-\d{2}-\d{2}/.test(String(value || "")) ? new Dat
 const safe = value => value === undefined ? null : value;
 const lastRow = (count, start=7) => start + Math.max(count, 1) - 1;
 const liveCutoff = new Date(); liveCutoff.setUTCDate(liveCutoff.getUTCDate()-365);
+const isMaterial = row => {
+  const title=String(row.headline||"").toLowerCase();
+  if(/\b(?:бпиф|ипиф|пиф)\b|аукцион.*\bофз\b|\bофз\b.*аукцион/.test(title)) return false;
+  if(row.deal_type==="M&A") return !title.includes("последний день покупки акций") && /покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout/.test(title);
+  if(row.deal_type==="DCM") return !/погашен|погашения|перечислил.*погаш|выкуп|операции репо|о регистрации|о порядке сбора/.test(title) && /размещ|выпуск|облигац|bond|notes/.test(title);
+  if(row.deal_type==="ECM") return !/объем (?:ipo|продаж акций)|рынок ipo|полугоди|квартал|обзор|выкуп акций|buyback/.test(title) && /\bipo\b|\bspo\b|размещ|эмисси/.test(title);
+  return false;
+};
 const isCurrentKeyDeal = row => row.record_kind === "deal"
   && row.quality_status !== "rejected"
   && !String(row.deal_id || "").startsWith("CURATED-")
-  && toDate(row.announced_date) >= liveCutoff;
+  && toDate(row.announced_date) >= liveCutoff
+  && isMaterial(row);
 
 function titleBand(sheet, endCol, title, subtitle) {
   sheet.getRange(`A1:${endCol}1`).merge(); sheet.getRange("A1").values=[[title]];

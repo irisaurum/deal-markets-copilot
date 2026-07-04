@@ -101,6 +101,11 @@ def is_actionable_signal(item: ClassifiedEvent) -> bool:
     """Exclude exchange plumbing and market-roundup stories from banker actions."""
     text = f"{item.event.title}. {item.event.summary}".lower()
     non_actionable = (
+        r"(?:price target|target price|analyst recommendation|целева\w*\s+цен|таргет\w*\s+цен|рекомендаци\w*\s+аналитик)",
+        r"(?:опроверг|не подтвердил|denied|denies|no agreement)",
+        r"(?:купонн\w*\s+выплат|выплат\w*\s+купон|coupon payment)",
+        r"(?:погашени\w*\s+облигац|погасил\w*.{0,40}облигац|redemption amount|bond redemption)",
+        r"(?:выкуп\w*\s+акци|\bbuyback\b)",
         r"^о проведении выкупа облигаций",
         r"^о регистрации (?:выпуска|проспекта|программы|изменений)",
         r"^о признании (?:выпуска|программы).+несостоявш",

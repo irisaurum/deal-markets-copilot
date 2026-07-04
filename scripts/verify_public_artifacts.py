@@ -7,6 +7,7 @@ import json
 import re
 import zipfile
 import xml.etree.ElementTree as ET
+from datetime import date, datetime
 from pathlib import Path
 import sys
 
@@ -57,16 +58,48 @@ def main() -> None:
 
     digest = dataset_digest(dataset_path)
     expected = digest[:12]
+    assert isinstance(rows, list) and rows, "Dataset must be a non-empty list"
+    deal_ids = [str(row.get("deal_id") or "") for row in rows]
+    assert all(deal_ids), "Every record must have a deal ID"
+    assert len(deal_ids) == len(set(deal_ids)), "Dataset contains duplicate deal IDs"
+    for row in rows:
+        deal_id = str(row.get("deal_id"))
+        assert row.get("headline") and row.get("target_or_issuer") and row.get("announced_date"), f"Missing identity field: {deal_id}"
+        try:
+            date.fromisoformat(str(row["announced_date"])[:10])
+        except ValueError as exc:
+            raise AssertionError(f"Invalid announced date: {deal_id}") from exc
+        assert str(row.get("first_seen_at") or "") <= str(row.get("last_seen_at") or ""), f"Invalid seen range: {deal_id}"
+        sources = [source for source in row.get("sources", []) if isinstance(source, dict)]
+        unique_sources = {
+            (str(source.get("url") or ""), "" if source.get("url") else str(source.get("name") or "").lower())
+            for source in sources
+        }
+        assert row.get("source_count") == len(unique_sources), f"Source count mismatch: {deal_id}"
+        assert all(str(source.get("url") or "").startswith(("http://", "https://")) for source in sources), f"Unsafe or empty evidence URL: {deal_id}"
+        assert row.get("currency") in {"Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF"}, f"Invalid currency: {deal_id}"
+        for field in ("stake_percent", "discount_percent", "free_float_percent"):
+            value = row.get(field)
+            assert value is None or 0 <= float(value) <= 100, f"Invalid {field}: {deal_id}"
+        if row.get("quality_status") == "approved":
+            assert row.get("record_kind") == "deal" and not row.get("quality_flags"), f"Approved record has blockers: {deal_id}"
     assert manifest.get("dataset_sha256") == digest, "XLSX manifest dataset hash is stale"
     assert manifest.get("build_id") == expected, "XLSX manifest build ID is stale"
     assert manifest.get("record_count") == len(rows), "XLSX manifest record count is stale"
     assert snapshot.get("health", {}).get("build_id") == expected, "Snapshot build ID is stale"
+    assert snapshot.get("health", {}).get("dataset_sha256") == digest, "Snapshot dataset hash is stale"
+    assert snapshot.get("health", {}).get("record_count") == len(rows), "Snapshot record count is stale"
     assert snapshot.get("health", {}).get("xlsx_synced") is True, "Snapshot says XLSX is not synchronized"
     assert snapshot.get("health", {}).get("source_status") == "ok", "One or more sources failed"
     assert snapshot.get("health", {}).get("discovery_status") == "ok", "All news discovery sources returned zero records"
     assert snapshot.get("health", {}).get("freshness_status") == "ok", "Source data is stale"
     assert snapshot.get("health", {}).get("system_status") == "ok", "Dashboard health is not green"
+    required_runs = [run for run in snapshot.get("health", {}).get("source_runs", []) if run.get("required")]
+    assert required_runs and all(run.get("status") == "ok" and int(run.get("records") or 0) > 0 for run in required_runs), "Required source did not return usable records"
     assert expected in html, "Dashboard does not expose the synchronized build ID"
+    assert not re.search(r"(?:file://|localhost|/Users/|javascript:)", html, re.I), "Dashboard exposes a local or unsafe URL"
+    for anchor in re.findall(r"<a\b[^>]*target=[\"']_blank[\"'][^>]*>", html, re.I):
+        assert re.search(r"\brel=[\"'][^\"']*noopener", anchor, re.I), "External target=_blank link misses rel=noopener"
     assert len(csv_rows) == len(rows), "CSV and JSON record counts differ"
     assert list(csv_rows[0]) == CSV_FIELDS, "CSV columns differ from the public schema"
     for index, (source, exported) in enumerate(zip(rows, csv_rows, strict=True), start=2):
@@ -94,6 +127,9 @@ def main() -> None:
         cells = workbook_text(workbook)
         missing_ids = [str(row.get("deal_id")) for row in rows if str(row.get("deal_id")) not in cells]
         assert not missing_ids, f"Workbook is missing {len(missing_ids)} deal IDs"
+        workbook_ids = set(re.findall(r"(?:DL-[A-Z0-9-]{8,}|CURATED-[A-Z0-9-]+)", cells, re.I))
+        assert workbook_ids == set(deal_ids), "Workbook contains missing or phantom deal IDs"
+        assert not re.search(r"#(?:REF!|DIV/0!|VALUE!|NAME\?|N/A)", cells), "Workbook contains a formula error"
     print(f"Artifacts synchronized: build={expected}, records={len(rows)}")
 
 

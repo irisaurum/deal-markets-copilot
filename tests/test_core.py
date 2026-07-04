@@ -12,12 +12,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, stable_event_id
-from deal_markets_copilot.deals import enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import _migrate_row, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
-from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
+from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
 from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal
-from run import _build_health
+from run import _build_health, _source_run_status
 
 
 class CoreTests(unittest.TestCase):
@@ -39,6 +39,11 @@ class CoreTests(unittest.TestCase):
         event = Event("x", "", "Title", "", "Source", "https://example.com")
         self.assertEqual(len(deduplicate([event, event])), 1)
 
+    def test_deduplicate_keeps_distinct_bond_issues_for_same_issuer(self) -> None:
+        first = Event("a", "", "«МТС» разместила облигации 003Р-03 на 20 млрд рублей", "", "IR", "https://example.com/a")
+        second = Event("b", "", "«МТС» разместила облигации 003Р-04 на 20 млрд рублей", "", "IR", "https://example.com/b")
+        self.assertEqual(len(deduplicate([first, second])), 2)
+
     def test_near_duplicate_prefers_stronger_source(self) -> None:
         weak = Event("a", "", "Яндекс продал Авто.ру за 35 млрд рублей", "", "Blog", "https://a")
         strong = Event("b", "", "Т-Технологии закрыли сделку по покупке Авто.ру у Яндекса за 35 млрд рублей", "", "Интерфакс", "https://b")
@@ -48,6 +53,14 @@ class CoreTests(unittest.TestCase):
 
     def test_stable_id(self) -> None:
         self.assertEqual(stable_event_id("A", "B"), stable_event_id("A", "B"))
+
+    def test_build_id_changes_when_any_dataset_field_changes(self) -> None:
+        original = json.dumps([{"deal_id": "one", "notes": "before"}], ensure_ascii=False, indent=2).encode()
+        changed = json.dumps([{"deal_id": "one", "notes": "after"}], ensure_ascii=False, indent=2).encode()
+        original_hash = hashlib.sha256(original).hexdigest()
+        changed_hash = hashlib.sha256(changed).hexdigest()
+        self.assertNotEqual(original_hash, changed_hash)
+        self.assertNotEqual(original_hash[:12], changed_hash[:12])
 
     def test_demo_load_and_report(self) -> None:
         events = load_demo_events(ROOT / "data" / "sample_events.json")
@@ -122,6 +135,31 @@ class CoreTests(unittest.TestCase):
         with patch("deal_markets_copilot.sources.fetch_feed", side_effect=OSError("offline")):
             with self.assertRaises(RuntimeError):
                 fetch_configured_sources(config)
+
+    def test_empty_required_source_is_not_success(self) -> None:
+        self.assertEqual(_source_run_status([], required=True), "empty")
+        self.assertEqual(_source_run_status([], required=False), "ok")
+
+    def test_structurally_empty_feed_is_an_error(self) -> None:
+        class Response:
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self): return b"<rss><channel></channel></rss>"
+        with patch("deal_markets_copilot.sources.urllib.request.urlopen", return_value=Response()):
+            with self.assertRaisesRegex(RuntimeError, "no RSS items"):
+                fetch_feed("https://example.com/rss", "Example")
+
+    def test_workflow_suppresses_non_transaction_finance_news(self) -> None:
+        headlines = [
+            "Аналитик повысил target price Ozon до 5 000 рублей",
+            "Ozon выплатил купон по облигациям",
+            "Ozon погасил выпуск облигаций на 5 млрд рублей",
+            "Yandex объявил buyback акций",
+            "Yandex опроверг покупку Ozon",
+        ]
+        for index, headline in enumerate(headlines):
+            event = Event(str(index), "2026-07-04T09:00:00+03:00", headline, "", "News", f"https://example.com/{index}")
+            self.assertFalse(is_actionable_signal(classify_event(event, self.coverage)), headline)
 
     def test_health_cannot_be_green_when_all_discovery_feeds_are_empty(self) -> None:
         rows = [{
@@ -299,6 +337,15 @@ class CoreTests(unittest.TestCase):
         self.assertIsNone(denied_record.transaction_value)
         self.assertEqual(denied_record.quality_status, "review")
 
+    def test_dcm_completion_never_uses_ma_closed_status(self) -> None:
+        row = _migrate_row({
+            "deal_id": "dcm-completed", "announced_date": "2026-07-01", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Closed", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer completed bond placement",
+            "evidence_label": "confirmed", "source_name": "IR", "source_url": "https://example.com/dcm",
+        })
+        self.assertEqual(row["status"], "Issued")
+
     def test_seller_is_not_mislabeled_as_acquirer(self) -> None:
         event = Event(
             event_id="vk-sale", published_at="2026-04-16T08:00:00+03:00",
@@ -334,6 +381,18 @@ class CoreTests(unittest.TestCase):
             "https://example.com/primary", "https://example.com/secondary",
         })
 
+    def test_same_url_counts_as_one_source_even_with_two_labels(self) -> None:
+        row = _migrate_row({
+            "deal_id": "same-url", "announced_date": "2026-07-01", "deal_type": "M&A",
+            "record_kind": "deal", "status": "Closed", "target_or_issuer": "Target",
+            "acquirer_or_investor": "Buyer", "headline": "Buyer acquired Target",
+            "evidence_label": "confirmed", "source_name": "Publisher alias",
+            "source_url": "https://example.com/deal", "sources": [
+                {"name": "Publisher", "url": "https://example.com/deal", "evidence_label": "confirmed"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 1)
+
     def test_medians_use_valid_ma_multiples(self) -> None:
         eligible = {"record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "financials_available_at": "2023-12-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50}
         stats = median_multiples([
@@ -341,10 +400,17 @@ class CoreTests(unittest.TestCase):
             {**eligible, "deal_type": "M&A", "ev_revenue": 4.0, "ev_ebitda": 12.0, "ebitda_ltm": 8.3},
             {**eligible, "deal_type": "M&A", "quality_status": "review", "ev_revenue": 99.0, "ev_ebitda": 99.0},
         ])
-        self.assertEqual(stats["ev_revenue"], 3.0)
-        self.assertEqual(stats["ev_ebitda"], 10.0)
+        self.assertIsNone(stats["ev_revenue"])
+        self.assertIsNone(stats["ev_ebitda"])
         self.assertEqual(stats["ev_revenue_count"], 2)
         self.assertEqual(stats["ev_ebitda_count"], 2)
+
+    def test_median_is_published_at_three_observations(self) -> None:
+        base = {"deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "financials_available_at": "2023-12-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50}
+        rows = [{**base, "deal_id": str(i), "ev_revenue": value} for i, value in enumerate((2.0, 4.0, 8.0))]
+        stats = median_multiples(rows)
+        self.assertEqual(stats["ev_revenue"], 4.0)
+        self.assertEqual(stats["ev_revenue_count"], 3)
 
     def test_medians_exclude_financials_published_after_announcement(self) -> None:
         base = {"deal_type": "M&A", "record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50, "ev_revenue": 2.0}
@@ -352,7 +418,8 @@ class CoreTests(unittest.TestCase):
             {**base, "financials_available_at": "2023-12-15"},
             {**base, "deal_id": "late", "financials_available_at": "2024-02-01", "ev_revenue": 20.0},
         ])
-        self.assertEqual(stats["ev_revenue"], 2.0)
+        self.assertIsNone(stats["ev_revenue"])
+        self.assertEqual(stats["ev_revenue_count"], 1)
         self.assertEqual(stats["coverage"], 1)
 
     def test_official_moex_disclosure_uses_direct_url(self) -> None:
@@ -424,11 +491,14 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(events[0].url, "https://www.sec.gov/Archives/edgar/data/1234567/000123456726000001/deal.htm")
 
     def test_google_rows_upgrade_only_when_direct_url_resolves(self) -> None:
-        rows = [{"source_url": "https://news.google.com/rss/articles/token"}]
+        rows = [{"source_url": "https://news.google.com/rss/articles/token", "sources": [
+            {"name": "Publisher", "url": "https://news.google.com/rss/articles/token"},
+        ]}]
         with patch("deal_markets_copilot.sources.resolve_google_news_url", return_value="https://publisher.example/deal"):
             upgraded = resolve_google_news_rows(rows, workers=1)
         self.assertEqual(upgraded, 1)
         self.assertEqual(rows[0]["source_url"], "https://publisher.example/deal")
+        self.assertEqual(rows[0]["sources"][0]["url"], "https://publisher.example/deal")
 
     def test_key_deals_exclude_technical_exchange_notices(self) -> None:
         rows = [
@@ -507,14 +577,23 @@ class CoreTests(unittest.TestCase):
         event = Event(
             "bond-terms", "2026-06-29T10:00:00+03:00",
             "Selectel разместил облигации объемом 3 млрд рублей",
-            "Купонная ставка 18,5%. Дата погашения 30.06.2029. Срок обращения 3 года. ISIN RU000A10TEST.",
+            "Купонная ставка 18,5%. Дата погашения 30.06.2029. Срок обращения 3 года. ISIN RU000A10TES1.",
             "Issuer IR", "https://example.com/bond", source_type="issuer_ir", confidence="confirmed",
         )
         record = extract_deal_record(classify_event(event, []), [])
         self.assertEqual(record.coupon_rate, 18.5)
         self.assertEqual(record.maturity_date, "2029-06-30")
         self.assertEqual(record.tenor, "3 года")
-        self.assertEqual(record.isin, "RU000A10TEST")
+        self.assertEqual(record.isin, "RU000A10TES1")
+
+    def test_isin_requires_numeric_check_digit(self) -> None:
+        event = Event(
+            "false-isin", "2026-06-29T10:00:00+03:00", "Yandex разместил облигации на 5 млрд рублей",
+            "Материал подготовлен INVESTFUTURE", "InvestFuture", "https://example.com/bond",
+            confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.isin, "Not disclosed")
 
     def test_ma_card_separates_buyer_target_and_seller(self) -> None:
         event = Event(

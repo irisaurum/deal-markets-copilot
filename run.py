@@ -65,11 +65,16 @@ def main() -> int:
         try:
             result = fetcher(config)
             row_errors = [row for row in result if isinstance(row, dict) and row.get("error")]
-            status = "error" if row_errors else "ok"
+            status = _source_run_status(result, required=required)
+            if row_errors:
+                status = "error"
             source_runs.append({
                 "name": name, "status": status, "records": len(result) - len(row_errors),
                 "required": required, "checked_at": checked_at,
-                "error": f"{len(row_errors)} item(s) unavailable" if row_errors else "",
+                "error": (
+                    f"{len(row_errors)} item(s) unavailable" if row_errors
+                    else "Required source returned zero records" if status == "empty" else ""
+                ),
             })
             return result
         except Exception as exc:
@@ -200,6 +205,13 @@ def main() -> int:
         except KeyboardInterrupt:
             pass
     return 0
+
+
+def _source_run_status(result: list, required: bool = True) -> str:
+    """An empty required source is degraded, not a successful fetch."""
+    if required and not result:
+        return "empty"
+    return "ok"
 
 
 def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | None = None, source_runs: list[dict] | None = None) -> dict:

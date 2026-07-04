@@ -339,7 +339,9 @@ def _is_recent_live_record(row: dict, max_age_days: int = 365) -> bool:
         announced_date = date.fromisoformat(announced)
     except ValueError:
         return False
-    return announced_date >= date.today() - timedelta(days=max_age_days)
+    from zoneinfo import ZoneInfo
+    moscow_today = datetime.now(ZoneInfo("Europe/Moscow")).date()
+    return announced_date >= moscow_today - timedelta(days=max_age_days)
 
 
 def select_deal_buckets(rows: list[dict], limit: int = 10) -> dict[str, list[dict]]:
@@ -586,7 +588,7 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     status = "rejected" if score < 40 else "review" if score < 75 else "approved"
     blocking_flags = {
         "technical_filing", "missing_both_parties", "missing_target", "missing_acquirer",
-        "missing_issuer", "price_target_context", "invalid_currency",
+        "missing_issuer", "price_target_context", "invalid_currency", "denied_or_disputed",
     }
     if row.get("evidence_label") != "confirmed" and status == "approved":
         status = "review"
@@ -684,6 +686,8 @@ def _migrate_row(source: dict) -> dict:
         row["free_float_percent"] = None
     row.setdefault("security_code", _security_code(headline))
     row.setdefault("isin", _isin(headline))
+    if row.get("deal_type") == "DCM" and not re.fullmatch(r"[A-Z]{2}[A-Z0-9]{9}\d", str(row.get("isin") or ""), re.I):
+        row["isin"] = _isin(headline)
     row.setdefault("coupon_rate", _coupon_rate(headline))
     row.setdefault("coupon_type", _coupon_type(headline))
     row.setdefault("yield_rate", _yield_rate(headline))
@@ -737,7 +741,9 @@ def _merge_sources(*source_groups: list[dict]) -> list[dict]:
             continue
         url = _safe_public_url(source.get("url", ""))
         name = str(source.get("name") or "Unknown source").strip()
-        key = (url, name.lower())
+        # The same article may arrive through an aggregator and a publisher label.
+        # A URL is one piece of evidence regardless of how many names it carries.
+        key = (url, "") if url else ("", name.lower())
         candidate = {
             "name": name,
             "url": url,
@@ -796,7 +802,7 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
     first_seen = [value for value in (left.get("first_seen_at"), right.get("first_seen_at")) if value]
     merged["first_seen_at"] = min(first_seen) if first_seen else ""
     merged["last_seen_at"] = max(left.get("last_seen_at") or "", right.get("last_seen_at") or "")
-    status_rank = {"Rumor": 0, "Reported": 1, "In talks": 2, "Confirmed": 3, "Announced": 4, "Issued": 5, "Closed": 6, "Denied": 7}
+    status_rank = {"Rumor": 0, "Reported": 1, "In talks": 2, "Confirmed": 3, "Announced": 4, "Priced": 5, "Issued": 6, "Closed": 6, "Denied": 7}
     merged["status"] = max((left.get("status", "Rumor"), right.get("status", "Rumor")), key=lambda value: status_rank.get(value, 0))
     if merged["status"] == "Denied":
         merged["transaction_value"] = None
@@ -1052,7 +1058,8 @@ def _security_code(text: str) -> str:
 
 
 def _isin(text: str) -> str:
-    match = re.search(r"\b([A-Z]{2}[A-Z0-9]{10})\b", text, re.I)
+    # ISO 6166: two-letter country prefix, nine alphanumerics, numeric check digit.
+    match = re.search(r"\b([A-Z]{2}[A-Z0-9]{9}\d)\b", text, re.I)
     return match.group(1).upper() if match else "Not disclosed"
 
 
@@ -1141,7 +1148,7 @@ def median_multiples(rows: list[dict]) -> dict[str, float | int | None]:
         )
         return result
     def median(items: list[float]) -> float | None:
-        if not items:
+        if len(items) < 3:
             return None
         middle = len(items) // 2
         return items[middle] if len(items) % 2 else (items[middle - 1] + items[middle]) / 2
@@ -1217,7 +1224,7 @@ def _status(text: str, category: str, evidence_label: str = "unverified") -> str
     if category in {"ECM", "DCM"} and re.search(r"завершил\w*(?:\s+\w+){0,3}\s+размещени|размещение\s+завершено", lowered):
         return "Issued"
     if any(word in lowered for word in ("закрыл", "закрыла", "завершил", "завершила", "completed", "closed")):
-        return "Closed"
+        return "Issued" if category in {"ECM", "DCM"} else "Closed"
     if category in {"ECM", "DCM"} and any(word in lowered for word in ("разместил", "выпустил", "priced", "issued")):
         return "Issued"
     if any(word in lowered for word in ("переговор", "договарива", "negotiat", "in talks", "ведет обсужден")):

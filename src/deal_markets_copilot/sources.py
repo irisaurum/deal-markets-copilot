@@ -453,6 +453,8 @@ def fetch_feed(
     if not rows:
         rows = root.findall("{http://www.w3.org/2005/Atom}entry")
         atom = True
+    if not rows:
+        raise RuntimeError(f"Feed returned no RSS items or Atom entries: {url}")
 
     events: list[Event] = []
     for row in rows[:50]:
@@ -565,7 +567,11 @@ def resolve_google_news_rows(rows: list[dict], limit: int = 30, workers: int = 6
             except Exception:
                 continue
             if direct != row.get("source_url"):
+                previous = row.get("source_url")
                 row["source_url"] = direct
+                for source in row.get("sources", []):
+                    if isinstance(source, dict) and source.get("url") == previous:
+                        source["url"] = direct
                 upgraded += 1
     return upgraded
 
