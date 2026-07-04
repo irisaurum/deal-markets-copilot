@@ -15,7 +15,7 @@ from deal_markets_copilot.classifier import classify_event, deduplicate, stable_
 from deal_markets_copilot.deals import _migrate_row, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
-from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
+from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_moex_quotes, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
 from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal
 from run import _build_health, _source_run_status
 
@@ -179,6 +179,134 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(health["discovery_status"], "empty")
         self.assertEqual(health["source_status"], "error")
         self.assertEqual(health["system_status"], "warning")
+
+    def test_moex_quotes_distinguish_valid_partial_and_unavailable_rows(self) -> None:
+        class Response:
+            def __init__(self, payload: dict) -> None:
+                self.payload = payload
+
+            def __enter__(self): return self
+            def __exit__(self, *args): return False
+            def read(self): return json.dumps(self.payload).encode()
+
+        def payload(last, change, turnover):
+            return {
+                "marketdata": {
+                    "columns": ["SECID", "LAST", "LASTTOPREVPRICE", "VALTODAY", "UPDATETIME"],
+                    "data": [["TICKER", last, change, turnover, "10:30:00"]],
+                },
+                "securities": {
+                    "columns": ["SECID", "SHORTNAME", "PREVPRICE"],
+                    "data": [["TICKER", "Company", 100]],
+                },
+            }
+
+        config = {"coverage": [
+            {"moex_secid": "YDEX", "company": "Yandex"},
+            {"moex_secid": "OZON", "company": "Ozon"},
+            {"moex_secid": "VKCO", "company": "VK"},
+        ]}
+        responses = [
+            Response(payload(123.4, 1.25, 1_000_000)),
+            Response(payload(50.0, None, 500_000)),
+            Response(payload(None, 0, 0)),
+        ]
+        with patch("deal_markets_copilot.sources.urllib.request.urlopen", side_effect=responses):
+            quotes = fetch_moex_quotes(config)
+
+        self.assertEqual([row["quote_status"] for row in quotes], ["valid", "partial", "unavailable"])
+        self.assertEqual([row["quote_usable"] for row in quotes], [True, True, False])
+        self.assertEqual(quotes[0]["price"], 123.4)
+        self.assertEqual(quotes[0]["change_percent"], 1.25)
+        self.assertEqual(quotes[1]["price"], 50.0)
+        self.assertIsNone(quotes[1]["change_percent"])
+        self.assertIsNone(quotes[2]["price"])
+        self.assertIsNone(quotes[2]["change_percent"])
+
+    def test_market_health_reports_partial_or_unavailable_without_breaking_core_pipeline(self) -> None:
+        rows = [{
+            "deal_id": "one", "record_kind": "deal", "quality_status": "approved",
+            "deal_type": "M&A", "stake_percent": None,
+            "sources": [{"name": "Issuer", "url": "https://example.com", "source_type": "official_issuer"}],
+        }]
+        core_names = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news"}
+        source_runs = [
+            {"name": name, "status": "ok", "records": 1, "required": True, "checked_at": "2099-01-01T10:00:00+03:00"}
+            for name in core_names
+        ] + [{
+            "name": "moex_quotes", "status": "ok", "records": 3, "required": False,
+            "checked_at": "2099-01-01T10:00:00+03:00",
+        }]
+        mixed = [
+            {"ticker": "YDEX", "price": 100.0, "change_percent": 1.0, "quote_status": "valid", "quote_usable": True},
+            {"ticker": "OZON", "price": None, "change_percent": None, "quote_status": "unavailable", "quote_usable": False},
+            {"ticker": "VKCO", "price": None, "change_percent": None, "quote_status": "unavailable", "quote_usable": False},
+        ]
+        unavailable = [dict(row, price=None, change_percent=None, quote_status="unavailable", quote_usable=False) for row in mixed]
+        source_error = [{
+            "ticker": "YDEX", "price": None, "change_percent": None, "quote_status": "error",
+            "quote_usable": False, "error": "transport unavailable",
+        }]
+        error_runs = [dict(run) for run in source_runs]
+        error_runs[-1].update({"status": "error", "records": 0, "error": "1 item unavailable"})
+        with tempfile.TemporaryDirectory() as directory:
+            dataset = Path(directory) / "rows.json"
+            dataset.write_text(json.dumps(rows), encoding="utf-8")
+            digest = hashlib.sha256(dataset.read_bytes()).hexdigest()
+            manifest = Path(directory) / "manifest.json"
+            manifest.write_text(json.dumps({"build_id": digest[:12], "dataset_sha256": digest, "record_count": 1}), encoding="utf-8")
+            mixed_health = _build_health(rows, manifest, dataset, source_runs, mixed)
+            unavailable_health = _build_health(rows, manifest, dataset, source_runs, unavailable)
+            error_health = _build_health(rows, manifest, dataset, error_runs, source_error)
+
+        self.assertEqual(mixed_health["market_data_status"], "partial")
+        self.assertEqual(mixed_health["market_quote_count"], 1)
+        self.assertEqual(mixed_health["market_quote_total"], 3)
+        self.assertEqual(mixed_health["system_status"], "ok")
+        self.assertEqual(unavailable_health["market_data_status"], "unavailable")
+        self.assertEqual(unavailable_health["market_quote_count"], 0)
+        self.assertEqual(unavailable_health["system_status"], "ok")
+        self.assertEqual(error_health["market_data_status"], "error")
+        self.assertEqual(error_health["system_status"], "ok")
+
+    def test_market_tape_renders_missing_values_without_false_zeroes(self) -> None:
+        quotes = [
+            {"ticker": "YDEX", "company": "Yandex", "price": 123.4, "change_percent": 1.25, "turnover": 1_000_000, "quote_status": "valid", "quote_usable": True, "source_url": "https://moex.com/YDEX"},
+            {"ticker": "OZON", "company": "Ozon", "price": 50.0, "change_percent": None, "turnover": 500_000, "quote_status": "partial", "quote_usable": True, "source_url": "https://moex.com/OZON"},
+            {"ticker": "VKCO", "company": "VK", "price": None, "change_percent": None, "turnover": 0, "quote_status": "unavailable", "quote_usable": False, "source_url": "https://moex.com/VKCO"},
+        ]
+        health = {
+            "system_status": "ok", "source_status": "ok", "freshness_status": "ok",
+            "xlsx_synced": True, "build_id": "test", "record_count": 0, "approved_count": 0,
+            "critical_qa_issues": 0, "market_data_status": "partial", "market_quote_count": 2,
+            "market_quote_total": 3,
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = build_html_report([], {}, Path(directory) / "report.html", "live", market_snapshot=quotes, health=health)
+            text = path.read_text(encoding="utf-8")
+            unavailable_quotes = [
+                dict(row, price=None, change_percent=None, quote_status="unavailable", quote_usable=False)
+                for row in quotes
+            ]
+            unavailable_health = dict(health, market_data_status="unavailable", market_quote_count=0)
+            unavailable_path = build_html_report(
+                [], {}, Path(directory) / "unavailable.html", "live",
+                market_snapshot=unavailable_quotes, health=unavailable_health,
+            )
+            unavailable_text = unavailable_path.read_text(encoding="utf-8")
+
+        self.assertIn("123.40 ₽", text)
+        self.assertIn("+1.25%", text)
+        self.assertIn("50.00 ₽", text)
+        self.assertIn("изменение недоступно", text)
+        self.assertIn("Котировка недоступна", text)
+        self.assertIn("Market tape", text)
+        self.assertIn("частично · 2/3", text)
+        self.assertNotIn("— ₽", text)
+        self.assertNotIn("Котировка недоступна</span><span class=\"quote-change flat\">+0.00%", text)
+        self.assertIn("недоступен · 0/3", unavailable_text)
+        self.assertNotIn("+0.00%", unavailable_text)
+        self.assertNotIn("— ₽", unavailable_text)
 
     def test_telegram_digest_escapes_html(self) -> None:
         event = Event("1", "", "A < B", "", "Source", "")

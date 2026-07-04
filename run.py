@@ -38,6 +38,8 @@ from deal_markets_copilot.sources import (
     effective_news_lookback,
     filter_recent_events,
     load_demo_events,
+    quote_is_usable,
+    quote_status,
     resolve_google_news_events,
     resolve_google_news_rows,
 )
@@ -101,7 +103,7 @@ def main() -> int:
             + filter_recent_events(gdelt_events, lookback)
         )
         archive_events = collect_source("deal_archive", fetch_deal_archive_news, required=False) + collect_source("sec_filings", fetch_sec_deal_filings, required=False) + official_events + gdelt_events
-        market_snapshot = collect_source("moex_quotes", fetch_moex_quotes)
+        market_snapshot = collect_source("moex_quotes", fetch_moex_quotes, required=False)
     else:
         events = load_demo_events(ROOT / "data" / "sample_events.json")
         archive_events = []
@@ -157,7 +159,7 @@ def main() -> int:
     if upgraded_links:
         write_precedent_database(precedents, precedent_path)
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
-    health = _build_health(precedents, ROOT / "output" / "build_manifest.json", precedent_path, source_runs)
+    health = _build_health(precedents, ROOT / "output" / "build_manifest.json", precedent_path, source_runs, market_snapshot)
 
     report_path = build_html_report(
         actionable,
@@ -214,7 +216,13 @@ def _source_run_status(result: list, required: bool = True) -> str:
     return "ok"
 
 
-def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | None = None, source_runs: list[dict] | None = None) -> dict:
+def _build_health(
+    rows: list[dict],
+    manifest_path: Path,
+    dataset_path: Path | None = None,
+    source_runs: list[dict] | None = None,
+    market_snapshot: list[dict] | None = None,
+) -> dict:
     dataset_bytes = dataset_path.read_bytes() if dataset_path and dataset_path.exists() else json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     dataset_sha256 = hashlib.sha256(dataset_bytes).hexdigest()
     build_id = dataset_sha256[:12]
@@ -236,8 +244,8 @@ def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | No
             manifest = {}
     source_groups = {str(source.get("source_type") or source.get("name") or "unknown") for source in sources if source.get("url")}
     runs = source_runs or []
-    failed_runs = [run for run in runs if run.get("status") != "ok"]
-    required_names = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news", "moex_quotes"}
+    failed_runs = [run for run in runs if run.get("name") != "moex_quotes" and run.get("status") != "ok"]
+    required_names = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news"}
     present_names = {str(run.get("name")) for run in runs}
     missing_required = sorted(required_names - present_names)
     discovery_names = {"configured_rss", "deal_news", "company_news", "issuer_news", "gdelt"}
@@ -248,6 +256,8 @@ def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | No
     source_checked_times: list[datetime] = []
     stale_sources: list[str] = []
     for run in runs:
+        if run.get("name") == "moex_quotes":
+            continue
         raw = str(run.get("checked_at") or "")
         try:
             checked = datetime.fromisoformat(raw).astimezone(ZoneInfo("Europe/Moscow"))
@@ -262,6 +272,19 @@ def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | No
     discovery_ok = discovery_records > 0
     live_sources_ok = bool(runs) and not failed_runs and not missing_required and discovery_ok
     freshness_ok = bool(runs) and not stale_sources
+    quotes = market_snapshot or []
+    market_run = next((run for run in runs if run.get("name") == "moex_quotes"), None)
+    market_quote_total = len(quotes)
+    market_quote_count = sum(quote_is_usable(quote) for quote in quotes)
+    market_complete_count = sum(quote_status(quote) == "valid" for quote in quotes)
+    if market_quote_total and market_complete_count == market_quote_total:
+        market_data_status = "ok"
+    elif market_quote_count:
+        market_data_status = "partial"
+    elif market_run and market_run.get("status") == "error":
+        market_data_status = "error"
+    else:
+        market_data_status = "unavailable"
     xlsx_synced = manifest.get("dataset_sha256") == dataset_sha256 and manifest.get("build_id") == build_id and manifest.get("record_count") == len(rows)
     return {
         "last_success_at": datetime.now(ZoneInfo("Europe/Moscow")).isoformat(timespec="minutes"),
@@ -287,6 +310,9 @@ def _build_health(rows: list[dict], manifest_path: Path, dataset_path: Path | No
         "freshness_limit_minutes": freshness_limit_minutes,
         "source_status": "ok" if live_sources_ok else ("unknown" if not runs else "error"),
         "freshness_status": "ok" if freshness_ok else "stale",
+        "market_data_status": market_data_status,
+        "market_quote_count": market_quote_count,
+        "market_quote_total": market_quote_total,
         "system_status": "ok" if not critical and xlsx_synced and source_groups and live_sources_ok and freshness_ok else "warning",
         "xlsx_synced": xlsx_synced,
         "xlsx_generated_at": manifest.get("generated_at"),

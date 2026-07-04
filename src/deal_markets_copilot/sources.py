@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import html
+import math
 import re
 import ssl
 import urllib.parse
@@ -19,6 +20,24 @@ from .models import Event
 USER_AGENT = "DealMarketsCopilot/0.2"
 _SYSTEM_CA = Path("/etc/ssl/cert.pem")
 SSL_CONTEXT = ssl.create_default_context(cafile=str(_SYSTEM_CA)) if _SYSTEM_CA.exists() else ssl.create_default_context()
+
+
+def quote_status(quote: dict) -> str:
+    """Classify quote availability without treating missing market data as zero."""
+    if quote.get("error"):
+        return "error"
+    price = quote.get("price")
+    if not isinstance(price, (int, float)) or isinstance(price, bool) or not math.isfinite(float(price)) or float(price) <= 0:
+        return "unavailable"
+    change = quote.get("change_percent")
+    if not isinstance(change, (int, float)) or isinstance(change, bool) or not math.isfinite(float(change)):
+        return "partial"
+    return "valid"
+
+
+def quote_is_usable(quote: dict) -> bool:
+    """A positive last price is usable even when the daily change is unavailable."""
+    return quote_status(quote) in {"valid", "partial"}
 
 
 def load_demo_events(path: str | Path) -> list[Event]:
@@ -407,7 +426,7 @@ def fetch_moex_quotes(config: dict, timeout: int = 15) -> list[dict]:
             security_rows = _rows(payload.get("securities", {}))
             market = next((row for row in market_rows if row.get("LAST") is not None), market_rows[-1] if market_rows else {})
             security = next((row for row in security_rows if row.get("PREVPRICE") is not None), security_rows[-1] if security_rows else {})
-            quotes.append({
+            quote = {
                 "ticker": secid,
                 "company": company.get("company", security.get("SHORTNAME", secid)),
                 "price": market.get("LAST"),
@@ -418,9 +437,14 @@ def fetch_moex_quotes(config: dict, timeout: int = 15) -> list[dict]:
                 "source": "MOEX ISS",
                 "source_url": f"https://www.moex.com/ru/issue.aspx?board=TQBR&code={urllib.parse.quote(secid)}",
                 "api_url": endpoint,
-            })
+            }
+            quote["quote_status"] = quote_status(quote)
+            quote["quote_usable"] = quote_is_usable(quote)
+            if not quote["quote_usable"]:
+                quote["change_percent"] = None
+            quotes.append(quote)
         except Exception as exc:
-            quotes.append({
+            quote = {
                 "ticker": secid,
                 "company": company.get("company", secid),
                 "price": None,
@@ -432,7 +456,10 @@ def fetch_moex_quotes(config: dict, timeout: int = 15) -> list[dict]:
                 "source_url": f"https://www.moex.com/ru/issue.aspx?board=TQBR&code={urllib.parse.quote(secid)}",
                 "api_url": endpoint,
                 "error": str(exc),
-            })
+            }
+            quote["quote_status"] = quote_status(quote)
+            quote["quote_usable"] = False
+            quotes.append(quote)
     return quotes
 
 

@@ -1,6 +1,6 @@
 # Regressions
 
-Registry reviewed against current code and test definitions: **2026-07-04**. The 58 tests were last executed in the production-hardening verification cycle and were not rerun for the documentation-only review. Test names below are exact. Where no dedicated unit test exists, the protecting release check is named honestly.
+Registry reviewed against current code and test definitions: **2026-07-04**. The 61 tests were executed for the AUD-01 MOEX market-data health fix. Test names below are exact. Where no dedicated unit test exists, the protecting release check is named honestly.
 
 ## Health and source handling
 
@@ -12,6 +12,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Current protection:** required empty runs are `empty`; fetch errors are recorded; discovery must be nonzero; required runs must be fresh and usable.
 - **Tests/checks:** `test_rss_transport_failure_is_not_silently_successful`, `test_empty_required_source_is_not_success`, `test_structurally_empty_feed_is_an_error`, `test_health_cannot_be_green_when_all_discovery_feeds_are_empty`; strict verifier checks required runs.
 - **Files:** `run.py`, `sources.py`, `scripts/verify_public_artifacts.py`, `tests/test_core.py`.
+
+### REG-23 — False-green market tape from partial MOEX rows
+
+- **Failure mode:** a successful MOEX response with `LAST=null` and zero-valued metadata rendered `— ₽ +0.00%` while system health stayed fully green.
+- **Why it mattered:** missing market data looked like a real unchanged quote and overstated market-tape availability.
+- **Root mechanism:** quote rows were counted by presence, not usable price data; rendering treated the independent change field as valid even when no last price existed.
+- **Current protection:** quotes are classified as `valid`, `partial`, `unavailable` or `error`; missing price clears the displayed change; market-data availability is reported separately from the core deal pipeline.
+- **Tests/checks:** `test_moex_quotes_distinguish_valid_partial_and_unavailable_rows`, `test_market_health_reports_partial_or_unavailable_without_breaking_core_pipeline`, `test_market_tape_renders_missing_values_without_false_zeroes`.
+- **Files:** `sources.py`, `run.py`, `report.py`, `tests/test_core.py`.
 
 ## Build and artifact integrity
 
