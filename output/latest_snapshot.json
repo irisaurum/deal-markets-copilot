@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-04T08:51+03:00",
+  "generated_at": "2026-07-04T09:03+03:00",
   "health": {
-    "last_success_at": "2026-07-04T08:51+03:00",
-    "build_id": "6ca45d226faf",
-    "dataset_sha256": "6ca45d226faf362825f54215029937243155746252a5906fae2d2569f4bbd323",
+    "last_success_at": "2026-07-04T09:03+03:00",
+    "build_id": "f4a2f07f2871",
+    "dataset_sha256": "f4a2f07f287186820085eff311be4df478e265105834ead0c4b83c96e746be98",
     "record_count": 87,
     "key_deal_count": 4,
     "approved_count": 18,
@@ -21,95 +21,97 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-04T08:46:17+03:00",
+        "checked_at": "2026-07-04T09:03:07+03:00",
         "error": "",
-        "age_minutes": 5.0
+        "age_minutes": 0.7
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-04T08:46:32+03:00",
+        "checked_at": "2026-07-04T09:03:24+03:00",
         "error": "",
-        "age_minutes": 4.7
+        "age_minutes": 0.4
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
         "records": 13,
         "required": true,
-        "checked_at": "2026-07-04T08:46:32+03:00",
+        "checked_at": "2026-07-04T09:03:24+03:00",
         "error": "",
-        "age_minutes": 4.7
+        "age_minutes": 0.4
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-04T08:46:40+03:00",
+        "checked_at": "2026-07-04T09:03:37+03:00",
         "error": "",
-        "age_minutes": 4.6
+        "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 11,
+        "records": 10,
         "required": true,
-        "checked_at": "2026-07-04T08:46:41+03:00",
+        "checked_at": "2026-07-04T09:03:37+03:00",
         "error": "",
-        "age_minutes": 4.6
+        "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
         "records": 11,
         "required": true,
-        "checked_at": "2026-07-04T08:46:42+03:00",
+        "checked_at": "2026-07-04T09:03:38+03:00",
         "error": "",
-        "age_minutes": 4.5
+        "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 139,
+        "records": 143,
         "required": false,
-        "checked_at": "2026-07-04T08:46:44+03:00",
+        "checked_at": "2026-07-04T09:03:39+03:00",
         "error": "",
-        "age_minutes": 4.5
+        "age_minutes": 0.1
       },
       {
         "name": "sec_filings",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-04T08:46:48+03:00",
+        "checked_at": "2026-07-04T09:03:41+03:00",
         "error": "",
-        "age_minutes": 4.4
+        "age_minutes": 0.1
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
-        "required": true,
-        "checked_at": "2026-07-04T08:46:48+03:00",
-        "error": "",
-        "age_minutes": 4.4
+        "required": false,
+        "checked_at": "2026-07-04T09:03:41+03:00",
+        "error": ""
       }
     ],
-    "discovery_record_count": 41,
+    "discovery_record_count": 40,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 5.0,
-    "source_checked_at": "2026-07-04T08:46+03:00",
+    "source_age_minutes": 0.7,
+    "source_checked_at": "2026-07-04T09:03+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
     "freshness_status": "ok",
+    "market_data_status": "unavailable",
+    "market_quote_count": 0,
+    "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-04T05:50:35.552Z"
+    "xlsx_generated_at": "2026-07-04T06:03:46+00:00"
   },
   "mode": "live",
   "market": [
@@ -117,37 +119,43 @@
       "ticker": "YDEX",
       "company": "Yandex",
       "price": null,
-      "change_percent": 0,
+      "change_percent": null,
       "turnover": 0,
       "updated": "07:00:08",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+      "quote_status": "unavailable",
+      "quote_usable": false
     },
     {
       "ticker": "OZON",
       "company": "Ozon",
       "price": null,
-      "change_percent": 0,
+      "change_percent": null,
       "turnover": 0,
       "updated": "07:00:08",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+      "quote_status": "unavailable",
+      "quote_usable": false
     },
     {
       "ticker": "VKCO",
       "company": "VK",
       "price": null,
-      "change_percent": 0,
+      "change_percent": null,
       "turnover": 0,
       "updated": "07:00:08",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE"
+      "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+      "quote_status": "unavailable",
+      "quote_usable": false
     }
   ],
   "events": [],
