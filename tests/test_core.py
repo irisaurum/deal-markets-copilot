@@ -509,6 +509,125 @@ class CoreTests(unittest.TestCase):
             "https://example.com/primary", "https://example.com/secondary",
         })
 
+    def test_dcm_lifecycle_merges_preliminary_aggregate_into_official_final(self) -> None:
+        preliminary = Event(
+            "preliminary", "2026-06-04T08:00:00+03:00",
+            "Альфа разместит облигации 001Р-04 и 001Р-05 минимум на 30 млрд рублей", "",
+            "Newswire", "https://example.com/preliminary",
+        )
+        final = Event(
+            "final", "2026-06-19T08:00:00+03:00",
+            "Альфа разместила облигации серий 001Р-04 и 001Р-05 на 60 млрд рублей", "",
+            "Issuer IR", "https://example.com/final", source_type="issuer_ir", confidence="confirmed",
+        )
+        records = [extract_deal_record(classify_event(event, []), []) for event in (preliminary, final)]
+        with tempfile.TemporaryDirectory() as directory:
+            rows = update_precedent_database(records, Path(directory) / "precedents.json")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["deal_id"], "DL-final")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+        self.assertEqual(rows[0]["status"], "Issued")
+        self.assertEqual(set(rows[0]["security_code"].split("; ")), {"001Р-04", "001Р-05"})
+        self.assertEqual({source["url"] for source in rows[0]["sources"]}, {
+            "https://example.com/preliminary", "https://example.com/final",
+        })
+
+    def test_dcm_lifecycle_allows_amount_growth_with_shared_issue_identity(self) -> None:
+        events = [
+            Event("early", "2026-06-04", "Альфа разместит облигации 001Р-04 минимум на 30 млрд рублей", "", "Press", "https://example.com/early"),
+            Event("issued", "2026-06-19", "Альфа разместила облигации 001Р-04 на 60 млрд рублей", "", "Issuer IR", "https://example.com/issued", source_type="issuer_ir", confidence="confirmed"),
+        ]
+        records = [extract_deal_record(classify_event(event, []), []) for event in events]
+        with tempfile.TemporaryDirectory() as directory:
+            rows = update_precedent_database(records, Path(directory) / "precedents.json")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+
+    def test_dcm_lifecycle_final_terms_override_preliminary_source_rank(self) -> None:
+        events = [
+            Event("preliminary-official", "2026-06-04", "Альфа разместит облигации 001Р-04 на 30 млрд рублей", "", "Issuer IR", "https://example.com/preliminary-official", source_type="issuer_ir", confidence="confirmed"),
+            Event("final-secondary", "2026-06-19", "Альфа разместила облигации 001Р-04 на 60 млрд рублей", "", "Newswire", "https://example.com/final-secondary", confidence="confirmed"),
+        ]
+        records = [extract_deal_record(classify_event(event, []), []) for event in events]
+        with tempfile.TemporaryDirectory() as directory:
+            rows = update_precedent_database(records, Path(directory) / "precedents.json")
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["status"], "Issued")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+        self.assertEqual(rows[0]["currency"], "RUB")
+
+    def test_dcm_lifecycle_does_not_merge_distinct_issue_series(self) -> None:
+        events = [
+            Event("series-a", "2026-06-04", "Альфа разместила облигации 001Р-04 на 20 млрд рублей", "", "IR", "https://example.com/a", confidence="confirmed"),
+            Event("series-b", "2026-06-05", "Альфа разместила облигации 001Р-06 на 20 млрд рублей", "", "IR", "https://example.com/b", confidence="confirmed"),
+        ]
+        records = [extract_deal_record(classify_event(event, []), []) for event in events]
+        with tempfile.TemporaryDirectory() as directory:
+            rows = update_precedent_database(records, Path(directory) / "precedents.json")
+        self.assertEqual(len(rows), 2)
+
+    def test_dcm_lifecycle_does_not_merge_on_same_issuer_and_weak_signals_alone(self) -> None:
+        events = [
+            Event("weak-a", "2026-06-04", "Сбер разместил облигации на 10 млрд рублей", "", "IR", "https://example.com/weak-a", confidence="confirmed"),
+            Event("weak-b", "2026-06-05", "Сбер разместил облигации на 20 млрд рублей", "", "IR", "https://example.com/weak-b", confidence="confirmed"),
+        ]
+        records = [extract_deal_record(classify_event(event, []), []) for event in events]
+        with tempfile.TemporaryDirectory() as directory:
+            rows = update_precedent_database(records, Path(directory) / "precedents.json")
+        self.assertEqual(len(rows), 2)
+
+    def test_dcm_lifecycle_repeat_processing_is_idempotent(self) -> None:
+        events = [
+            Event("early", "2026-06-04", "Альфа разместит облигации 001Р-04 и 001Р-05 на 30 млрд рублей", "", "Press", "https://example.com/early"),
+            Event("final", "2026-06-19", "Альфа разместила облигации 001Р-04 и 001Р-05 на 60 млрд рублей", "", "Issuer IR", "https://example.com/final", source_type="issuer_ir", confidence="confirmed"),
+        ]
+        records = [extract_deal_record(classify_event(event, []), []) for event in events]
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            update_precedent_database(records, database)
+            rows = update_precedent_database(records, database)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["status"], "Issued")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+        self.assertEqual(rows[0]["source_count"], 2)
+
+    def test_dcm_lifecycle_archive_signal_cannot_recreate_final_transaction(self) -> None:
+        final = Event("final", "2026-06-19", "Альфа разместила облигации 001Р-04 и 001Р-05 на 60 млрд рублей", "", "Issuer IR", "https://example.com/final", source_type="issuer_ir", confidence="confirmed")
+        archive = Event("archive", "2026-06-04", "Альфа разместит облигации 001Р-04 и 001Р-05 минимум на 30 млрд рублей", "", "Archive", "https://example.com/archive")
+        final_record = extract_deal_record(classify_event(final, []), [])
+        archive_record = extract_deal_record(classify_event(archive, []), [])
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            update_precedent_database([final_record], database)
+            rows = update_precedent_database([archive_record], database)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["deal_id"], "DL-final")
+        self.assertEqual(rows[0]["status"], "Issued")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+
+    def test_dcm_lifecycle_known_source_lineage_prevents_recreation_without_identifiers(self) -> None:
+        canonical = {
+            "deal_id": "DL-final", "announced_date": "2026-06-19", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Альфа",
+            "acquirer_or_investor": "Not applicable", "headline": "Альфа разместила два выпуска облигаций на 60 млрд рублей",
+            "transaction_value": 60_000_000_000, "currency": "RUB", "security_code": "001Р-04; 001Р-05",
+            "evidence_label": "confirmed", "source_name": "Issuer IR", "source_url": "https://example.com/final",
+            "sources": [
+                {"name": "Issuer IR", "url": "https://example.com/final", "evidence_label": "confirmed", "source_type": "issuer_ir"},
+                {"name": "Archive", "url": "https://example.com/archive", "evidence_label": "unverified", "source_type": "archive_discovery"},
+            ],
+        }
+        archive = Event("archive", "2026-06-04", "Альфа разместит облигации минимум на 30 млрд рублей", "", "Archive", "https://example.com/archive")
+        archive_record = extract_deal_record(classify_event(archive, []), [])
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([canonical]), encoding="utf-8")
+            rows = update_precedent_database([archive_record], database)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["deal_id"], "DL-final")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+        self.assertEqual(rows[0]["status"], "Issued")
+
     def test_same_url_counts_as_one_source_even_with_two_labels(self) -> None:
         row = _migrate_row({
             "deal_id": "same-url", "announced_date": "2026-07-01", "deal_type": "M&A",

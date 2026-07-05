@@ -109,3 +109,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** a conservative ignore-list prevents non-production side effects without risking a missed refresh when a new code, config, verifier, builder, test or data path is added.
 - **Consequences:** docs-only pushes receive no production refresh; mixed docs/code pushes do; scheduled and manual autonomous refreshes are unchanged; table-driven workflow-policy tests protect the boundary and loop guard.
 - **Related:** `.github/workflows/deal-desk.yml`, `tests/test_workflow_policy.py`, `TESTING_AND_RELEASE.md`.
+
+## Coordinated DCM placements use one deal lifecycle with distinct issue identities
+
+- **Date:** 2026-07-05.
+- **Decision:** represent a coordinated multi-series placement as one canonical deal-level lifecycle while retaining the complete set of distinct issue series in `security_code` and every relevant source as lineage.
+- **Context:** a preliminary aggregate signal and the official final placement were stored as separate economic transactions because event-level identity and weak proximity heuristics overrode deal-level continuity.
+- **Rationale:** the existing flat deal schema already supports one economic record, multiple sources and a displayable identifier field; linked event records or a new parent/child schema would add counting and downstream complexity without improving this case.
+- **Consequences:** DCM lifecycle matching relies on shared strong issue identifiers or exact stored source lineage plus issuer equality; weak signals alone do not merge. Official final evidence, lifecycle maturity and completeness determine the canonical record, and status/terms cannot regress during consolidation.
+- **Related:** `deals.py`, `DATA_RULES.md`, `REGRESSIONS.md` REG-26.

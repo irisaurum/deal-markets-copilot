@@ -451,6 +451,16 @@ def _record_quality(row: dict) -> tuple[int, int, int]:
 def _same_transaction(left: dict, right: dict) -> bool:
     if left.get("deal_type") != right.get("deal_type"):
         return False
+    if left.get("deal_type") == "DCM":
+        if _source_lineage(left) & _source_lineage(right):
+            return _same_issuer(left, right)
+        left_identifiers = _dcm_identifiers(left)
+        right_identifiers = _dcm_identifiers(right)
+        if not left_identifiers or not right_identifiers:
+            return False
+        if left_identifiers.isdisjoint(right_identifiers):
+            return False
+        return _same_issuer(left, right)
     try:
         if abs((datetime.fromisoformat(left.get("announced_date", "")) - datetime.fromisoformat(right.get("announced_date", ""))).days) > 10:
             return False
@@ -474,6 +484,34 @@ def _same_transaction(left: dict, right: dict) -> bool:
         and re.search(r"продал|продаж|sold|divest", str(right.get("headline") or ""), re.I)
     )
     return bool(common and (same_amount or similarity >= 0.6 or same_day_sale))
+
+
+def _same_issuer(left: dict, right: dict) -> bool:
+    def normalize(value) -> str:
+        if _is_blank(value) or value == "Not applicable":
+            return ""
+        return re.sub(r"[^a-zа-яё0-9]+", "", str(value).lower())
+
+    left_issuer = normalize(left.get("target_or_issuer"))
+    right_issuer = normalize(right.get("target_or_issuer"))
+    return bool(left_issuer and left_issuer == right_issuer)
+
+
+def _dcm_identifiers(row: dict) -> set[str]:
+    values = " ".join(str(row.get(field) or "") for field in ("security_code", "isin", "headline"))
+    identifiers = {_canonical_dcm_identifier(value) for value in _issue_codes(values)}
+    identifiers.update(value.upper() for value in re.findall(r"\b[A-Z]{2}[A-Z0-9]{9}\d\b", values, re.I))
+    return identifiers
+
+
+def _source_lineage(row: dict) -> set[str]:
+    urls = {_safe_public_url(row.get("source_url", ""))}
+    urls.update(
+        _safe_public_url(source.get("url", ""))
+        for source in row.get("sources", [])
+        if isinstance(source, dict)
+    )
+    return {url for url in urls if url}
 
 
 def _deal_entities(value: str) -> set[str]:
@@ -784,7 +822,10 @@ def _apply_quality(row: dict) -> None:
 
 
 def _merge_transaction_rows(left: dict, right: dict) -> dict:
-    winner, other = (left, right) if _record_quality(left) >= _record_quality(right) else (right, left)
+    if left.get("deal_type") == right.get("deal_type") == "DCM":
+        winner, other = (left, right) if _dcm_canonical_rank(left) >= _dcm_canonical_rank(right) else (right, left)
+    else:
+        winner, other = (left, right) if _record_quality(left) >= _record_quality(right) else (right, left)
     merged = dict(winner)
     for field in (
         "target_or_issuer", "acquirer_or_investor", "seller", "transaction_value", "enterprise_value", "currency",
@@ -796,6 +837,16 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
         if _is_blank(merged.get(field)) or merged.get(field) == "Not applicable":
             if not _is_blank(other.get(field)):
                 merged[field] = other[field]
+    if merged.get("deal_type") == "DCM":
+        issue_codes = _issue_codes("; ".join(str(row.get("security_code") or "") for row in (left, right)))
+        merged["security_code"] = "; ".join(issue_codes) if issue_codes else "Not disclosed"
+        terms_row = max(
+            (left, right),
+            key=lambda row: (_lifecycle_status_rank(row.get("status")), _dcm_canonical_rank(row)),
+        )
+        if not _is_blank(terms_row.get("transaction_value")):
+            merged["transaction_value"] = terms_row["transaction_value"]
+            merged["currency"] = terms_row.get("currency") or merged.get("currency")
     merged["sources"] = _merge_sources(left.get("sources", []), right.get("sources", []))
     merged["source_count"] = len(merged["sources"])
     merged["matched_coverage"] = sorted(set(left.get("matched_coverage", [])) | set(right.get("matched_coverage", [])))
@@ -812,6 +863,20 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
     _apply_primary_source(merged)
     _apply_quality(merged)
     return merged
+
+
+def _dcm_canonical_rank(row: dict) -> tuple:
+    sources = [source for source in row.get("sources", []) if isinstance(source, dict)]
+    source_rank = max((_source_quality(source) for source in sources), default=(0, 0, 0))
+    completeness = sum(
+        not _is_blank(row.get(field)) and row.get(field) != "Not applicable"
+        for field in ("transaction_value", "currency", "security_code", "isin", "coupon_rate", "yield_rate", "maturity_date", "tenor")
+    )
+    return source_rank, _lifecycle_status_rank(row.get("status")), completeness, _record_quality(row)
+
+
+def _lifecycle_status_rank(status) -> int:
+    return {"Rumor": 0, "Reported": 1, "In talks": 2, "Confirmed": 3, "Announced": 4, "Priced": 5, "Issued": 6}.get(status, 0)
 
 
 def _load_database(path: Path) -> list[dict]:
@@ -1050,11 +1115,26 @@ def _advisors(text: str) -> str:
 
 
 def _security_code(text: str) -> str:
+    return "; ".join(_issue_codes(text)) or "Not disclosed"
+
+
+def _issue_codes(text: str) -> list[str]:
+    values = re.findall(r"\b\d{3,4}[РP]-\d{1,3}\b", str(text), re.I)
     match = re.search(
         r"(?:регистрационн\w*\s+номер(?:\s+выпуска)?(?:\s+биржев\w*\s+облигац\w*)?|registration\s+number)(?:\s*[:№]\s*|\s+)([0-9][A-Z0-9-]{7,39})",
         text, re.I,
     )
-    return match.group(1).upper() if match else "Not disclosed"
+    if match:
+        values.append(match.group(1))
+    unique: dict[str, str] = {}
+    for value in values:
+        display = re.sub(r"(?<=\d)P(?=-\d)", "Р", value.upper())
+        unique.setdefault(_canonical_dcm_identifier(display), display)
+    return sorted(unique.values(), key=_canonical_dcm_identifier)
+
+
+def _canonical_dcm_identifier(value: str) -> str:
+    return re.sub(r"(?<=\d)Р(?=-\d)", "P", str(value).upper())
 
 
 def _isin(text: str) -> str:

@@ -1,15 +1,15 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-05T05:27+03:00",
+  "generated_at": "2026-07-05T06:43+03:00",
   "health": {
-    "last_success_at": "2026-07-05T05:27+03:00",
-    "build_id": "f92e83d7a516",
-    "dataset_sha256": "f92e83d7a516b477d3acacb7933f00dec16a1b3c4aeeff7d869f5e2ace3d639e",
-    "record_count": 87,
+    "last_success_at": "2026-07-05T06:43+03:00",
+    "build_id": "e9e6aa8bf405",
+    "dataset_sha256": "e9e6aa8bf405a3937c09f10a9163c0f1c28cb7506145d0509cef84c4570995c3",
+    "record_count": 85,
     "key_deal_count": 4,
     "approved_count": 18,
-    "review_count": 47,
-    "rejected_count": 22,
+    "review_count": 46,
+    "rejected_count": 21,
     "source_count": 150,
     "direct_source_count": 106,
     "aggregator_source_count": 44,
@@ -23,7 +23,7 @@
         "required": true,
         "checked_at": "2026-07-05T05:26:32+03:00",
         "error": "",
-        "age_minutes": 0.8
+        "age_minutes": 77.3
       },
       {
         "name": "gdelt",
@@ -32,7 +32,7 @@
         "required": false,
         "checked_at": "2026-07-05T05:26:56+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 76.9
       },
       {
         "name": "moex_disclosures",
@@ -41,7 +41,7 @@
         "required": true,
         "checked_at": "2026-07-05T05:26:56+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 76.9
       },
       {
         "name": "configured_rss",
@@ -50,7 +50,7 @@
         "required": true,
         "checked_at": "2026-07-05T05:27:12+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 76.6
       },
       {
         "name": "deal_news",
@@ -59,7 +59,7 @@
         "required": true,
         "checked_at": "2026-07-05T05:27:13+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 76.6
       },
       {
         "name": "company_news",
@@ -68,7 +68,7 @@
         "required": true,
         "checked_at": "2026-07-05T05:27:13+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 76.6
       },
       {
         "name": "deal_archive",
@@ -77,7 +77,7 @@
         "required": false,
         "checked_at": "2026-07-05T05:27:14+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 76.6
       },
       {
         "name": "sec_filings",
@@ -86,7 +86,7 @@
         "required": false,
         "checked_at": "2026-07-05T05:27:16+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 76.6
       },
       {
         "name": "moex_quotes",
@@ -101,7 +101,7 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.8,
+    "source_age_minutes": 77.3,
     "source_checked_at": "2026-07-05T05:26+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
@@ -111,7 +111,7 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-05T02:27:21+00:00"
+    "xlsx_generated_at": "2026-07-05T06:43:49+03:00"
   },
   "mode": "live",
   "market": [

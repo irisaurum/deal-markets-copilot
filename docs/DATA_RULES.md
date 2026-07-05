@@ -52,6 +52,9 @@ Quality status and deal status answer different questions: evidence quality vers
 - `Priced != Issued`; `Issued != Closed`; DCM never uses `Closed`.
 - Keep volume/currency, instrument, security code, ISIN, coupon, yield, maturity, tenor and issue price separate.
 - Distinct security identifiers or bond series must not be collapsed merely because the issuer is the same.
+- One coordinated placement may contain several distinct issue identities while remaining one deal-level lifecycle; preserve the complete issue set on the canonical deal.
+- Shared strong identifiers or exact stored source lineage can connect preliminary and final DCM stages despite material changes in date, amount or headline. Issuer, date, amount and title similarity alone cannot establish that continuity.
+- DCM lifecycle consolidation is monotonic: a preliminary source cannot downgrade `Issued`, replace the final amount or displace stronger official evidence.
 - Registration, trading codes, REPO, coupon payment, redemption and technical buyback notices may be stored as technical records but do not create banker tasks.
 
 ## ECM rules
