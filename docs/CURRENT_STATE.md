@@ -1,19 +1,18 @@
 # Current state
 
-Last verified: **2026-07-04 08:16 MSK (Europe/Moscow)**.
+Last verified: **2026-07-05 05:28 MSK (Europe/Moscow)**.
 
 | Field | Verified value |
 |---|---|
 | Branch | `main` |
-| Repository HEAD | `0da24558e432c4c2199251e752df67a4f0ed63ea` |
-| `origin/main` | `0da24558e432c4c2199251e752df67a4f0ed63ea` |
-| Last production code commit | `c21c00c79d70c2ba2943bd919f6c77261f26a138` (`fix: harden production deal pipeline`) |
-| Last bot/data commit | `0da24558e432c4c2199251e752df67a4f0ed63ea` (`chore: refresh deal desk`) |
-| Build ID | `94a6f42ca0da` |
-| Dataset SHA-256 | `94a6f42ca0dab968a12167b151b362a4f8b5567c12312e48726c51e32f02505e` |
+| Last verified production release commit | `a95d86614879ea423a7f0e8c2e62a61c80c81e46` (`chore: refresh deal desk`) |
+| Last production workflow commit | `5fab3ad0374422e7dae787f092df2453205e6929` (`ci: skip production refresh for docs-only pushes`) |
+| Last bot/data commit | `a95d86614879ea423a7f0e8c2e62a61c80c81e46` (`chore: refresh deal desk`) |
+| Last verified production Build ID | `f92e83d7a516` |
+| Dataset SHA-256 | `f92e83d7a516b477d3acacb7933f00dec16a1b3c4aeeff7d869f5e2ace3d639e` |
 | Records | 87 |
-| Last verified test count | 58 tests passed in the production-hardening verification cycle; not rerun during the documentation-only review |
-| Public deployment | Actions run `#41` and Pages deployment succeeded; public manifest matches repository manifest |
+| Last verified test count | 73 tests passed in the AUD-02 verification cycle |
+| Public deployment | Actions run `#45` succeeded; Pages deployment succeeded; public manifest matches the production release manifest |
 | Source health | `ok`; all required source runs returned usable records |
 | Discovery | `ok` |
 | Freshness | `ok` |
@@ -22,21 +21,13 @@ Last verified: **2026-07-04 08:16 MSK (Europe/Moscow)**.
 
 Current quality distribution: 18 `approved`, 47 `review`, 22 `rejected`. Current dataset contains 27 M&A, 8 ECM and 52 DCM records. These are build facts, not coverage targets.
 
-## Last completed milestone
+## Recent completed milestones
 
-Production-hardening audit completed and published. It added or strengthened:
+- **AUD-01 closed:** unavailable MOEX quotes render honestly and market-data health is reported separately from the core deal pipeline.
+- **AUD-03 closed:** strict XLSX verification enforces sheet-specific dataset contracts instead of relying on a global workbook text search.
+- **AUD-02 implementation complete:** documentation-only pushes are excluded from the production refresh, automated path-policy checks pass, and the workflow-changing commit completed its production-trigger proof. This documentation-only commit performs the final end-to-end trigger proof required to close AUD-02.
 
-- explicit failure state for an empty required source;
-- deeper XLSX synchronization verification;
-- separation of distinct DCM issues during deduplication;
-- DCM-specific `Priced` / `Issued` semantics;
-- suppression of technical and non-transaction analyst tasks;
-- byte-stable replay behavior;
-- `N/M` for public medians with fewer than three observations;
-- consistent direct-URL normalization across source fields;
-- ISIN validation;
-- Moscow-time recent cutoff;
-- one current-deal selection rule for dashboard and Excel.
+The production-hardening protections remain in force, including required-source health, synchronized artifacts, replay immutability, deal-type-specific statuses, technical-noise suppression, complete Build ID hashing and shared current-deal selection.
 
 ## Current open questions
 
