@@ -78,6 +78,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_key_deals_never_mix_historical_curated_precedents_into_live_flow`, strict verifier; visual QA. No single parity unit test identified.
 - **Files:** `deals.py`, both workbook builders.
 
+### REG-24 — Global XLSX text search hiding sheet-specific omissions
+
+- **Failure mode:** a deal ID removed from `Deals` still passed strict verification when the same ID remained in `Sources & QA`; `Summary` could also contain the wrong current transaction set.
+- **Why it mattered:** a logically incomplete workbook could be published as synchronized even though its package still contained every ID somewhere.
+- **Root mechanism:** the verifier searched all XLSX XML as one text blob instead of validating each sheet against its own dataset contract.
+- **Current protection:** `Deals` requires the exact canonical ID set with no missing, phantom or duplicate rows; `Summary` maps its visible transaction fields back to unique dataset IDs and requires exact parity with `select_key_deals()`; `Financials`, eligible `Multiples`, and `Sources & QA` use their own production semantics.
+- **Tests/checks:** `test_strict_verifier_rejects_missing_deals_row_when_id_exists_on_other_sheet`, `test_strict_verifier_rejects_duplicate_deals_id`, `test_strict_verifier_rejects_extra_phantom_deals_id`, `test_strict_verifier_rejects_wrong_summary_current_deal_set`, `test_strict_verifier_rejects_technical_filing_in_summary`, `test_strict_verifier_rejects_missing_financials_row`, `test_strict_verifier_rejects_missing_eligible_multiples_row`, `test_strict_verifier_rejects_missing_source_register_row`; strict verifier is exercised against both workbook builders.
+- **Files:** `scripts/verify_public_artifacts.py`, `tests/test_xlsx_verifier.py`.
+
 ## Classification, streams and workflow
 
 ### REG-08 — DCM using M&A status `Closed`
