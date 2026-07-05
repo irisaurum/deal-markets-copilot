@@ -227,7 +227,17 @@ def _build_health(
     dataset_sha256 = hashlib.sha256(dataset_bytes).hexdigest()
     build_id = dataset_sha256[:12]
     sources = [source for row in rows for source in row.get("sources", []) if isinstance(source, dict)]
-    direct_sources = [source for source in sources if source.get("url") and "news.google.com" not in str(source.get("url"))]
+    source_representations = [
+        representation
+        for source in sources
+        for representation in (
+            source.get("representations")
+            if isinstance(source.get("representations"), list) and source.get("representations")
+            else [source]
+        )
+        if isinstance(representation, dict) and representation.get("url")
+    ]
+    direct_sources = [source for source in source_representations if "news.google.com" not in str(source.get("url"))]
     critical = 0
     for row in rows:
         if row.get("quality_status") == "approved" and row.get("record_kind") != "deal":
@@ -296,8 +306,9 @@ def _build_health(
         "review_count": sum(row.get("quality_status") == "review" for row in rows),
         "rejected_count": sum(row.get("quality_status") == "rejected" for row in rows),
         "source_count": len(sources),
+        "source_representation_count": len(source_representations),
         "direct_source_count": len(direct_sources),
-        "aggregator_source_count": len(sources) - len(direct_sources),
+        "aggregator_source_count": len(source_representations) - len(direct_sources),
         "critical_qa_issues": critical,
         "source_group_count": len(source_groups),
         "source_runs": runs,

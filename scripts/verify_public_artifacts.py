@@ -226,6 +226,28 @@ def verify_workbook(path: Path, rows: list[dict], expected_build_id: str) -> Non
         source_records = table_records(parsed["Sources & QA"], 6)
         actual_sources = Counter(record.get("Deal ID", "") for record in source_records if record.get("Deal ID"))
         assert actual_sources == expected_sources, "Sources & QA deal/source multiplicity differs from the dataset"
+        expected_source_rows = Counter()
+        for row in rows:
+            for source in row.get("sources", []):
+                if not isinstance(source, dict):
+                    continue
+                representations = source.get("representations") if isinstance(source.get("representations"), list) and source.get("representations") else [source]
+                expected_source_rows[(
+                    str(row.get("deal_id") or ""),
+                    str(source.get("url") or ""),
+                    str(len(representations)),
+                    "\n".join(str(item.get("url") or "") for item in representations),
+                )] += 1
+        actual_source_rows = Counter(
+            (
+                str(record.get("Deal ID") or ""),
+                str(record.get("Canonical URL") or ""),
+                normalized_count(record.get("Representation Count")),
+                str(record.get("Representation URLs") or ""),
+            )
+            for record in source_records if record.get("Deal ID")
+        )
+        assert actual_source_rows == expected_source_rows, "Sources & QA publication/representation semantics differ from the dataset"
 
         cells = workbook_text(workbook)
         assert not re.search(r"#(?:REF!|DIV/0!|VALUE!|NAME\?|N/A)", cells), "Workbook contains a formula error"
@@ -259,8 +281,15 @@ def main() -> None:
             (str(source.get("url") or ""), "" if source.get("url") else str(source.get("name") or "").lower())
             for source in sources
         }
-        assert row.get("source_count") == len(unique_sources), f"Source count mismatch: {deal_id}"
+        assert len(unique_sources) == len(sources), f"Duplicate canonical publication source: {deal_id}"
+        assert row.get("source_count") == len(sources), f"Source count mismatch: {deal_id}"
         assert all(str(source.get("url") or "").startswith(("http://", "https://")) for source in sources), f"Unsafe or empty evidence URL: {deal_id}"
+        for source in sources:
+            representations = source.get("representations") if isinstance(source.get("representations"), list) and source.get("representations") else [source]
+            representation_urls = [str(item.get("url") or "") for item in representations if isinstance(item, dict)]
+            assert source.get("url") in representation_urls, f"Canonical source missing from representations: {deal_id}"
+            assert len(representation_urls) == len(set(representation_urls)), f"Duplicate raw source representation: {deal_id}"
+            assert all(url.startswith(("http://", "https://")) for url in representation_urls), f"Unsafe raw source representation: {deal_id}"
         assert row.get("currency") in {"Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF"}, f"Invalid currency: {deal_id}"
         for field in ("stake_percent", "discount_percent", "free_float_percent"):
             value = row.get(field)

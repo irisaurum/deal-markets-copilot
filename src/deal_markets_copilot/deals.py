@@ -7,7 +7,7 @@ from datetime import date, timedelta
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse, urlsplit, urlunsplit
 
 from .models import ClassifiedEvent, DealRecord
 
@@ -70,13 +70,26 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
     if status == "Denied":
         value, currency = None, ""
         enterprise_value, ev_currency = None, ""
+    resolved_discovery = bool(event.discovery_url and event.discovery_url != event.url)
     source = {
         "name": event.source.strip() or "Unknown source",
         "url": _safe_public_url(event.url),
         "evidence_label": item.evidence_label,
-        "source_type": event.source_type,
+        "source_type": "public_web" if resolved_discovery else event.source_type,
         "published_at": event.published_at,
+        "title": event.title,
     }
+    if resolved_discovery:
+        source["representations"] = [
+            {
+                "name": source["name"], "url": source["url"],
+                "source_type": source["source_type"], "published_at": source["published_at"],
+            },
+            {
+                "name": source["name"], "url": _safe_public_url(event.discovery_url),
+                "source_type": event.source_type, "published_at": source["published_at"],
+            },
+        ]
     quality_score, quality_status, quality_flags = _quality_gate({
         "deal_type": item.category,
         "record_kind": record_kind,
@@ -780,22 +793,141 @@ def _merge_sources(*source_groups: list[dict]) -> list[dict]:
     for source in (item for group in source_groups for item in (group or [])):
         if not isinstance(source, dict):
             continue
-        url = _safe_public_url(source.get("url", ""))
-        name = str(source.get("name") or "Unknown source").strip()
-        # The same article may arrive through an aggregator and a publisher label.
-        # A URL is one piece of evidence regardless of how many names it carries.
-        key = (url, "") if url else ("", name.lower())
-        candidate = {
-            "name": name,
-            "url": url,
-            "evidence_label": source.get("evidence_label", "unverified"),
-            "source_type": source.get("source_type", "public_web"),
-            "published_at": source.get("published_at", ""),
-        }
+        candidate = _canonical_source(source)
+        url = candidate["url"]
+        name = candidate["name"]
+        # Exact canonical URL identity is strong publication evidence. Labels only
+        # rank metadata and never create an additional evidence unit.
+        key = (_canonical_publication_url(url), "") if url else ("", _normalize_publisher(name))
         current = merged.get(key)
-        if current is None or _source_quality(candidate) > _source_quality(current):
-            merged[key] = candidate
-    return sorted(merged.values(), key=_source_quality, reverse=True)
+        merged[key] = candidate if current is None else _merge_source_objects(current, candidate)
+
+    publications = list(merged.values())
+    by_publisher_date: dict[tuple[str, str], list[dict]] = {}
+    for source in publications:
+        key = (_normalize_publisher(source.get("name")), _iso_date(source.get("published_at")))
+        if all(key):
+            by_publisher_date.setdefault(key, []).append(source)
+
+    consumed: set[int] = set()
+    canonical: list[dict] = []
+    for source in publications:
+        if id(source) in consumed:
+            continue
+        key = (_normalize_publisher(source.get("name")), _iso_date(source.get("published_at")))
+        peers = by_publisher_date.get(key, [])
+        direct = [peer for peer in peers if _has_direct_representation(peer)]
+        discovery_only = [peer for peer in peers if _is_google_only_source(peer)]
+        # Legacy rows do not retain per-source titles. A one-to-one publisher/date
+        # pair is the narrow safe fallback; ambiguous one-to-many groups stay apart.
+        if len(direct) == 1 and len(discovery_only) == 1 and (source is direct[0] or source is discovery_only[0]):
+            combined = _merge_source_objects(direct[0], discovery_only[0])
+            consumed.update((id(direct[0]), id(discovery_only[0])))
+            canonical.append(combined)
+        else:
+            consumed.add(id(source))
+            canonical.append(source)
+    return sorted(canonical, key=_source_quality, reverse=True)
+
+
+def _canonical_source(source: dict) -> dict:
+    candidate = {
+        "name": str(source.get("name") or "Unknown source").strip(),
+        "url": _safe_public_url(source.get("url", "")),
+        "evidence_label": source.get("evidence_label", "unverified"),
+        "source_type": source.get("source_type", "public_web"),
+        "published_at": source.get("published_at", ""),
+    }
+    if source.get("title"):
+        candidate["title"] = str(source["title"]).strip()
+    representations = _source_representations(source)
+    if len(representations) > 1:
+        candidate["representations"] = representations
+    return candidate
+
+
+def _source_representations(source: dict) -> list[dict]:
+    raw = list(source.get("representations", [])) if isinstance(source.get("representations"), list) else []
+    raw.append({
+        "name": source.get("name", "Unknown source"),
+        "url": source.get("url", ""),
+        "source_type": source.get("source_type", "public_web"),
+        "published_at": source.get("published_at", ""),
+    })
+    representations: dict[str, dict] = {}
+    for item in raw:
+        if not isinstance(item, dict):
+            continue
+        url = _safe_public_url(item.get("url", ""))
+        if not url:
+            continue
+        representations[url] = {
+            "name": str(item.get("name") or source.get("name") or "Unknown source").strip(),
+            "url": url,
+            "source_type": item.get("source_type", source.get("source_type", "public_web")),
+            "published_at": item.get("published_at", source.get("published_at", "")),
+        }
+    return sorted(representations.values(), key=lambda item: ("news.google.com" in item["url"], item["url"]))
+
+
+def _merge_source_objects(left: dict, right: dict) -> dict:
+    winner, other = (left, right) if _source_quality(left) >= _source_quality(right) else (right, left)
+    merged = dict(winner)
+    representations: dict[str, dict] = {}
+    for source in (left, right):
+        for item in _source_representations(source):
+            representations[item["url"]] = item
+    if len(representations) > 1:
+        merged["representations"] = sorted(
+            representations.values(), key=lambda item: ("news.google.com" in item["url"], item["url"])
+        )
+    else:
+        merged.pop("representations", None)
+    if other.get("evidence_label") == "confirmed":
+        merged["evidence_label"] = "confirmed"
+    if not merged.get("title") and other.get("title"):
+        merged["title"] = other["title"]
+    return merged
+
+
+def _normalize_publisher(value) -> str:
+    text = re.sub(r"^https?://", "", str(value or "").strip().lower())
+    return re.sub(r"[^a-zа-яё0-9]+", "", text)
+
+
+def _canonical_publication_url(value) -> str:
+    url = _safe_public_url(value)
+    if not url:
+        return ""
+    parsed = urlsplit(url)
+    host = (parsed.hostname or "").lower()
+    try:
+        port = parsed.port
+    except ValueError:
+        return ""
+    if port and not ((parsed.scheme == "http" and port == 80) or (parsed.scheme == "https" and port == 443)):
+        host = f"{host}:{port}"
+    path = re.sub(r"/{2,}", "/", parsed.path or "/")
+    if path != "/":
+        path = path.rstrip("/")
+    tracking_parameters = {
+        "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "utm_id",
+        "gclid", "fbclid", "yclid", "mc_cid", "mc_eid", "oc",
+    }
+    query = urlencode(sorted(
+        (key, item) for key, item in parse_qsl(parsed.query, keep_blank_values=True)
+        if not key.lower().startswith("utm_") and key.lower() not in tracking_parameters
+    ))
+    return urlunsplit((parsed.scheme.lower(), host, path, query, ""))
+
+
+def _has_direct_representation(source: dict) -> bool:
+    return any("news.google.com" not in item["url"] for item in _source_representations(source))
+
+
+def _is_google_only_source(source: dict) -> bool:
+    representations = _source_representations(source)
+    return bool(representations) and all("news.google.com" in item["url"] for item in representations)
 
 
 def _source_quality(source: dict) -> tuple[int, int, int]:
