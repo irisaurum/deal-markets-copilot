@@ -160,6 +160,9 @@ def update_precedent_database(records: list[DealRecord], path: str | Path) -> li
         old = by_id.get(record.deal_id)
         if old:
             row["first_seen_at"] = old.get("first_seen_at", row["first_seen_at"])
+            if old.get("deal_type") == row.get("deal_type") == "DCM":
+                row["security_code"] = _merge_dcm_security_codes(old.get("security_code"), row.get("security_code"))
+                row["isin"] = _merge_dcm_scalar_identity(old.get("isin"), row.get("isin"))
             if "news.google.com/rss/articles/" in str(row.get("source_url") or "") and "news.google.com" not in str(old.get("source_url") or ""):
                 row["source_url"] = old["source_url"]
             for field in (
@@ -838,8 +841,8 @@ def _merge_transaction_rows(left: dict, right: dict) -> dict:
             if not _is_blank(other.get(field)):
                 merged[field] = other[field]
     if merged.get("deal_type") == "DCM":
-        issue_codes = _issue_codes("; ".join(str(row.get("security_code") or "") for row in (left, right)))
-        merged["security_code"] = "; ".join(issue_codes) if issue_codes else "Not disclosed"
+        merged["security_code"] = _merge_dcm_security_codes(left.get("security_code"), right.get("security_code"))
+        merged["isin"] = _merge_dcm_scalar_identity(left.get("isin"), right.get("isin"))
         terms_row = max(
             (left, right),
             key=lambda row: (_lifecycle_status_rank(row.get("status")), _dcm_canonical_rank(row)),
@@ -1135,6 +1138,28 @@ def _issue_codes(text: str) -> list[str]:
 
 def _canonical_dcm_identifier(value: str) -> str:
     return re.sub(r"(?<=\d)Р(?=-\d)", "P", str(value).upper())
+
+
+def _missing_dcm_identity(value) -> bool:
+    return _is_blank(value) or value == "Not applicable"
+
+
+def _merge_dcm_security_codes(existing, incoming) -> str:
+    values: dict[str, str] = {}
+    for source in (existing, incoming):
+        if _missing_dcm_identity(source):
+            continue
+        for value in re.split(r"\s*;\s*", str(source)):
+            display = value.strip()
+            if display:
+                values.setdefault(_canonical_dcm_identifier(display), display)
+    return "; ".join(values.values()) if values else "Not disclosed"
+
+
+def _merge_dcm_scalar_identity(existing, incoming) -> str:
+    if not _missing_dcm_identity(existing):
+        return str(existing)
+    return "Not disclosed" if _missing_dcm_identity(incoming) else str(incoming)
 
 
 def _isin(text: str) -> str:

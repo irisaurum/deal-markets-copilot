@@ -591,6 +591,79 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
         self.assertEqual(rows[0]["source_count"], 2)
 
+    def test_dcm_refresh_preserves_populated_strong_identity_when_incoming_missing(self) -> None:
+        canonical = {
+            "deal_id": "DL-final", "announced_date": "2026-06-19", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Альфа",
+            "acquirer_or_investor": "Not applicable", "headline": "Альфа разместила облигации на 60 млрд рублей",
+            "transaction_value": 60_000_000_000, "currency": "RUB", "security_code": "001Р-04; 001Р-05",
+            "isin": "RU000A123456", "evidence_label": "confirmed", "source_name": "Issuer IR",
+            "source_url": "https://example.com/final",
+        }
+        refresh = Event(
+            "final", "2026-06-19", "Альфа разместила облигации на 60 млрд рублей", "",
+            "Issuer IR", "https://example.com/final", source_type="issuer_ir", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(refresh, []), [])
+        self.assertEqual(record.security_code, "Not disclosed")
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([canonical]), encoding="utf-8")
+            rows = update_precedent_database([record], database)
+        self.assertEqual(rows[0]["security_code"], "001Р-04; 001Р-05")
+        self.assertEqual(rows[0]["isin"], "RU000A123456")
+
+    def test_dcm_refresh_adds_strong_identity_when_existing_missing(self) -> None:
+        existing = {
+            "deal_id": "DL-final", "announced_date": "2026-06-19", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Альфа",
+            "acquirer_or_investor": "Not applicable", "headline": "Альфа разместила облигации",
+            "security_code": "Not disclosed", "isin": "Not disclosed",
+        }
+        incoming = Event("final", "2026-06-19", "Альфа разместила облигации 001Р-04 и 001Р-05", "", "IR", "https://example.com/final")
+        record = extract_deal_record(classify_event(incoming, []), [])
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([existing]), encoding="utf-8")
+            rows = update_precedent_database([record], database)
+        self.assertEqual(rows[0]["security_code"], "001Р-04; 001Р-05")
+
+    def test_dcm_refresh_unions_partial_and_expanded_issue_identity(self) -> None:
+        existing = {
+            "deal_id": "DL-final", "announced_date": "2026-06-19", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Альфа",
+            "acquirer_or_investor": "Not applicable", "headline": "Альфа разместила облигации",
+            "security_code": "001Р-04",
+        }
+        incoming = Event("final", "2026-06-19", "Альфа разместила облигации 001Р-04 и 001Р-05", "", "IR", "https://example.com/final")
+        record = extract_deal_record(classify_event(incoming, []), [])
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([existing]), encoding="utf-8")
+            rows = update_precedent_database([record], database)
+        self.assertEqual(rows[0]["security_code"], "001Р-04; 001Р-05")
+
+    def test_dcm_refresh_repeat_is_identity_idempotent(self) -> None:
+        canonical = {
+            "deal_id": "DL-final", "announced_date": "2026-06-19", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Альфа",
+            "acquirer_or_investor": "Not applicable", "headline": "Альфа разместила облигации на 60 млрд рублей",
+            "transaction_value": 60_000_000_000, "currency": "RUB", "security_code": "001Р-04; 001Р-05",
+            "source_url": "https://example.com/final", "source_name": "Issuer IR",
+        }
+        refresh = Event("final", "2026-06-19", "Альфа разместила облигации на 60 млрд рублей", "", "Issuer IR", "https://example.com/final")
+        record = extract_deal_record(classify_event(refresh, []), [])
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([canonical]), encoding="utf-8")
+            update_precedent_database([record], database)
+            rows = update_precedent_database([record], database)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["security_code"], "001Р-04; 001Р-05")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+        self.assertEqual(rows[0]["status"], "Issued")
+        self.assertEqual(rows[0]["source_count"], 1)
+
     def test_dcm_lifecycle_archive_signal_cannot_recreate_final_transaction(self) -> None:
         final = Event("final", "2026-06-19", "Альфа разместила облигации 001Р-04 и 001Р-05 на 60 млрд рублей", "", "Issuer IR", "https://example.com/final", source_type="issuer_ir", confidence="confirmed")
         archive = Event("archive", "2026-06-04", "Альфа разместит облигации 001Р-04 и 001Р-05 минимум на 30 млрд рублей", "", "Archive", "https://example.com/archive")
