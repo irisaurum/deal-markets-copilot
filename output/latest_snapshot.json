@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-05T05:04+03:00",
+  "generated_at": "2026-07-05T05:27+03:00",
   "health": {
-    "last_success_at": "2026-07-05T05:04+03:00",
-    "build_id": "ffd22f0532cb",
-    "dataset_sha256": "ffd22f0532cb281f6f61ee5bb2da6a2b1e0eb0df7f7cf67a3074356e8d7721bd",
+    "last_success_at": "2026-07-05T05:27+03:00",
+    "build_id": "f92e83d7a516",
+    "dataset_sha256": "f92e83d7a516b477d3acacb7933f00dec16a1b3c4aeeff7d869f5e2ace3d639e",
     "record_count": 87,
     "key_deal_count": 4,
     "approved_count": 18,
@@ -21,16 +21,16 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-05T05:04:06+03:00",
+        "checked_at": "2026-07-05T05:26:32+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.8
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-05T05:04:23+03:00",
+        "checked_at": "2026-07-05T05:26:56+03:00",
         "error": "",
         "age_minutes": 0.4
       },
@@ -39,7 +39,7 @@
         "status": "ok",
         "records": 13,
         "required": true,
-        "checked_at": "2026-07-05T05:04:23+03:00",
+        "checked_at": "2026-07-05T05:26:56+03:00",
         "error": "",
         "age_minutes": 0.4
       },
@@ -48,7 +48,7 @@
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-05T05:04:34+03:00",
+        "checked_at": "2026-07-05T05:27:12+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -57,7 +57,7 @@
         "status": "ok",
         "records": 12,
         "required": true,
-        "checked_at": "2026-07-05T05:04:36+03:00",
+        "checked_at": "2026-07-05T05:27:13+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -66,16 +66,16 @@
         "status": "ok",
         "records": 11,
         "required": true,
-        "checked_at": "2026-07-05T05:04:37+03:00",
+        "checked_at": "2026-07-05T05:27:13+03:00",
         "error": "",
         "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 142,
+        "records": 141,
         "required": false,
-        "checked_at": "2026-07-05T05:04:37+03:00",
+        "checked_at": "2026-07-05T05:27:14+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -84,7 +84,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-05T05:04:39+03:00",
+        "checked_at": "2026-07-05T05:27:16+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -93,7 +93,7 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-05T05:04:39+03:00",
+        "checked_at": "2026-07-05T05:27:16+03:00",
         "error": ""
       }
     ],
@@ -101,8 +101,8 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-05T05:04+03:00",
+    "source_age_minutes": 0.8,
+    "source_checked_at": "2026-07-05T05:26+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -111,7 +111,7 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-05T02:04:43+00:00"
+    "xlsx_generated_at": "2026-07-05T02:27:21+00:00"
   },
   "mode": "live",
   "market": [
