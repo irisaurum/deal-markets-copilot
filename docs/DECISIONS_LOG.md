@@ -100,3 +100,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** future sessions should load only durable rules and task-relevant context.
 - **Consequences:** update `CURRENT_STATE.md` after milestones and route through `START_HERE.md`.
 - **Related:** `AGENTS.md`, all `docs/*.md` context files.
+
+## Documentation-only pushes do not refresh production
+
+- **Date:** 2026-07-05.
+- **Decision:** exclude proven documentation-only and bot-generated paths from the production push trigger; keep schedule, manual dispatch and all other tracked paths production-relevant by default.
+- **Context:** a documentation commit ran live ingestion, changed public artifacts, created a bot commit and redeployed Pages.
+- **Rationale:** a conservative ignore-list prevents non-production side effects without risking a missed refresh when a new code, config, verifier, builder, test or data path is added.
+- **Consequences:** docs-only pushes receive no production refresh; mixed docs/code pushes do; scheduled and manual autonomous refreshes are unchanged; table-driven workflow-policy tests protect the boundary and loop guard.
+- **Related:** `.github/workflows/deal-desk.yml`, `tests/test_workflow_policy.py`, `TESTING_AND_RELEASE.md`.

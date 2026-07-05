@@ -74,7 +74,14 @@ Deal Markets Copilot — open-source deal intelligence and analyst workflow syst
 - Never commit `node_modules`, QA renders or inspection sidecars.
 - Перед pull/push всегда проверяй branch, status и upstream drift.
 
-## H. Documentation routing
+## H. Evidence-first completion reports
+
+- Для code, data и workflow changes указывай точные base/final commits и основывай отчёт на фактическом Git diff.
+- Перечисляй все изменённые файлы, root cause, before/after behavior и tests/checks, разделяя выполненные и невыполненные проверки.
+- Явно сообщай об unexpected, unrelated, generated-artifact и data changes; не утверждай publication без CI и public verification.
+- Если narrative противоречит Git diff, Git diff — source of truth.
+
+## I. Documentation routing
 
 - Current snapshot: `docs/CURRENT_STATE.md`.
 - System and module boundaries: `docs/ARCHITECTURE.md`.

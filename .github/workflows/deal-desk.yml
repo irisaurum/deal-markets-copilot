@@ -4,6 +4,14 @@ on:
   push:
     branches: [main]
     paths-ignore:
+      # Documentation is not part of the runtime or Pages artifact. Keep the
+      # autonomous production pipeline for code/config/data/workflow changes.
+      - "docs/**"
+      - "AGENTS.md"
+      - "README.md"
+      - "SECURITY.md"
+      - "LICENSE"
+      # Bot-generated public artifacts must not trigger their own refresh loop.
       - "output/**"
       - "site/**"
       - "data/precedent_transactions.json"

@@ -228,6 +228,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** workflow review; the latest verified release exercised the retry path successfully. No unit test identified.
 - **Files:** `.github/workflows/deal-desk.yml`.
 
+### REG-25 — Documentation-only push triggering a production refresh
+
+- **Failure mode:** a change limited to project documentation ran live collection, rebuilt public artifacts, created a bot data commit and redeployed Pages.
+- **Why it mattered:** non-production edits mutated remote data and public state while consuming the full release pipeline.
+- **Root mechanism:** the `push` trigger ignored generated artifacts but matched every documentation path.
+- **Current protection:** `push.paths-ignore` excludes documentation-only candidates that are not runtime or Pages inputs; production code, config, builders, verifier, tests, workflows and non-generated data remain production-relevant by default. Schedule and manual dispatch remain unconditional, while generated output/archive paths remain excluded to prevent a bot loop.
+- **Tests/checks:** `test_push_path_matrix`, `test_non_push_production_triggers_are_preserved`, `test_generated_artifacts_remain_a_loop_guard`.
+- **Files:** `.github/workflows/deal-desk.yml`, `tests/test_workflow_policy.py`.
+
 ## Using this registry
 
 For a change, run the named test/checks for the affected rows first. Update this file only when a failure mode, protection or exact test changes. Do not treat a green historical verification date as proof of the current build; follow [`TESTING_AND_RELEASE.md`](TESTING_AND_RELEASE.md).

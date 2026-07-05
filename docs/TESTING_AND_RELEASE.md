@@ -117,6 +117,14 @@ The strict verifier enforces most of this contract. It does not replace visual Q
 
 ## CI order
 
+Push trigger policy:
+
+- changes limited to `docs/**`, `AGENTS.md`, `README.md`, `SECURITY.md` or `LICENSE` do not start the production workflow;
+- production code, config, source data, builders, verifier, tests, dependencies and workflow changes start it;
+- generated `output/**`, `site/**` and `data/precedent_transactions.json` remain ignored so the bot commit cannot trigger a refresh loop;
+- mixed documentation + production changes start the workflow;
+- `schedule` and `workflow_dispatch` always start the autonomous production pipeline because push path filters do not apply to them.
+
 Current `.github/workflows/deal-desk.yml` performs:
 
 ```text
