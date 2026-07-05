@@ -208,6 +208,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_same_url_counts_as_one_source_even_with_two_labels`.
 - **Files:** `deals.py`.
 
+### REG-27 — One publication counted twice through direct and discovery URLs
+
+- **Failure mode:** a direct publisher URL and a Google News representation of the same article were stored as two independent sources.
+- **Why it mattered:** `source_count` and analyst perception of corroboration were overstated even when the quality decision itself did not depend on the count.
+- **Root mechanism:** source identity used literal URL equality; discovery/access representation identity was treated as publication identity.
+- **Current protection:** canonical publication sources retain multiple raw URL `representations`; exact normalized URLs merge, and legacy direct + Google rows use only an unambiguous exact publisher/date one-to-one fallback. Tracking parameters/fragments do not create publications; missing metadata, different publishers, different dates and ambiguous groups do not merge. Source count and quality fields are recomputed on migration and merge.
+- **Tests/checks:** `test_same_publication_direct_and_google_counts_once_and_preserves_representations`, `test_tracking_query_and_fragment_variants_count_as_one_publication`, `test_same_transaction_different_publishers_remain_independent_publications`, `test_same_publisher_different_articles_remain_separate_publications`, `test_attributed_or_syndicated_articles_are_not_merged_without_strong_identity`, `test_incomplete_publication_metadata_does_not_trigger_direct_google_merge`, `test_publication_canonicalization_is_idempotent`, `test_source_count_and_quality_are_recomputed_after_publication_canonicalization`; strict verifier checks canonical source counts and XLSX representation lineage.
+- **Files:** `deals.py`, `models.py`, `sources.py`, `run.py`, both workbook builders, strict verifier, canonical dataset and dependent public artifacts.
+
 ### REG-26 — Preliminary and final DCM lifecycle split into separate transactions
 
 - **Failure mode:** a preliminary coordinated bond-placement signal and the later official result remained separate economic transactions when event IDs, dates, amounts and headlines differed.

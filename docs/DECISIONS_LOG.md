@@ -118,3 +118,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** the existing flat deal schema already supports one economic record, multiple sources and a displayable identifier field; linked event records or a new parent/child schema would add counting and downstream complexity without improving this case.
 - **Consequences:** DCM lifecycle matching relies on shared strong issue identifiers or exact stored source lineage plus issuer equality; weak signals alone do not merge. Official final evidence, lifecycle maturity and completeness determine the canonical record, and status/terms cannot regress during consolidation.
 - **Related:** `deals.py`, `DATA_RULES.md`, `REGRESSIONS.md` REG-26.
+
+## Publication identity is separate from URL representation
+
+- **Date:** 2026-07-06.
+- **Decision:** store one canonical source object per publication and retain alternate direct/discovery/tracking URLs as nested representations; count publications rather than raw URLs.
+- **Context:** the same InvestFuture and Finam articles appeared once through publisher URLs and once through Google News, inflating source counts without adding independent corroboration.
+- **Rationale:** a flat raw-representation count overstates evidence, while deleting discovery URLs destroys useful lineage. The existing source object can carry alternate representations without introducing a separate provenance subsystem.
+- **Consequences:** canonical URL normalization is conservative; ambiguous or incomplete metadata does not trigger merging; same-publisher and syndicated articles remain separate unless publication identity is established. CSV serializes the nested lineage and XLSX `Sources & QA` shows canonical publication rows plus representation counts/URLs.
+- **Related:** `deals.py`, `sources.py`, `DATA_RULES.md`, `REGRESSIONS.md` REG-27, workbook builders and strict verifier.

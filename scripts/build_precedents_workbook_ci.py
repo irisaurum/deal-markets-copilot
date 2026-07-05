@@ -163,25 +163,27 @@ def main() -> None:
         mult.set_column(col, col, width)
 
     qa = workbook.add_worksheet("Sources & QA")
-    qa_headers = ["Deal ID", "Date", "Target / Issuer", "Source", "Type", "Evidence", "URL", "Published", "Headline"]
-    setup(qa, 15, "SOURCES & QA", "One row per source plus automated workbook checks")
+    qa_headers = ["Deal ID", "Date", "Target / Issuer", "Publication / Publisher", "Canonical Type", "Evidence", "Canonical URL", "Published", "Representation Count", "Representation URLs", "Headline"]
+    setup(qa, 17, "SOURCES & QA", "One row per canonical publication; raw URL representations preserve discovery lineage")
     qa.write_row(5, 0, qa_headers, header)
     qa.set_row(5, 34)
     source_rows = [(r, s) for r in ROWS for s in r.get("sources", [])]
     for idx, (row, source) in enumerate(source_rows, 6):
-        qa.write_row(idx, 0, [row.get("deal_id"), None, row.get("target_or_issuer"), source.get("name"), source.get("source_type"), source.get("evidence_label"), source.get("url"), None, row.get("headline")], sourced)
+        representations = source.get("representations") if isinstance(source.get("representations"), list) and source.get("representations") else [source]
+        qa.write_row(idx, 0, [row.get("deal_id"), None, row.get("target_or_issuer"), source.get("name"), source.get("source_type"), source.get("evidence_label"), source.get("url"), None, len(representations), "\n".join(str(item.get("url") or "") for item in representations), row.get("headline")], sourced)
         qa.write_datetime(idx, 1, date(row.get("announced_date")), day) if date(row.get("announced_date")) else None
         published_date = date(str(source.get("published_at", ""))[:10])
         qa.write_datetime(idx, 7, published_date, day) if published_date else None
-        qa.write(idx, 8, row.get("headline"), sourced_wrap)
+        qa.write(idx, 9, "\n".join(str(item.get("url") or "") for item in representations), sourced_wrap)
+        qa.write(idx, 10, row.get("headline"), sourced_wrap)
         qa.set_row(idx, 28)
     qa.add_table(5, 0, 5 + max(len(source_rows), 1), len(qa_headers)-1, {"name": "SourcesTable", "columns": [{"header": h} for h in qa_headers], "style": "Table Style Medium 2"})
     qa.freeze_panes(6, 0)
-    for col, width in enumerate([28,14,24,28,18,13,54,14,58]):
+    for col, width in enumerate([28,14,24,28,18,13,54,14,16,58,58]):
         qa.set_column(col, col, width)
-    qa.merge_range("K4:P4", "MODEL CHECKS", section)
-    qa.write_row("K6", ["Check", "Actual", "Expected", "Difference", "Tolerance", "Status"], header)
-    qa.set_column("K:K", 34); qa.set_column("L:P", 12)
+    qa.merge_range("M4:R4", "MODEL CHECKS", section)
+    qa.write_row("M6", ["Check", "Actual", "Expected", "Difference", "Tolerance", "Status"], header)
+    qa.set_column("M:M", 34); qa.set_column("N:R", 12)
     checks = [
         ("Duplicate deal IDs", len(ROWS) - len({r.get("deal_id") for r in ROWS}), 0),
         ("Missing primary URLs", sum(not r.get("source_url") for r in ROWS), 0),
@@ -194,9 +196,9 @@ def main() -> None:
     ]
     for idx, (name, actual, expected) in enumerate(checks, 6):
         status = "OK" if (actual >= expected if name.startswith("Eligible") else actual == expected) else "REVIEW"
-        qa.write_row(idx, 10, [name, actual, expected, actual - expected, 0, status])
-    qa.merge_range("K16:O16", "Overall model status", section)
-    qa.write("P16", "OK" if all((actual >= expected if name.startswith("Eligible") else actual == expected) for name, actual, expected in checks) else "REVIEW")
+        qa.write_row(idx, 12, [name, actual, expected, actual - expected, 0, status])
+    qa.merge_range("M16:Q16", "Overall model status", section)
+    qa.write("R16", "OK" if all((actual >= expected if name.startswith("Eligible") else actual == expected) for name, actual, expected in checks) else "REVIEW")
     workbook.close()
     MANIFEST.write_text(json.dumps({"build_id": current_build_id, "dataset_sha256": digest, "record_count": len(ROWS), "generated_at": datetime.now().astimezone().isoformat(timespec="seconds")}, indent=2) + "\n", encoding="utf-8")
     print(f"Workbook created: {OUTPUT}")
