@@ -468,13 +468,13 @@ def _same_transaction(left: dict, right: dict) -> bool:
     if left.get("deal_type") != right.get("deal_type"):
         return False
     if left.get("deal_type") == "DCM":
-        if _source_lineage(left) & _source_lineage(right):
-            return _same_issuer(left, right)
         left_identifiers = _dcm_identifiers(left)
         right_identifiers = _dcm_identifiers(right)
-        if not left_identifiers or not right_identifiers:
+        if left_identifiers and right_identifiers and left_identifiers.isdisjoint(right_identifiers):
             return False
-        if left_identifiers.isdisjoint(right_identifiers):
+        if _source_lineage(left) & _source_lineage(right):
+            return _same_issuer(left, right)
+        if not left_identifiers or not right_identifiers:
             return False
         return _same_issuer(left, right)
     try:
@@ -521,13 +521,32 @@ def _dcm_identifiers(row: dict) -> set[str]:
 
 
 def _source_lineage(row: dict) -> set[str]:
-    urls = {_safe_public_url(row.get("source_url", ""))}
-    urls.update(
-        _safe_public_url(source.get("url", ""))
-        for source in row.get("sources", [])
-        if isinstance(source, dict)
-    )
-    return {url for url in urls if url}
+    urls: set[str] = set()
+
+    def add_url(value) -> None:
+        url = _canonical_publication_url(value)
+        if url:
+            urls.add(url)
+
+    for field in ("source_url", "url", "canonical_url"):
+        add_url(row.get(field))
+    sources = row.get("sources", [])
+    if not isinstance(sources, list):
+        return urls
+    for source in sources:
+        if not isinstance(source, dict):
+            continue
+        for field in ("url", "source_url", "canonical_url"):
+            add_url(source.get(field))
+        representations = source.get("representations", [])
+        if not isinstance(representations, list):
+            continue
+        for representation in representations:
+            if not isinstance(representation, dict):
+                continue
+            for field in ("url", "source_url", "canonical_url"):
+                add_url(representation.get(field))
+    return urls
 
 
 def _deal_entities(value: str) -> set[str]:
