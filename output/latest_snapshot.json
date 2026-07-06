@@ -1,17 +1,17 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-06T12:36+03:00",
+  "generated_at": "2026-07-06T13:26+03:00",
   "health": {
-    "last_success_at": "2026-07-06T12:36+03:00",
-    "build_id": "0cfcd7590d68",
-    "dataset_sha256": "0cfcd7590d68dc0c3039cac7ad8353ee9f9a7b02ab452fa9cea8437b2d9d56c8",
-    "record_count": 85,
+    "last_success_at": "2026-07-06T13:26+03:00",
+    "build_id": "15ca65b00b3d",
+    "dataset_sha256": "15ca65b00b3dfa2150995e68e9d7b45746d5afb4c21d599d6b413365b3bf6db5",
+    "record_count": 86,
     "key_deal_count": 4,
     "approved_count": 18,
     "review_count": 46,
-    "rejected_count": 21,
-    "source_count": 151,
-    "direct_source_count": 106,
+    "rejected_count": 22,
+    "source_count": 152,
+    "direct_source_count": 107,
     "aggregator_source_count": 45,
     "critical_qa_issues": 0,
     "source_group_count": 8,
@@ -21,61 +21,61 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-06T12:35:37+03:00",
+        "checked_at": "2026-07-06T13:25:37+03:00",
         "error": "",
-        "age_minutes": 0.7
+        "age_minutes": 0.9
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-06T12:35:53+03:00",
+        "checked_at": "2026-07-06T13:26:02+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 0.5
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
         "records": 13,
         "required": true,
-        "checked_at": "2026-07-06T12:35:53+03:00",
+        "checked_at": "2026-07-06T13:26:02+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 0.5
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-06T12:36:07+03:00",
+        "checked_at": "2026-07-06T13:26:18+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 9,
+        "records": 7,
         "required": true,
-        "checked_at": "2026-07-06T12:36:08+03:00",
+        "checked_at": "2026-07-06T13:26:20+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 12,
+        "records": 13,
         "required": true,
-        "checked_at": "2026-07-06T12:36:09+03:00",
+        "checked_at": "2026-07-06T13:26:21+03:00",
         "error": "",
         "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 139,
+        "records": 141,
         "required": false,
-        "checked_at": "2026-07-06T12:36:09+03:00",
+        "checked_at": "2026-07-06T13:26:21+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -84,7 +84,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-06T12:36:11+03:00",
+        "checked_at": "2026-07-06T13:26:23+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -93,16 +93,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-06T12:36:11+03:00",
+        "checked_at": "2026-07-06T13:26:23+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 40,
+    "discovery_record_count": 39,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.7,
-    "source_checked_at": "2026-07-06T12:35+03:00",
+    "source_age_minutes": 0.9,
+    "source_checked_at": "2026-07-06T13:25+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -111,17 +111,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-06T09:36:15+00:00"
+    "xlsx_generated_at": "2026-07-06T10:26:28+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3451,
-      "change_percent": 0.86,
-      "turnover": 1104600367,
-      "updated": "12:21:11",
+      "price": 3450,
+      "change_percent": 0.83,
+      "turnover": 1175964640,
+      "updated": "13:11:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -132,10 +132,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3196.5,
-      "change_percent": 1.25,
-      "turnover": 663558677,
-      "updated": "12:21:11",
+      "price": 3188.5,
+      "change_percent": 1,
+      "turnover": 735223128,
+      "updated": "13:11:25",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -146,10 +146,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 174.05,
-      "change_percent": -1.3,
-      "turnover": 285592070,
-      "updated": "12:21:11",
+      "price": 172,
+      "change_percent": -2.47,
+      "turnover": 362347547,
+      "updated": "13:11:24",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -159,6 +159,33 @@
     }
   ],
   "events": [
+    {
+      "event": {
+        "event_id": "faccb2ab896ed1d5",
+        "published_at": "Mon, 06 Jul 2026 09:50:09 GMT",
+        "title": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) - M O N D I A R A",
+        "summary": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) M O N D I A R A",
+        "source": "M O N D I A R A",
+        "url": "https://news.mondiara.com/categories/186/posts/241739",
+        "companies": [
+          "YDEX"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "YDEX"
+      ],
+      "evidence_label": "unverified"
+    },
     {
       "event": {
         "event_id": "699bcabc1f99e1be",
@@ -191,7 +218,22 @@
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [],
+    "market_moves": [
+      {
+        "ticker": "VKCO",
+        "company": "VK",
+        "price": 172,
+        "change_percent": -2.47,
+        "turnover": 362347547,
+        "updated": "13:11:24",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+        "quote_status": "valid",
+        "quote_usable": true
+      }
+    ],
     "hypotheses": [
       {
         "id": "H-01",
@@ -204,10 +246,12 @@
         "thesis": "Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.",
         "decision_question": "Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?",
         "deliverable": "Target map + precedent transactions + one-page pitch angle",
-        "signal_count": 0,
+        "signal_count": 1,
         "new_signal_count": 0,
-        "signal_ids": [],
-        "latest_signal": "Новых подтверждающих сигналов нет"
+        "signal_ids": [
+          "faccb2ab896ed1d5"
+        ],
+        "latest_signal": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) - M O N D I A R A"
       },
       {
         "id": "H-02",
@@ -228,6 +272,20 @@
     ],
     "tasks": [
       {
+        "id": "TASK-68257ae2f2ae",
+        "priority": "P2",
+        "state": "open",
+        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+        "deliverable": "Transaction snapshot + precedent transactions",
+        "coverage": "YDEX",
+        "category": "M&A",
+        "source_url": "https://news.mondiara.com/categories/186/posts/241739",
+        "source_title": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) - M O N D I A R A",
+        "hypothesis_ids": [
+          "H-01"
+        ]
+      },
+      {
         "id": "TASK-68158f78ad71",
         "priority": "P2",
         "state": "open",
@@ -238,10 +296,22 @@
         "source_url": "https://ru.investing.com/analysis/article-200333133",
         "source_title": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? - Investing.com",
         "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-086defad8c9d",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (-2.47%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
+        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -249,7 +319,7 @@
       },
       {
         "label": "Рынок",
-        "text": "Движений выше установленного порога нет."
+        "text": "VKCO: -2.47% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
