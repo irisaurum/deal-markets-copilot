@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
+import { selectSummaryDeals } from "./summary_selector.mjs";
 
 const root = process.cwd();
 const datasetRaw = await fs.readFile(path.join(root, "data", "precedent_transactions.json"));
@@ -22,20 +23,6 @@ const C = {navy:"#10243E",blue:"#1F4E78",paleBlue:"#D9EAF7",green:"#008000",pale
 const toDate = value => /^\d{4}-\d{2}-\d{2}/.test(String(value || "")) ? new Date(`${String(value).slice(0,10)}T00:00:00Z`) : null;
 const safe = value => value === undefined ? null : value;
 const lastRow = (count, start=7) => start + Math.max(count, 1) - 1;
-const liveCutoff = new Date(); liveCutoff.setUTCDate(liveCutoff.getUTCDate()-365);
-const isMaterial = row => {
-  const title=String(row.headline||"").toLowerCase();
-  if(/\b(?:бпиф|ипиф|пиф)\b|аукцион.*\bофз\b|\bофз\b.*аукцион/.test(title)) return false;
-  if(row.deal_type==="M&A") return !title.includes("последний день покупки акций") && /покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout/.test(title);
-  if(row.deal_type==="DCM") return !/погашен|погашения|перечислил.*погаш|выкуп|операции репо|о регистрации|о порядке сбора/.test(title) && /размещ|выпуск|облигац|bond|notes/.test(title);
-  if(row.deal_type==="ECM") return !/объем (?:ipo|продаж акций)|рынок ipo|полугоди|квартал|обзор|выкуп акций|buyback/.test(title) && /\bipo\b|\bspo\b|размещ|эмисси/.test(title);
-  return false;
-};
-const isCurrentKeyDeal = row => row.record_kind === "deal"
-  && row.quality_status !== "rejected"
-  && !String(row.deal_id || "").startsWith("CURATED-")
-  && toDate(row.announced_date) >= liveCutoff
-  && isMaterial(row);
 
 function titleBand(sheet, endCol, title, subtitle) {
   sheet.getRange(`A1:${endCol}1`).merge(); sheet.getRange("A1").values=[[title]];
@@ -60,7 +47,7 @@ summary.getRange("A13:D13").formulas=[["=IF(COUNTIFS('Multiples'!$M$7:$M$506,\"Y
 summary.getRange("A13:D13").format={fill:C.paleGreen,font:{bold:true,size:14},horizontalAlignment:"center",rowHeight:32}; summary.getRange("A13:B13").setNumberFormat("0.0x");
 section(summary,"A16:J16","LATEST KEY TRANSACTIONS");
 summary.getRange("A18:J18").values=[["Date","Type","Status","Target / Issuer","Buyer / Investor","Value","Currency","Quality","Sources","Headline"]]; headers(summary.getRange("A18:J18"));
-const latest=rows.filter(isCurrentKeyDeal).sort((a,b)=>String(b.announced_date||"").localeCompare(String(a.announced_date||""))).slice(0,10).map(r=>[toDate(r.announced_date),r.deal_type,r.status,r.target_or_issuer,r.acquirer_or_investor,r.transaction_value,r.currency,r.quality_status,r.source_count,r.headline]);
+const latest=selectSummaryDeals(rows,10).map(r=>[toDate(r.announced_date),r.deal_type,r.status,r.target_or_issuer,r.acquirer_or_investor,r.transaction_value,r.currency,r.quality_status,r.source_count,r.headline]);
 if(latest.length) summary.getRangeByIndexes(18,0,latest.length,10).values=latest;
 summary.getRange(`A19:A${18+Math.max(latest.length,1)}`).setNumberFormat("dd-mmm-yyyy"); summary.getRange(`F19:F${18+Math.max(latest.length,1)}`).setNumberFormat("#,##0;[Red](#,##0);-");
 summary.getRange(`A19:J${18+Math.max(latest.length,1)}`).format={wrapText:true,rowHeight:30,verticalAlignment:"center"};
