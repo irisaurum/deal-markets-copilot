@@ -54,6 +54,9 @@ jobs:
       - name: Install public XLSX builder
         run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
 
+      - name: Persist replay canonicalization before Excel
+        run: python run.py --replay
+
       - name: Rebuild Excel workbook
         run: python scripts/build_precedents_workbook_ci.py
 
