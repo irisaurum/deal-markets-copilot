@@ -17,15 +17,16 @@ Sources
 → Financial enrichment
 → Multiple eligibility
 → Analyst workflow
-→ HTML/JSON/CSV
-→ XLSX
-→ Replay
+→ HTML/internal JSON/CSV
+→ Replay canonicalization/persistence
+→ XLSX/manifest
+→ Replay health synchronization
 → Strict verification
 → GitHub Actions
 → GitHub Pages
 ```
 
-`run.py` координирует pipeline. В `--live` он получает данные, обновляет archive и строит public artifacts. В `--replay` он повторно строит отчёт и snapshot из сохранённых данных без network fetch и без мутации database.
+`run.py` координирует pipeline. В `--live` он получает данные, обновляет archive и строит generated artifacts. В `--replay` он повторно строит отчёт и snapshot из сохранённых данных без network fetch. Replay не создаёт новые economic events, не меняет economic deal semantics и не создаёт lifecycle duplicates; он может persist deterministic schema migration, source canonicalization и quality recomputation, когда это требуется для canonical fixed point. После первого canonicalization replay повторный replay должен быть byte-stable для dataset.
 
 ## Module map
 
@@ -45,7 +46,7 @@ Important coupling:
 - `classifier.py` decides the first category, but `deals.py` owns transaction semantics and final quality.
 - `select_key_deals()` and `select_deal_buckets()` are the shared current-flow contract used by HTML, verifier and CI workbook.
 - `_multiple_is_eligible()` is shared by analytics and the CI workbook.
-- Build health depends on database bytes and the existing XLSX manifest; the CI sequence rebuilds XLSX and then uses replay to refresh health.
+- Build health depends on database bytes and the existing XLSX manifest; the CI sequence first persists replay canonicalization, rebuilds XLSX/manifest from that final dataset, then uses a second replay to refresh health.
 
 ## Data stores
 
@@ -57,14 +58,16 @@ Important coupling:
 ## Generated artifacts
 
 - `output/deal_markets_brief.html` — dashboard.
-- `output/latest_snapshot.json` — last run health, events, quotes and workflow state.
+- `output/latest_snapshot.json` — internal-only last run health, events, quotes and workflow state.
 - `output/precedent_transactions.csv` — flat export of the canonical dataset.
 - `output/precedent_transactions.xlsx` — five-sheet analyst workbook.
 - `output/build_manifest.json` — Build ID, dataset SHA-256, count and generation time.
 
+The public GitHub Pages release contract contains dashboard HTML, `build_manifest.json`, `precedent_transactions.csv` and `precedent_transactions.xlsx`. `latest_snapshot.json` is not part of the public Pages contract; public 404 is expected for that path until the architecture deliberately changes.
+
 ## Build synchronization
 
-The bytes of `data/precedent_transactions.json` are hashed with SHA-256. The first 12 hexadecimal characters are the Build ID. The manifest stores the full hash, Build ID and row count. Snapshot health and HTML expose the same identity. CSV must reproduce every public field in row order. XLSX must contain the same deal IDs and Build ID.
+The bytes of the final persisted `data/precedent_transactions.json` are hashed with SHA-256. The first 12 hexadecimal characters are the Build ID. The manifest stores the full hash, Build ID and row count. Snapshot health and HTML expose the same identity. CSV must reproduce every public field in row order. JSON and CSV `quality_score` values must match. XLSX must contain the same deal IDs and Build ID.
 
 ```text
 database bytes
@@ -91,13 +94,12 @@ The required sheets are `Summary`, `Deals`, `Financials`, `Multiples`, `Sources 
 
 1. checkout and Python 3.12 setup;
 2. tests;
-3. `run.py --live`;
-4. install CI workbook dependency;
-5. build XLSX;
-6. `run.py --replay` to synchronize health;
-7. tests and artifact verifier;
-8. assemble the Pages artifact;
-9. commit changed public data/output as the bot;
-10. upload and deploy Pages, retrying a transient deployment failure once.
+3. live refresh;
+4. first `run.py --replay` for deterministic canonicalization/persistence;
+5. build workbook and manifest from the final persisted dataset;
+6. second `run.py --replay` to synchronize health/presentation state;
+7. strict verifier;
+8. commit changed public data/output as the bot only if verification passed;
+9. deploy Pages, retrying a transient deployment failure once.
 
 Workflow concurrency cancels an older in-progress run when a newer run supersedes it.

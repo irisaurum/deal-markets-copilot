@@ -41,6 +41,7 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 ## Replay is database-immutable
 
 - **Date:** documented before current context system.
+- **Status:** superseded by "Replay reaches a canonical fixed point" below.
 - **Decision:** replay rebuilds dependent views from saved inputs without writing the persistent database.
 - **Context:** post-XLSX database mutation invalidated build synchronization.
 - **Rationale:** replay is a deterministic synchronization step, not ingestion.
@@ -77,6 +78,7 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 ## Public artifacts form one atomic build
 
 - **Date:** documented before current context system.
+- **Status:** superseded by "Public Pages contract excludes internal snapshot" below.
 - **Decision:** HTML, snapshot, CSV, XLSX and manifest must all describe one database build.
 - **Context:** separate generation paths allowed stale downloads.
 - **Rationale:** analysts must be able to reproduce every public view from one dataset.
@@ -127,3 +129,39 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** a flat raw-representation count overstates evidence, while deleting discovery URLs destroys useful lineage. The existing source object can carry alternate representations without introducing a separate provenance subsystem.
 - **Consequences:** canonical URL normalization is conservative; ambiguous or incomplete metadata does not trigger merging; same-publisher and syndicated articles remain separate unless publication identity is established. CSV serializes the nested lineage and XLSX `Sources & QA` shows canonical publication rows plus representation counts/URLs.
 - **Related:** `deals.py`, `sources.py`, `DATA_RULES.md`, `REGRESSIONS.md` REG-27, workbook builders and strict verifier.
+
+## Replay reaches a canonical fixed point
+
+- **Date:** 2026-07-08 CI-01-T1.
+- **Decision:** replay is not ingestion and must not create new economic events, change economic deal semantics or create lifecycle duplicates. Replay may persist deterministic schema migration, source canonicalization and quality recomputation when required to bring the dataset to the canonical fixed point. After the first canonicalization replay, a repeated replay must be byte-stable for the dataset.
+- **Context:** the older "replay must not mutate the database" wording was too broad after deterministic canonicalization/persistence became part of the release path.
+- **Rationale:** deterministic canonicalization is necessary before dependent artifacts can share one identity, but replay must still be prohibited from adding or changing economic transactions.
+- **Consequences:** dependent artifacts are generated only after the final persisted dataset state; release verification checks the second replay for byte-stability against that final dataset.
+- **Related:** `run.py`, `ARCHITECTURE.md`, `TESTING_AND_RELEASE.md`.
+
+## Public Pages contract excludes internal snapshot
+
+- **Date:** 2026-07-08 CI-01-T1.
+- **Decision:** the public GitHub Pages release contract is dashboard HTML, `build_manifest.json`, `precedent_transactions.csv` and `precedent_transactions.xlsx`. `latest_snapshot.json` is internal-only and public 404 is expected until the architecture deliberately changes.
+- **Context:** historical documentation used "HTML/JSON/CSV/XLSX" and sometimes treated snapshot as public, creating ambiguity during public verification.
+- **Rationale:** public consumers should verify the artifacts intentionally published by Pages, while internal health/snapshot state may remain generated but unpublished.
+- **Consequences:** public release checks use manifest, HTML, CSV and XLSX; `latest_snapshot.json` public 404 is not a release failure.
+- **Related:** `ARCHITECTURE.md`, `TESTING_AND_RELEASE.md`, `CURRENT_STATE.md`.
+
+## Release workflow uses two replay steps
+
+- **Date:** 2026-07-08 CI-01-T1.
+- **Decision:** current production order is tests -> live refresh -> first replay canonicalization/persistence -> workbook + manifest generation -> second replay health synchronization -> strict verifier -> bot commit -> Pages deploy.
+- **Context:** one replay before artifacts may persist the final canonical dataset, while a later replay is still required to synchronize health after workbook/manifest generation.
+- **Rationale:** artifacts must be built from the final persisted dataset and then verified after health/presentation state is synchronized to those artifacts.
+- **Consequences:** a failed strict verifier blocks both the bot commit and Pages deployment.
+- **Related:** `.github/workflows/deal-desk.yml`, `ARCHITECTURE.md`, `TESTING_AND_RELEASE.md`.
+
+## LaunchAgent is an interim manual fallback
+
+- **Date:** 2026-07-08 CI-01-T1.
+- **Decision:** LaunchAgent remains unloaded and is not a production automation path. It is retained only as an emergency/manual fallback pending CI-01-T5 and must not run during development or integration work.
+- **Context:** production automation is currently the GitHub Actions path.
+- **Rationale:** local scheduled execution can create side effects outside the controlled CI release contract.
+- **Consequences:** development and integration tasks must leave LaunchAgent unloaded unless a future decision changes this policy.
+- **Related:** `TESTING_AND_RELEASE.md`, `CURRENT_STATE.md`.

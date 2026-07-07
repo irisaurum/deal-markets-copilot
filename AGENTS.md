@@ -2,7 +2,7 @@
 
 ## A. Project purpose
 
-Deal Markets Copilot — open-source deal intelligence and analyst workflow system для M&A, ECM и DCM. Он собирает события из публичных источников, отсекает шум, классифицирует транзакции, нормализует поля, применяет quality controls, хранит evidence, формирует analyst workflow и публикует синхронизированные HTML/JSON/CSV/XLSX.
+Deal Markets Copilot — open-source deal intelligence and analyst workflow system для M&A, ECM и DCM. Он собирает события из публичных источников, отсекает шум, классифицирует транзакции, нормализует поля, применяет quality controls, хранит evidence, формирует analyst workflow и публикует синхронизированные HTML/manifest/CSV/XLSX.
 
 Это не Bloomberg, не торговая система, не инвестиционная рекомендация и не замена первичным документам.
 
@@ -10,7 +10,7 @@ Deal Markets Copilot — open-source deal intelligence and analyst workflow syst
 
 - `src/deal_markets_copilot/` — fetch, classification, deal logic, workflow, reports.
 - `data/` — persistent archive, curated precedents, financial inputs, demo events.
-- `output/` — generated HTML, snapshot, CSV, XLSX, manifest.
+- `output/` — generated HTML, internal snapshot, CSV, XLSX, manifest.
 - `scripts/` — workbook builders, verifier, scheduled launcher.
 - `tests/` — unit and regression tests.
 - `docs/` — modular project context and runbooks.
@@ -35,13 +35,15 @@ Deal Markets Copilot — open-source deal intelligence and analyst workflow syst
 - Technical filings, REPO, redemptions, coupon payments, routine registrations и buybacks не создают banker tasks.
 - Unknown = `Not disclosed`; not applicable = `Not applicable`; не выдумывай нули.
 - Один weak secondary source не делает сделку `approved`.
-- `--replay` не должен изменять persistent database.
+- `--replay` не должен создавать новые economic events, менять economic deal semantics или создавать lifecycle duplicates.
+- `--replay` может persist deterministic schema migration, source canonicalization и quality recomputation, когда это нужно для canonical fixed point; последующий replay после canonicalization должен быть byte-stable для dataset.
 - Любое material JSON change требует синхронизации зависимых артефактов.
 - Build ID выводится из полных bytes database, а не из выбранных полей.
 - Public precedent median всегда показывает `n`; при `n < 3` показывай `N/M`.
 - Не считай multiples без eligibility: approved M&A, disclosed EV, aligned currency и своевременно доступные financials.
 - Пустой результат required source не может молча давать green health.
 - Никогда не публикуй вместе артефакты из разных builds.
+- Public Pages contract состоит из dashboard HTML, `build_manifest.json`, `precedent_transactions.csv` и `precedent_transactions.xlsx`; `latest_snapshot.json` является internal-only artifact, и public 404 ожидаем, пока architecture не изменена.
 
 ## E. Task scoping
 

@@ -9,7 +9,7 @@
 | Documentation-only | `git diff --check`, links/paths, privacy scan, confirm only docs changed |
 | Small code change | Targeted test(s), relevant regression tests, `git diff --check` |
 | Classification/data logic | Affected extraction/classification/quality tests plus relevant cases from `REGRESSIONS.md`; inspect representative outputs |
-| Data/artifact change | Full tests, rebuild dependent artifacts, replay immutability, strict verifier |
+| Data/artifact change | Full tests, rebuild dependent artifacts, replay canonicalization/idempotency, strict verifier |
 | Excel change | Relevant builder(s), formulas/error scan, five-sheet contract, visual QA |
 | Release | Full CI, bot commit if data changed, Pages deployment, public manifest and downloaded artifact verification |
 
@@ -71,17 +71,20 @@ The local path requires the workspace-provided `@oai/artifact-tool`; do not add 
 
 ## Replay rule
 
-Replay must not mutate `data/precedent_transactions.json`.
+Replay is not ingestion. It must not create new economic events, change economic deal semantics or create lifecycle duplicates.
+
+Replay may persist deterministic schema migration, source canonicalization and quality recomputation when that is required to bring `data/precedent_transactions.json` to the canonical fixed point. After the first canonicalization replay, a repeated replay must be byte-stable for the dataset.
 
 For any data/artifact release candidate:
 
 1. compute the database SHA-256;
 2. run `python3 run.py --replay`;
 3. compute SHA-256 again;
-4. require byte-for-byte equality;
-5. run a second replay when investigating replay/idempotency regressions.
+4. if replay persisted canonicalization, treat the new SHA as the final dataset SHA and run dependent artifact builds only after that persisted state;
+5. run `python3 run.py --replay` again;
+6. require byte-for-byte equality against the final dataset SHA.
 
-Replay may refresh dependent presentation/snapshot state from saved inputs; it must not create, merge or rewrite transactions.
+Replay may refresh dependent presentation/snapshot state from saved inputs. It may rewrite deterministic canonical fields, but it must not create, merge or rewrite economic transactions outside the current canonicalization rules.
 
 ## Excel rules
 
@@ -107,13 +110,25 @@ For Excel-affecting changes:
 Canonical identity is `SHA-256(data/precedent_transactions.json)`. Build ID is its first 12 characters. A synchronized candidate requires:
 
 - manifest full SHA, Build ID and count match the database;
-- snapshot health matches and says `xlsx_synced=true`;
+- dependent artifacts are generated only after the final persisted dataset state;
 - HTML exposes the same Build ID;
 - CSV matches every canonical field and row;
 - XLSX contains the same Build ID and exact deal-ID set;
+- JSON and CSV `quality_score` values are synchronized;
 - no artifact comes from an older/newer build.
 
 The strict verifier enforces most of this contract. It does not replace visual QA or public download verification.
+
+## Public release contract
+
+The public GitHub Pages contract contains exactly these release artifacts:
+
+- dashboard HTML;
+- `build_manifest.json`;
+- `precedent_transactions.csv`;
+- `precedent_transactions.xlsx`.
+
+`latest_snapshot.json` is an internal-only artifact. It is not part of the public Pages contract, and a public 404 for that path is expected until the architecture deliberately changes.
 
 ## CI order
 
@@ -129,18 +144,29 @@ Current `.github/workflows/deal-desk.yml` performs:
 
 ```text
 tests
-→ live fetch
-→ install CI workbook dependency
-→ XLSX build
-→ replay
-→ tests + artifact verifier
-→ prepare Pages artifact
+→ live refresh
+→ first replay canonicalization/persistence
+→ workbook + manifest generation
+→ second replay health synchronization
+→ strict verifier
 → bot commit of public data/output when changed
-→ upload Pages artifact
-→ deploy
+→ Pages deploy
 ```
 
+The first replay step persists deterministic canonicalization before dependent artifacts are generated. The workbook and manifest are then built from the final dataset state. The second replay synchronizes health/presentation state against those dependent artifacts before the strict verifier gates the bot commit and Pages deployment.
+
 Concurrency cancels a stale in-progress run when a newer run supersedes it. Do not reorder artifact creation so that a database write can happen after the final XLSX build without another synchronization cycle.
+
+If the strict verifier fails, there must be no bot commit and no Pages deployment.
+
+## LaunchAgent policy
+
+Interim policy pending CI-01-T5:
+
+- LaunchAgent remains unloaded;
+- LaunchAgent is not a production automation path;
+- it is retained only as an emergency/manual fallback;
+- it must not run during development or integration work.
 
 ## Deployment verification
 
@@ -148,10 +174,10 @@ The Pages job makes one deploy attempt and retries once after a transient failur
 
 - Actions run targets the intended production commit and completes successfully;
 - bot data commit, if created, descends from that commit;
-- public `build_manifest.json` equals the repository manifest;
+- public `build_manifest.json` equals the repository manifest and its `dataset_sha256` equals the final dataset SHA;
 - public HTML shows the same Build ID and record count;
 - public CSV and XLSX download successfully;
-- downloaded HTML/CSV/XLSX/manifest match the bot commit (prefer SHA-256 or byte comparison);
+- downloaded HTML/CSV/XLSX/manifest match the bot commit and belong to one build (prefer SHA-256 or byte comparison);
 - public page has no relevant browser console errors.
 
 ## Safe git sequence
@@ -174,7 +200,7 @@ Requested scope is implemented, targeted verification passes, docs are updated i
 
 ### Local release candidate
 
-Full tests pass; database/artifacts are synchronized; replay is byte-stable; strict verifier passes; Excel technical and visual QA pass; repository state is understood. This is **not** a published release.
+Full tests pass; database/artifacts are synchronized; replay reaches a canonical fixed point and is byte-stable after canonicalization; strict verifier passes; Excel technical and visual QA pass; repository state is understood. This is **not** a published release.
 
 ### Published release
 
