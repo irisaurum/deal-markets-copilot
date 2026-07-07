@@ -15,7 +15,7 @@ from deal_markets_copilot.classifier import classify_event, deduplicate, stable_
 from deal_markets_copilot.deals import _migrate_row, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
-from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_moex_quotes, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_rows
+from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_moex_quotes, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_events, resolve_google_news_rows
 from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal
 from run import _build_health, _source_run_status
 
@@ -701,6 +701,157 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
         self.assertEqual(rows[0]["status"], "Issued")
 
+    def _canonical_dcm_with_representations(self, issuer: str = "Альфа") -> dict:
+        return {
+            "deal_id": "DL-canonical-final", "announced_date": "2026-06-19", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": issuer,
+            "acquirer_or_investor": "Not applicable", "headline": f"{issuer} разместила два выпуска облигаций",
+            "transaction_value": 60_000_000_000, "currency": "RUB",
+            "security_code": "001Р-04; 001Р-05", "isin": "Not disclosed",
+            "evidence_label": "confirmed", "source_name": "Issuer IR",
+            "source_url": "https://issuer.example/final", "sources": [
+                {"name": "Issuer IR", "url": "https://issuer.example/final", "published_at": "2026-06-19", "evidence_label": "confirmed", "source_type": "issuer_ir"},
+                {"name": "Publisher", "url": "https://publisher.example/preliminary", "published_at": "2026-06-04", "source_type": "public_web", "representations": [
+                    {"url": "https://publisher.example/preliminary", "source_type": "public_web"},
+                    {"url": "https://news.google.com/rss/articles/preliminary-token?oc=5", "source_type": "archive_discovery"},
+                ]},
+                {"name": "Analyst", "url": "https://analyst.example/report", "published_at": "2026-06-10", "source_type": "public_web", "representations": [
+                    {"url": "https://analyst.example/report", "source_type": "public_web"},
+                    {"url": "https://news.google.com/rss/articles/analytical-token?oc=5", "source_type": "archive_discovery"},
+                ]},
+            ],
+        }
+
+    def _dcm_archive_record(self, event_id: str, url: str, title: str = "Альфа планирует облигации минимум на 30 млрд рублей", discovery_url: str = ""):
+        analytical = "analytical" in url
+        event = Event(
+            event_id, "2026-06-10" if analytical else "2026-06-04", title, "",
+            "Analyst" if analytical else "Publisher", url,
+            source_type="archive_discovery", discovery_url=discovery_url,
+        )
+        return extract_deal_record(classify_event(event, []), [])
+
+    def _canonical_dcm_record_with_representations(self):
+        event = Event(
+            "canonical-final", "2026-06-19", "Альфа разместила облигации 001Р-04 и 001Р-05 на 60 млрд рублей",
+            "", "Issuer IR", "https://issuer.example/final", source_type="issuer_ir", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        canonical = self._canonical_dcm_with_representations()
+        record.sources = canonical["sources"]
+        record.source_count = 3
+        return record
+
+    def test_dcm_lifecycle_rediscovered_google_representation_after_source_canonicalization(self) -> None:
+        canonical = self._canonical_dcm_with_representations()
+        incoming = self._dcm_archive_record("obsolete-preliminary", "https://news.google.com/rss/articles/preliminary-token?oc=5")
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([canonical]), encoding="utf-8")
+            rows = update_precedent_database([incoming], database)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["deal_id"], "DL-canonical-final")
+        self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+        self.assertEqual(rows[0]["status"], "Issued")
+        self.assertEqual(rows[0]["security_code"], "001Р-04; 001Р-05")
+        self.assertEqual(rows[0]["source_count"], 3)
+
+    def test_dcm_lifecycle_analytical_google_representation_after_source_canonicalization(self) -> None:
+        incoming = self._dcm_archive_record(
+            "obsolete-analytical", "https://news.google.com/rss/articles/analytical-token?oc=5",
+            "Альфа планирует облигации по оценке рынка на 30 млрд рублей",
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([self._canonical_dcm_with_representations()]), encoding="utf-8")
+            rows = update_precedent_database([incoming], database)
+        self.assertEqual([row["deal_id"] for row in rows], ["DL-canonical-final"])
+
+    def test_dcm_lifecycle_preliminary_and_analytical_google_representations_together(self) -> None:
+        incoming = [
+            self._dcm_archive_record("obsolete-preliminary", "https://news.google.com/rss/articles/preliminary-token?oc=5"),
+            self._dcm_archive_record("obsolete-analytical", "https://news.google.com/rss/articles/analytical-token?oc=5", "Альфа планирует облигации по оценке рынка на 30 млрд рублей"),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([self._canonical_dcm_with_representations()]), encoding="utf-8")
+            rows = update_precedent_database(incoming, database)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["deal_id"], "DL-canonical-final")
+
+    def test_dcm_lifecycle_representation_refresh_is_stable_across_three_runs(self) -> None:
+        incoming = [
+            self._dcm_archive_record("obsolete-preliminary", "https://news.google.com/rss/articles/preliminary-token?oc=5"),
+            self._dcm_archive_record("obsolete-analytical", "https://news.google.com/rss/articles/analytical-token?oc=5", "Альфа планирует облигации по оценке рынка на 30 млрд рублей"),
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([self._canonical_dcm_with_representations()]), encoding="utf-8")
+            snapshots = [update_precedent_database(incoming, database) for _ in range(3)]
+        for rows in snapshots:
+            self.assertEqual(len(rows), 1)
+            self.assertEqual(rows[0]["deal_id"], "DL-canonical-final")
+            self.assertEqual(rows[0]["source_count"], 3)
+            self.assertEqual(sum(len(source.get("representations", [source])) for source in rows[0]["sources"]), 5)
+
+    def test_dcm_lifecycle_representation_processing_orders_converge_to_canonical_final(self) -> None:
+        preliminary = lambda: self._dcm_archive_record("obsolete-preliminary", "https://news.google.com/rss/articles/preliminary-token?oc=5")
+        analytical = lambda: self._dcm_archive_record(
+            "obsolete-analytical", "https://news.google.com/rss/articles/analytical-token?oc=5",
+            "Альфа планирует облигации по оценке рынка на 30 млрд рублей",
+        )
+        final = self._canonical_dcm_record_with_representations
+        orders = (
+            (preliminary, analytical, final),
+            (final, preliminary),
+            (final, analytical),
+            (final, analytical, preliminary),
+        )
+        for order in orders:
+            with self.subTest(order=[factory.__name__ for factory in order]), tempfile.TemporaryDirectory() as directory:
+                database = Path(directory) / "precedents.json"
+                rows = []
+                for factory in order:
+                    rows = update_precedent_database([factory()], database)
+                self.assertEqual(len(rows), 1)
+                self.assertEqual(rows[0]["deal_id"], "DL-canonical-final")
+                self.assertEqual(rows[0]["transaction_value"], 60_000_000_000)
+                self.assertEqual(rows[0]["status"], "Issued")
+                self.assertEqual(rows[0]["security_code"], "001Р-04; 001Р-05")
+
+    def test_dcm_lifecycle_matches_resolved_direct_or_google_representation(self) -> None:
+        for url, discovery_url in (
+            ("https://publisher.example/preliminary", "https://news.google.com/rss/articles/preliminary-token?oc=5"),
+            ("https://news.google.com/rss/articles/preliminary-token?oc=5", ""),
+        ):
+            with self.subTest(url=url), tempfile.TemporaryDirectory() as directory:
+                database = Path(directory) / "precedents.json"
+                database.write_text(json.dumps([self._canonical_dcm_with_representations()]), encoding="utf-8")
+                rows = update_precedent_database([self._dcm_archive_record("rediscovered", url, discovery_url=discovery_url)], database)
+                self.assertEqual(len(rows), 1)
+                self.assertEqual(rows[0]["deal_id"], "DL-canonical-final")
+
+    def test_dcm_lifecycle_representation_does_not_overmerge_different_issue(self) -> None:
+        canonical = self._canonical_dcm_with_representations()
+        distinct = self._dcm_archive_record(
+            "distinct-series", "https://news.google.com/rss/articles/preliminary-token?oc=5",
+            "Альфа разместила облигации 002Р-01 RU000A123456 на 10 млрд рублей",
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "precedents.json"
+            database.write_text(json.dumps([canonical]), encoding="utf-8")
+            rows = update_precedent_database([distinct], database)
+        self.assertEqual(len(rows), 2)
+
+    def test_dcm_lifecycle_representation_requires_same_issuer(self) -> None:
+        for issuer_title in ("Бета планирует облигации на 30 млрд рублей", "Планируется выпуск облигаций на 30 млрд рублей"):
+            with self.subTest(title=issuer_title), tempfile.TemporaryDirectory() as directory:
+                database = Path(directory) / "precedents.json"
+                database.write_text(json.dumps([self._canonical_dcm_with_representations()]), encoding="utf-8")
+                incoming = self._dcm_archive_record("other-issuer", "https://news.google.com/rss/articles/preliminary-token?oc=5", issuer_title)
+                rows = update_precedent_database([incoming], database)
+                self.assertEqual(len(rows), 2)
+
     def test_same_url_counts_as_one_source_even_with_two_labels(self) -> None:
         row = _migrate_row({
             "deal_id": "same-url", "announced_date": "2026-07-01", "deal_type": "M&A",
@@ -712,6 +863,124 @@ class CoreTests(unittest.TestCase):
             ],
         })
         self.assertEqual(row["source_count"], 1)
+
+    def test_same_publication_direct_and_google_counts_once_and_preserves_representations(self) -> None:
+        row = _migrate_row({
+            "deal_id": "same-publication", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Announced", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer announced bonds",
+            "evidence_label": "unverified", "source_name": "Publisher",
+            "source_url": "https://publisher.example/articles/bonds", "sources": [
+                {"name": "Publisher", "url": "https://publisher.example/articles/bonds", "published_at": "2026-06-04", "source_type": "public_web"},
+                {"name": "Publisher", "url": "https://news.google.com/rss/articles/token?oc=5", "published_at": "Thu, 04 Jun 2026 07:00:00 GMT", "source_type": "archive_discovery"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 1)
+        self.assertEqual(len(row["sources"]), 1)
+        self.assertEqual(row["sources"][0]["url"], "https://publisher.example/articles/bonds")
+        self.assertEqual({item["url"] for item in row["sources"][0]["representations"]}, {
+            "https://publisher.example/articles/bonds",
+            "https://news.google.com/rss/articles/token?oc=5",
+        })
+
+    def test_tracking_query_and_fragment_variants_count_as_one_publication(self) -> None:
+        row = _migrate_row({
+            "deal_id": "url-variants", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Announced", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer announced bonds",
+            "source_name": "Publisher", "source_url": "https://Example.com/article/?utm_source=rss#top",
+            "sources": [
+                {"name": "Publisher", "url": "https://Example.com/article/?utm_source=rss#top", "published_at": "2026-06-04"},
+                {"name": "Publisher", "url": "https://example.com/article?fbclid=abc", "published_at": "2026-06-04"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 1)
+        self.assertEqual(len(row["sources"][0]["representations"]), 2)
+
+    def test_same_transaction_different_publishers_remain_independent_publications(self) -> None:
+        row = _migrate_row({
+            "deal_id": "two-publishers", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Announced", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer announced bonds",
+            "source_name": "Publisher A", "source_url": "https://a.example/article",
+            "sources": [
+                {"name": "Publisher A", "url": "https://a.example/article", "published_at": "2026-06-04"},
+                {"name": "Publisher B", "url": "https://b.example/article", "published_at": "2026-06-04"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 2)
+
+    def test_same_publisher_different_articles_remain_separate_publications(self) -> None:
+        row = _migrate_row({
+            "deal_id": "two-articles", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer placed bonds",
+            "source_name": "Publisher", "source_url": "https://publisher.example/preliminary",
+            "sources": [
+                {"name": "Publisher", "url": "https://publisher.example/preliminary", "published_at": "2026-06-04"},
+                {"name": "Publisher", "url": "https://publisher.example/result", "published_at": "2026-06-19"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 2)
+
+    def test_attributed_or_syndicated_articles_are_not_merged_without_strong_identity(self) -> None:
+        row = _migrate_row({
+            "deal_id": "syndicated", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Announced", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer announced bonds",
+            "source_name": "Original Wire", "source_url": "https://wire.example/story",
+            "sources": [
+                {"name": "Original Wire", "url": "https://wire.example/story", "published_at": "2026-06-04"},
+                {"name": "Republisher", "url": "https://republisher.example/story", "published_at": "2026-06-04"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 2)
+
+    def test_incomplete_publication_metadata_does_not_trigger_direct_google_merge(self) -> None:
+        row = _migrate_row({
+            "deal_id": "missing-metadata", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Announced", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer announced bonds",
+            "source_name": "Publisher", "source_url": "https://publisher.example/article",
+            "sources": [
+                {"name": "Publisher", "url": "https://publisher.example/article", "published_at": ""},
+                {"name": "Publisher", "url": "https://news.google.com/rss/articles/token?oc=5", "published_at": "", "source_type": "archive_discovery"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 2)
+
+    def test_publication_canonicalization_is_idempotent(self) -> None:
+        source = {
+            "deal_id": "idempotent-publication", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Announced", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer announced bonds",
+            "source_name": "Publisher", "source_url": "https://publisher.example/article",
+            "sources": [
+                {"name": "Publisher", "url": "https://publisher.example/article", "published_at": "2026-06-04"},
+                {"name": "Publisher", "url": "https://news.google.com/rss/articles/token?oc=5", "published_at": "2026-06-04", "source_type": "archive_discovery"},
+            ],
+        }
+        first = _migrate_row(source)
+        second = _migrate_row(first)
+        self.assertEqual(second["sources"], first["sources"])
+        self.assertEqual(second["source_count"], 1)
+
+    def test_source_count_and_quality_are_recomputed_after_publication_canonicalization(self) -> None:
+        row = _migrate_row({
+            "deal_id": "quality-recompute", "announced_date": "2026-06-04", "deal_type": "DCM",
+            "record_kind": "deal", "status": "Issued", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "headline": "Issuer completed bond placement",
+            "evidence_label": "confirmed", "quality_score": 1, "quality_status": "rejected",
+            "source_name": "Publisher", "source_url": "https://publisher.example/article",
+            "sources": [
+                {"name": "Publisher", "url": "https://publisher.example/article", "published_at": "2026-06-04", "evidence_label": "confirmed"},
+                {"name": "Publisher", "url": "https://news.google.com/rss/articles/token?oc=5", "published_at": "2026-06-04", "source_type": "archive_discovery"},
+            ],
+        })
+        self.assertEqual(row["source_count"], 1)
+        self.assertEqual(row["quality_score"], 100)
+        self.assertEqual(row["quality_status"], "approved")
+        self.assertEqual(row["quality_flags"], [])
 
     def test_medians_use_valid_ma_multiples(self) -> None:
         eligible = {"record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "financials_available_at": "2023-12-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50}
@@ -819,6 +1088,42 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(upgraded, 1)
         self.assertEqual(rows[0]["source_url"], "https://publisher.example/deal")
         self.assertEqual(rows[0]["sources"][0]["url"], "https://publisher.example/deal")
+        self.assertEqual({item["url"] for item in rows[0]["sources"][0]["representations"]}, {
+            "https://news.google.com/rss/articles/token", "https://publisher.example/deal",
+        })
+
+    def test_google_event_resolution_preserves_discovery_lineage_in_publication(self) -> None:
+        event = Event(
+            "google-event", "2026-06-04T07:00:00Z", "Issuer announced bonds", "",
+            "Publisher", "https://news.google.com/rss/articles/token", source_type="archive_discovery",
+        )
+        with patch("deal_markets_copilot.sources.resolve_google_news_url", return_value="https://publisher.example/deal"):
+            self.assertEqual(resolve_google_news_events([event], workers=1), 1)
+        self.assertEqual(event.url, "https://publisher.example/deal")
+        self.assertEqual(event.discovery_url, "https://news.google.com/rss/articles/token")
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.source_count, 1)
+        self.assertEqual(len(record.sources[0]["representations"]), 2)
+
+    def test_health_separates_publication_count_from_representation_count(self) -> None:
+        rows = [{
+            "deal_id": "one", "record_kind": "deal", "quality_status": "review", "deal_type": "DCM",
+            "sources": [{
+                "name": "Publisher", "url": "https://publisher.example/deal", "source_type": "public_web",
+                "representations": [
+                    {"url": "https://publisher.example/deal", "source_type": "public_web"},
+                    {"url": "https://news.google.com/rss/articles/token", "source_type": "archive_discovery"},
+                ],
+            }],
+        }]
+        with tempfile.TemporaryDirectory() as directory:
+            dataset = Path(directory) / "rows.json"
+            dataset.write_text(json.dumps(rows), encoding="utf-8")
+            health = _build_health(rows, Path(directory) / "missing-manifest.json", dataset)
+        self.assertEqual(health["source_count"], 1)
+        self.assertEqual(health["source_representation_count"], 2)
+        self.assertEqual(health["direct_source_count"], 1)
+        self.assertEqual(health["aggregator_source_count"], 1)
 
     def test_key_deals_exclude_technical_exchange_notices(self) -> None:
         rows = [

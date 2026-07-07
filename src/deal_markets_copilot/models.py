@@ -17,6 +17,7 @@ class Event:
     amount: float | None = None
     currency: str | None = None
     demo: bool = False
+    discovery_url: str = ""
 
     def to_dict(self) -> dict:
         return asdict(self)

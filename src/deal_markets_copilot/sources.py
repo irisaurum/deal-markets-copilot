@@ -599,6 +599,7 @@ def resolve_google_news_rows(rows: list[dict], limit: int = 30, workers: int = 6
                 for source in row.get("sources", []):
                     if isinstance(source, dict) and source.get("url") == previous:
                         source["url"] = direct
+                        source["representations"] = _merge_url_representations(source, previous, direct)
                 upgraded += 1
     return upgraded
 
@@ -607,8 +608,19 @@ def resolve_google_news_events(events: list[Event], limit: int = 12, workers: in
     rows = [{"source_url": event.url, "event": event} for event in events if "news.google.com/rss/articles/" in event.url][:limit]
     upgraded = resolve_google_news_rows(rows, limit=limit, workers=workers)
     for row in rows:
+        if row["event"].url != row["source_url"]:
+            row["event"].discovery_url = row["event"].url
         row["event"].url = row["source_url"]
     return upgraded
+
+
+def _merge_url_representations(source: dict, previous: str, direct: str) -> list[dict]:
+    raw = list(source.get("representations", [])) if isinstance(source.get("representations"), list) else []
+    raw.extend((
+        {"name": source.get("name", "Unknown source"), "url": previous, "source_type": source.get("source_type", "public_web"), "published_at": source.get("published_at", "")},
+        {"name": source.get("name", "Unknown source"), "url": direct, "source_type": source.get("source_type", "public_web"), "published_at": source.get("published_at", "")},
+    ))
+    return list({item.get("url"): item for item in raw if isinstance(item, dict) and _safe_http_url(str(item.get("url") or ""))}.values())
 
 
 def _get_text(url: str, timeout: int) -> str:

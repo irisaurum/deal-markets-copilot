@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { SpreadsheetFile, Workbook } from "@oai/artifact-tool";
+import { selectSummaryDeals } from "./summary_selector.mjs";
 
 const root = process.cwd();
 const datasetRaw = await fs.readFile(path.join(root, "data", "precedent_transactions.json"));
@@ -22,20 +23,6 @@ const C = {navy:"#10243E",blue:"#1F4E78",paleBlue:"#D9EAF7",green:"#008000",pale
 const toDate = value => /^\d{4}-\d{2}-\d{2}/.test(String(value || "")) ? new Date(`${String(value).slice(0,10)}T00:00:00Z`) : null;
 const safe = value => value === undefined ? null : value;
 const lastRow = (count, start=7) => start + Math.max(count, 1) - 1;
-const liveCutoff = new Date(); liveCutoff.setUTCDate(liveCutoff.getUTCDate()-365);
-const isMaterial = row => {
-  const title=String(row.headline||"").toLowerCase();
-  if(/\b(?:бпиф|ипиф|пиф)\b|аукцион.*\bофз\b|\bофз\b.*аукцион/.test(title)) return false;
-  if(row.deal_type==="M&A") return !title.includes("последний день покупки акций") && /покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout/.test(title);
-  if(row.deal_type==="DCM") return !/погашен|погашения|перечислил.*погаш|выкуп|операции репо|о регистрации|о порядке сбора/.test(title) && /размещ|выпуск|облигац|bond|notes/.test(title);
-  if(row.deal_type==="ECM") return !/объем (?:ipo|продаж акций)|рынок ipo|полугоди|квартал|обзор|выкуп акций|buyback/.test(title) && /\bipo\b|\bspo\b|размещ|эмисси/.test(title);
-  return false;
-};
-const isCurrentKeyDeal = row => row.record_kind === "deal"
-  && row.quality_status !== "rejected"
-  && !String(row.deal_id || "").startsWith("CURATED-")
-  && toDate(row.announced_date) >= liveCutoff
-  && isMaterial(row);
 
 function titleBand(sheet, endCol, title, subtitle) {
   sheet.getRange(`A1:${endCol}1`).merge(); sheet.getRange("A1").values=[[title]];
@@ -52,7 +39,7 @@ function setWidths(sheet, widths, rowsCount) { widths.forEach((width,index)=>she
 titleBand(summary,"J","DEAL MARKETS COPILOT — SUMMARY",`Quality-controlled transaction monitor | As of ${new Date().toISOString().slice(0,10)} | Build ${buildId} | N/M means insufficient or non-comparable disclosure`);
 section(summary,"A4:J4","DATABASE SNAPSHOT");
 summary.getRange("A6:J6").values=[["Total records","M&A","ECM","DCM","Approved","Review","Financials","EV/Revenue coverage","EV/EBITDA coverage","Model status"]]; headers(summary.getRange("A6:J6"));
-summary.getRange("A7:J7").formulas=[["=COUNTA('Deals'!$A$7:$A$506)","=COUNTIF('Deals'!$C$7:$C$506,\"M&A\")","=COUNTIF('Deals'!$C$7:$C$506,\"ECM\")","=COUNTIF('Deals'!$C$7:$C$506,\"DCM\")","=COUNTIF('Deals'!$AN$7:$AN$506,\"approved\")","=COUNTIF('Deals'!$AN$7:$AN$506,\"review\")","=COUNTA('Financials'!$A$7:$A$506)","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$K$7:$K$506,\">0\")","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$L$7:$L$506,\">0\")","='Sources & QA'!$P$19"]];
+summary.getRange("A7:J7").formulas=[["=COUNTA('Deals'!$A$7:$A$506)","=COUNTIF('Deals'!$C$7:$C$506,\"M&A\")","=COUNTIF('Deals'!$C$7:$C$506,\"ECM\")","=COUNTIF('Deals'!$C$7:$C$506,\"DCM\")","=COUNTIF('Deals'!$AN$7:$AN$506,\"approved\")","=COUNTIF('Deals'!$AN$7:$AN$506,\"review\")","=COUNTA('Financials'!$A$7:$A$506)","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$K$7:$K$506,\">0\")","=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$L$7:$L$506,\">0\")","='Sources & QA'!$R$19"]];
 summary.getRange("A7:J7").format={fill:C.paleBlue,font:{bold:true,size:13},horizontalAlignment:"center",rowHeight:32,borders:{preset:"outside",style:"thin",color:C.border}};
 section(summary,"A10:J10","PRECEDENT VALUATION — APPROVED M&A ONLY");
 summary.getRange("A12:D12").values=[["Median EV / Revenue","Median EV / EBITDA","EV / Revenue observations","EV / EBITDA observations"]]; headers(summary.getRange("A12:D12"));
@@ -60,7 +47,7 @@ summary.getRange("A13:D13").formulas=[["=IF(COUNTIFS('Multiples'!$M$7:$M$506,\"Y
 summary.getRange("A13:D13").format={fill:C.paleGreen,font:{bold:true,size:14},horizontalAlignment:"center",rowHeight:32}; summary.getRange("A13:B13").setNumberFormat("0.0x");
 section(summary,"A16:J16","LATEST KEY TRANSACTIONS");
 summary.getRange("A18:J18").values=[["Date","Type","Status","Target / Issuer","Buyer / Investor","Value","Currency","Quality","Sources","Headline"]]; headers(summary.getRange("A18:J18"));
-const latest=rows.filter(isCurrentKeyDeal).sort((a,b)=>String(b.announced_date||"").localeCompare(String(a.announced_date||""))).slice(0,10).map(r=>[toDate(r.announced_date),r.deal_type,r.status,r.target_or_issuer,r.acquirer_or_investor,r.transaction_value,r.currency,r.quality_status,r.source_count,r.headline]);
+const latest=selectSummaryDeals(rows,10).map(r=>[toDate(r.announced_date),r.deal_type,r.status,r.target_or_issuer,r.acquirer_or_investor,r.transaction_value,r.currency,r.quality_status,r.source_count,r.headline]);
 if(latest.length) summary.getRangeByIndexes(18,0,latest.length,10).values=latest;
 summary.getRange(`A19:A${18+Math.max(latest.length,1)}`).setNumberFormat("dd-mmm-yyyy"); summary.getRange(`F19:F${18+Math.max(latest.length,1)}`).setNumberFormat("#,##0;[Red](#,##0);-");
 summary.getRange(`A19:J${18+Math.max(latest.length,1)}`).format={wrapText:true,rowHeight:30,verticalAlignment:"center"};
@@ -94,16 +81,16 @@ if(multMatrix.length){const end=lastRow(multMatrix.length);multiples.getRangeByI
 setWidths(multiples,[28,14,24,20,12,18,18,14,12,20,14,14,13,32,55],Math.max(maRows.length+7,8)); multiples.freezePanes.freezeRows(6);
 
 // SOURCES & QA
-const sourceRows=rows.flatMap(r=>(r.sources||[]).map(source=>[r.deal_id,toDate(r.announced_date),r.target_or_issuer,source.name,source.source_type,source.evidence_label,source.url,toDate(source.published_at?.slice?.(0,10)),r.headline]));
-titleBand(qa,"P","SOURCES & QA","Source register plus visible model checks; every calculation can be traced to a public URL");
-section(qa,"A4:I4","SOURCE REGISTER"); qa.getRange("A6:I6").values=[["Deal ID","Deal Date","Target / Issuer","Source","Type","Evidence","URL","Published","Headline"]]; headers(qa.getRange("A6:I6"));
-if(sourceRows.length){const end=lastRow(sourceRows.length);qa.getRangeByIndexes(6,0,sourceRows.length,9).values=sourceRows;styleTable(qa,`A6:I${end}`,"SourcesTable");qa.getRange(`A7:I${end}`).format.font={color:C.green,size:9};qa.getRange(`B7:B${end}`).setNumberFormat("dd-mmm-yyyy");qa.getRange(`H7:H${end}`).setNumberFormat("dd-mmm-yyyy");}
-section(qa,"K4:P4","MODEL CHECKS"); qa.getRange("K6:P6").values=[["Check","Actual","Expected","Difference","Tolerance","Status"]]; headers(qa.getRange("K6:P6"));
-qa.getRange("K7:K17").values=[["Duplicate deal IDs"],["Missing primary URLs"],["Missing announced dates"],["Unsafe URLs"],["Eligible multiples without EV"],["Eligible multiples with currency mismatch"],["Financials without source"],["Approved non-deal records"],["Stake populated outside M&A"],["Buyer populated for DCM"],["Eligible multiple observations"]];
-qa.getRange("L7:L17").formulas=[["=SUMPRODUCT(--(COUNTIF('Deals'!$A$7:$A$506,'Deals'!$A$7:$A$506)>1))/2"],["=COUNTIFS('Deals'!$A$7:$A$506,\"<>\",'Deals'!$AS$7:$AS$506,\"\")"],["=COUNTIFS('Deals'!$A$7:$A$506,\"<>\",'Deals'!$B$7:$B$506,\"\")"],["=SUMPRODUCT(--(LEFT('Deals'!$AS$7:$AS$506,4)<>\"http\"),--('Deals'!$A$7:$A$506<>\"\"))"],["=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$D$7:$D$506,\"\")"],["=SUMPRODUCT(--('Multiples'!$M$7:$M$506=\"YES\"),--('Multiples'!$E$7:$E$506<>'Multiples'!$H$7:$H$506))"],["=COUNTIFS('Financials'!$A$7:$A$506,\"<>\",'Financials'!$N$7:$N$506,\"\")"],["=COUNTIFS('Deals'!$AN$7:$AN$506,\"approved\",'Deals'!$D$7:$D$506,\"<>deal\")"],["=SUMPRODUCT(--('Deals'!$A$7:$A$506<>\"\"),--('Deals'!$C$7:$C$506<>\"M&A\"),--('Deals'!$N$7:$N$506<>\"\"))"],["=SUMPRODUCT(--('Deals'!$C$7:$C$506=\"DCM\"),--('Deals'!$G$7:$G$506<>\"\"),--('Deals'!$G$7:$G$506<>\"Not applicable\"),--('Deals'!$G$7:$G$506<>\"Not disclosed\"))"],["=COUNTIF('Multiples'!$M$7:$M$506,\"YES\")"]];
-qa.getRange("M7:M17").values=[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[">=1"]]; qa.getRange("N7:N16").formulas=Array.from({length:10},(_,i)=>[`=L${7+i}-M${7+i}`]); qa.getRange("O7:O16").values=Array.from({length:10},()=>[0]); qa.getRange("P7:P16").formulas=Array.from({length:10},(_,i)=>[`=IF(ABS(N${7+i})<=O${7+i},\"OK\",\"REVIEW\")`]); qa.getRange("P17").formulas=[["=IF(L17>=1,\"OK\",\"REVIEW\")"]];
-qa.getRange("K19:O19").merge();qa.getRange("K19").values=[["Overall model status"]];qa.getRange("P19").formulas=[["=IF(COUNTIF(P7:P17,\"REVIEW\")=0,\"OK\",\"REVIEW\")"]];qa.getRange("K19:P19").format={fill:C.navy,font:{color:C.white,bold:true},borders:{preset:"outside",style:"thin",color:C.border}};qa.getRange("P7:P19").conditionalFormats.add("containsText",{text:"OK",format:{fill:C.paleGreen,font:{color:"#006100",bold:true}}});qa.getRange("P7:P19").conditionalFormats.add("containsText",{text:"REVIEW",format:{fill:C.paleRed,font:{color:C.red,bold:true}}});
-setWidths(qa,[28,14,24,30,18,13,50,14,55,3,30,12,12,12,12,14],Math.max(sourceRows.length+7,21)); qa.freezePanes.freezeRows(6);
+const sourceRows=rows.flatMap(r=>(r.sources||[]).map(source=>{const representations=(source.representations?.length?source.representations:[source]);return [r.deal_id,toDate(r.announced_date),r.target_or_issuer,source.name,source.source_type,source.evidence_label,source.url,toDate(source.published_at?.slice?.(0,10)),representations.length,representations.map(item=>item.url).join("\n"),r.headline];}));
+titleBand(qa,"R","SOURCES & QA","One row per canonical publication; raw discovery/access URL representations remain visible for lineage");
+section(qa,"A4:K4","PUBLICATION SOURCE REGISTER"); qa.getRange("A6:K6").values=[["Deal ID","Deal Date","Target / Issuer","Publication / Publisher","Canonical Type","Evidence","Canonical URL","Published","Representation Count","Representation URLs","Headline"]]; headers(qa.getRange("A6:K6"));
+if(sourceRows.length){const end=lastRow(sourceRows.length);qa.getRangeByIndexes(6,0,sourceRows.length,11).values=sourceRows;styleTable(qa,`A6:K${end}`,"SourcesTable");qa.getRange(`A7:K${end}`).format.font={color:C.green,size:9};qa.getRange(`A7:K${end}`).format.wrapText=true;qa.getRange(`B7:B${end}`).setNumberFormat("dd-mmm-yyyy");qa.getRange(`H7:H${end}`).setNumberFormat("dd-mmm-yyyy");}
+section(qa,"M4:R4","MODEL CHECKS"); qa.getRange("M6:R6").values=[["Check","Actual","Expected","Difference","Tolerance","Status"]]; headers(qa.getRange("M6:R6"));
+qa.getRange("M7:M17").values=[["Duplicate deal IDs"],["Missing primary URLs"],["Missing announced dates"],["Unsafe URLs"],["Eligible multiples without EV"],["Eligible multiples with currency mismatch"],["Financials without source"],["Approved non-deal records"],["Stake populated outside M&A"],["Buyer populated for DCM"],["Eligible multiple observations"]];
+qa.getRange("N7:N17").formulas=[["=SUMPRODUCT(--(COUNTIF('Deals'!$A$7:$A$506,'Deals'!$A$7:$A$506)>1))/2"],["=COUNTIFS('Deals'!$A$7:$A$506,\"<>\",'Deals'!$AS$7:$AS$506,\"\")"],["=COUNTIFS('Deals'!$A$7:$A$506,\"<>\",'Deals'!$B$7:$B$506,\"\")"],["=SUMPRODUCT(--(LEFT('Deals'!$AS$7:$AS$506,4)<>\"http\"),--('Deals'!$A$7:$A$506<>\"\"))"],["=COUNTIFS('Multiples'!$M$7:$M$506,\"YES\",'Multiples'!$D$7:$D$506,\"\")"],["=SUMPRODUCT(--('Multiples'!$M$7:$M$506=\"YES\"),--('Multiples'!$E$7:$E$506<>'Multiples'!$H$7:$H$506))"],["=COUNTIFS('Financials'!$A$7:$A$506,\"<>\",'Financials'!$N$7:$N$506,\"\")"],["=COUNTIFS('Deals'!$AN$7:$AN$506,\"approved\",'Deals'!$D$7:$D$506,\"<>deal\")"],["=SUMPRODUCT(--('Deals'!$A$7:$A$506<>\"\"),--('Deals'!$C$7:$C$506<>\"M&A\"),--('Deals'!$N$7:$N$506<>\"\"))"],["=SUMPRODUCT(--('Deals'!$C$7:$C$506=\"DCM\"),--('Deals'!$G$7:$G$506<>\"\"),--('Deals'!$G$7:$G$506<>\"Not applicable\"),--('Deals'!$G$7:$G$506<>\"Not disclosed\"))"],["=COUNTIF('Multiples'!$M$7:$M$506,\"YES\")"]];
+qa.getRange("O7:O17").values=[[0],[0],[0],[0],[0],[0],[0],[0],[0],[0],[">=1"]]; qa.getRange("P7:P16").formulas=Array.from({length:10},(_,i)=>[`=N${7+i}-O${7+i}`]); qa.getRange("Q7:Q16").values=Array.from({length:10},()=>[0]); qa.getRange("R7:R16").formulas=Array.from({length:10},(_,i)=>[`=IF(ABS(P${7+i})<=Q${7+i},\"OK\",\"REVIEW\")`]); qa.getRange("R17").formulas=[["=IF(N17>=1,\"OK\",\"REVIEW\")"]];
+qa.getRange("M19:Q19").merge();qa.getRange("M19").values=[["Overall model status"]];qa.getRange("R19").formulas=[["=IF(COUNTIF(R7:R17,\"REVIEW\")=0,\"OK\",\"REVIEW\")"]];qa.getRange("M19:R19").format={fill:C.navy,font:{color:C.white,bold:true},borders:{preset:"outside",style:"thin",color:C.border}};qa.getRange("R7:R19").conditionalFormats.add("containsText",{text:"OK",format:{fill:C.paleGreen,font:{color:"#006100",bold:true}}});qa.getRange("R7:R19").conditionalFormats.add("containsText",{text:"REVIEW",format:{fill:C.paleRed,font:{color:C.red,bold:true}}});
+setWidths(qa,[28,14,24,30,18,13,50,14,16,55,55,3,30,12,12,12,12,14],Math.max(sourceRows.length+7,21)); qa.freezePanes.freezeRows(6);
 
 await fs.mkdir(path.dirname(outputPath),{recursive:true});
 const workbookFile=await SpreadsheetFile.exportXlsx(wb); await workbookFile.save(outputPath);

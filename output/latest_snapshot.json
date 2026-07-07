@@ -1,18 +1,19 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-06T13:26+03:00",
+  "generated_at": "2026-07-06T21:00+03:00",
   "health": {
-    "last_success_at": "2026-07-06T13:26+03:00",
-    "build_id": "15ca65b00b3d",
-    "dataset_sha256": "15ca65b00b3dfa2150995e68e9d7b45746d5afb4c21d599d6b413365b3bf6db5",
-    "record_count": 86,
+    "last_success_at": "2026-07-06T21:00+03:00",
+    "build_id": "86f13f8878c8",
+    "dataset_sha256": "86f13f8878c83177767733d142b87f18f28309d6e2d1e3ad0d73555ae39fdacc",
+    "record_count": 89,
     "key_deal_count": 4,
     "approved_count": 18,
-    "review_count": 46,
+    "review_count": 49,
     "rejected_count": 22,
-    "source_count": 152,
-    "direct_source_count": 107,
-    "aggregator_source_count": 45,
+    "source_count": 119,
+    "source_representation_count": 156,
+    "direct_source_count": 110,
+    "aggregator_source_count": 46,
     "critical_qa_issues": 0,
     "source_group_count": 8,
     "source_runs": [
@@ -21,89 +22,89 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-06T13:25:37+03:00",
+        "checked_at": "2026-07-06T20:36:08+03:00",
         "error": "",
-        "age_minutes": 0.9
+        "age_minutes": 24.4
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-06T13:26:02+03:00",
+        "checked_at": "2026-07-06T20:36:39+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 23.9
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
         "records": 13,
         "required": true,
-        "checked_at": "2026-07-06T13:26:02+03:00",
+        "checked_at": "2026-07-06T20:36:39+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 23.9
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-06T13:26:18+03:00",
+        "checked_at": "2026-07-06T20:36:50+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 23.7
       },
       {
         "name": "deal_news",
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-06T13:26:20+03:00",
+        "checked_at": "2026-07-06T20:36:51+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 23.7
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 13,
+        "records": 12,
         "required": true,
-        "checked_at": "2026-07-06T13:26:21+03:00",
+        "checked_at": "2026-07-06T20:36:53+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 23.6
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 141,
+        "records": 142,
         "required": false,
-        "checked_at": "2026-07-06T13:26:21+03:00",
+        "checked_at": "2026-07-06T20:36:55+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 23.6
       },
       {
         "name": "sec_filings",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-06T13:26:23+03:00",
+        "checked_at": "2026-07-06T20:37:00+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 23.5
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-06T13:26:23+03:00",
+        "checked_at": "2026-07-06T20:37:00+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 39,
+    "discovery_record_count": 38,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.9,
-    "source_checked_at": "2026-07-06T13:25+03:00",
-    "freshness_limit_minutes": 90,
+    "source_age_minutes": 24.4,
+    "source_checked_at": "2026-07-06T20:36+03:00",
+    "freshness_limit_minutes": 4320,
     "source_status": "ok",
     "freshness_status": "ok",
     "market_data_status": "ok",
@@ -111,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-06T10:26:28+00:00"
+    "xlsx_generated_at": "2026-07-06T20:57:53+03:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3450,
-      "change_percent": 0.83,
-      "turnover": 1175964640,
-      "updated": "13:11:23",
+      "price": 3390,
+      "change_percent": -0.92,
+      "turnover": 3718189618,
+      "updated": "20:21:59",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -132,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3188.5,
-      "change_percent": 1,
-      "turnover": 735223128,
-      "updated": "13:11:25",
+      "price": 3137,
+      "change_percent": -0.63,
+      "turnover": 2175312103,
+      "updated": "20:22:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -146,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 172,
-      "change_percent": -2.47,
-      "turnover": 362347547,
-      "updated": "13:11:24",
+      "price": 169.5,
+      "change_percent": -3.88,
+      "turnover": 952974622,
+      "updated": "20:22:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -161,57 +162,27 @@
   "events": [
     {
       "event": {
-        "event_id": "faccb2ab896ed1d5",
-        "published_at": "Mon, 06 Jul 2026 09:50:09 GMT",
-        "title": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) - M O N D I A R A",
-        "summary": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) M O N D I A R A",
-        "source": "M O N D I A R A",
-        "url": "https://news.mondiara.com/categories/186/posts/241739",
-        "companies": [
-          "YDEX"
-        ],
-        "source_type": "public_news",
-        "confidence": "unverified",
+        "event_id": "moex-101795",
+        "published_at": "2026-07-06 16:21:24",
+        "title": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций",
+        "summary": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций 2026-07-06 16:21:24 Сообщаем, что в соответствии с Правилами листинга ПАО Московская Биржа на основании направленного Государственным унитарным предприятием \"Жилищно-коммунальное хозяйство Республики Саха (Якутия)\" уведомления, содержащего сведения о представителе владельцев биржевых облигаций, \"06\" июля 2026 года считаются зарегистрированными: изменения в решение о выпуске биржевых облигаций серии БО-01, идентификационный номер выпуска – 4B02-01-26004-R от 09.04.2019. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101795",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
         "amount": null,
         "currency": null,
-        "demo": false
+        "demo": false,
+        "discovery_url": ""
       },
-      "category": "M&A",
-      "score": 5,
-      "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "YDEX"
-      ],
-      "evidence_label": "unverified"
-    },
-    {
-      "event": {
-        "event_id": "699bcabc1f99e1be",
-        "published_at": "Fri, 03 Jul 2026 12:57:00 GMT",
-        "title": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? - Investing.com",
-        "summary": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? Investing.com",
-        "source": "Investing.com",
-        "url": "https://ru.investing.com/analysis/article-200333133",
-        "companies": [
-          "OZON"
-        ],
-        "source_type": "public_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false
-      },
-      "category": "M&A",
-      "score": 4,
-      "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "OZON"
-      ],
-      "evidence_label": "unverified"
+      "category": "DCM",
+      "score": 7,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
     }
   ],
   "workflow": {
@@ -222,10 +193,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 172,
-        "change_percent": -2.47,
-        "turnover": 362347547,
-        "updated": "13:11:24",
+        "price": 169.5,
+        "change_percent": -3.88,
+        "turnover": 952974622,
+        "updated": "20:22:00",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -246,12 +217,10 @@
         "thesis": "Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.",
         "decision_question": "Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?",
         "deliverable": "Target map + precedent transactions + one-page pitch angle",
-        "signal_count": 1,
+        "signal_count": 0,
         "new_signal_count": 0,
-        "signal_ids": [
-          "faccb2ab896ed1d5"
-        ],
-        "latest_signal": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) - M O N D I A R A"
+        "signal_ids": [],
+        "latest_signal": "Новых подтверждающих сигналов нет"
       },
       {
         "id": "H-02",
@@ -272,36 +241,22 @@
     ],
     "tasks": [
       {
-        "id": "TASK-68257ae2f2ae",
-        "priority": "P2",
+        "id": "TASK-19ca99590ede",
+        "priority": "P1",
         "state": "open",
-        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-        "deliverable": "Transaction snapshot + precedent transactions",
-        "coverage": "YDEX",
-        "category": "M&A",
-        "source_url": "https://news.mondiara.com/categories/186/posts/241739",
-        "source_title": "Акции Яндекса: куда падают котировки? Где можно будет присмотреться к покупкам (6 июля 2026 г.) - M O N D I A R A",
-        "hypothesis_ids": [
-          "H-01"
-        ]
-      },
-      {
-        "id": "TASK-68158f78ad71",
-        "priority": "P2",
-        "state": "open",
-        "title": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-        "deliverable": "Transaction snapshot + precedent transactions",
-        "coverage": "OZON",
-        "category": "M&A",
-        "source_url": "https://ru.investing.com/analysis/article-200333133",
-        "source_title": "АФК Система — заложила/продала Ozon, как меняются перспективы компаний? - Investing.com",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101795",
+        "source_title": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций",
         "hypothesis_ids": []
       },
       {
         "id": "TASK-086defad8c9d",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-2.47%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-3.88%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -311,7 +266,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -319,11 +274,11 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -2.47% к предыдущему закрытию."
+        "text": "VKCO: -3.88% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Добавить событие в deal log и подготовить one-page transaction snapshot."
+        "text": "Обновить debt comps и проверить ближайшие погашения."
       }
     ]
   }

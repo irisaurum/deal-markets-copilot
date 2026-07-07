@@ -95,7 +95,12 @@ Curated IDs use `CURATED-` and are valid in the database, Excel `Deals`, `Financ
 
 - Prefer official exchange, regulator and issuer sources; reputable publishers are secondary evidence; Google News is discovery.
 - Preserve direct publisher URLs when resolved and update both primary fields and the source array.
-- Count one URL as one evidence item even if it arrives under multiple labels.
+- A source representation is an access/discovery URL; a publication is one material; a publisher is the publishing organization; independent corroboration is a distinct publication/evidence source.
+- `source_count` counts canonical publications, not URL representations or publisher labels.
+- Direct, Google News, redirect and tracking URL representations of the same publication remain attached to one canonical source under `representations` when more than one raw URL exists.
+- Exact canonical URL identity is strong evidence. URL canonicalization lowercases scheme/host, removes fragments, normalizes repeated/trailing slashes and removes only the explicit tracking allowlist (`utm_*`, `gclid`, `fbclid`, `yclid`, `mc_cid`, `mc_eid`, Google News `oc`); other query parameters remain identity-bearing.
+- For legacy rows without per-source titles, direct + Google rows merge only for an unambiguous one-to-one exact publisher/date pair. Missing metadata and one-to-many groups remain separate.
+- Same publisher does not imply same publication. Different publishers and separately published/attributed articles remain independent unless stronger publication identity is available.
 - Every stored source URL must be safe `http` or `https`.
 - An empty required source or malformed feed is a health problem, not a quiet successful run.
 
