@@ -1,18 +1,18 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-06T21:00+03:00",
+  "generated_at": "2026-07-08T01:00+03:00",
   "health": {
-    "last_success_at": "2026-07-06T21:00+03:00",
-    "build_id": "86f13f8878c8",
-    "dataset_sha256": "86f13f8878c83177767733d142b87f18f28309d6e2d1e3ad0d73555ae39fdacc",
-    "record_count": 89,
-    "key_deal_count": 4,
-    "approved_count": 18,
-    "review_count": 49,
+    "last_success_at": "2026-07-08T01:00+03:00",
+    "build_id": "c87d0f63f7e3",
+    "dataset_sha256": "c87d0f63f7e34f3c76c972bae000d47935e9fad15a98699b0075b2a2df3b326e",
+    "record_count": 91,
+    "key_deal_count": 5,
+    "approved_count": 19,
+    "review_count": 50,
     "rejected_count": 22,
-    "source_count": 119,
-    "source_representation_count": 156,
-    "direct_source_count": 110,
+    "source_count": 121,
+    "source_representation_count": 158,
+    "direct_source_count": 112,
     "aggregator_source_count": 46,
     "critical_qa_issues": 0,
     "source_group_count": 8,
@@ -22,88 +22,88 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-06T20:36:08+03:00",
+        "checked_at": "2026-07-08T01:00:10+03:00",
         "error": "",
-        "age_minutes": 24.4
+        "age_minutes": 0.6
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-06T20:36:39+03:00",
+        "checked_at": "2026-07-08T01:00:28+03:00",
         "error": "",
-        "age_minutes": 23.9
+        "age_minutes": 0.3
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
-        "records": 13,
+        "records": 8,
         "required": true,
-        "checked_at": "2026-07-06T20:36:39+03:00",
+        "checked_at": "2026-07-08T01:00:28+03:00",
         "error": "",
-        "age_minutes": 23.9
+        "age_minutes": 0.3
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-06T20:36:50+03:00",
+        "checked_at": "2026-07-08T01:00:35+03:00",
         "error": "",
-        "age_minutes": 23.7
+        "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-06T20:36:51+03:00",
+        "checked_at": "2026-07-08T01:00:36+03:00",
         "error": "",
-        "age_minutes": 23.7
+        "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 12,
+        "records": 2,
         "required": true,
-        "checked_at": "2026-07-06T20:36:53+03:00",
+        "checked_at": "2026-07-08T01:00:37+03:00",
         "error": "",
-        "age_minutes": 23.6
+        "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 142,
+        "records": 145,
         "required": false,
-        "checked_at": "2026-07-06T20:36:55+03:00",
+        "checked_at": "2026-07-08T01:00:38+03:00",
         "error": "",
-        "age_minutes": 23.6
+        "age_minutes": 0.1
       },
       {
         "name": "sec_filings",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-06T20:37:00+03:00",
+        "checked_at": "2026-07-08T01:00:40+03:00",
         "error": "",
-        "age_minutes": 23.5
+        "age_minutes": 0.1
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-06T20:37:00+03:00",
+        "checked_at": "2026-07-08T01:00:40+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 38,
+    "discovery_record_count": 28,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 24.4,
-    "source_checked_at": "2026-07-06T20:36+03:00",
+    "source_age_minutes": 0.6,
+    "source_checked_at": "2026-07-08T01:00+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-06T20:57:53+03:00"
+    "xlsx_generated_at": "2026-07-07T22:00:45+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3390,
-      "change_percent": -0.92,
-      "turnover": 3718189618,
-      "updated": "20:21:59",
+      "price": 3473,
+      "change_percent": 1.79,
+      "turnover": 4377288264,
+      "updated": "23:50:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3137,
-      "change_percent": -0.63,
-      "turnover": 2175312103,
-      "updated": "20:22:00",
+      "price": 3200,
+      "change_percent": 1.62,
+      "turnover": 2644057918,
+      "updated": "23:50:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 169.5,
-      "change_percent": -3.88,
-      "turnover": 952974622,
-      "updated": "20:22:00",
+      "price": 172.7,
+      "change_percent": 1.86,
+      "turnover": 939676335,
+      "updated": "23:50:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -162,12 +162,12 @@
   "events": [
     {
       "event": {
-        "event_id": "moex-101795",
-        "published_at": "2026-07-06 16:21:24",
-        "title": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций",
-        "summary": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций 2026-07-06 16:21:24 Сообщаем, что в соответствии с Правилами листинга ПАО Московская Биржа на основании направленного Государственным унитарным предприятием \"Жилищно-коммунальное хозяйство Республики Саха (Якутия)\" уведомления, содержащего сведения о представителе владельцев биржевых облигаций, \"06\" июля 2026 года считаются зарегистрированными: изменения в решение о выпуске биржевых облигаций серии БО-01, идентификационный номер выпуска – 4B02-01-26004-R от 09.04.2019. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "event_id": "moex-101851",
+        "published_at": "2026-07-07 17:45:00",
+        "title": "О регистрации дополнительного выпуска биржевых облигаций",
+        "summary": "О регистрации дополнительного выпуска биржевых облигаций 2026-07-07 17:45:00 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления \"07\" июля 2026 года приняты следующие решения: зарегистрировать дополнительный выпуск биржевых облигаций; присвоить дополнительному выпуску регистрационный номер, в отношении следующих ценных бумаг: Наименование Эмитента открытое акционерное общество \"Российские железные дороги\" Наименование ценной бумаги биржевые облигации процентные и дисконтные неконвертируемые бездокументарные серии 001Р-53R (дополнительный выпуск №2) Регистрационный номер дополнительного выпуска 4B02-53-65045-D-001P от 07.07.2026 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
         "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101795",
+        "url": "https://www.moex.com/n101851",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -189,22 +189,7 @@
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [
-      {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 169.5,
-        "change_percent": -3.88,
-        "turnover": 952974622,
-        "updated": "20:22:00",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      }
-    ],
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -241,32 +226,20 @@
     ],
     "tasks": [
       {
-        "id": "TASK-19ca99590ede",
+        "id": "TASK-458bcefed2c7",
         "priority": "P1",
         "state": "open",
         "title": "Обновить debt comps и проверить ближайшие погашения.",
         "deliverable": "Debt comps + maturity profile",
         "coverage": "MARKET",
         "category": "DCM",
-        "source_url": "https://www.moex.com/n101795",
-        "source_title": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-086defad8c9d",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения VKCO (-3.88%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
+        "source_url": "https://www.moex.com/n101851",
+        "source_title": "О регистрации дополнительного выпуска биржевых облигаций",
         "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -274,7 +247,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -3.88% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
