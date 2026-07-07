@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import csv
 import re
 import shutil
 import tempfile
@@ -10,8 +11,9 @@ import zipfile
 from pathlib import Path
 from unittest.mock import patch
 
+from run import load_replay_precedents
 from scripts import verify_public_artifacts
-from deal_markets_copilot.deals import select_key_deals
+from deal_markets_copilot.deals import select_key_deals, write_precedents_csv
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -169,6 +171,66 @@ class XlsxVerifierTests(unittest.TestCase):
     def test_strict_verifier_accepts_correct_workbook(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             self._verify(self._fixture_root(directory))
+
+    def test_replay_persists_recomputed_quality_before_csv_export(self) -> None:
+        rows = json.loads(json.dumps(self.rows))
+        row = rows[0]
+        row.update({
+            "deal_id": "DL-replay-quality-fixture",
+            "deal_type": "DCM",
+            "record_kind": "deal",
+            "status": "Issued",
+            "target_or_issuer": "Fixture Issuer",
+            "currency": "RUB",
+            "headline": "Fixture Issuer разместил выпуск облигаций",
+            "evidence_label": "confirmed",
+            "source_name": "Fixture News",
+            "source_url": "https://example.com/fixture-deal",
+            "source_count": 2,
+            "quality_score": 1,
+            "quality_status": "review",
+            "quality_flags": ["stale_fixture"],
+            "sources": [
+                {
+                    "name": "Fixture News",
+                    "url": "https://example.com/fixture-deal",
+                    "evidence_label": "confirmed",
+                    "source_type": "public_web",
+                    "published_at": row.get("announced_date", ""),
+                },
+                {
+                    "name": "Fixture News",
+                    "url": "https://news.google.com/rss/articles/fixture-deal?oc=5",
+                    "evidence_label": "confirmed",
+                    "source_type": "news_aggregator",
+                    "published_at": row.get("announced_date", ""),
+                },
+            ],
+        })
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            data = root / "data"
+            output = root / "output"
+            data.mkdir()
+            output.mkdir()
+            dataset_path = data / "precedent_transactions.json"
+            csv_path = output / "precedent_transactions.csv"
+            dataset_path.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
+
+            canonical_rows = load_replay_precedents(dataset_path)
+            write_precedents_csv(canonical_rows, csv_path)
+            persisted_rows = json.loads(dataset_path.read_text(encoding="utf-8"))
+            with csv_path.open(encoding="utf-8-sig", newline="") as handle:
+                csv_rows = list(csv.DictReader(handle))
+
+        persisted = next(item for item in persisted_rows if item["deal_id"] == "DL-replay-quality-fixture")
+        exported = next(item for item in csv_rows if item["deal_id"] == "DL-replay-quality-fixture")
+        representations = persisted["sources"][0].get("representations", [])
+        self.assertEqual(persisted["source_count"], 1)
+        self.assertEqual(len(persisted["sources"]), 1)
+        self.assertEqual(len(representations), 2)
+        self.assertEqual(exported["quality_score"], verify_public_artifacts.csv_value(persisted, "quality_score"))
+        self.assertNotEqual(exported["quality_score"], "1")
 
     def test_strict_verifier_rejects_missing_deals_row_when_id_exists_on_other_sheet(self) -> None:
         deal_id = next(row["deal_id"] for row in self.rows if row.get("sources"))

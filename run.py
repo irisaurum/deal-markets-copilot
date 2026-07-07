@@ -47,6 +47,20 @@ from deal_markets_copilot.telegram import load_dotenv, send_telegram
 from deal_markets_copilot.workflow import build_morning_workflow, is_actionable_signal, load_previous_snapshot
 
 
+def load_replay_precedents(precedent_path: Path) -> list[dict]:
+    """Load replay data and persist any canonical migrations before exports.
+
+    ``load_public_dataset`` applies the same row migration, source
+    canonicalization and quality recomputation used by live updates.  Replay
+    then exports CSV/HTML from those in-memory rows, so the JSON source of truth
+    must be rewritten first; otherwise strict artifact verification can compare
+    stale JSON fields against freshly migrated CSV fields.
+    """
+    precedents = load_public_dataset(precedent_path)
+    write_precedent_database(precedents, precedent_path)
+    return precedents
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Deal & Markets Intelligence Copilot")
     mode = parser.add_mutually_exclusive_group()
@@ -142,7 +156,7 @@ def main() -> int:
         current_deals.extend(archive_deals)
     precedent_path = ROOT / "data" / "precedent_transactions.json"
     if args.replay:
-        precedents = load_public_dataset(precedent_path)
+        precedents = load_replay_precedents(precedent_path)
     elif selected_mode == "live":
         precedents = update_precedent_database(current_deals, precedent_path)
     else:
