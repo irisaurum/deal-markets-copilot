@@ -24,6 +24,16 @@ def _production_refresh_expected(paths: list[str], ignored: list[str]) -> bool:
     return any(not any(fnmatch.fnmatch(path, pattern) for pattern in ignored) for path in paths)
 
 
+def _step_positions(workflow: str, commands: list[str]) -> list[int]:
+    positions: list[int] = []
+    for command in commands:
+        position = workflow.find(command)
+        if position == -1:
+            raise AssertionError(f"workflow command is missing: {command}")
+        positions.append(position)
+    return positions
+
+
 class WorkflowPolicyTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -65,6 +75,18 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("output/**", self.ignored)
         self.assertIn("site/**", self.ignored)
         self.assertIn("data/precedent_transactions.json", self.ignored)
+
+    def test_replay_canonicalization_precedes_manifest_generation(self) -> None:
+        first_replay, workbook, second_replay, verifier = _step_positions(self.workflow, [
+            "Persist replay canonicalization before Excel",
+            "python scripts/build_precedents_workbook_ci.py",
+            "Synchronize dashboard health with Excel",
+            "python scripts/verify_public_artifacts.py",
+        ])
+        self.assertLess(first_replay, workbook)
+        self.assertLess(workbook, second_replay)
+        self.assertLess(second_replay, verifier)
+        self.assertEqual(self.workflow.count("run: python run.py --replay"), 2)
 
 
 if __name__ == "__main__":
