@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-08T11:31+03:00",
+  "generated_at": "2026-07-08T14:07+03:00",
   "health": {
-    "last_success_at": "2026-07-08T11:31+03:00",
-    "build_id": "6e5e3a8d7a54",
-    "dataset_sha256": "6e5e3a8d7a545b08d20f35ebe47b60698007ae6f42f23a060110e5fafa2e9133",
+    "last_success_at": "2026-07-08T14:07+03:00",
+    "build_id": "13804d1ddf41",
+    "dataset_sha256": "13804d1ddf41650b6bf2f1084df18d34d8fca6d09a93d5084918d921dd9de0dc",
     "record_count": 93,
     "key_deal_count": 5,
     "approved_count": 19,
@@ -22,61 +22,61 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-08T11:30:55+03:00",
+        "checked_at": "2026-07-08T14:06:26+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.8
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-08T11:31:15+03:00",
+        "checked_at": "2026-07-08T14:06:47+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.5
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
         "records": 5,
         "required": true,
-        "checked_at": "2026-07-08T11:31:15+03:00",
+        "checked_at": "2026-07-08T14:06:47+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.5
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-08T11:31:21+03:00",
+        "checked_at": "2026-07-08T14:06:59+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.3
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 9,
+        "records": 7,
         "required": true,
-        "checked_at": "2026-07-08T11:31:21+03:00",
+        "checked_at": "2026-07-08T14:07:00+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.3
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 1,
+        "records": 2,
         "required": true,
-        "checked_at": "2026-07-08T11:31:22+03:00",
+        "checked_at": "2026-07-08T14:07:01+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.3
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 151,
+        "records": 141,
         "required": false,
-        "checked_at": "2026-07-08T11:31:23+03:00",
+        "checked_at": "2026-07-08T14:07:02+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -85,25 +85,25 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-08T11:31:25+03:00",
+        "checked_at": "2026-07-08T14:07:04+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-08T11:31:25+03:00",
+        "checked_at": "2026-07-08T14:07:04+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 29,
+    "discovery_record_count": 28,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-08T11:30+03:00",
+    "source_age_minutes": 0.8,
+    "source_checked_at": "2026-07-08T14:06+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-08T08:31:31+00:00"
+    "xlsx_generated_at": "2026-07-08T11:07:16+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3489,
-      "change_percent": 0.46,
-      "turnover": 719842562,
-      "updated": "11:16:25",
+      "price": 3489.5,
+      "change_percent": 0.48,
+      "turnover": 1402903407,
+      "updated": "13:52:05",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3172.5,
-      "change_percent": -0.86,
-      "turnover": 447609868,
-      "updated": "11:16:25",
+      "price": 3188.5,
+      "change_percent": -0.36,
+      "turnover": 762558196,
+      "updated": "13:52:06",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 170.2,
-      "change_percent": -1.45,
-      "turnover": 112081568,
-      "updated": "11:16:27",
+      "price": 173.5,
+      "change_percent": 0.46,
+      "turnover": 194031826,
+      "updated": "13:52:10",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -177,7 +177,7 @@
         "discovery_url": ""
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -250,18 +250,6 @@
     ],
     "tasks": [
       {
-        "id": "TASK-458bcefed2c7",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101851",
-        "source_title": "О регистрации дополнительного выпуска биржевых облигаций",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-7cec143dee43",
         "priority": "P1",
         "state": "open",
@@ -271,6 +259,18 @@
         "category": "DCM",
         "source_url": "https://www.moex.com/n101874",
         "source_title": "Частные инвесторы вложили в облигации на Московской бирже более 1,1 трлн рублей по итогам первого полугодия",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-458bcefed2c7",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101851",
+        "source_title": "О регистрации дополнительного выпуска биржевых облигаций",
         "hypothesis_ids": []
       }
     ],
