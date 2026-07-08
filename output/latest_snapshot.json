@@ -1,19 +1,19 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-08T14:07+03:00",
+  "generated_at": "2026-07-08T16:05+03:00",
   "health": {
-    "last_success_at": "2026-07-08T14:07+03:00",
-    "build_id": "13804d1ddf41",
-    "dataset_sha256": "13804d1ddf41650b6bf2f1084df18d34d8fca6d09a93d5084918d921dd9de0dc",
-    "record_count": 93,
+    "last_success_at": "2026-07-08T16:05+03:00",
+    "build_id": "2efaa5dedf6c",
+    "dataset_sha256": "2efaa5dedf6c97370b842cac42e194bff6923c1763e954cc8a3a20a0c725e1c3",
+    "record_count": 94,
     "key_deal_count": 5,
     "approved_count": 19,
-    "review_count": 52,
+    "review_count": 53,
     "rejected_count": 22,
-    "source_count": 125,
-    "source_representation_count": 163,
-    "direct_source_count": 114,
-    "aggregator_source_count": 49,
+    "source_count": 126,
+    "source_representation_count": 165,
+    "direct_source_count": 115,
+    "aggregator_source_count": 50,
     "critical_qa_issues": 0,
     "source_group_count": 8,
     "source_runs": [
@@ -22,88 +22,88 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-08T14:06:26+03:00",
+        "checked_at": "2026-07-08T16:05:19+03:00",
         "error": "",
-        "age_minutes": 0.8
+        "age_minutes": 0.6
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-08T14:06:47+03:00",
+        "checked_at": "2026-07-08T16:05:35+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 0.3
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
-        "records": 5,
+        "records": 6,
         "required": true,
-        "checked_at": "2026-07-08T14:06:47+03:00",
+        "checked_at": "2026-07-08T16:05:35+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 0.3
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-08T14:06:59+03:00",
+        "checked_at": "2026-07-08T16:05:42+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 7,
+        "records": 8,
         "required": true,
-        "checked_at": "2026-07-08T14:07:00+03:00",
+        "checked_at": "2026-07-08T16:05:42+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 2,
+        "records": 4,
         "required": true,
-        "checked_at": "2026-07-08T14:07:01+03:00",
+        "checked_at": "2026-07-08T16:05:43+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
         "records": 141,
         "required": false,
-        "checked_at": "2026-07-08T14:07:02+03:00",
+        "checked_at": "2026-07-08T16:05:44+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.1
       },
       {
         "name": "sec_filings",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-08T14:07:04+03:00",
+        "checked_at": "2026-07-08T16:05:46+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.1
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-08T14:07:04+03:00",
+        "checked_at": "2026-07-08T16:05:46+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 28,
+    "discovery_record_count": 31,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.8,
-    "source_checked_at": "2026-07-08T14:06+03:00",
+    "source_age_minutes": 0.6,
+    "source_checked_at": "2026-07-08T16:05+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-08T11:07:16+00:00"
+    "xlsx_generated_at": "2026-07-08T13:05:51+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3489.5,
-      "change_percent": 0.48,
-      "turnover": 1402903407,
-      "updated": "13:52:05",
+      "price": 3527,
+      "change_percent": 1.55,
+      "turnover": 1728533733,
+      "updated": "15:50:46",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3188.5,
-      "change_percent": -0.36,
-      "turnover": 762558196,
-      "updated": "13:52:06",
+      "price": 3222.5,
+      "change_percent": 0.7,
+      "turnover": 955195700,
+      "updated": "15:50:46",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 173.5,
-      "change_percent": 0.46,
-      "turnover": 194031826,
-      "updated": "13:52:10",
+      "price": 172.7,
+      "change_percent": 0,
+      "turnover": 254323405,
+      "updated": "15:50:46",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -168,30 +168,6 @@
         "summary": "Частные инвесторы вложили в облигации на Московской бирже более 1,1 трлн рублей по итогам первого полугодия 2026-07-08 10:45:00 Сделки с долговыми ценными бумагами на вторичных торгах Московской биржи в июне 2026 года совершали 794 тыс. частных инвесторов (+44,4% к июню 2025 года). Их доля в объеме торгов облигациями составила 17,5%. Частные инвесторы в июне вложили в облигации на фондовом рынке Московской биржи 231 млрд рублей (+47,4% к июню 2025 года). Из них 14% – вложения в рублевые ОФЗ, 61% – в корпоративные облигации в рублях, 25% – в облигации в иностранной валюте. По итогам первого полугодия совокупный объем вложений частных инвесторов в облигации на Московской бирже превысил 1,1 трлн рублей (рост на 18% по сравнению с первым полугодием 2025 года). Объем размещений облигаций в июне составил 1,6 трлн рублей, включая однодневные облигации на 202 млрд рублей. Доля ОФЗ в объеме размещений – 13,3% (39,5% в июне 2025 года). Объем вторичных торгов облигациями в июне достиг 2,5 трлн рублей (+71,5% к июню 2025 года). В том числе объем торгов ОФЗ – 1,3 трлн руб. (+54,4% к июню 2025 года), корпоративными облигациями – 1,2 трлн рублей (рост почти в два раза к июню 2025 года). В сегменте внебиржевых торгов с центральным контрагентом в июне 2026 года объем операций составил 284,7 млрд руб. (+28,7% к июню 2025 года). Долговой рынок Московской биржи – центр привлечения средств для российских компаний, который сочетает развитую инфраструктуру, надежность и передовые технологии торговл",
         "source": "MOEX disclosure",
         "url": "https://www.moex.com/n101874",
-        "companies": [],
-        "source_type": "official_exchange",
-        "confidence": "confirmed",
-        "amount": null,
-        "currency": null,
-        "demo": false,
-        "discovery_url": ""
-      },
-      "category": "DCM",
-      "score": 7,
-      "severity": "high",
-      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
-      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
-      "matched_coverage": [],
-      "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "moex-101851",
-        "published_at": "2026-07-07 17:45:00",
-        "title": "О регистрации дополнительного выпуска биржевых облигаций",
-        "summary": "О регистрации дополнительного выпуска биржевых облигаций 2026-07-07 17:45:00 В соответствии c Правилами листинга ПАО Московская Биржа, в связи с получением заявления, Председателем Правления \"07\" июля 2026 года приняты следующие решения: зарегистрировать дополнительный выпуск биржевых облигаций; присвоить дополнительному выпуску регистрационный номер, в отношении следующих ценных бумаг: Наименование Эмитента открытое акционерное общество \"Российские железные дороги\" Наименование ценной бумаги биржевые облигации процентные и дисконтные неконвертируемые бездокументарные серии 001Р-53R (дополнительный выпуск №2) Регистрационный номер дополнительного выпуска 4B02-53-65045-D-001P от 07.07.2026 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
-        "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n101851",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -260,22 +236,10 @@
         "source_url": "https://www.moex.com/n101874",
         "source_title": "Частные инвесторы вложили в облигации на Московской бирже более 1,1 трлн рублей по итогам первого полугодия",
         "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-458bcefed2c7",
-        "priority": "P1",
-        "state": "open",
-        "title": "Обновить debt comps и проверить ближайшие погашения.",
-        "deliverable": "Debt comps + maturity profile",
-        "coverage": "MARKET",
-        "category": "DCM",
-        "source_url": "https://www.moex.com/n101851",
-        "source_title": "О регистрации дополнительного выпуска биржевых облигаций",
-        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
