@@ -90,7 +90,16 @@ The required sheets are `Summary`, `Deals`, `Financials`, `Multiples`, `Sources 
 
 ## CI flow
 
-`.github/workflows/deal-desk.yml` runs on relevant pushes, manual dispatch and weekday schedule:
+`.github/workflows/deal-desk.yml` separates deterministic validation from production refresh.
+
+Validation runs on pull requests and production-relevant pushes to `main`:
+
+1. checkout and Python 3.12 setup;
+2. install deterministic validation dependencies;
+3. tests;
+4. checked-in artifact contract verification.
+
+Production refresh runs only on weekday schedule or `workflow_dispatch`:
 
 1. checkout and Python 3.12 setup;
 2. tests;
@@ -102,4 +111,4 @@ The required sheets are `Summary`, `Deals`, `Financials`, `Multiples`, `Sources 
 8. commit changed public data/output as the bot only if verification passed;
 9. deploy Pages, retrying a transient deployment failure once.
 
-Workflow concurrency cancels an older in-progress run when a newer run supersedes it.
+The production refresh path uses the `deal-desk-pages` concurrency group so only one production writer runs at a time. Validation runs use unique concurrency groups and cannot cancel a production refresh.

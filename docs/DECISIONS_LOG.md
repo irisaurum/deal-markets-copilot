@@ -106,6 +106,7 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 ## Documentation-only pushes do not refresh production
 
 - **Date:** 2026-07-05.
+- **Status:** superseded by "Validation and production refresh are separate workflow paths" below.
 - **Decision:** exclude proven documentation-only and bot-generated paths from the production push trigger; keep schedule, manual dispatch and all other tracked paths production-relevant by default.
 - **Context:** a documentation commit ran live ingestion, changed public artifacts, created a bot commit and redeployed Pages.
 - **Rationale:** a conservative ignore-list prevents non-production side effects without risking a missed refresh when a new code, config, verifier, builder, test or data path is added.
@@ -165,3 +166,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** local scheduled execution can create side effects outside the controlled CI release contract.
 - **Consequences:** development and integration tasks must leave LaunchAgent unloaded unless a future decision changes this policy.
 - **Related:** `TESTING_AND_RELEASE.md`, `CURRENT_STATE.md`.
+
+## Validation and production refresh are separate workflow paths
+
+- **Date:** 2026-07-08 CI-01-T2.
+- **Decision:** pull requests and production-relevant pushes to `main` run deterministic validation only. Schedule and `workflow_dispatch` own live discovery, replay canonicalization, workbook/manifest generation, second replay synchronization, strict verification, bot commit and Pages deploy.
+- **Context:** one workflow previously served PR/code validation, push-to-main refresh, scheduled refresh, manual refresh, publication and deployment.
+- **Rationale:** code validation must be deterministic and side-effect-free, while production refresh must remain the single controlled writer/publisher path.
+- **Consequences:** docs-only and bot-generated paths remain excluded from push-triggered validation loops; pushes to `main` no longer run live discovery or deploy Pages; the current scheduled cadence and manual production refresh remain unchanged.
+- **Related:** `.github/workflows/deal-desk.yml`, `tests/test_workflow_policy.py`, `ARCHITECTURE.md`, `TESTING_AND_RELEASE.md`.

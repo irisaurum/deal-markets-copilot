@@ -132,17 +132,28 @@ The public GitHub Pages contract contains exactly these release artifacts:
 
 ## CI order
 
-Push trigger policy:
+Trigger policy:
 
-- changes limited to `docs/**`, `AGENTS.md`, `README.md`, `SECURITY.md` or `LICENSE` do not start the production workflow;
-- production code, config, source data, builders, verifier, tests, dependencies and workflow changes start it;
+- pull requests run deterministic validation only: tests plus checked-in artifact contract verification;
+- push to `main` runs deterministic validation for production-relevant paths only;
+- push to `main` does not run live discovery, replay, bot commit or Pages deploy;
+- changes limited to `docs/**`, `AGENTS.md`, `README.md`, `SECURITY.md` or `LICENSE` do not start production refresh;
 - generated `output/**`, `site/**` and `data/precedent_transactions.json` remain ignored so the bot commit cannot trigger a refresh loop;
-- mixed documentation + production changes start the workflow;
-- `schedule` and `workflow_dispatch` always start the autonomous production pipeline because push path filters do not apply to them.
+- mixed documentation + production changes on push run deterministic validation;
+- `schedule` and `workflow_dispatch` own the autonomous production refresh because push path filters do not apply to them.
 
-Current `.github/workflows/deal-desk.yml` performs:
+Current `.github/workflows/deal-desk.yml` validation path performs:
 
 ```text
+pull_request or production-relevant push to main
+→ tests
+→ checked-in artifact contract verification
+```
+
+Current `.github/workflows/deal-desk.yml` production refresh path performs:
+
+```text
+schedule or workflow_dispatch
 tests
 → live refresh
 → first replay canonicalization/persistence
@@ -155,7 +166,9 @@ tests
 
 The first replay step persists deterministic canonicalization before dependent artifacts are generated. The workbook and manifest are then built from the final dataset state. The second replay synchronizes health/presentation state against those dependent artifacts before the strict verifier gates the bot commit and Pages deployment.
 
-Concurrency cancels a stale in-progress run when a newer run supersedes it. Do not reorder artifact creation so that a database write can happen after the final XLSX build without another synchronization cycle.
+Production refresh uses one concurrency group, `deal-desk-pages`, so a newer scheduled/manual refresh supersedes an older production writer. Validation runs use unique concurrency groups and cannot cancel a production refresh.
+
+Do not reorder artifact creation so that a database write can happen after the final XLSX build without another synchronization cycle.
 
 If the strict verifier fails, there must be no bot commit and no Pages deployment.
 
