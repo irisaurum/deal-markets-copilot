@@ -1,19 +1,19 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-08T01:00+03:00",
+  "generated_at": "2026-07-08T10:55+03:00",
   "health": {
-    "last_success_at": "2026-07-08T01:00+03:00",
-    "build_id": "c87d0f63f7e3",
-    "dataset_sha256": "c87d0f63f7e34f3c76c972bae000d47935e9fad15a98699b0075b2a2df3b326e",
-    "record_count": 91,
+    "last_success_at": "2026-07-08T10:55+03:00",
+    "build_id": "b8f3588cf68c",
+    "dataset_sha256": "b8f3588cf68cb2ea24286f46a937569f336018c0b83be80680249e2ae6a2d70f",
+    "record_count": 93,
     "key_deal_count": 5,
     "approved_count": 19,
-    "review_count": 50,
+    "review_count": 52,
     "rejected_count": 22,
-    "source_count": 121,
-    "source_representation_count": 158,
-    "direct_source_count": 112,
-    "aggregator_source_count": 46,
+    "source_count": 124,
+    "source_representation_count": 162,
+    "direct_source_count": 114,
+    "aggregator_source_count": 48,
     "critical_qa_issues": 0,
     "source_group_count": 8,
     "source_runs": [
@@ -22,25 +22,25 @@
         "status": "ok",
         "records": 15,
         "required": true,
-        "checked_at": "2026-07-08T01:00:10+03:00",
+        "checked_at": "2026-07-08T10:54:26+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.7
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-08T01:00:28+03:00",
+        "checked_at": "2026-07-08T10:54:48+03:00",
         "error": "",
         "age_minutes": 0.3
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
-        "records": 8,
+        "records": 7,
         "required": true,
-        "checked_at": "2026-07-08T01:00:28+03:00",
+        "checked_at": "2026-07-08T10:54:48+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -49,34 +49,34 @@
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-08T01:00:35+03:00",
+        "checked_at": "2026-07-08T10:54:56+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 7,
+        "records": 10,
         "required": true,
-        "checked_at": "2026-07-08T01:00:36+03:00",
+        "checked_at": "2026-07-08T10:54:57+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 2,
+        "records": 1,
         "required": true,
-        "checked_at": "2026-07-08T01:00:37+03:00",
+        "checked_at": "2026-07-08T10:54:58+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 145,
+        "records": 156,
         "required": false,
-        "checked_at": "2026-07-08T01:00:38+03:00",
+        "checked_at": "2026-07-08T10:54:59+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-08T01:00:40+03:00",
+        "checked_at": "2026-07-08T10:55:01+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,17 +94,17 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-08T01:00:40+03:00",
+        "checked_at": "2026-07-08T10:55:01+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 28,
+    "discovery_record_count": 30,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-08T01:00+03:00",
-    "freshness_limit_minutes": 4320,
+    "source_age_minutes": 0.7,
+    "source_checked_at": "2026-07-08T10:54+03:00",
+    "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
     "market_data_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-07T22:00:45+00:00"
+    "xlsx_generated_at": "2026-07-08T07:55:07+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3473,
-      "change_percent": 1.79,
-      "turnover": 4377288264,
-      "updated": "23:50:23",
+      "price": 3470.5,
+      "change_percent": -0.07,
+      "turnover": 462445113,
+      "updated": "10:40:01",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3200,
-      "change_percent": 1.62,
-      "turnover": 2644057918,
-      "updated": "23:50:23",
+      "price": 3163,
+      "change_percent": -1.16,
+      "turnover": 333192410,
+      "updated": "10:40:02",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 172.7,
-      "change_percent": 1.86,
-      "turnover": 939676335,
-      "updated": "23:50:23",
+      "price": 170.2,
+      "change_percent": -1.45,
+      "turnover": 91281245,
+      "updated": "10:40:03",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -160,6 +160,30 @@
     }
   ],
   "events": [
+    {
+      "event": {
+        "event_id": "moex-101874",
+        "published_at": "2026-07-08 10:45:00",
+        "title": "Частные инвесторы вложили в облигации на Московской бирже более 1,1 трлн рублей по итогам первого полугодия",
+        "summary": "Частные инвесторы вложили в облигации на Московской бирже более 1,1 трлн рублей по итогам первого полугодия 2026-07-08 10:45:00 Сделки с долговыми ценными бумагами на вторичных торгах Московской биржи в июне 2026 года совершали 794 тыс. частных инвесторов (+44,4% к июню 2025 года). Их доля в объеме торгов облигациями составила 17,5%. Частные инвесторы в июне вложили в облигации на фондовом рынке Московской биржи 231 млрд рублей (+47,4% к июню 2025 года). Из них 14% – вложения в рублевые ОФЗ, 61% – в корпоративные облигации в рублях, 25% – в облигации в иностранной валюте. По итогам первого полугодия совокупный объем вложений частных инвесторов в облигации на Московской бирже превысил 1,1 трлн рублей (рост на 18% по сравнению с первым полугодием 2025 года). Объем размещений облигаций в июне составил 1,6 трлн рублей, включая однодневные облигации на 202 млрд рублей. Доля ОФЗ в объеме размещений – 13,3% (39,5% в июне 2025 года). Объем вторичных торгов облигациями в июне достиг 2,5 трлн рублей (+71,5% к июню 2025 года). В том числе объем торгов ОФЗ – 1,3 трлн руб. (+54,4% к июню 2025 года), корпоративными облигациями – 1,2 трлн рублей (рост почти в два раза к июню 2025 года). В сегменте внебиржевых торгов с центральным контрагентом в июне 2026 года объем операций составил 284,7 млрд руб. (+28,7% к июню 2025 года). Долговой рынок Московской биржи – центр привлечения средств для российских компаний, который сочетает развитую инфраструктуру, надежность и передовые технологии торговл",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n101874",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false,
+        "discovery_url": ""
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    },
     {
       "event": {
         "event_id": "moex-101851",
@@ -236,10 +260,22 @@
         "source_url": "https://www.moex.com/n101851",
         "source_title": "О регистрации дополнительного выпуска биржевых облигаций",
         "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-7cec143dee43",
+        "priority": "P1",
+        "state": "open",
+        "title": "Обновить debt comps и проверить ближайшие погашения.",
+        "deliverable": "Debt comps + maturity profile",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n101874",
+        "source_title": "Частные инвесторы вложили в облигации на Московской бирже более 1,1 трлн рублей по итогам первого полугодия",
+        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
