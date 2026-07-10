@@ -160,11 +160,16 @@ tests
 → workbook + manifest generation
 → second replay health synchronization
 → strict verifier
-→ bot commit of public data/output when changed
+→ local bot commit of public data/output when changed
+→ mandatory stale-main check and explicit main-only fast-forward/no-op push
 → Pages deploy
 ```
 
 The first replay step persists deterministic canonicalization before dependent artifacts are generated. The workbook and manifest are then built from the final dataset state. The second replay synchronizes health/presentation state against those dependent artifacts before the strict verifier gates the bot commit and Pages deployment.
+
+Strict verifier failures write a compact GitHub Actions step summary with failed stage, invariant, artifact/file, row/field or Deal ID when available, expected/actual when available and the recommended next action. The summary does not replace traceback output or weaken assertions.
+
+Before any bot push or Pages deploy, the workflow fetches `origin/main` and compares it with the run base SHA. This check also runs when the refresh produced no data commit. If `origin/main` moved, the workflow fails safely with expected and actual SHA values in the step summary. It does not rebase, merge, force-push or overwrite the remote; start a new production refresh on current `main`. A normal candidate pushes only `HEAD:refs/heads/main` to `origin`, without force.
 
 Production refresh uses one concurrency group, `deal-desk-pages`, so a newer scheduled/manual refresh supersedes an older production writer. Validation runs use unique concurrency groups and cannot cancel a production refresh.
 

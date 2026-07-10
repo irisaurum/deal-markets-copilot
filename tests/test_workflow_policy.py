@@ -96,7 +96,7 @@ class WorkflowPolicyTests(unittest.TestCase):
     def test_validation_path_is_deterministic(self) -> None:
         self.assertIn("contents: read", self.validate_job)
         self.assertIn("python -m unittest discover -s tests -v", self.validate_job)
-        self.assertIn("python scripts/verify_public_artifacts.py", self.validate_job)
+        self.assertIn("python scripts/release_diagnostics.py verify-public-artifacts", self.validate_job)
         forbidden = [
             "python run.py --live",
             "python run.py --replay",
@@ -124,12 +124,51 @@ class WorkflowPolicyTests(unittest.TestCase):
             "Persist replay canonicalization before Excel",
             "python scripts/build_precedents_workbook_ci.py",
             "Synchronize dashboard health with Excel",
-            "python scripts/verify_public_artifacts.py",
+            "python scripts/release_diagnostics.py verify-public-artifacts",
         ])
         self.assertLess(first_replay, workbook)
         self.assertLess(workbook, second_replay)
         self.assertLess(second_replay, verifier)
         self.assertEqual(self.production_job.count("run: python run.py --replay"), 2)
+
+    def test_bot_push_uses_stale_main_safety_without_force(self) -> None:
+        self.assertIn('python scripts/release_diagnostics.py bot-push --expected-base "$GITHUB_SHA"', self.production_job)
+        self.assertNotIn("git push", self.production_job)
+        self.assertNotIn("--force", self.production_job)
+        self.assertRegex(
+            self.production_job,
+            r'(?ms)if ! git diff --cached --quiet; then\n\s+git commit -m "chore: refresh deal desk"\n\s+fi\n\s+python scripts/release_diagnostics.py bot-push --expected-base "\$GITHUB_SHA"',
+        )
+
+    def test_bot_commit_is_limited_to_public_data_and_output_files(self) -> None:
+        match = re.search(r"(?m)^\s+git add (?P<paths>.+)$", self.production_job)
+        self.assertIsNotNone(match)
+        self.assertEqual(
+            set(match.group("paths").split()),
+            {
+                "data/precedent_transactions.json",
+                "output/build_manifest.json",
+                "output/deal_markets_brief.html",
+                "output/latest_snapshot.json",
+                "output/precedent_transactions.csv",
+                "output/precedent_transactions.xlsx",
+            },
+        )
+
+    def test_verifier_and_stale_guard_gate_publication_and_deploy(self) -> None:
+        verifier, site, bot_push, upload = _step_positions(
+            self.production_job,
+            [
+                "python scripts/release_diagnostics.py verify-public-artifacts",
+                "Prepare site",
+                'python scripts/release_diagnostics.py bot-push --expected-base "$GITHUB_SHA"',
+                "actions/upload-pages-artifact",
+            ],
+        )
+        self.assertLess(verifier, site)
+        self.assertLess(site, bot_push)
+        self.assertLess(bot_push, upload)
+        self.assertIn("needs: production_refresh", self.deploy_job)
 
     def test_production_concurrency_group_is_preserved(self) -> None:
         self.assertIn("'deal-desk-pages'", self.workflow)

@@ -54,7 +54,7 @@ jobs:
         run: python -m unittest discover -s tests -v
 
       - name: Verify checked-in artifact contracts
-        run: python scripts/verify_public_artifacts.py
+        run: python scripts/release_diagnostics.py verify-public-artifacts
 
   production_refresh:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -92,7 +92,7 @@ jobs:
       - name: Verify synchronized public artifacts
         run: |
           python -m unittest discover -s tests -v
-          python scripts/verify_public_artifacts.py
+          python scripts/release_diagnostics.py verify-public-artifacts
 
       - name: Prepare site
         run: |
@@ -111,8 +111,8 @@ jobs:
           git add output/deal_markets_brief.html output/latest_snapshot.json output/precedent_transactions.csv output/precedent_transactions.xlsx output/build_manifest.json data/precedent_transactions.json
           if ! git diff --cached --quiet; then
             git commit -m "chore: refresh deal desk"
-            git push
           fi
+          python scripts/release_diagnostics.py bot-push --expected-base "$GITHUB_SHA"
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

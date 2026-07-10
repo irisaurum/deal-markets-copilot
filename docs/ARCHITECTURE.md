@@ -108,7 +108,12 @@ Production refresh runs only on weekday schedule or `workflow_dispatch`:
 5. build workbook and manifest from the final persisted dataset;
 6. second `run.py --replay` to synchronize health/presentation state;
 7. strict verifier;
-8. commit changed public data/output as the bot only if verification passed;
-9. deploy Pages, retrying a transient deployment failure once.
+8. commit changed public data/output locally as the bot only if verification passed;
+9. mandatory stale-main check against the run base SHA, followed by an explicit main-only fast-forward/no-op push;
+10. deploy Pages, retrying a transient deployment failure once.
 
 The production refresh path uses the `deal-desk-pages` concurrency group so only one production writer runs at a time. Validation runs use unique concurrency groups and cannot cancel a production refresh.
+
+Strict verifier and bot-push failures write compact GitHub Actions step summaries through `scripts/release_diagnostics.py`. They keep the original failing assertion/traceback visible and fail closed before publication or deploy.
+
+The stale-main check runs even when the refresh produced no data commit, so an older no-change candidate cannot deploy over a newer `main`. Publication targets only `origin/main`; the workflow never relies on the checkout branch's implicit upstream.

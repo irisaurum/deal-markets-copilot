@@ -175,3 +175,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** code validation must be deterministic and side-effect-free, while production refresh must remain the single controlled writer/publisher path.
 - **Consequences:** docs-only and bot-generated paths remain excluded from push-triggered validation loops; pushes to `main` no longer run live discovery or deploy Pages; the current scheduled cadence and manual production refresh remain unchanged.
 - **Related:** `.github/workflows/deal-desk.yml`, `tests/test_workflow_policy.py`, `ARCHITECTURE.md`, `TESTING_AND_RELEASE.md`.
+
+## Production failures fail closed with actionable diagnostics
+
+- **Date:** 2026-07-08 CI-01-T3/T4.
+- **Decision:** strict verifier failures and bot-push stale-main failures write compact GitHub Actions step summaries while preserving traceback/assertion output. Every production candidate, including a no-change run, must compare `origin/main` with the run base SHA before an explicit main-only push or deploy and refuse publication if main moved.
+- **Context:** production failures were safe but not always immediately actionable, and bot push relied on the final `git push` to discover non-fast-forward races.
+- **Rationale:** publication must fail before remote overwrite risk, and operators need the failed stage, invariant, artifact/file, expected/actual values and recommended next action in one place.
+- **Consequences:** stale production runs do not rebase, merge, force-push or overwrite remote main; a new production refresh must run on the current main. Verifier assertions remain strict.
+- **Related:** `.github/workflows/deal-desk.yml`, `scripts/release_diagnostics.py`, `scripts/verify_public_artifacts.py`, `tests/test_release_diagnostics.py`.

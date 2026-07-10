@@ -296,7 +296,10 @@ def main() -> None:
             assert value is None or 0 <= float(value) <= 100, f"Invalid {field}: {deal_id}"
         if row.get("quality_status") == "approved":
             assert row.get("record_kind") == "deal" and not row.get("quality_flags"), f"Approved record has blockers: {deal_id}"
-    assert manifest.get("dataset_sha256") == digest, "XLSX manifest dataset hash is stale"
+    manifest_dataset_sha = manifest.get("dataset_sha256")
+    assert manifest_dataset_sha == digest, (
+        f"XLSX manifest dataset hash is stale: expected={digest!r}, actual={manifest_dataset_sha!r}"
+    )
     assert manifest.get("build_id") == expected, "XLSX manifest build ID is stale"
     assert manifest.get("record_count") == len(rows), "XLSX manifest record count is stale"
     assert snapshot.get("health", {}).get("build_id") == expected, "Snapshot build ID is stale"
@@ -317,7 +320,12 @@ def main() -> None:
     assert list(csv_rows[0]) == CSV_FIELDS, "CSV columns differ from the public schema"
     for index, (source, exported) in enumerate(zip(rows, csv_rows, strict=True), start=2):
         for field in CSV_FIELDS:
-            assert exported[field] == csv_value(source, field), f"CSV mismatch at row {index}, field {field}"
+            expected_value = csv_value(source, field)
+            actual_value = exported[field]
+            assert actual_value == expected_value, (
+                f"CSV mismatch at row {index}, deal_id {source['deal_id']}, field {field}: "
+                f"expected={expected_value!r}, actual={actual_value!r}"
+            )
     assert not any(row.get("deal_type") == "DCM" and row.get("status") == "Closed" for row in rows), "DCM records still use M&A Closed status"
     technical_patterns = ("о проведении выкупа облигаций", "о регистрации выпуска", "о порядке сбора заявок", "операции репо")
     assert not any(str(item.get("event", {}).get("title") or "").lower().startswith(technical_patterns) for item in snapshot.get("events", [])), "Technical filing leaked into live signals"
