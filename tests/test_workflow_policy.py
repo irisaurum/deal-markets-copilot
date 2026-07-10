@@ -170,6 +170,14 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertLess(bot_push, upload)
         self.assertIn("needs: production_refresh", self.deploy_job)
 
+    def test_post_refresh_verifier_emits_diagnostics_before_regression_tests(self) -> None:
+        step = self.production_job.split("- name: Verify synchronized public artifacts", 1)[1].split("- name:", 1)[0]
+        verifier = step.find("python scripts/release_diagnostics.py verify-public-artifacts")
+        tests = step.find("python -m unittest discover -s tests -v")
+        self.assertNotEqual(verifier, -1)
+        self.assertNotEqual(tests, -1)
+        self.assertLess(verifier, tests)
+
     def test_production_concurrency_group_is_preserved(self) -> None:
         self.assertIn("'deal-desk-pages'", self.workflow)
         self.assertIn("github.event_name == 'schedule'", self.workflow)
