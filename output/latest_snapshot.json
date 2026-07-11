@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-10T19:51+03:00",
+  "generated_at": "2026-07-11T18:23+03:00",
   "health": {
-    "last_success_at": "2026-07-10T19:51+03:00",
-    "build_id": "ea47d5865af6",
-    "dataset_sha256": "ea47d5865af6f6f267fc06901776128a3c24284f2f9b23d2c30cea1b389355d2",
+    "last_success_at": "2026-07-11T18:23+03:00",
+    "build_id": "607838a99475",
+    "dataset_sha256": "607838a9947569ce070b1d321c664e8cfbd4119d318570c81d49972c79a6734a",
     "record_count": 105,
     "key_deal_count": 7,
     "approved_count": 21,
@@ -22,61 +22,61 @@
         "status": "ok",
         "records": 16,
         "required": true,
-        "checked_at": "2026-07-10T19:50:56+03:00",
+        "checked_at": "2026-07-11T18:22:31+03:00",
         "error": "",
-        "age_minutes": 0.7
+        "age_minutes": 0.8
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-10T19:51:13+03:00",
+        "checked_at": "2026-07-11T18:22:53+03:00",
         "error": "",
         "age_minutes": 0.4
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
-        "records": 14,
+        "records": 13,
         "required": true,
-        "checked_at": "2026-07-10T19:51:13+03:00",
+        "checked_at": "2026-07-11T18:22:53+03:00",
         "error": "",
         "age_minutes": 0.4
       },
       {
         "name": "configured_rss",
         "status": "ok",
-        "records": 6,
+        "records": 5,
         "required": true,
-        "checked_at": "2026-07-10T19:51:26+03:00",
+        "checked_at": "2026-07-11T18:23:07+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 13,
+        "records": 15,
         "required": true,
-        "checked_at": "2026-07-10T19:51:27+03:00",
+        "checked_at": "2026-07-11T18:23:08+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 2,
+        "records": 9,
         "required": true,
-        "checked_at": "2026-07-10T19:51:28+03:00",
+        "checked_at": "2026-07-11T18:23:09+03:00",
         "error": "",
         "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 144,
+        "records": 142,
         "required": false,
-        "checked_at": "2026-07-10T19:51:29+03:00",
+        "checked_at": "2026-07-11T18:23:10+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-10T19:51:30+03:00",
+        "checked_at": "2026-07-11T18:23:12+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,17 +94,17 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-10T19:51:30+03:00",
+        "checked_at": "2026-07-11T18:23:12+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 37,
+    "discovery_record_count": 45,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.7,
-    "source_checked_at": "2026-07-10T19:50+03:00",
-    "freshness_limit_minutes": 90,
+    "source_age_minutes": 0.8,
+    "source_checked_at": "2026-07-11T18:22+03:00",
+    "freshness_limit_minutes": 4320,
     "source_status": "ok",
     "freshness_status": "ok",
     "market_data_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-10T16:51:36+00:00"
+    "xlsx_generated_at": "2026-07-11T15:23:17+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3537.5,
-      "change_percent": -1.6,
-      "turnover": 2004153079,
-      "updated": "19:36:29",
+      "price": 3519.5,
+      "change_percent": -0.57,
+      "turnover": 95481642,
+      "updated": "18:08:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3220.5,
-      "change_percent": -0.6,
-      "turnover": 856945114,
-      "updated": "19:36:31",
+      "price": 3200.5,
+      "change_percent": -0.7,
+      "turnover": 36204165,
+      "updated": "18:08:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 165.55,
-      "change_percent": -2.82,
-      "turnover": 396029554,
-      "updated": "19:36:19",
+      "price": 166.45,
+      "change_percent": -0.89,
+      "turnover": 13639754,
+      "updated": "18:08:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -189,22 +189,7 @@
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [
-      {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 165.55,
-        "change_percent": -2.82,
-        "turnover": 396029554,
-        "updated": "19:36:19",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      }
-    ],
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -251,22 +236,10 @@
         "source_url": "https://www.cbr.ru/press/PR/?file=639192135171625735DSD.htm",
         "source_title": "Совет директоров Банка России принял решение о включении ценных бумаг в Ломбардный список (10.07.2026)",
         "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-25567a320f8d",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения VKCO (-2.82%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
-        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -274,7 +247,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -2.82% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
