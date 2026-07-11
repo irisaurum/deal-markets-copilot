@@ -179,12 +179,14 @@ If the strict verifier fails, there must be no bot commit and no Pages deploymen
 
 ## LaunchAgent policy
 
-Interim policy pending CI-01-T5:
+Final CI-01 policy:
 
-- LaunchAgent remains unloaded;
-- LaunchAgent is not a production automation path;
-- it is retained only as an emergency/manual fallback;
-- it must not run during development or integration work.
+- GitHub Actions scheduled production refresh is the only official production automation path.
+- LaunchAgent remains unloaded by default and is not part of the production release contract.
+- The local LaunchAgent is retained only as an emergency/manual local fallback.
+- It must not run during development, integration, branch work, PR work or while a GitHub Actions production refresh may run.
+- Restoring LaunchAgent must be explicit and manual; no task should restore it automatically.
+- Before any manual restore, confirm the working tree is clean, the run is intentional and the output will be treated as local-only unless it later goes through the normal CI release path.
 
 ## Deployment verification
 

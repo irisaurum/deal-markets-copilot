@@ -117,3 +117,5 @@ The production refresh path uses the `deal-desk-pages` concurrency group so only
 Strict verifier and bot-push failures write compact GitHub Actions step summaries through `scripts/release_diagnostics.py`. They keep the original failing assertion/traceback visible and fail closed before publication or deploy.
 
 The stale-main check runs even when the refresh produced no data commit, so an older no-change candidate cannot deploy over a newer `main`. Publication targets only `origin/main`; the workflow never relies on the checkout branch's implicit upstream.
+
+GitHub Actions schedule and `workflow_dispatch` are the only official production automation paths. The local LaunchAgent / `scripts/scheduled_update.py` launcher is outside the production release contract, remains unloaded by default and is retained only as an explicit emergency/manual local fallback.

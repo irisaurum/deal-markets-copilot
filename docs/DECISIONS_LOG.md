@@ -161,7 +161,8 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 ## LaunchAgent is an interim manual fallback
 
 - **Date:** 2026-07-08 CI-01-T1.
-- **Decision:** LaunchAgent remains unloaded and is not a production automation path. It is retained only as an emergency/manual fallback pending CI-01-T5 and must not run during development or integration work.
+- **Status:** superseded by "Local LaunchAgent remains disabled by default" below.
+- **Decision:** LaunchAgent remains unloaded and is not a production automation path. At CI-01-T1 it was retained only as an emergency/manual fallback until CI-01-T5 finalized the policy, and it was not allowed to run during development or integration work.
 - **Context:** production automation is currently the GitHub Actions path.
 - **Rationale:** local scheduled execution can create side effects outside the controlled CI release contract.
 - **Consequences:** development and integration tasks must leave LaunchAgent unloaded unless a future decision changes this policy.
@@ -184,3 +185,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** publication must fail before remote overwrite risk, and operators need the failed stage, invariant, artifact/file, expected/actual values and recommended next action in one place.
 - **Consequences:** stale production runs do not rebase, merge, force-push or overwrite remote main; a new production refresh must run on the current main. Verifier assertions remain strict.
 - **Related:** `.github/workflows/deal-desk.yml`, `scripts/release_diagnostics.py`, `scripts/verify_public_artifacts.py`, `tests/test_release_diagnostics.py`.
+
+## Local LaunchAgent remains disabled by default
+
+- **Date:** 2026-07-11 CI-01-T5.
+- **Decision:** GitHub Actions scheduled production refresh is the only official production automation path. The local LaunchAgent remains unloaded by default, is not part of the production release contract and is retained only as an explicit emergency/manual local fallback.
+- **Context:** CI-01 T1-T4 moved release semantics, production refresh, bot publication safety and failure diagnostics into the controlled GitHub Actions path. The local LaunchAgent was verified as unloaded / service not found at CI-01 closure.
+- **Rationale:** a local scheduled writer can run outside the CI concurrency, stale-main, verifier and Pages publication contract. Keeping it disabled preserves one authoritative production path while retaining a manual escape hatch.
+- **Consequences:** tasks must not restore LaunchAgent automatically. It must not run during development, integration, branch work, PR work or while a GitHub Actions production refresh may run. Any manual restore requires an intentional local-only decision and a clean working tree; production publication still goes through GitHub Actions.
+- **Related:** `TESTING_AND_RELEASE.md`, `CURRENT_STATE.md`, `ARCHITECTURE.md`, `scripts/scheduled_update.py`.
