@@ -906,9 +906,9 @@
     "deal_id": "DL-moex-101851",
     "announced_date": "2026-07-07",
     "deal_type": "DCM",
-    "record_kind": "deal",
+    "record_kind": "technical_filing",
     "status": "Confirmed",
-    "target_or_issuer": "открытое акционерное общество \"Российские железные дороги\"",
+    "target_or_issuer": "Not disclosed",
     "acquirer_or_investor": "Not applicable",
     "seller": "Not applicable",
     "sector": "Not classified",
@@ -945,9 +945,12 @@
     "bookrunners": "Not applicable",
     "free_float_percent": null,
     "rationale": "Not disclosed",
-    "quality_status": "approved",
-    "quality_score": 100,
-    "quality_flags": [],
+    "quality_status": "review",
+    "quality_score": 40,
+    "quality_flags": [
+      "technical_filing",
+      "missing_issuer"
+    ],
     "sources": [
       {
         "name": "MOEX disclosure",
@@ -1125,7 +1128,7 @@
     "deal_id": "DL-moex-101795",
     "announced_date": "2026-07-06",
     "deal_type": "DCM",
-    "record_kind": "deal",
+    "record_kind": "technical_filing",
     "status": "Confirmed",
     "target_or_issuer": "Not disclosed",
     "acquirer_or_investor": "Not applicable",
@@ -1165,8 +1168,9 @@
     "free_float_percent": null,
     "rationale": "Not disclosed",
     "quality_status": "review",
-    "quality_score": 75,
+    "quality_score": 40,
     "quality_flags": [
+      "technical_filing",
       "missing_issuer"
     ],
     "sources": [

@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import parse_qsl, urlencode, urlparse, urlsplit, urlunsplit
 
 from .models import ClassifiedEvent, DealRecord
+from .classifier import is_technical_exchange_notice
 
 
 DEAL_CATEGORIES = {"M&A", "ECM", "DCM"}
@@ -431,27 +432,7 @@ def _record_kind(row: dict) -> str:
 
 
 def _is_technical_filing(text: str, source_type: str = "") -> bool:
-    patterns = (
-        r"^\s*итоги выпуска биржевых облигаций",
-        r"^\s*о регистрации (?:выпуска|проспекта|программы|изменений)",
-        r"^\s*о порядке (?:сбора заявок|приобретения облигаций|заключения сделок)",
-        r"^\s*дополнительные условия проведения торгов",
-        r"^\s*о включении.+список ценных бумаг",
-        r"^\s*о проведении выкупа облигаций",
-        r"^\s*о проведении .{0,80}размещени\w* .{0,80}облигац",
-        r"^\s*о признании выпуск\w* облигац\w* несостоявш",
-        r"^\s*о признании программ\w* .{0,80}облигац\w* несостоявш",
-        r"^\s*информация о кодах расчетов",
-        r"^\s*операции репо .+сделки купли-продажи облигаций",
-        r"^\s*московская биржа начала торги паями",
-        r"\bбпиф\b.+\bторг",
-        r"^\s*информация о приобретении инвестиционн\w* па[йё]",
-        r"\b(?:ипиф|пиф)\b.+\bпа[йё]",
-        r"^\s*о проведении .{0,40}аукцион\w* .{0,80}\bофз\b",
-        r"\bаукцион\w*\b.{0,80}\bофз\b",
-        r"^\s*московская биржа начала торги",
-    )
-    return bool(any(re.search(pattern, text, re.I) for pattern in patterns))
+    return is_technical_exchange_notice(text)
 
 
 def _record_quality(row: dict) -> tuple[int, int, int]:

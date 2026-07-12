@@ -1032,6 +1032,8 @@ class CoreTests(unittest.TestCase):
             "Московская биржа начала торги паями активно управляемого БПИФ",
             "Итоги аукциона ОФЗ Минфина",
             "О регистрации программы и проспекта биржевых облигаций",
+            "О регистрации дополнительного выпуска биржевых облигаций",
+            "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев",
             "ВТБ получил в залог крупный пакет акций Ozon",
         )
         for index, title in enumerate(titles):
@@ -1187,6 +1189,73 @@ class CoreTests(unittest.TestCase):
         self.assertIsNone(record.stake_percent)
         self.assertEqual(record.quality_status, "review")
         self.assertEqual(select_key_deals([record.to_dict()]), [])
+
+    def test_noise01_moex_technical_notices_are_traceable_non_deals(self) -> None:
+        titles = {
+            "moex-101795": "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций",
+            "moex-101798": 'Дополнительные условия проведения торгов облигациями серии 004P-07 ПАО "Банк ПСБ"',
+            "moex-101851": "О регистрации дополнительного выпуска биржевых облигаций",
+            "listing-parameters": "Об изменении параметров ценных бумаг в Списке ценных бумаг, допущенных к торгам",
+            "coupon-notice": "Информация о выплате купонного дохода по биржевым облигациям",
+            "redemption-notice": "О погашении биржевых облигаций серии 001Р-01",
+        }
+        records = []
+        items = []
+        for event_id, title in titles.items():
+            event = Event(
+                event_id, "2026-07-08T10:00:00+03:00", title, "Техническое уведомление биржи",
+                "MOEX disclosure", f"https://www.moex.com/n{event_id}",
+                source_type="official_exchange", confidence="confirmed",
+            )
+            item = classify_event(event, [])
+            record = extract_deal_record(item, [])
+            self.assertEqual(item.score, 0, event_id)
+            self.assertFalse(is_actionable_signal(item), event_id)
+            if event_id == "listing-parameters":
+                self.assertIsNone(record)
+            else:
+                self.assertEqual(record.record_kind, "technical_filing", event_id)
+                self.assertEqual(record.quality_status, "review", event_id)
+                records.append(record.to_dict())
+            items.append(item)
+
+        self.assertEqual(select_key_deals(records), [])
+        self.assertEqual(len(select_deal_buckets(records)["technical_filing"]), len(titles) - 1)
+        workflow = build_morning_workflow(items, [], {"deal_hypotheses": []})
+        self.assertEqual(workflow["new_signals"], 0)
+        self.assertEqual(workflow["tasks"], [])
+
+    def test_noise01_migrates_legacy_moex_rows_without_overfiltering_real_issuance(self) -> None:
+        legacy_rows = (
+            ("DL-moex-101795", "О внесении изменений в решение о выпуске биржевых облигаций в части сведений о представителе владельцев биржевых облигаций"),
+            ("DL-moex-101798", 'Дополнительные условия проведения торгов облигациями серии 004P-07 ПАО "Банк ПСБ"'),
+        )
+        for deal_id, headline in legacy_rows:
+            migrated = _migrate_row({
+                "deal_id": deal_id, "announced_date": "2026-07-08", "deal_type": "DCM",
+                "record_kind": "deal", "status": "Confirmed", "headline": headline,
+                "target_or_issuer": "Not disclosed", "acquirer_or_investor": "Not applicable",
+                "evidence_label": "confirmed", "source_name": "MOEX disclosure",
+                "source_url": f"https://www.moex.com/n{deal_id.removeprefix('DL-moex-')}",
+            })
+            self.assertEqual(migrated["record_kind"], "technical_filing", deal_id)
+            self.assertIn("technical_filing", migrated["quality_flags"], deal_id)
+
+        issuance = Event(
+            "yandex-issued", "2026-06-19T10:00:00+03:00",
+            "Яндекс разместил два выпуска биржевых облигаций 001Р-04 и 001Р-05 на общую сумму 60 млрд рублей",
+            "", "Yandex Investor Relations", "https://yandex.ru/company/news/yandex-bonds",
+            source_type="issuer_ir", confidence="confirmed",
+        )
+        item = classify_event(issuance, [])
+        record = extract_deal_record(item, [])
+        self.assertGreater(item.score, 0)
+        self.assertTrue(is_actionable_signal(item))
+        self.assertEqual(record.record_kind, "deal")
+        self.assertEqual(record.status, "Issued")
+        self.assertEqual(record.transaction_value, 60_000_000_000)
+        self.assertEqual(record.security_code, "001Р-04; 001Р-05")
+        self.assertEqual([row["deal_id"] for row in select_key_deals([record.to_dict()])], ["DL-yandex-issued"])
 
     def test_dcm_yuan_currency_is_not_converted_to_rubles(self) -> None:
         event = Event(

@@ -64,7 +64,7 @@ def _rewrite_workbook(path: Path, mutate) -> None:
     sheets: dict[str, str] = {}
     for sheet in workbook.findall(f".//{{{MAIN_NS}}}sheet"):
         target = targets[sheet.get(f"{{{REL_NS}}}id")]
-        sheets[sheet.get("name")] = "xl/" + target.lstrip("/")
+        sheets[sheet.get("name")] = target.lstrip("/") if target.startswith("/") else "xl/" + target
 
     mutate(files, sheets, shared_strings)
     with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as destination:

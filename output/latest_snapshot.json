@@ -1,14 +1,14 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-11T18:23+03:00",
+  "generated_at": "2026-07-12T17:42+03:00",
   "health": {
-    "last_success_at": "2026-07-11T18:23+03:00",
-    "build_id": "607838a99475",
-    "dataset_sha256": "607838a9947569ce070b1d321c664e8cfbd4119d318570c81d49972c79a6734a",
+    "last_success_at": "2026-07-12T17:42+03:00",
+    "build_id": "3efc8e11bef2",
+    "dataset_sha256": "3efc8e11bef21fe00c56f9dd06e95a20f33960380e98bedb5dcac953d0b33bbb",
     "record_count": 105,
-    "key_deal_count": 7,
-    "approved_count": 21,
-    "review_count": 61,
+    "key_deal_count": 6,
+    "approved_count": 20,
+    "review_count": 62,
     "rejected_count": 23,
     "source_count": 137,
     "source_representation_count": 183,
@@ -24,7 +24,7 @@
         "required": true,
         "checked_at": "2026-07-11T18:22:31+03:00",
         "error": "",
-        "age_minutes": 0.8
+        "age_minutes": 1400.1
       },
       {
         "name": "gdelt",
@@ -33,7 +33,7 @@
         "required": false,
         "checked_at": "2026-07-11T18:22:53+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 1399.7
       },
       {
         "name": "moex_disclosures",
@@ -42,7 +42,7 @@
         "required": true,
         "checked_at": "2026-07-11T18:22:53+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 1399.7
       },
       {
         "name": "configured_rss",
@@ -51,7 +51,7 @@
         "required": true,
         "checked_at": "2026-07-11T18:23:07+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 1399.5
       },
       {
         "name": "deal_news",
@@ -60,7 +60,7 @@
         "required": true,
         "checked_at": "2026-07-11T18:23:08+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 1399.4
       },
       {
         "name": "company_news",
@@ -69,7 +69,7 @@
         "required": true,
         "checked_at": "2026-07-11T18:23:09+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 1399.4
       },
       {
         "name": "deal_archive",
@@ -78,7 +78,7 @@
         "required": false,
         "checked_at": "2026-07-11T18:23:10+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 1399.4
       },
       {
         "name": "sec_filings",
@@ -87,7 +87,7 @@
         "required": false,
         "checked_at": "2026-07-11T18:23:12+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 1399.4
       },
       {
         "name": "moex_quotes",
@@ -102,7 +102,7 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.8,
+    "source_age_minutes": 1400.1,
     "source_checked_at": "2026-07-11T18:22+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
@@ -112,7 +112,7 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-11T15:23:17+00:00"
+    "xlsx_generated_at": "2026-07-12T14:42:11.486Z"
   },
   "mode": "live",
   "market": [
@@ -177,7 +177,7 @@
         "discovery_url": ""
       },
       "category": "DCM",
-      "score": 7,
+      "score": 6,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
