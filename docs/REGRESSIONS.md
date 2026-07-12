@@ -103,8 +103,8 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Failure mode:** exchange plumbing generated banker actions.
 - **Why it mattered:** task queue prioritized non-deal noise.
 - **Root mechanism:** category keywords were treated as sufficient actionability.
-- **Current protection:** classifier and workflow suppress technical patterns; records remain traceable as `technical_filing`.
-- **Tests/checks:** `test_workflow_suppresses_technical_exchange_notices`, `test_repo_trading_notice_is_not_a_deal_or_task`, `test_bond_buyback_is_dcm_not_ma`.
+- **Current protection:** classifier and workflow suppress shared technical patterns, including routine central-bank Lombard/collateral eligibility notices; records remain traceable as `technical_filing`.
+- **Tests/checks:** `test_workflow_suppresses_technical_exchange_notices`, `test_repo_trading_notice_is_not_a_deal_or_task`, `test_cbr_lombard_list_notices_are_non_actionable_technical_filings`, `test_bond_buyback_is_dcm_not_ma`.
 - **Files:** `classifier.py`, `workflow.py`, `deals.py`.
 
 ### REG-10 — Market roundups/routine content entering transaction streams

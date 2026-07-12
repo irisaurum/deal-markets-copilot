@@ -11,7 +11,7 @@ from unittest.mock import patch
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from deal_markets_copilot.classifier import classify_event, deduplicate, stable_event_id
+from deal_markets_copilot.classifier import classify_event, deduplicate, is_technical_exchange_notice, stable_event_id
 from deal_markets_copilot.deals import _migrate_row, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
@@ -129,6 +129,54 @@ class CoreTests(unittest.TestCase):
         self.assertIsNotNone(record)
         self.assertEqual(record.record_kind, "technical_filing")
         self.assertEqual(select_key_deals([record.to_dict()]), [])
+
+    def test_cbr_lombard_list_notices_are_non_actionable_technical_filings(self) -> None:
+        titles = (
+            "Совет директоров Банка России принял решение о включении ценных бумаг в Ломбардный список",
+            "Банк России сообщил об исключении ценных бумаг из Ломбардного списка",
+            "Ценные бумаги включены в Ломбардный список Банка России",
+            "Central bank collateral eligibility notice for eligible securities",
+            "Eligible securities added to the Bank of Russia collateral list",
+        )
+        items = []
+        records = []
+        for index, title in enumerate(titles):
+            event = Event(
+                f"cbr-lombard-{index}", "2026-07-10T11:02:13+03:00", title,
+                "Routine collateral eligibility notice", "Банк России",
+                f"https://www.cbr.ru/press/PR/{index}", source_type="official_regulator",
+                confidence="confirmed",
+            )
+            item = classify_event(event, [])
+            self.assertTrue(is_technical_exchange_notice(f"{title}. {event.summary}"), title)
+            self.assertEqual(item.score, 0, title)
+            self.assertFalse(is_actionable_signal(item), title)
+            record = extract_deal_record(item, [])
+            if record is not None:
+                self.assertEqual(record.record_kind, "technical_filing", title)
+                self.assertEqual(record.quality_status, "review", title)
+                records.append(record.to_dict())
+            items.append(item)
+
+        self.assertEqual(select_key_deals(records), [])
+        workflow = build_morning_workflow(items, [], {"deal_hypotheses": []})
+        self.assertEqual(workflow["new_signals"], 0)
+        self.assertEqual(workflow["tasks"], [])
+
+    def test_noise01_production_records_remain_canonical(self) -> None:
+        rows = json.loads((ROOT / "data" / "precedent_transactions.json").read_text(encoding="utf-8"))
+        by_id = {row["deal_id"]: row for row in rows}
+        for deal_id in ("DL-moex-101795", "DL-moex-101851", "DL-moex-101798"):
+            self.assertEqual(by_id[deal_id]["record_kind"], "technical_filing", deal_id)
+            self.assertEqual(by_id[deal_id]["quality_status"], "review", deal_id)
+
+        yandex = by_id["DL-7a721642a53e0f1d"]
+        self.assertEqual(yandex["record_kind"], "deal")
+        self.assertEqual(yandex["quality_status"], "approved")
+        self.assertEqual(yandex["status"], "Issued")
+        self.assertEqual(yandex["transaction_value"], 60_000_000_000)
+        self.assertEqual(yandex["security_code"], "001Р-04; 001Р-05")
+        self.assertNotIn("30 млрд", yandex["headline"].lower())
 
     def test_rss_transport_failure_is_not_silently_successful(self) -> None:
         config = {"sources": [{"name": "Test RSS", "url": "https://example.com/rss", "enabled": True}]}
