@@ -20,7 +20,7 @@
 <header class="site-header"><div class="nav-wrap">
   <a class="brand" href="#brief"><span class="brand-mark">DM</span><span><strong>Deal Market Monitor</strong><small>M&amp;A · ECM · DCM</small></span></a>
   <nav><a href="#deals">Сделки</a><a href="#signals">Свежие события</a><a href="#analytics">Аналитика</a></nav>
-  <div class="status" id="global-health"><span class="dot live"></span><span><strong>Данные и источники проверены</strong><small>13.07.2026 · 00:29 МСК</small></span></div>
+  <div class="status" id="global-health"><span class="dot live"></span><span><strong>Данные и источники проверены</strong><small>13.07.2026 · 01:11 МСК</small></span></div>
 </div></header>
 
 <main class="page">
@@ -31,9 +31,9 @@
     <div class="overview-side"><div class="freshness"><span class="dot live"></span><div><strong>Свежие данные · 72H CATCH-UP</strong><small>Автообновление каждые 30 минут в рабочее время</small></div></div>
     <div class="metric-grid">
       <article><span>Свежих событий</span><strong>0</strong><small>72h catch-up</small></article>
-      <article><span>Сделок в фокусе</span><strong>6</strong><small>последние ключевые</small></article>
+      <article><span>Сделок в фокусе</span><strong>7</strong><small>последние ключевые</small></article>
       <article><span>M&amp;A</span><strong>1</strong><small>в текущей выборке</small></article>
-      <article><span>База данных</span><strong>105</strong><small>live + precedents</small></article>
+      <article><span>База данных</span><strong>106</strong><small>live + precedents</small></article>
     </div></div>
   </section>
 
@@ -45,15 +45,15 @@
         <div><strong>VKCO</strong><small>VK</small></div>
         <span class="quote-price">168.15 ₽</span><span class="quote-change up">+0.12%</span></a></section>
 
-  <section class="health-panel ok" id="data-health" data-last-success="2026-07-13T00:29+03:00" aria-label="Состояние системы">
-      <div><span class="health-dot"></span><strong id="data-health-label">Система готова</strong><small>Источники проверены: 2026-07-13T00:29+03:00</small></div>
-      <dl><div><dt>Build ID</dt><dd>5815eb1a3219</dd></div><div><dt>Записей</dt><dd>105</dd></div><div><dt>Approved</dt><dd>20</dd></div><div><dt>Источники</dt><dd>OK</dd></div><div><dt>Market tape</dt><dd>OK · 3/3</dd></div><div><dt>Свежесть</dt><dd>свежие · 1 мин</dd></div><div><dt>QA issues</dt><dd>0</dd></div><div><dt>Excel</dt><dd>синхронизирован</dd></div></dl>
+  <section class="health-panel ok" id="data-health" data-last-success="2026-07-13T01:10+03:00" aria-label="Состояние системы">
+      <div><span class="health-dot"></span><strong id="data-health-label">Система готова</strong><small>Источники проверены: 2026-07-13T01:10+03:00</small></div>
+      <dl><div><dt>Build ID</dt><dd>a0c9cd19d779</dd></div><div><dt>Записей</dt><dd>106</dd></div><div><dt>Approved</dt><dd>21</dd></div><div><dt>Источники</dt><dd>OK</dd></div><div><dt>Market tape</dt><dd>OK · 3/3</dd></div><div><dt>Свежесть</dt><dd>свежие · 1 мин</dd></div><div><dt>QA issues</dt><dd>0</dd></div><div><dt>Excel</dt><dd>синхронизирован</dd></div></dl>
     </section>
 
   <section class="section" id="deals">
     <div class="section-head"><div><span class="eyebrow">КЛЮЧЕВЫЕ СДЕЛКИ</span><h2>Последние сделки рынка</h2><p>Самое важное — стороны, сумма, статус и ссылка на подтверждение. Без технических сообщений биржи.</p></div>
     <div class="export-actions"><a class="button primary" href="precedent_transactions.xlsx" download>Скачать Excel</a><a class="button ghost" href="precedent_transactions.csv" download>CSV</a></div></div>
-    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Актуальные сделки <span>6</span></button><button class="deal-filter" data-deal-filter="watchlist">Требует проверки <span>5</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>1</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>10</span></button></div>
+    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Актуальные сделки <span>7</span></button><button class="deal-filter" data-deal-filter="watchlist">Требует проверки <span>5</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>1</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>10</span></button></div>
     <label class="search"><span>⌕</span><input id="deal-search" placeholder="Найти компанию или сделку"></label></div>
     <div class="deal-advanced-filters" aria-label="Фильтры сделок">
       <label>Тип<select id="deal-type-filter"><option value="all">Все типы</option><option value="M&A">M&A</option><option value="DCM">DCM</option><option value="ECM">ECM</option></select></label>
@@ -64,8 +64,8 @@
       <label>Сортировка<select id="deal-sort"><option value="date-desc">Сначала новые</option><option value="date-asc">Сначала старые</option><option value="amount-desc">По сумме внутри валюты</option><option value="score-desc">По качеству ↓</option></select></label>
       <button class="reset-filters" id="deal-filter-reset" type="button">Сбросить</button>
     </div>
-    <div class="deal-stats"><span><b>6</b> актуальных сделок за 12 месяцев</span><span><b>6</b> прошли quality gate</span><span>Историческая медиана EV/Revenue <b>10.2x</b> · n=6</span><span>Историческая медиана EV/EBITDA <b>N/M</b> · n=2 · недостаточная выборка</span></div>
-    <div class="deal-panels"><section class="bucket-panel" data-bucket-panel="deal"><div class="bucket-head"><div><h3>Актуальные сделки</h3><p>Сделки и размещения; уровень проверки явно указан на каждой карточке.</p></div><span>6</span></div><div class="deal-grid"><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Issued" data-deal-date="2026-07-08" data-deal-amount="" data-deal-currency="Not disclosed" data-deal-score="100" data-deal-search="selectel разместил новый выпуск облигаций объемом 7,5 миллиардов рублей selectel not applicable not applicable selectel newsroom not disclosed not disclosed">
+    <div class="deal-stats"><span><b>7</b> актуальных сделок за 12 месяцев</span><span><b>7</b> прошли quality gate</span><span>Историческая медиана EV/Revenue <b>10.2x</b> · n=6</span><span>Историческая медиана EV/EBITDA <b>N/M</b> · n=2 · недостаточная выборка</span></div>
+    <div class="deal-panels"><section class="bucket-panel" data-bucket-panel="deal"><div class="bucket-head"><div><h3>Актуальные сделки</h3><p>Сделки и размещения; уровень проверки явно указан на каждой карточке.</p></div><span>7</span></div><div class="deal-grid"><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Issued" data-deal-date="2026-07-08" data-deal-amount="" data-deal-currency="Not disclosed" data-deal-score="100" data-deal-search="selectel разместил новый выпуск облигаций объемом 7,5 миллиардов рублей selectel not applicable not applicable selectel newsroom not disclosed not disclosed">
           <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Размещено</span><span class="quality-badge approved">Проверено</span><time>2026-07-08</time></div>
           <h3>Selectel разместил новый выпуск облигаций объемом 7,5 миллиардов рублей</h3>
           <div class="entity-grid"><div><span>Эмитент</span><strong>SELECTEL</strong></div><div><span>Инструмент</span><strong>Bonds</strong></div></div><div class="deal-facts typed-facts"><div><span>Объём</span><strong>Не раскрыт</strong></div><div><span>Купон</span><strong>16.0%</strong></div><div><span>Погашение / срок</span><strong>3 года</strong></div><div><span>ISIN / номер</span><strong>Не раскрыто</strong></div></div>
@@ -79,6 +79,13 @@
 
           <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>RUB</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>Не раскрыто</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
           <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://ir.mts.ru/news_and_events/corporate_releases/details/742414" target="_blank" rel="noopener">MTS Investor Relations ✓</a></div></div>
+        </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Not classified" data-deal-status="Confirmed" data-deal-date="2026-06-23" data-deal-amount="" data-deal-currency="Not disclosed" data-deal-score="100" data-deal-search="whoosh сообщает о завершении первого этапа размещения облигаций и продлении периода размещения wush not applicable not applicable whoosh investor relations not disclosed not disclosed">
+          <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Подтверждено</span><span class="quality-badge approved">Проверено</span><time>2026-06-23</time></div>
+          <h3>Whoosh сообщает о завершении первого этапа размещения облигаций и продлении периода размещения</h3>
+          <div class="entity-grid"><div><span>Эмитент</span><strong>WUSH</strong></div><div><span>Инструмент</span><strong>Bonds</strong></div></div><div class="deal-facts typed-facts"><div><span>Объём</span><strong>Не раскрыт</strong></div><div><span>Купон</span><strong>Не раскрыт</strong></div><div><span>Погашение / срок</span><strong>Не раскрыто</strong></div><div><span>ISIN / номер</span><strong>Не раскрыто</strong></div></div>
+
+          <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>Не раскрыто</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>Не раскрыто</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
+          <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://news.whoosh-bike.ru/soobshchaet_o_zavershenii_pervogo_etapa_razmeshcheniya_obligacij_i_prodlenii" target="_blank" rel="noopener">Whoosh Investor Relations ✓</a></div></div>
         </article><article class="deal-tile" data-deal-bucket="deal" data-deal-type="DCM" data-deal-sector="Technology" data-deal-status="Issued" data-deal-date="2026-06-19" data-deal-amount="60000000000.0" data-deal-currency="RUB" data-deal-score="100" data-deal-search="яндекс разместил два выпуска биржевых облигаций на общую сумму 60 млрд рублей yandex not applicable not applicable yandex investor relations 001р-04; 001р-05 not disclosed">
           <div class="deal-tile-top"><span class="type-badge type-dcm">DCM</span><span class="deal-status">Размещено</span><span class="quality-badge approved">Проверено</span><time>2026-06-19</time></div>
           <h3>Яндекс разместил два выпуска биржевых облигаций на общую сумму 60 млрд рублей</h3>
@@ -220,7 +227,7 @@
           <details class="card-more"><summary>Все параметры</summary><div class="card-detail-grid"><div><span>Валюта</span><strong>Не раскрыто</strong></div><div><span>Доходность</span><strong>Не раскрыт</strong></div><div><span>Срок</span><strong>Не раскрыто</strong></div><div><span>Цена размещения</span><strong>Не раскрыто</strong></div></div></details>
           <div class="deal-tile-foot"><span>Источники · 1</span><div class="source-list"><a href="https://www.moex.com/n101717" target="_blank" rel="noopener">MOEX disclosure ✓</a></div></div>
         </article></div><div class="filter-empty" hidden>По выбранным фильтрам записей нет. Сбросьте фильтры или выберите другой поток.</div></section></div>
-    <details class="data-drawer"><summary>Открыть полную сравнительную таблицу <span>6 строк · все параметры</span></summary><div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Сделка / событие</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Stake</th><th>EV/Revenue</th><th>EV/EBITDA</th><th>Payment</th><th>Quality</th><th>Sources</th></tr></thead><tbody><tr><td>2026-07-08</td><td><b>DCM</b><small>Размещено</small></td>
+    <details class="data-drawer"><summary>Открыть полную сравнительную таблицу <span>7 строк · все параметры</span></summary><div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Сделка / событие</th><th>Target / Issuer</th><th>Acquirer</th><th>Value</th><th>Stake</th><th>EV/Revenue</th><th>EV/EBITDA</th><th>Payment</th><th>Quality</th><th>Sources</th></tr></thead><tbody><tr><td>2026-07-08</td><td><b>DCM</b><small>Размещено</small></td>
         <td class="deal-headline"><b>Selectel разместил новый выпуск облигаций объемом 7,5 миллиардов рублей</b></td>
         <td>SELECTEL</td><td>Not applicable</td>
         <td>Not disclosed</td><td>Not disclosed</td>
@@ -232,7 +239,13 @@
         <td>20.0 bn ₽</td><td>Not disclosed</td>
         <td>N/M</td><td>N/M</td><td>Not applicable</td>
         <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
-        <td><div class="source-list table-sources"><a href="https://ir.mts.ru/news_and_events/corporate_releases/details/742414" target="_blank" rel="noopener">MTS Investor Relations ✓</a></div></td></tr><tr><td>2026-06-19</td><td><b>DCM</b><small>Размещено</small></td>
+        <td><div class="source-list table-sources"><a href="https://ir.mts.ru/news_and_events/corporate_releases/details/742414" target="_blank" rel="noopener">MTS Investor Relations ✓</a></div></td></tr><tr><td>2026-06-23</td><td><b>DCM</b><small>Подтверждено</small></td>
+        <td class="deal-headline"><b>Whoosh сообщает о завершении первого этапа размещения облигаций и продлении периода размещения</b></td>
+        <td>WUSH</td><td>Not applicable</td>
+        <td>Not disclosed</td><td>Not disclosed</td>
+        <td>N/M</td><td>N/M</td><td>Not applicable</td>
+        <td><span class="quality-badge approved">Проверено</span><small>100/100</small></td>
+        <td><div class="source-list table-sources"><a href="https://news.whoosh-bike.ru/soobshchaet_o_zavershenii_pervogo_etapa_razmeshcheniya_obligacij_i_prodlenii" target="_blank" rel="noopener">Whoosh Investor Relations ✓</a></div></td></tr><tr><td>2026-06-19</td><td><b>DCM</b><small>Размещено</small></td>
         <td class="deal-headline"><b>Яндекс разместил два выпуска биржевых облигаций на общую сумму 60 млрд рублей</b></td>
         <td>Yandex</td><td>Not applicable</td>
         <td>60.0 bn ₽</td><td>Not disclosed</td>
@@ -332,7 +345,7 @@
   </section>
   <footer><strong>Deal Market Monitor</strong><span>Публичные данные · выводы требуют проверки аналитиком · не является инвестиционной рекомендацией</span><small>YDEX · OZON · VKCO</small></footer>
 </main>
-<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 13.07.2026 · 00:29\nНовых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Очередь действий пуста.\nActions:";
+<script>window.EVENTS=[];window.BRIEF_TEXT="BANKER MORNING BRIEF · 13.07.2026 · 01:11\nНовых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.\nГлавный сигнал: Новых событий после предыдущего запуска не обнаружено.\nРынок: Движений выше установленного порога нет.\nПервое действие: Очередь действий пуста.\nActions:";
 const AUTO_REFRESH_MS=5*60*1000;
 const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
 function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}
