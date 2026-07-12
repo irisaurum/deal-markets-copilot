@@ -125,6 +125,8 @@ def fetch_official_issuer_news(config: dict, timeout: int = 15) -> list[Event]:
 
 
 def _fetch_official_page(source: dict, timeout: int) -> list[Event]:
+    if source.get("feed_uid"):
+        return _fetch_tilda_feed(source, timeout)
     url = source.get("url", "")
     page = _get_text(url, timeout)
     parser = _LinkParser()
@@ -163,6 +165,69 @@ def _fetch_official_page(source: dict, timeout: int) -> list[Event]:
         if len(events) >= int(source.get("max_items", 20)):
             break
     return events
+
+
+def _fetch_tilda_feed(source: dict, timeout: int) -> list[Event]:
+    """Read a public Tilda feed used by an official issuer press page."""
+    feed_url = str(source.get("feed_url") or "https://feeds.tildaapi.com/api/getfeed/")
+    if not _safe_http_url(feed_url):
+        raise ValueError("Official feed URL must be HTTP(S)")
+    params = urllib.parse.urlencode({
+        "feeduid": str(source["feed_uid"]),
+        "recid": str(source.get("feed_rec_id") or ""),
+        "size": int(source.get("max_items", 20)),
+        "slice": 1,
+        "sort[date]": "desc",
+        "filters[date]": "",
+        "getparts": "true",
+    })
+    payload = _get_json(f"{feed_url}?{params}", timeout)
+    terms = [str(term).lower() for term in source.get("include_terms", _deal_terms())]
+    excluded = [str(term).lower() for term in source.get("exclude_terms", [])]
+    allowed_hosts = {str(host).lower() for host in source.get("allowed_hosts", []) if host}
+    events: list[Event] = []
+    for row in payload.get("posts", []):
+        title = _strip_html(str(row.get("title") or ""))
+        summary = _strip_html(str(row.get("descr") or row.get("text") or ""))[:1500]
+        combined = f"{title} {summary}".lower()
+        direct_url = str(row.get("directlink") or row.get("url") or "").strip()
+        host = urllib.parse.urlparse(direct_url).netloc.lower()
+        if not title or not _safe_http_url(direct_url):
+            continue
+        if allowed_hosts and host not in allowed_hosts:
+            continue
+        if terms and not any(term in combined for term in terms):
+            continue
+        if excluded and any(term in combined for term in excluded):
+            continue
+        published = _official_feed_date(str(row.get("date") or row.get("published") or ""), source)
+        if not published:
+            continue
+        events.append(Event(
+            event_id=stable_event_id("official-feed", direct_url),
+            published_at=published,
+            title=title,
+            summary=summary,
+            source=source.get("name", "Official issuer feed"),
+            url=direct_url,
+            companies=[source.get("ticker", "")],
+            source_type=source.get("source_type", "official_issuer"),
+            confidence="confirmed",
+        ))
+    return events
+
+
+def _official_feed_date(value: str, source: dict) -> str:
+    if not value:
+        return ""
+    normalized = value.strip().replace(" ", "T", 1)
+    try:
+        parsed = datetime.fromisoformat(normalized.replace("Z", "+00:00"))
+    except ValueError:
+        return ""
+    if parsed.tzinfo is None:
+        return f"{parsed.isoformat()}{source.get('timezone_offset', '+03:00')}"
+    return parsed.isoformat()
 
 
 def fetch_sec_deal_filings(config: dict, timeout: int = 20) -> list[Event]:

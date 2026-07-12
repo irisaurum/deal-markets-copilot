@@ -132,6 +132,20 @@
         "enabled": true,
         "max_items": 15,
         "include_terms": ["приобрет", "сделк", "размещ", "облигац", "acquisition", "offering", "bond"]
+      },
+      {
+        "name": "Whoosh Investor Relations",
+        "ticker": "WUSH",
+        "url": "https://whoosh-bike.ru/ir/press",
+        "feed_url": "https://feeds.tildaapi.com/api/getfeed/",
+        "feed_uid": "919492109361",
+        "feed_rec_id": "504100976",
+        "allowed_hosts": ["news.whoosh-bike.ru"],
+        "source_type": "official_issuer",
+        "enabled": true,
+        "max_items": 20,
+        "include_terms": ["завершени", "разместил", "закрыл книг", "приобрел", "приобрёл", "закрыл сделк", "завершил сделк", "ipo", "spo"],
+        "exclude_terms": ["погашен", "байбэк", "выкуп"]
       }
     ],
     "regulators": [

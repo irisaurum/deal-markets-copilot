@@ -934,7 +934,10 @@ def _source_quality(source: dict) -> tuple[int, int, int]:
     source_type = str(source.get("source_type") or "")
     return (
         1 if source.get("evidence_label") == "confirmed" else 0,
-        1 if source_type in {"issuer_ir", "official_ir", "regulator", "exchange", "official_exchange", "sec_filing", "official"} else 0,
+        1 if source_type in {
+            "issuer_ir", "official_ir", "official_issuer", "regulator", "official_regulator",
+            "exchange", "official_exchange", "sec_filing", "official",
+        } else 0,
         1 if "news.google.com" not in str(source.get("url") or "") else 0,
     )
 

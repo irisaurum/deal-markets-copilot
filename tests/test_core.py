@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, is_technical_exchange_notice, stable_event_id
-from deal_markets_copilot.deals import _migrate_row, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import _migrate_row, _source_quality, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_moex_quotes, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_events, resolve_google_news_rows
@@ -177,6 +177,8 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(yandex["transaction_value"], 60_000_000_000)
         self.assertEqual(yandex["security_code"], "001Р-04; 001Р-05")
         self.assertNotIn("30 млрд", yandex["headline"].lower())
+        self.assertNotIn("DL-f71ff729dc9f5af4", by_id)
+        self.assertNotIn("DL-0da418122f0432fc", by_id)
 
     def test_rss_transport_failure_is_not_silently_successful(self) -> None:
         config = {"sources": [{"name": "Test RSS", "url": "https://example.com/rss", "enabled": True}]}
@@ -1095,6 +1097,58 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(events[0].published_at[:10], "2026-06-02")
         self.assertEqual(events[0].title, "Компания закрыла сделку")
         self.assertEqual(events[0].url, "https://issuer.example/deal")
+
+    def test_official_whoosh_feed_discovers_real_dcm_without_redemption_noise(self) -> None:
+        config = {"primary_sources": {"issuers": [{
+            "name": "Whoosh Investor Relations", "ticker": "WUSH",
+            "url": "https://whoosh-bike.ru/ir/press",
+            "feed_url": "https://feeds.tildaapi.com/api/getfeed/", "feed_uid": "919492109361",
+            "feed_rec_id": "504100976", "allowed_hosts": ["news.whoosh-bike.ru"],
+            "source_type": "official_issuer", "include_terms": ["завершени", "разместил"],
+            "exclude_terms": ["погашен"], "max_items": 20,
+        }]}}
+        payload = {"posts": [
+            {
+                "uid": "deal", "date": "2026-06-23 16:53",
+                "title": "Whoosh сообщает о завершении первого этапа размещения облигаций",
+                "directlink": "https://news.whoosh-bike.ru/whoosh-bond-placement",
+            },
+            {
+                "uid": "noise", "date": "2026-06-26 13:48",
+                "title": "Whoosh аккумулировал средства для погашения облигаций",
+                "directlink": "https://news.whoosh-bike.ru/whoosh-bond-redemption",
+            },
+            {
+                "uid": "preliminary", "date": "2026-06-08 12:55",
+                "title": "Whoosh планирует разместить новый выпуск биржевых облигаций",
+                "directlink": "https://news.whoosh-bike.ru/whoosh-plans-bonds",
+            },
+            {
+                "uid": "foreign", "date": "2026-06-23 16:53", "title": "Whoosh разместил облигации",
+                "directlink": "https://untrusted.example/whoosh-bonds",
+            },
+        ]}
+        with patch("deal_markets_copilot.sources._get_json", return_value=payload):
+            events = fetch_official_issuer_news(config)
+        self.assertEqual(len(events), 1)
+        event = events[0]
+        self.assertEqual(event.source_type, "official_issuer")
+        self.assertEqual(event.confidence, "confirmed")
+        self.assertEqual(event.published_at, "2026-06-23T16:53:00+03:00")
+        item = classify_event(event, [])
+        record = extract_deal_record(item, [])
+        self.assertEqual(item.category, "DCM")
+        self.assertTrue(is_actionable_signal(item))
+        self.assertEqual(record.record_kind, "deal")
+        self.assertEqual(record.quality_status, "approved")
+
+    def test_official_issuer_source_outranks_weak_duplicate(self) -> None:
+        weak = Event("weak", "2026-06-23T16:53:00+03:00", "Whoosh завершил этап размещения облигаций", "", "Blog", "https://example.com/weak")
+        official = Event("official", "2026-06-23T16:53:00+03:00", "Whoosh завершил первый этап размещения облигаций", "", "Whoosh Investor Relations", "https://news.whoosh-bike.ru/deal", source_type="official_issuer", confidence="confirmed")
+        result = deduplicate([weak, official])
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0].event_id, "official")
+        self.assertGreater(_source_quality({"source_type": "official_issuer", "evidence_label": "confirmed", "url": official.url}), _source_quality({"source_type": "public_web", "evidence_label": "unverified", "url": weak.url}))
 
     def test_russian_date_prefix(self) -> None:
         published, title = _date_from_title("19 июня 2026 Яндекс разместил облигации")
