@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
 from deal_markets_copilot.classifier import classify_event, deduplicate, is_technical_exchange_notice, stable_event_id
-from deal_markets_copilot.deals import _migrate_row, _source_quality, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
+from deal_markets_copilot.deals import _migrate_row, _quality_gate, _source_quality, enrich_precedent_financials, extract_deal_record, median_multiples, merge_curated_precedents, select_deal_buckets, select_key_deals, update_precedent_database, write_precedents_csv
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import _distinct_summary, _safe_url, build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import _date_from_title, effective_news_lookback, fetch_configured_sources, fetch_feed, fetch_moex_disclosures, fetch_moex_quotes, fetch_official_issuer_news, fetch_sec_deal_filings, filter_recent_events, load_demo_events, resolve_google_news_events, resolve_google_news_rows
@@ -1028,9 +1028,12 @@ class CoreTests(unittest.TestCase):
             ],
         })
         self.assertEqual(row["source_count"], 1)
-        self.assertEqual(row["quality_score"], 100)
-        self.assertEqual(row["quality_status"], "approved")
-        self.assertEqual(row["quality_flags"], [])
+        self.assertEqual(row["quality_score"], 70)
+        self.assertEqual(row["quality_status"], "review")
+        self.assertEqual(
+            row["quality_flags"],
+            ["missing_transaction_value", "missing_currency", "single_secondary_source"],
+        )
 
     def test_medians_use_valid_ma_multiples(self) -> None:
         eligible = {"record_kind": "deal", "quality_status": "approved", "status": "Closed", "announced_date": "2024-01-01", "financials_available_at": "2023-12-01", "enterprise_value": 100, "currency": "USD", "financials_currency": "USD", "revenue_ltm": 50}
@@ -1140,7 +1143,9 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(item.category, "DCM")
         self.assertTrue(is_actionable_signal(item))
         self.assertEqual(record.record_kind, "deal")
-        self.assertEqual(record.quality_status, "approved")
+        self.assertEqual(record.quality_status, "review")
+        self.assertIn("missing_transaction_value", record.quality_flags)
+        self.assertIn("missing_currency", record.quality_flags)
 
     def test_official_issuer_source_outranks_weak_duplicate(self) -> None:
         weak = Event("weak", "2026-06-23T16:53:00+03:00", "Whoosh завершил этап размещения облигаций", "", "Blog", "https://example.com/weak")
@@ -1149,6 +1154,58 @@ class CoreTests(unittest.TestCase):
         self.assertEqual(len(result), 1)
         self.assertEqual(result[0].event_id, "official")
         self.assertGreater(_source_quality({"source_type": "official_issuer", "evidence_label": "confirmed", "url": official.url}), _source_quality({"source_type": "public_web", "evidence_label": "unverified", "url": weak.url}))
+
+    def test_quality_approval_requires_primary_evidence_or_corroboration(self) -> None:
+        title = "Selectel разместил облигации на 5 млрд рублей"
+        weak = Event(
+            "weak-complete", "2026-07-01T10:00:00+03:00", title, "", "Market blog",
+            "https://example.com/weak-complete", source_type="public_web", confidence="confirmed",
+        )
+        official = Event(
+            "official-complete", "2026-07-01T10:00:00+03:00", title, "", "Selectel Newsroom",
+            "https://selectel.example/bonds", source_type="official_issuer", confidence="confirmed",
+        )
+
+        weak_record = extract_deal_record(classify_event(weak, []), [])
+        official_record = extract_deal_record(classify_event(official, []), [])
+
+        self.assertEqual(weak_record.quality_status, "review")
+        self.assertIn("single_secondary_source", weak_record.quality_flags)
+        self.assertEqual(official_record.quality_status, "approved")
+        self.assertEqual(official_record.quality_flags, [])
+
+    def test_quality_gate_flags_missing_critical_dcm_fields(self) -> None:
+        incomplete = Event(
+            "official-incomplete", "2026-07-01T10:00:00+03:00",
+            "Selectel завершил размещение облигаций", "", "Selectel Newsroom",
+            "https://selectel.example/incomplete", source_type="official_issuer", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(incomplete, []), [])
+        self.assertEqual(record.quality_status, "review")
+        self.assertIn("missing_transaction_value", record.quality_flags)
+        self.assertIn("missing_currency", record.quality_flags)
+
+        _, status, flags = _quality_gate({
+            "deal_type": "DCM", "record_kind": "deal", "status": "Not disclosed",
+            "headline": "Issuer bond placement", "target_or_issuer": "Issuer",
+            "acquirer_or_investor": "Not applicable", "transaction_value": 5_000_000_000,
+            "currency": "RUB", "evidence_label": "confirmed",
+            "sources": [{"evidence_label": "confirmed", "source_type": "official_issuer"}],
+        })
+        self.assertEqual(status, "review")
+        self.assertIn("missing_status", flags)
+
+    def test_dcm_long_form_amount_is_extracted_instead_of_not_disclosed(self) -> None:
+        event = Event(
+            "long-form-amount", "2026-07-08T10:00:00+03:00",
+            "Selectel разместил новый выпуск облигаций объемом 7,5 миллиардов рублей", "",
+            "Selectel Newsroom", "https://selectel.example/long-form",
+            source_type="official_issuer", confidence="confirmed",
+        )
+        record = extract_deal_record(classify_event(event, []), [])
+        self.assertEqual(record.transaction_value, 7_500_000_000)
+        self.assertEqual(record.currency, "RUB")
+        self.assertEqual(record.quality_status, "approved")
 
     def test_russian_date_prefix(self) -> None:
         published, title = _date_from_title("19 июня 2026 Яндекс разместил облигации")

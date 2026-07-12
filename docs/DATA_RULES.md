@@ -20,9 +20,11 @@ Streams must be mutually intelligible: a routine DCM placement is not a rumor; a
 
 ## Quality statuses
 
-- `approved` — no blocking quality flags and sufficient transaction/evidence quality.
+- `approved` — no blocking quality flags, required deal-type fields are present, and evidence is either a confirmed official/issuer source or independently corroborated.
 - `review` — potentially useful, but requires human verification.
 - `rejected` — blocked from key-deal presentation.
+
+One confirmed secondary publication is not sufficient for `approved`. For DCM and ECM transaction records, missing amount or currency is a blocking completeness flag; technical filings are not judged by transaction-completeness fields.
 
 Quality status and deal status answer different questions: evidence quality versus transaction stage.
 
@@ -70,6 +72,7 @@ Quality status and deal status answer different questions: evidence quality vers
 - Use `Not applicable` when the field does not apply to the deal type.
 - Use numeric `0` only when the source explicitly states zero and zero is meaningful.
 - Blank technical storage values must not be rendered or modeled as disclosed zeroes.
+- If an amount and currency are extractable from source text, normal parsing/canonicalization must populate them instead of preserving `Not disclosed`.
 
 ## Live versus historical
 

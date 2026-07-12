@@ -14,6 +14,10 @@ from .classifier import is_technical_exchange_notice
 
 
 DEAL_CATEGORIES = {"M&A", "ECM", "DCM"}
+OFFICIAL_SOURCE_TYPES = {
+    "issuer_ir", "official_ir", "official_issuer", "regulator", "official_regulator",
+    "exchange", "official_exchange", "sec_filing", "official",
+}
 CSV_FIELDS = [
     "deal_id", "announced_date", "deal_type", "record_kind", "status", "target_or_issuer",
     "acquirer_or_investor", "seller", "sector", "geography", "transaction_value",
@@ -104,6 +108,7 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         "evidence_label": item.evidence_label,
         "source_url": source["url"],
         "source_count": 1,
+        "sources": [source],
     })
     return DealRecord(
         deal_id=f"DL-{event.event_id}",
@@ -586,10 +591,11 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
 
     material_probe = dict(row)
     material_probe["headline"] = row.get("headline", "")
+    material_transaction = _is_material_transaction(material_probe)
     if record_kind == "technical_filing":
         score -= 40
         flags.append("technical_filing")
-    elif not _is_material_transaction(material_probe):
+    elif not material_transaction:
         score -= 60
         flags.append("non_transaction_or_technical_notice")
     if row.get("evidence_label") != "confirmed":
@@ -618,6 +624,17 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
         score -= 25
         flags.append("missing_issuer")
 
+    if _is_blank(row.get("status")):
+        score -= 25
+        flags.append("missing_status")
+    if category in {"ECM", "DCM"} and record_kind in {"deal", "watchlist"} and material_transaction:
+        if not isinstance(row.get("transaction_value"), (int, float)):
+            score -= 10
+            flags.append("missing_transaction_value")
+        if row.get("currency") in {None, "", "Not disclosed"}:
+            score -= 10
+            flags.append("missing_currency")
+
     if re.search(r"price target|target price|stock price|share price|целева\w*\s+цен|таргет|цена акци", text):
         score -= 40
         flags.append("price_target_context")
@@ -637,12 +654,16 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     if row.get("currency") not in {None, "", "Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF"}:
         score -= 25
         flags.append("invalid_currency")
+    if record_kind == "deal" and row.get("evidence_label") == "confirmed" and not _approval_evidence_is_sufficient(row):
+        score -= 10
+        flags.append("single_secondary_source")
 
     score = max(0, min(100, score))
     status = "rejected" if score < 40 else "review" if score < 75 else "approved"
     blocking_flags = {
         "technical_filing", "missing_both_parties", "missing_target", "missing_acquirer",
         "missing_issuer", "price_target_context", "invalid_currency", "denied_or_disputed",
+        "missing_status", "missing_transaction_value", "missing_currency", "single_secondary_source",
     }
     if row.get("evidence_label") != "confirmed" and status == "approved":
         status = "review"
@@ -934,12 +955,17 @@ def _source_quality(source: dict) -> tuple[int, int, int]:
     source_type = str(source.get("source_type") or "")
     return (
         1 if source.get("evidence_label") == "confirmed" else 0,
-        1 if source_type in {
-            "issuer_ir", "official_ir", "official_issuer", "regulator", "official_regulator",
-            "exchange", "official_exchange", "sec_filing", "official",
-        } else 0,
+        1 if source_type in OFFICIAL_SOURCE_TYPES else 0,
         1 if "news.google.com" not in str(source.get("url") or "") else 0,
     )
+
+
+def _approval_evidence_is_sufficient(row: dict) -> bool:
+    sources = [source for source in row.get("sources", []) if isinstance(source, dict)]
+    confirmed = [source for source in sources if source.get("evidence_label") == "confirmed"]
+    if any(str(source.get("source_type") or "") in OFFICIAL_SOURCE_TYPES for source in confirmed):
+        return True
+    return bool(confirmed) and len(sources) >= 2
 
 
 def _apply_primary_source(row: dict) -> None:
@@ -1165,7 +1191,7 @@ def _extract_dcm_volume(text: str) -> tuple[float | None, str]:
         r"(?:об[ъь]ем\s+(?:размещенн\w+\s+биржев\w+\s+облигац\w+(?:\s+по\s+номинальн\w+\s+стоимост\w+)?|размещени\w*|выпуск\w*)|"
         r"общ(?:ая|ую)\s+сумм\w*|issue\s+size|offering\s+size)"
         r"[^\d$€₽]{0,100}((?:\d[\d\s]*)(?:[.,]\d+)?)\s*"
-        r"(трлн|trillion|млрд|billion|млн|million)?\s*"
+        r"(трлн|триллион\w*|trillion|млрд|миллиард\w*|billion|млн|миллион\w*|million)?\s*"
         r"(CNY|RMB|USD|EUR|RUB|юан\w*|руб\w*|доллар\w*|евро|₽|\$|€)?",
         text, re.I,
     )
@@ -1173,7 +1199,7 @@ def _extract_dcm_volume(text: str) -> tuple[float | None, str]:
         return None, ""
     number = _parse_number(match.group(1))
     unit = (match.group(2) or "").lower()
-    multiplier = 1_000_000_000_000 if unit in {"трлн", "trillion"} else 1_000_000_000 if unit in {"млрд", "billion"} else 1_000_000 if unit in {"млн", "million"} else 1
+    multiplier = _amount_multiplier(unit)
     if multiplier == 1 and number < 1_000_000:
         return None, ""
     currency_token = match.group(3) or text[match.end():match.end() + 180]
@@ -1183,7 +1209,7 @@ def _extract_dcm_volume(text: str) -> tuple[float | None, str]:
 
 def _extract_amount(text: str) -> tuple[float | None, str]:
     pattern = re.compile(
-        r"(?:(CNY|RMB|USD|EUR|RUB|\$|€|₽)\s*)?(\d+(?:[.,]\d+)?)\s*(трлн|trillion|млрд|billion|млн|million)?\s*(юан\w*|cny|rmb|руб(?:лей|ля|\.)?|rub|usd|доллар\w*|eur|евро|₽|\$|€)?",
+        r"(?:(CNY|RMB|USD|EUR|RUB|\$|€|₽)\s*)?(\d+(?:[.,]\d+)?)\s*(трлн|триллион\w*|trillion|млрд|миллиард\w*|billion|млн|миллион\w*|million)?\s*(юан\w*|cny|rmb|руб(?:лей|ля|\.)?|rub|usd|доллар\w*|eur|евро|₽|\$|€)?",
         re.I,
     )
     for match in pattern.finditer(text):
@@ -1196,13 +1222,24 @@ def _extract_amount(text: str) -> tuple[float | None, str]:
         if re.search(r"price target|target price|stock price|share price|целева\w*\s+цен|таргет|цена акци", context):
             continue
         number = float(match.group(2).replace(",", "."))
-        multiplier = 1_000_000_000_000 if unit in {"трлн", "trillion"} else 1_000_000_000 if unit in {"млрд", "billion"} else 1_000_000 if unit in {"млн", "million"} else 1
+        multiplier = _amount_multiplier(unit)
         if multiplier == 1 and number < 1_000_000 and not _amount_has_transaction_context(context):
             continue
         token = f"{prefix} {suffix}"
         currency = _currency_from_token(token)
         return number * multiplier, currency
     return None, ""
+
+
+def _amount_multiplier(unit: str) -> int:
+    normalized = str(unit or "").lower()
+    if normalized in {"трлн", "trillion"} or normalized.startswith("триллион"):
+        return 1_000_000_000_000
+    if normalized in {"млрд", "billion"} or normalized.startswith("миллиард"):
+        return 1_000_000_000
+    if normalized in {"млн", "million"} or normalized.startswith("миллион"):
+        return 1_000_000
+    return 1
 
 
 def _extract_labeled_amount(text: str, labels: tuple[str, ...]) -> tuple[float | None, str]:

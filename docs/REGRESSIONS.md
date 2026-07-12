@@ -208,6 +208,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_same_url_counts_as_one_source_even_with_two_labels`.
 - **Files:** `deals.py`.
 
+### REG-28 — Confirmed label approved incomplete or single-source records
+
+- **Failure mode:** a record could become `approved` from one confirmed secondary publication, or while a DCM/ECM amount and currency remained missing despite being required for analyst readiness.
+- **Why it mattered:** evidence confidence and transaction completeness were conflated, so discovered records could look analyst-ready without primary evidence or usable terms.
+- **Root mechanism:** the quality gate checked only the row-level `evidence_label` and party fields; it did not inspect canonical source types or DCM/ECM amount/currency completeness. Long-form Russian units such as `миллиардов` were not parsed.
+- **Current protection:** approval requires a confirmed official/issuer source or at least two canonical publications, while material DCM/ECM records receive blocking flags for missing amount or currency. Long-form billion/million units are extracted by the normal parser. Technical filings remain governed by technical/noise rules.
+- **Tests/checks:** `test_quality_approval_requires_primary_evidence_or_corroboration`, `test_quality_gate_flags_missing_critical_dcm_fields`, `test_dcm_long_form_amount_is_extracted_instead_of_not_disclosed`, `test_official_whoosh_feed_discovers_real_dcm_without_redemption_noise`, `test_dcm_yuan_currency_is_not_converted_to_rubles`, `test_noise01_production_records_remain_canonical`.
+- **Files:** `deals.py`, `report.py`, `tests/test_core.py`, canonical dataset and dependent public artifacts.
+
 ### REG-27 — One publication counted twice through direct and discovery URLs
 
 - **Failure mode:** a direct publisher URL and a Google News representation of the same article were stored as two independent sources.
