@@ -1309,11 +1309,20 @@ class CoreTests(unittest.TestCase):
         event = Event(
             "yuan-bond", "2026-06-10T10:00:00+03:00",
             '"Норникель" зафиксировал объем размещения облигаций на уровне 3 млрд юаней', "",
-            "Интерфакс", "https://example.com/yuan",
+            "Issuer release", "https://example.com/yuan", source_type="issuer_ir", confidence="confirmed",
         )
-        record = extract_deal_record(classify_event(event, []), [])
+        item = classify_event(event, [])
+        record = extract_deal_record(item, [])
+        self.assertEqual(item.category, "DCM")
+        self.assertEqual(record.record_kind, "deal")
+        self.assertEqual(record.quality_status, "approved")
+        self.assertEqual(record.status, "Issued")
+        self.assertEqual(record.target_or_issuer, "Норникель")
         self.assertEqual(record.transaction_value, 3_000_000_000)
         self.assertEqual(record.currency, "CNY")
+        workflow = build_morning_workflow([item], [], {"deal_hypotheses": []})
+        self.assertEqual(len(workflow["tasks"]), 1)
+        self.assertEqual(workflow["tasks"][0]["category"], "DCM")
 
     def test_dcm_card_extracts_coupon_maturity_and_isin(self) -> None:
         event = Event(

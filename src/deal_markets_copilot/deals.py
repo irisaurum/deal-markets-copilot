@@ -1458,7 +1458,11 @@ def _status(text: str, category: str, evidence_label: str = "unverified") -> str
         return "Denied"
     if category in {"ECM", "DCM"} and re.search(r"закрыл\w*\s+книг|book\w*\s+clos|priced", lowered):
         return "Priced"
-    if category in {"ECM", "DCM"} and re.search(r"завершил\w*(?:\s+\w+){0,3}\s+размещени|размещение\s+завершено", lowered):
+    if category in {"ECM", "DCM"} and re.search(
+        r"завершил\w*(?:\s+\w+){0,3}\s+размещени|размещение\s+завершено|"
+        r"зафиксировал\w*\s+об[ъь]ем\s+размещени",
+        lowered,
+    ):
         return "Issued"
     if any(word in lowered for word in ("закрыл", "закрыла", "завершил", "завершила", "completed", "closed")):
         return "Issued" if category in {"ECM", "DCM"} else "Closed"
