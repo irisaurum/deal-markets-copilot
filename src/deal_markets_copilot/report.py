@@ -469,11 +469,13 @@ def _task_rows(tasks: list[dict]) -> str:
     for task in tasks:
         hypotheses = " · ".join(task.get("hypothesis_ids", [])) or task.get("category", "")
         state = task.get("state", "open")
+        context = " · ".join(filter(None, (task.get("reason", ""), task.get("required_source", ""))))
+        context_html = f"<small>{html.escape(context)}</small>" if context else ""
         rows.append(f"""<label class="task" data-task-id="{html.escape(task.get('id',''), quote=True)}">
         <input class="task-check" type="checkbox"><span class="checkmark">✓</span>
         <span class="priority {task.get('priority','P2').lower()}">{html.escape(task.get('priority','P2'))}</span>
         <span class="task-body"><strong>{html.escape(task.get('title',''))}</strong>
-        <small>{html.escape(task.get('coverage',''))} · {html.escape(hypotheses)} · DELIVERABLE: {html.escape(task.get('deliverable',''))}</small></span>
+        <small>{html.escape(task.get('coverage',''))} · {html.escape(hypotheses)} · DELIVERABLE: {html.escape(task.get('deliverable',''))}</small>{context_html}</span>
         <span class="state {html.escape(state)}">{html.escape(state.upper())}</span>
         <a href="{html.escape(_safe_url(task.get('source_url','')), quote=True)}" target="_blank" rel="noopener" title="Источник">↗</a></label>""")
     return "".join(rows)

@@ -135,12 +135,6 @@ def main() -> int:
             limit=int(config.get("live_data", {}).get("max_live_link_resolutions", 12)),
         )
     actionable = [item for item in classified if is_actionable_signal(item)]
-    workflow = build_morning_workflow(
-        actionable,
-        market_snapshot,
-        config,
-        previous_snapshot=previous_snapshot,
-    )
     current_deals = [
         record for item in classified
         if (record := extract_deal_record(item, config.get("coverage", []))) is not None
@@ -172,6 +166,13 @@ def main() -> int:
     ) if args.live else 0
     if upgraded_links:
         write_precedent_database(precedents, precedent_path)
+    workflow = build_morning_workflow(
+        actionable,
+        market_snapshot,
+        config,
+        previous_snapshot=previous_snapshot,
+        deal_records=precedents,
+    )
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
     health = _build_health(precedents, ROOT / "output" / "build_manifest.json", precedent_path, source_runs, market_snapshot)
 
