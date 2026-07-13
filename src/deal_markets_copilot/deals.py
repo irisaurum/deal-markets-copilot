@@ -83,6 +83,8 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         "source_type": "public_web" if resolved_discovery else event.source_type,
         "published_at": event.published_at,
         "title": event.title,
+        "country": event.country,
+        "market": event.market,
     }
     if resolved_discovery:
         source["representations"] = [
@@ -120,7 +122,7 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         acquirer_or_investor=acquirer,
         seller=seller,
         sector=_sector(text),
-        geography="Russia" if re.search(r"\b(руб|росси|москва|moex)\w*", text, re.I) else "Not disclosed",
+        geography=event.country if event.country not in {"", "Not disclosed"} else ("Russia" if re.search(r"\b(руб|росси|москва|moex)\w*", text, re.I) else "Not disclosed"),
         headline=headline,
         transaction_value=float(value) if value is not None else None,
         enterprise_value=enterprise_value,
@@ -651,7 +653,7 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     if row.get("status") == "In talks":
         score -= 5
         flags.append("talks_only")
-    if row.get("currency") not in {None, "", "Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF"}:
+    if row.get("currency") not in {None, "", "Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF", "UZS", "KZT", "KGS", "BYN"}:
         score -= 25
         flags.append("invalid_currency")
     if record_kind == "deal" and row.get("evidence_label") == "confirmed" and not _approval_evidence_is_sufficient(row):
@@ -859,6 +861,9 @@ def _canonical_source(source: dict) -> dict:
         "source_type": source.get("source_type", "public_web"),
         "published_at": source.get("published_at", ""),
     }
+    for key in ("country", "market"):
+        if source.get(key) not in {None, "", "Not disclosed"}:
+            candidate[key] = str(source[key]).strip()
     if source.get("title"):
         candidate["title"] = str(source["title"]).strip()
     representations = _source_representations(source)
@@ -1175,6 +1180,14 @@ def _currency_from_token(value: str) -> str:
         return "EUR"
     if "GBP" in token or "ФУНТ" in token:
         return "GBP"
+    if "UZS" in token or "СУМ" in token or "SO'M" in token or "SO‘M" in token:
+        return "UZS"
+    if "KZT" in token or "ТЕНГ" in token or "₸" in token:
+        return "KZT"
+    if "KGS" in token or "СОМ" in token:
+        return "KGS"
+    if "BYN" in token or "БЕЛОРУСС" in token:
+        return "BYN"
     return "RUB" if re.search(r"RUB|РУБ|₽", token) else "Not disclosed"
 
 

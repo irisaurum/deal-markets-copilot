@@ -43,6 +43,16 @@ def build_html_report(
     precedent_stats = median_multiples(precedents)
     sectors = sorted({str(row.get("sector")) for rows in deal_buckets.values() for row in rows if row.get("sector") not in {None, "", "Not classified"}})
     sector_options = "".join(f'<option value="{html.escape(value, quote=True)}">{html.escape(value)}</option>' for value in sectors)
+    markets = sorted({str(row.get("geography")) for rows in deal_buckets.values() for row in rows if row.get("geography") not in {None, "", "Not disclosed"}} | {str(row.get("country")) for row in config.get("cis_source_registry", []) if row.get("country")})
+    market_options = "".join(f'<option value="{html.escape(value, quote=True)}" data-ru="{html.escape(_country_label(value), quote=True)}" data-en="{html.escape(value, quote=True)}">{html.escape(_country_label(value))}</option>' for value in markets)
+    approved_count = sum(1 for row in precedents if row.get("quality_status") == "approved")
+    review_count = sum(1 for row in precedents if row.get("quality_status") == "review")
+    registry = config.get("cis_source_registry", [])
+    active_market_count = sum(1 for row in registry if row.get("enabled") and row.get("implemented"))
+    tracked_market_count = len(registry)
+    technical_count = len(deal_buckets.get("technical_filing", []))
+    source_tiers = sorted({_source_tier(row) for rows in deal_buckets.values() for row in rows})
+    source_tier_options = "".join(f'<option value="{tier}" data-ru="{_source_tier_label(tier, "ru")}" data-en="{_source_tier_label(tier, "en")}">{_source_tier_label(tier, "ru")}</option>' for tier in source_tiers)
     counts = Counter(item.category for item in ranked)
     generated = datetime.now(ZoneInfo("Europe/Moscow")).strftime("%d.%m.%Y · %H:%M")
     news_window = "72H CATCH-UP" if datetime.now(ZoneInfo("Europe/Moscow")).weekday() in {0, 5, 6} else "24H"
@@ -57,71 +67,78 @@ def build_html_report(
 
     document = f"""<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Deal Market Monitor</title><style>{_CSS}</style></head>
+<title>Deal Markets Copilot — монитор сделок и рынков капитала СНГ</title><style>{_CSS}</style></head>
 <body>
 <header class="site-header"><div class="nav-wrap">
-  <a class="brand" href="#brief"><span class="brand-mark">DM</span><span><strong>Deal Market Monitor</strong><small>M&amp;A · ECM · DCM</small></span></a>
-  <nav><a href="#deals">Сделки</a><a href="#signals">Свежие события</a><a href="#analytics">Аналитика</a></nav>
-  <div class="status" id="global-health"><span class="dot {'live' if live and healthy else 'demo'}"></span><span><strong>{'Данные и источники проверены' if live and healthy else ('Требуется проверка данных' if live else 'Демо-режим')}</strong><small>{generated} МСК</small></span></div>
+  <a class="brand" href="#overview"><span class="brand-mark">DM</span><span><strong>Deal Markets Copilot</strong><small data-ru="МОНИТОР СДЕЛОК И РЫНКОВ КАПИТАЛА СНГ" data-en="CIS DEAL INTELLIGENCE">МОНИТОР СДЕЛОК И РЫНКОВ КАПИТАЛА СНГ</small></span></a>
+  <nav><a href="#overview" data-ru="Обзор" data-en="Overview">Обзор</a><a href="#deals" data-ru="Сделки" data-en="Deals">Сделки</a><a href="#review" data-ru="На проверке" data-en="Review">На проверке</a><a href="#tasks" data-ru="Задачи" data-en="Tasks">Задачи</a><a href="#coverage" data-ru="Источники" data-en="Sources">Источники</a><a href="#downloads" data-ru="Выгрузки" data-en="Exports">Выгрузки</a><a href="#methodology" data-ru="Методология" data-en="Methodology">Методология</a></nav>
+  <div class="lang-toggle" role="group" aria-label="Language"><button type="button" data-lang="ru" aria-pressed="true">RU</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  <div class="status" id="global-health"><span class="dot {'live' if live and healthy else 'demo'}"></span><span><strong data-ru="{'Данные и источники проверены' if live and healthy else ('Требуется проверка данных' if live else 'Демо-режим')}" data-en="{'Data and sources verified' if live and healthy else ('Data review required' if live else 'Demo mode')}">{'Данные и источники проверены' if live and healthy else ('Требуется проверка данных' if live else 'Демо-режим')}</strong><small>{generated} MSK</small></span></div>
 </div></header>
 
 <main class="page">
-  <section class="overview" id="brief">
-    <div class="overview-copy"><span class="eyebrow">ЕЖЕДНЕВНЫЙ МОНИТОРИНГ СДЕЛОК</span><h1>Что происходит на рынке сделок</h1>
-    <p>{html.escape(flow.get('summary', 'Запусти сборку, чтобы сформировать утреннюю сводку.'))} Последние подтверждённые сделки сохраняются в архиве и не исчезают после обновления.</p>
-    <div class="overview-actions"><a class="button primary" href="#deals">Смотреть сделки</a><button class="button ghost" id="copy-brief">Скопировать сводку</button></div></div>
-    <div class="overview-side"><div class="freshness"><span class="dot {'live' if live and healthy else 'demo'}"></span><div><strong>{f'Свежие данные · {news_window}' if live and healthy else ('Источники или артефакты требуют проверки' if live else 'Демонстрационные данные')}</strong><small>Автообновление каждые 30 минут в рабочее время</small></div></div>
-    <div class="metric-grid">
-      {_metric("Свежих событий", len(ranked), news_window.lower())}
-      {_metric("Сделок в фокусе", len(key_deals), "последние ключевые")}
-      {_metric("M&A", sum(1 for row in key_deals if row.get('deal_type') == 'M&A'), "в текущей выборке")}
-      {_metric("База данных", len(precedents), "live + precedents")}
-    </div></div>
+  <section class="overview" id="overview">
+    <div class="overview-copy"><span class="eyebrow">DEAL MARKETS COPILOT</span><h1>Deal Markets Copilot</h1><h2 data-ru="Монитор сделок и рынков капитала СНГ" data-en="CIS deal intelligence for M&amp;A, ECM and DCM">Монитор сделок и рынков капитала СНГ</h2>
+    <p data-ru="Публичные данные по M&amp;A, ECM и DCM в России и СНГ: первичные источники, статус проверки, качество evidence и задачи для аналитика." data-en="Public-source deal data across Russia and CIS markets: primary evidence, review status, source quality and analyst follow-up actions.">Публичные данные по M&amp;A, ECM и DCM в России и СНГ: первичные источники, статус проверки, качество evidence и задачи для аналитика.</p>
+    <small class="hero-disclaimer" data-ru="Не является инвестиционной рекомендацией. Первичные документы требуют ручной проверки." data-en="Not investment advice. Primary documents require manual review.">Не является инвестиционной рекомендацией. Первичные документы требуют ручной проверки.</small>
+    <div class="overview-actions"><a class="button primary" href="#deals" data-ru="Открыть deal screener" data-en="Open deal screener">Открыть deal screener</a><a class="button ghost" href="precedent_transactions.xlsx" download data-ru="Открыть Excel" data-en="Open Excel">Открыть Excel</a></div></div>
+    <div class="metric-grid product-kpis">
+      {_metric("Подтверждено", approved_count, "проверенных записей", "Approved", "verified records")}
+      {_metric("На проверке", review_count, "очередь ручной проверки", "Review", "human review queue")}
+      {_metric("Всего записей", len(precedents), "каноническая база", "Records", "canonical dataset")}
+      {_metric("Покрытие", f"{active_market_count}/{tracked_market_count}", "активных / отслеживаемых рынков", "Markets", "active / tracked")}
+      {_metric("Исключено из задач", technical_count, "технические раскрытия", "Excluded from tasks", "technical disclosures")}
+    </div>
   </section>
-
-  <section class="market-strip" aria-label="Котировки покрытия">{_quote_cards(quotes, live)}</section>
 
   {_health_panel(health)}
 
+  <section class="market-context" aria-label="Рыночный контекст"><div class="context-label"><b data-ru="Рыночный контекст" data-en="Market context">Рыночный контекст</b><span data-ru="Котировки компаний покрытия на MOEX; не являются сигналами по сделкам." data-en="MOEX quotes for coverage companies; not deal signals.">Котировки компаний покрытия на MOEX; не являются сигналами по сделкам.</span></div><div class="market-strip">{_quote_cards(quotes, live)}</div></section>
+
   <section class="section" id="deals">
-    <div class="section-head"><div><span class="eyebrow">КЛЮЧЕВЫЕ СДЕЛКИ</span><h2>Последние сделки рынка</h2><p>Самое важное — стороны, сумма, статус и ссылка на подтверждение. Без технических сообщений биржи.</p></div>
-    <div class="export-actions"><a class="button primary" href="precedent_transactions.xlsx" download>Скачать Excel</a><a class="button ghost" href="precedent_transactions.csv" download>CSV</a></div></div>
-    <div class="deal-toolbar"><div class="deal-filters"><button class="deal-filter active" data-deal-filter="deal">Актуальные сделки <span>{len(deal_buckets['deal'])}</span></button><button class="deal-filter" data-deal-filter="watchlist">Требует проверки <span>{len(deal_buckets['watchlist'])}</span></button><button class="deal-filter" data-deal-filter="denial">Опровержения <span>{len(deal_buckets['denial'])}</span></button><button class="deal-filter" data-deal-filter="technical_filing">Technical filings <span>{len(deal_buckets['technical_filing'])}</span></button></div>
-    <label class="search"><span>⌕</span><input id="deal-search" placeholder="Найти компанию или сделку"></label></div>
+    <div class="section-head"><div><span class="eyebrow" data-ru="БАЗА СДЕЛОК" data-en="DEAL DATABASE">БАЗА СДЕЛОК</span><h2 data-ru="Deal screener: Россия и СНГ" data-en="Deal screener: Russia and CIS">Deal screener: Россия и СНГ</h2><p data-ru="Поиск и фильтрация M&amp;A, ECM и DCM по рынку, качеству evidence, стадии и типу источника." data-en="Search and filter M&amp;A, ECM and DCM by market, evidence quality, stage and source type.">Поиск и фильтрация M&amp;A, ECM и DCM по рынку, качеству evidence, стадии и типу источника.</p></div>
+    <div class="export-actions"><a class="button primary" href="precedent_transactions.xlsx" download data-ru="Скачать Excel" data-en="Download Excel">Скачать Excel</a><a class="button ghost" href="precedent_transactions.csv" download>CSV</a></div></div>
+    <div class="deal-toolbar"><div class="screener-summary"><b>{len(key_deals)}</b><span data-ru="актуальных сделок в публичном screener" data-en="current deals in the public screener">актуальных сделок в публичном screener</span></div><label class="search"><span>⌕</span><input id="deal-search" placeholder="Найти компанию или сделку"></label></div>
     <div class="deal-advanced-filters" aria-label="Фильтры сделок">
-      <label>Тип<select id="deal-type-filter"><option value="all">Все типы</option><option value="M&A">M&A</option><option value="DCM">DCM</option><option value="ECM">ECM</option></select></label>
-      <label>Период<select id="deal-period-filter"><option value="all">Весь период</option><option value="30">30 дней</option><option value="90">90 дней</option><option value="365">12 месяцев</option></select></label>
-      <label>Сектор<select id="deal-sector-filter"><option value="all">Все секторы</option>{sector_options}</select></label>
-      <label>Статус<select id="deal-status-filter"><option value="all">Все статусы</option><option value="Closed">Закрыто</option><option value="Priced">Книга закрыта</option><option value="Issued">Размещено</option><option value="Announced">Объявлено</option><option value="Confirmed">Подтверждено</option><option value="In talks">Переговоры</option><option value="Rumor">Слух</option><option value="Denied">Опровергнуто</option></select></label>
-      <label>Размер<select id="deal-size-filter"><option value="all">Любой</option><option value="disclosed">Сумма раскрыта</option><option value="undisclosed">Не раскрыта</option><option value="large">≥ 10 млрд в исходной валюте</option></select></label>
-      <label>Сортировка<select id="deal-sort"><option value="date-desc">Сначала новые</option><option value="date-asc">Сначала старые</option><option value="amount-desc">По сумме внутри валюты</option><option value="score-desc">По качеству ↓</option></select></label>
-      <button class="reset-filters" id="deal-filter-reset" type="button">Сбросить</button>
+      <label><span data-ru="Тип" data-en="Type">Тип</span><select id="deal-type-filter"><option value="all" data-ru="Все типы" data-en="All types">Все типы</option><option value="M&A">M&A</option><option value="DCM">DCM</option><option value="ECM">ECM</option></select></label>
+      <label><span data-ru="Период" data-en="Period">Период</span><select id="deal-period-filter"><option value="all" data-ru="Весь период" data-en="All periods">Весь период</option><option value="30" data-ru="30 дней" data-en="30 days">30 дней</option><option value="90" data-ru="90 дней" data-en="90 days">90 дней</option><option value="365" data-ru="12 месяцев" data-en="12 months">12 месяцев</option></select></label>
+      <label><span data-ru="Сектор" data-en="Sector">Сектор</span><select id="deal-sector-filter"><option value="all" data-ru="Все секторы" data-en="All sectors">Все секторы</option>{sector_options}</select></label>
+      <label><span data-ru="Страна / рынок" data-en="Country / market">Страна / рынок</span><select id="deal-country-filter"><option value="all" data-ru="Все рынки" data-en="All markets">Все рынки</option>{market_options}</select></label>
+      <label><span data-ru="Статус" data-en="Status">Статус</span><select id="deal-status-filter"><option value="all" data-ru="Все статусы" data-en="All statuses">Все статусы</option><option value="Closed" data-ru="Закрыто" data-en="Closed">Закрыто</option><option value="Priced" data-ru="Книга закрыта" data-en="Priced">Книга закрыта</option><option value="Issued" data-ru="Размещено" data-en="Issued">Размещено</option><option value="Announced" data-ru="Объявлено" data-en="Announced">Объявлено</option><option value="Confirmed" data-ru="Подтверждено" data-en="Confirmed">Подтверждено</option><option value="In talks" data-ru="Переговоры" data-en="In talks">Переговоры</option><option value="Rumor" data-ru="Слух" data-en="Rumor">Слух</option><option value="Denied" data-ru="Опровергнуто" data-en="Denied">Опровергнуто</option></select></label>
+      <label><span data-ru="Качество" data-en="Quality">Качество</span><select id="deal-quality-filter"><option value="all" data-ru="Любое" data-en="Any quality">Любое</option><option value="approved" data-ru="Подтверждено" data-en="Approved">Подтверждено</option><option value="review" data-ru="На проверке" data-en="Review">На проверке</option></select></label>
+      <label><span data-ru="Тип источника" data-en="Source type">Тип источника</span><select id="deal-source-filter"><option value="all" data-ru="Все источники" data-en="All sources">Все источники</option>{source_tier_options}</select></label>
+      <label><span data-ru="Размер" data-en="Size">Размер</span><select id="deal-size-filter"><option value="all" data-ru="Любой" data-en="Any">Любой</option><option value="disclosed" data-ru="Сумма раскрыта" data-en="Value disclosed">Сумма раскрыта</option><option value="undisclosed" data-ru="Не раскрыта" data-en="Not disclosed">Не раскрыта</option><option value="large" data-ru="≥ 10 млрд в исходной валюте" data-en="≥ 10bn in source currency">≥ 10 млрд в исходной валюте</option></select></label>
+      <label><span data-ru="Сортировка" data-en="Sort">Сортировка</span><select id="deal-sort"><option value="date-desc" data-ru="Сначала новые" data-en="Newest first">Сначала новые</option><option value="date-asc" data-ru="Сначала старые" data-en="Oldest first">Сначала старые</option><option value="amount-desc" data-ru="По сумме внутри валюты" data-en="Value within currency">По сумме внутри валюты</option><option value="score-desc" data-ru="По качеству ↓" data-en="Quality score ↓">По качеству ↓</option></select></label>
+      <button class="reset-filters" id="deal-filter-reset" type="button" data-ru="Сбросить" data-en="Reset">Сбросить</button>
     </div>
-    <div class="deal-stats"><span><b>{len(key_deals)}</b> актуальных сделок за 12 месяцев</span><span><b>{sum(1 for row in key_deals if row.get('quality_status') == 'approved')}</b> прошли quality gate</span><span>Историческая медиана EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b> · n={precedent_stats.get('ev_revenue_count', 0)}</span><span>Историческая медиана EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda')) if precedent_stats.get('ev_ebitda_count', 0) >= 3 else 'N/M'}</b> · n={precedent_stats.get('ev_ebitda_count', 0)}{' · недостаточная выборка' if precedent_stats.get('ev_ebitda_count', 0) < 3 else ''}</span></div>
-    <div class="deal-panels">{_deal_bucket_panels(deal_buckets)}</div>
-    <details class="data-drawer"><summary>Открыть полную сравнительную таблицу <span>{len(key_deals)} строк · все параметры</span></summary>{_precedent_table(key_deals)}</details>
-    <details class="data-drawer"><summary>Precedent multiples <span>{len(multiple_deals)} сделок · только проверяемые расчёты</span></summary>{_precedent_table(multiple_deals[:10])}</details>
+    <div class="deal-stats"><span data-ru="{len(key_deals)} актуальных сделок за 12 месяцев" data-en="{len(key_deals)} current deals over 12 months"><b>{len(key_deals)}</b> актуальных сделок за 12 месяцев</span><span data-ru="{sum(1 for row in key_deals if row.get('quality_status') == 'approved')} прошли quality gate" data-en="{sum(1 for row in key_deals if row.get('quality_status') == 'approved')} passed the quality gate"><b>{sum(1 for row in key_deals if row.get('quality_status') == 'approved')}</b> прошли quality gate</span><span data-ru="Историческая медиана EV/Revenue {_multiple(precedent_stats.get('ev_revenue'))} · n={precedent_stats.get('ev_revenue_count', 0)}" data-en="Historical median EV/Revenue {_multiple(precedent_stats.get('ev_revenue'))} · n={precedent_stats.get('ev_revenue_count', 0)}">Историческая медиана EV/Revenue <b>{_multiple(precedent_stats.get('ev_revenue'))}</b> · n={precedent_stats.get('ev_revenue_count', 0)}</span><span data-ru="Историческая медиана EV/EBITDA {_multiple(precedent_stats.get('ev_ebitda')) if precedent_stats.get('ev_ebitda_count', 0) >= 3 else 'N/M'} · n={precedent_stats.get('ev_ebitda_count', 0)}{' · недостаточная выборка' if precedent_stats.get('ev_ebitda_count', 0) < 3 else ''}" data-en="Historical median EV/EBITDA {_multiple(precedent_stats.get('ev_ebitda')) if precedent_stats.get('ev_ebitda_count', 0) >= 3 else 'N/M'} · n={precedent_stats.get('ev_ebitda_count', 0)}{' · insufficient sample' if precedent_stats.get('ev_ebitda_count', 0) < 3 else ''}">Историческая медиана EV/EBITDA <b>{_multiple(precedent_stats.get('ev_ebitda')) if precedent_stats.get('ev_ebitda_count', 0) >= 3 else 'N/M'}</b> · n={precedent_stats.get('ev_ebitda_count', 0)}{' · недостаточная выборка' if precedent_stats.get('ev_ebitda_count', 0) < 3 else ''}</span></div>
+    {_deal_screener_table(key_deals)}
+    <div class="deal-panels deal-detail-cards">{_deal_bucket_panels({'deal': key_deals})}</div>
+    {_status_guide()}
+    <details class="data-drawer"><summary><b data-ru="Открыть полную сравнительную таблицу" data-en="Open full comparison table">Открыть полную сравнительную таблицу</b><span data-ru="{len(key_deals)} строк · все параметры" data-en="{len(key_deals)} rows · all fields">{len(key_deals)} строк · все параметры</span></summary>{_precedent_table(key_deals)}</details>
+    <details class="data-drawer"><summary>Precedent multiples <span data-ru="{len(multiple_deals)} сделок · только проверяемые расчёты" data-en="{len(multiple_deals)} deals · verifiable calculations only">{len(multiple_deals)} сделок · только проверяемые расчёты</span></summary>{_precedent_table(multiple_deals[:10])}</details>
   </section>
 
-  <section class="section" id="signals">
-    <div class="section-head"><div><span class="eyebrow">СЕГОДНЯ НА РЫНКЕ</span><h2>Свежие события</h2><p>Оперативная лента за {news_window.lower()}. Выберите событие, чтобы увидеть значение для банкира и источник.</p></div>
-    <div class="filters"><button class="filter active" data-filter="all">Все</button><button class="filter" data-filter="new">Новые</button>{_filter_buttons(counts)}</div></div>
-    <label class="search event-search"><span>⌕</span><input id="event-search" placeholder="Компания, событие или источник"></label>
-    <div class="signal-layout"><div class="event-list">{_event_cards(ranked, new_ids)}</div><aside class="detail">{_detail_panel(ranked[0] if ranked else None, ranked[0].event.event_id in new_ids if ranked else False)}</aside></div>
+  {_review_queue_section(deal_buckets)}
+
+  {_signals_section(ranked, new_ids, counts, news_window)}
+
+  <section class="section analytics" id="tasks">
+    <div class="section-head"><div><span class="eyebrow" data-ru="ANALYST WORKFLOW" data-en="ANALYST WORKFLOW">ANALYST WORKFLOW</span><h2 data-ru="Задачи и аналитический readout" data-en="Analyst tasks and readout">Задачи и аналитический readout</h2><p data-ru="Задачи создаются только из actionable-событий; технические раскрытия не попадают в очередь." data-en="Tasks are created only from actionable events; technical disclosures are excluded from the queue.">Задачи создаются только из actionable-событий; технические раскрытия не попадают в очередь.</p></div><button class="button ghost" onclick="window.print()" data-ru="Печать / PDF" data-en="Print / PDF">Печать / PDF</button></div>
+    <div class="analytics-grid"><div class="readout"><h3 data-ru="Короткий вывод" data-en="Short readout">Короткий вывод</h3>{_readout(flow.get('readout', []))}</div>
+    <div class="action-panel"><div class="subhead"><h3 data-ru="Что проверить сегодня" data-en="Checks for today">Что проверить сегодня</h3><span><b id="open-count">{len(flow.get('tasks', []))}</b> <span data-ru="открыто" data-en="open">открыто</span></span></div><div class="task-list">{_task_rows(flow.get('tasks', []))}</div></div></div>
+    <details class="data-drawer"><summary><b data-ru="Сценарии и гипотезы" data-en="Scenarios and hypotheses">Сценарии и гипотезы</b><span data-ru="внутренняя аналитика, не факты" data-en="internal analysis, not facts">внутренняя аналитика, не факты</span></summary><div class="hypothesis-grid">{_hypothesis_cards(flow.get('hypotheses', []))}</div></details>
   </section>
 
-  <section class="section analytics" id="analytics">
-    <div class="section-head"><div><span class="eyebrow">АНАЛИТИКА</span><h2>Вывод и следующие действия</h2><p>Рабочая зона вынесена отдельно от ленты сделок.</p></div><button class="button ghost" onclick="window.print()">Печать / PDF</button></div>
-    <div class="analytics-grid"><div class="readout"><h3>Короткий вывод</h3>{_readout(flow.get('readout', []))}</div>
-    <div class="action-panel"><div class="subhead"><h3>Что проверить сегодня</h3><span><b id="open-count">{len(flow.get('tasks', []))}</b> открыто</span></div><div class="task-list">{_task_rows(flow.get('tasks', []))}</div></div></div>
-    <details class="data-drawer"><summary>Сценарии и гипотезы <span>внутренняя аналитика, не факты</span></summary><div class="hypothesis-grid">{_hypothesis_cards(flow.get('hypotheses', []))}</div></details>
-  </section>
+  {_source_coverage(config.get('cis_source_registry', []))}
+  {_downloads_integrity(health)}
+  {_methodology_integrity(health)}
 
   <section class="utility-grid">
-    <details class="data-drawer"><summary>Котировки покрытия <span>MOEX ISS</span></summary>{_quote_table(quotes)}</details>
-    <details class="data-drawer" id="sources"><summary>Источники и подтверждения <span>{len(ranked)} свежих записей</span></summary>{_source_table(ranked)}</details>
+    <details class="data-drawer"><summary><b data-ru="Котировки покрытия" data-en="Coverage quotes">Котировки покрытия</b><span>MOEX ISS</span></summary>{_quote_table(quotes)}</details>
+    <details class="data-drawer" id="sources"><summary><b data-ru="Источники и подтверждения" data-en="Sources and evidence">Источники и подтверждения</b><span data-ru="{len(ranked)} свежих записей" data-en="{len(ranked)} current records">{len(ranked)} свежих записей</span></summary>{_source_table(ranked)}</details>
   </section>
-  <footer><strong>Deal Market Monitor</strong><span>Публичные данные · выводы требуют проверки аналитиком · не является инвестиционной рекомендацией</span><small>{html.escape(scope)}</small></footer>
+  <footer><strong>Deal Markets Copilot</strong><span data-ru="Публичные данные · проверка аналитиком обязательна · не является инвестиционной рекомендацией" data-en="Public data · analyst verification required · not investment advice">Публичные данные · проверка аналитиком обязательна · не является инвестиционной рекомендацией</span><small>{html.escape(scope)}</small></footer>
 </main>
 <script>window.EVENTS={payload_json};window.BRIEF_TEXT={brief_json};{_JS}</script></body></html>"""
     # Keep generated public artifacts clean for review and reproducible diffs.
@@ -159,8 +176,116 @@ def _brief_text(flow: dict, generated: str) -> str:
     return "\n".join(lines)
 
 
-def _metric(label: str, value: int, note: str) -> str:
-    return f'<article><span>{html.escape(label)}</span><strong>{value}</strong><small>{html.escape(note)}</small></article>'
+def _metric(label: str, value: object, note: str, label_en: str | None = None, note_en: str | None = None) -> str:
+    return f'<article><span data-ru="{html.escape(label, quote=True)}" data-en="{html.escape(label_en or label, quote=True)}">{html.escape(label)}</span><strong>{value}</strong><small data-ru="{html.escape(note, quote=True)}" data-en="{html.escape(note_en or note, quote=True)}">{html.escape(note)}</small></article>'
+
+
+def _source_tier(row: dict) -> str:
+    official = {"issuer_ir", "official_ir", "official_issuer", "regulator", "official_regulator", "exchange", "official_exchange", "sec_filing", "official"}
+    sources = row.get("sources") if isinstance(row.get("sources"), list) else []
+    types = {str(source.get("source_type") or "") for source in sources if isinstance(source, dict)}
+    urls = {str(source.get("url") or "") for source in sources if isinstance(source, dict)}
+    if types & official:
+        return "official"
+    if any("news.google.com" in url for url in urls):
+        return "aggregator"
+    return "secondary"
+
+
+def _source_tier_label(value: str, lang: str) -> str:
+    labels = {
+        "official": ("Официальный / эмитент", "Official / issuer"),
+        "secondary": ("Вторичный источник", "Secondary source"),
+        "aggregator": ("Агрегатор для поиска", "Discovery / aggregator"),
+    }
+    return labels.get(value, (value, value))[0 if lang == "ru" else 1]
+
+
+def _deal_screener_table(rows: list[dict]) -> str:
+    body = []
+    for row in rows:
+        quality = str(row.get("quality_status") or "review")
+        tier = _source_tier(row)
+        body.append(f'''<tr class="deal-row" data-deal-type="{html.escape(str(row.get('deal_type') or ''), quote=True)}" data-deal-sector="{html.escape(str(row.get('sector') or 'Not classified'), quote=True)}" data-deal-country="{html.escape(str(row.get('geography') or 'Not disclosed'), quote=True)}" data-deal-status="{html.escape(str(row.get('status') or ''), quote=True)}" data-deal-quality="{html.escape(quality, quote=True)}" data-deal-source="{tier}" data-deal-date="{html.escape(str(row.get('announced_date') or ''), quote=True)}" data-deal-amount="{html.escape(str(row.get('transaction_value') or ''), quote=True)}" data-deal-search="{html.escape((' '.join(str(row.get(key, '')) for key in ('headline','target_or_issuer','acquirer_or_investor','seller','source_name'))).lower(), quote=True)}"><td>{html.escape(str(row.get('announced_date') or '—'))}</td><td><b>{html.escape(str(row.get('deal_type') or ''))}</b></td><td><strong>{html.escape(str(row.get('target_or_issuer') or 'Not disclosed'))}</strong><small>{html.escape(str(row.get('headline') or ''))}</small></td><td>{html.escape(_country_label(str(row.get('geography') or 'Not disclosed')))}</td><td data-ru="{html.escape(_status_label(str(row.get('status') or 'Reported')), quote=True)}" data-en="{html.escape(_status_label_en(str(row.get('status') or 'Reported')), quote=True)}">{html.escape(_status_label(str(row.get('status') or 'Reported')))}</td><td>{html.escape(_display_amount(row))}</td><td><span class="quality-badge {html.escape(quality)}" data-ru="{html.escape(_quality_label(quality), quote=True)}" data-en="{html.escape(_quality_label_en(quality), quote=True)}">{html.escape(_quality_label(quality))}</span></td><td><span class="source-tier" data-ru="{html.escape(_source_tier_label(tier, 'ru'), quote=True)}" data-en="{html.escape(_source_tier_label(tier, 'en'), quote=True)}">{html.escape(_source_tier_label(tier, 'ru'))}</span></td><td>{_deal_source_links(row, 1)}</td></tr>''')
+    return f'''<div class="screener-table-wrap"><table class="screener-table"><thead><tr><th data-ru="Дата" data-en="Date">Дата</th><th data-ru="Тип" data-en="Type">Тип</th><th data-ru="Эмитент / target и событие" data-en="Issuer / target and event">Эмитент / target и событие</th><th data-ru="Рынок" data-en="Market">Рынок</th><th data-ru="Стадия" data-en="Stage">Стадия</th><th data-ru="Сумма" data-en="Value">Сумма</th><th data-ru="Качество" data-en="Quality">Качество</th><th data-ru="Источник" data-en="Source">Источник</th><th>Evidence</th></tr></thead><tbody>{''.join(body)}</tbody></table><div class="table-filter-empty" hidden data-ru="По выбранным фильтрам сделок нет." data-en="No deals match the selected filters.">По выбранным фильтрам сделок нет.</div></div>'''
+
+
+def _review_queue_section(buckets: dict[str, list[dict]]) -> str:
+    streams = [
+        ("watchlist", "На проверке", "Review queue", "Материальные сообщения, которым не хватает primary evidence или обязательных полей.", "Material reports missing primary evidence or required fields."),
+        ("denial", "Опровержения", "Denials", "Опровергнутые и спорные сообщения хранятся отдельно от сделок.", "Denied and disputed reports are kept separate from deals."),
+        ("technical_filing", "Технические раскрытия", "Technical disclosures", "Биржевые и регуляторные сообщения сохраняются для traceability, но не создают banker tasks.", "Exchange and regulatory notices are retained for traceability but do not create banker tasks."),
+    ]
+    cards = []
+    for key, ru, en, note_ru, note_en in streams:
+        rows = buckets.get(key, [])
+        examples = "".join(f'<li><span>{html.escape(str(row.get("headline") or ""))}</span><small>{html.escape(str(row.get("source_name") or ""))}</small></li>' for row in rows[:3]) or '<li class="empty-line" data-ru="Нет записей" data-en="No records">Нет записей</li>'
+        cards.append(f'''<article class="review-stream"><div class="review-stream-head"><span data-ru="{ru}" data-en="{en}">{ru}</span><b>{len(rows)}</b></div><p data-ru="{note_ru}" data-en="{note_en}">{note_ru}</p><ul>{examples}</ul></article>''')
+    return f'''<section class="section" id="review"><div class="section-head"><div><span class="eyebrow">EVIDENCE REVIEW</span><h2 data-ru="Очередь проверки и исключения" data-en="Review queue and exclusions">Очередь проверки и исключения</h2><p data-ru="Статус качества отделён от стадии сделки: «на проверке» означает необходимость ручной верификации, а не отсутствие транзакции. Ниже показана текущая shortlist-очередь; общий объём review в канонической базе указан в верхнем KPI." data-en="Quality status is separate from deal stage: review means manual verification is required, not that no transaction exists. The cards below show the current shortlist; the top KPI reports the full review population in the canonical dataset.">Статус качества отделён от стадии сделки: «на проверке» означает необходимость ручной верификации, а не отсутствие транзакции. Ниже показана текущая shortlist-очередь; общий объём review в канонической базе указан в верхнем KPI.</p></div></div><div class="review-grid">{''.join(cards)}</div></section>'''
+
+
+def _signals_section(items: list[ClassifiedEvent], new_ids: set[str], counts: Counter, news_window: str) -> str:
+    if not items:
+        return ""
+    return f'''<section class="section" id="signals"><div class="section-head"><div><span class="eyebrow" data-ru="ТЕКУЩИЙ DEAL FLOW" data-en="CURRENT DEAL FLOW">ТЕКУЩИЙ DEAL FLOW</span><h2 data-ru="Новые события" data-en="New signals">Новые события</h2><p data-ru="Оперативная лента за {news_window.lower()}." data-en="Current feed for {news_window.lower()}.">Оперативная лента за {news_window.lower()}.</p></div><div class="filters"><button class="filter active" data-filter="all" data-ru="Все" data-en="All">Все</button><button class="filter" data-filter="new" data-ru="Новые" data-en="New">Новые</button>{_filter_buttons(counts)}</div></div><label class="search event-search"><span>⌕</span><input id="event-search" placeholder="Компания, событие или источник"></label><div class="signal-layout"><div class="event-list">{_event_cards(items, new_ids)}</div><aside class="detail">{_detail_panel(items[0], items[0].event.event_id in new_ids)}</aside></div></section>'''
+
+
+def _country_label(value: str) -> str:
+    return {
+        "Russia": "Россия", "Kazakhstan": "Казахстан", "Uzbekistan": "Узбекистан",
+        "Kyrgyzstan": "Кыргызстан", "Belarus": "Беларусь", "Not disclosed": "Не раскрыто",
+    }.get(str(value), str(value))
+
+
+def _status_guide() -> str:
+    rows = [
+        ("Rumor", "Слух", "Unconfirmed market report"), ("In talks", "Переговоры", "Parties are discussing a transaction"),
+        ("Announced", "Объявлено", "Transaction or issuance formally announced"), ("Priced", "Книга закрыта", "Order book closed and terms priced"),
+        ("Issued", "Размещено", "Securities actually placed or issued"), ("Closed", "Закрыто", "M&A transaction completed"),
+        ("Denied", "Опровергнуто", "Report denied or disputed"),
+    ]
+    cards = "".join(f'<div><b>{html.escape(code)}</b><strong data-ru="{html.escape(ru, quote=True)}" data-en="{html.escape(code, quote=True)}">{html.escape(ru)}</strong><small data-ru="{html.escape(en, quote=True)}" data-en="{html.escape(en, quote=True)}">{html.escape(en)}</small></div>' for code, ru, en in rows)
+    return f'<details class="data-drawer status-guide"><summary><span data-ru="Как читать статусы" data-en="How to read deal stages">Как читать статусы</span><span data-ru="единые определения M&amp;A, ECM и DCM" data-en="consistent M&amp;A, ECM and DCM definitions">единые определения M&amp;A, ECM и DCM</span></summary><div class="status-grid">{cards}</div></details>'
+
+
+def _source_coverage(registry: list[dict]) -> str:
+    ru_copy = {
+        "ru-moex": ("Текущие российские раскрытия по сделкам и рынкам капитала", "Технические сообщения биржи по-прежнему подавляются существующим классификатором."),
+        "kz-kase-aix": ("Размещения и раскрытия эмитентов", "Отложено до подтверждения стабильного разрешённого автоматического доступа и узкой таксономии событий."),
+        "uz-uzse": ("Зарегистрированные выпуски ценных бумаг с эмитентом, инструментом и раскрытой суммой", "Собирается только факт №25; старые записи вне архивного окна не попадают в базу; каждое событие ссылается на UZSE."),
+        "uz-openinfo": ("Более широкие существенные факты и выпуски ценных бумаг", "Источник дорожной карты до появления стабильного публичного индекса или документированного API и узких фильтров фактов."),
+        "kg-kse": ("Раскрытия эмитентов и ценных бумаг", "Отложено: сайт ограничивает копирование без письменного разрешения."),
+        "by-bcse-csd": ("Раскрытия эмитентов и ценных бумаг", "Только roadmap до подтверждения авторитетного стабильного endpoint и условий повторного использования."),
+    }
+    rows = []
+    for source in registry:
+        active = bool(source.get("enabled") and source.get("implemented"))
+        status_ru = "Подключён" if active else "В дорожной карте"
+        status_en = "Connected" if active else "Roadmap"
+        expected_ru, limitations_ru = ru_copy.get(str(source.get("id")), (str(source.get("expected_value") or ""), str(source.get("limitations") or "")))
+        expected_en = str(source.get("expected_value") or "")
+        limitations_en = str(source.get("limitations") or "")
+        rows.append(f'''<article class="coverage-card {'active' if active else 'roadmap'}">
+          <div><span data-ru="{html.escape(_country_label(source.get('country', '')), quote=True)} · {html.escape(str(source.get('market') or ''), quote=True)}" data-en="{html.escape(str(source.get('country') or ''), quote=True)} · {html.escape(str(source.get('market') or ''), quote=True)}">{html.escape(_country_label(source.get('country', '')))} · {html.escape(str(source.get('market') or ''))}</span><b data-ru="{status_ru}" data-en="{status_en}">{status_ru}</b></div>
+          <h3>{html.escape(str(source.get('name') or ''))}</h3><p data-ru="{html.escape(expected_ru, quote=True)}" data-en="{html.escape(expected_en, quote=True)}">{html.escape(expected_ru)}</p>
+          <dl><div><dt data-ru="Тип источника" data-en="Source type">Тип источника</dt><dd>{html.escape(str(source.get('officialness') or 'public'))}</dd></div><div><dt data-ru="Типы сделок" data-en="Deal types">Типы сделок</dt><dd>{html.escape(' · '.join(source.get('deal_types', [])))}</dd></div><div><dt data-ru="Шум" data-en="Noise">Шум</dt><dd>{html.escape(str(source.get('noise_risk') or 'unknown'))}</dd></div></dl>
+          <small data-ru="{html.escape(limitations_ru, quote=True)}" data-en="{html.escape(limitations_en, quote=True)}">{html.escape(limitations_ru)}</small><a href="{html.escape(_safe_url(source.get('url', '')), quote=True)}" target="_blank" rel="noopener" data-ru="Официальный источник ↗" data-en="Official source ↗">Официальный источник ↗</a>
+        </article>''')
+    active_count = sum(1 for source in registry if source.get("enabled") and source.get("implemented"))
+    return f'''<section class="section" id="coverage"><div class="section-head"><div><span class="eyebrow" data-ru="SOURCE COVERAGE" data-en="SOURCE COVERAGE">SOURCE COVERAGE</span><h2 data-ru="Источники и покрытие рынков СНГ" data-en="CIS sources and market coverage">Источники и покрытие рынков СНГ</h2><p data-ru="Активные источники отделены от roadmap. Отложенный источник не считается текущим покрытием." data-en="Active sources are separated from the roadmap. Deferred sources do not count as live coverage.">Активные источники отделены от roadmap. Отложенный источник не считается текущим покрытием.</p></div><div class="coverage-summary"><b>{active_count}</b><span data-ru="активных из {len(registry)} отслеживаемых рынков/групп" data-en="active of {len(registry)} tracked markets/groups">активных из {len(registry)} отслеживаемых рынков/групп</span></div></div><div class="coverage-limit" data-ru="Покрытие СНГ расширяется поэтапно: новые рынки подключаются только через официальные источники и проходят quality gate. В текущей сборке новая UZSE запись была найдена, но не добавлена в базу из-за архивного окна." data-en="CIS coverage is expanding gradually. New markets are added only through official sources and quality gates. In this build, a UZSE disclosure was detected but excluded by the archive window.">Покрытие СНГ расширяется поэтапно: новые рынки подключаются только через официальные источники и проходят quality gate. В текущей сборке новая UZSE запись была найдена, но не добавлена в базу из-за архивного окна.</div><div class="coverage-grid">{''.join(rows)}</div></section>'''
+
+
+def _downloads_integrity(health: dict) -> str:
+    return '''<section class="section downloads" id="downloads"><div class="section-head"><div><span class="eyebrow" data-ru="EXPORTS" data-en="EXPORTS">EXPORTS</span><h2 data-ru="Выгрузки для аналитика" data-en="Analyst exports">Выгрузки для аналитика</h2><p data-ru="Один dataset, три формата: рабочая книга, плоская таблица и manifest сборки." data-en="One dataset in three formats: analyst workbook, flat file and build manifest.">Один dataset, три формата: рабочая книга, плоская таблица и manifest сборки.</p></div></div><div class="download-grid"><a href="precedent_transactions.xlsx" download><b>XLSX</b><span data-ru="Пятилистная рабочая книга: Summary, Deals, Financials, Multiples, Sources &amp; QA" data-en="Five-sheet workbook: Summary, Deals, Financials, Multiples, Sources &amp; QA">Пятилистная рабочая книга: Summary, Deals, Financials, Multiples, Sources &amp; QA</span></a><a href="precedent_transactions.csv" download><b>CSV</b><span data-ru="Машиночитаемая база сделок" data-en="Machine-readable deal database">Машиночитаемая база сделок</span></a><a href="build_manifest.json"><b>JSON</b><span data-ru="Build ID, dataset SHA и число записей" data-en="Build ID, dataset SHA and record count">Build ID, dataset SHA и число записей</span></a></div></section>'''
+
+
+def _methodology_integrity(health: dict) -> str:
+    build_id = html.escape(str(health.get("build_id") or "—"))
+    dataset_sha = html.escape(str(health.get("dataset_sha256") or "—"))
+    records = int(health.get("record_count") or 0)
+    issues = int(health.get("critical_qa_issues") or 0)
+    synced = bool(health.get("xlsx_synced"))
+    return f'''<section class="section methodology" id="methodology"><div class="section-head"><div><span class="eyebrow" data-ru="METHODOLOGY &amp; INTEGRITY" data-en="METHODOLOGY &amp; INTEGRITY">METHODOLOGY &amp; INTEGRITY</span><h2 data-ru="Как формируется база" data-en="How the database is built">Как формируется база</h2><p data-ru="Публичное событие проходит дедупликацию, классификацию, нормализацию, evidence review и quality gate до попадания в screener." data-en="A public event passes deduplication, classification, normalization, evidence review and a quality gate before entering the screener.">Публичное событие проходит дедупликацию, классификацию, нормализацию, evidence review и quality gate до попадания в screener.</p></div></div><div class="method-flow"><span data-ru="Публичные источники" data-en="Public sources">Публичные источники</span><i>→</i><span data-ru="Классификация и noise filter" data-en="Classification and noise filter">Классификация и noise filter</span><i>→</i><span data-ru="Нормализация сделки" data-en="Deal normalization">Нормализация сделки</span><i>→</i><span>Quality gate</span><i>→</i><span data-ru="Screener и workflow" data-en="Screener and workflow">Screener и workflow</span></div><div class="integrity-grid"><div><span>Build ID</span><b>{build_id}</b></div><div><span>Dataset SHA-256</span><b>{dataset_sha}</b></div><div><span data-ru="Записей" data-en="Records">Записей</span><b>{records}</b></div><div><span data-ru="Критические QA issues" data-en="Critical QA issues">Критические QA issues</span><b>{issues}</b></div><div><span>Excel</span><b data-ru="{'синхронизирован' if synced else 'ожидает сборки'}" data-en="{'synchronized' if synced else 'awaiting build'}">{'синхронизирован' if synced else 'ожидает сборки'}</b></div></div><div class="method-note" data-ru="Public-data screening tool: не заменяет Bloomberg, Dealogic, Capital IQ, LSEG или ручную проверку transaction documents." data-en="Public-data screening tool: not a replacement for Bloomberg, Dealogic, Capital IQ, LSEG or manual review of transaction documents.">Public-data screening tool: не заменяет Bloomberg, Dealogic, Capital IQ, LSEG или ручную проверку transaction documents.</div></section>'''
 
 
 def _health_panel(health: dict) -> str:
@@ -168,6 +293,7 @@ def _health_panel(health: dict) -> str:
         return ""
     synced = bool(health.get("xlsx_synced"))
     status = "Система готова" if health.get("system_status") == "ok" else "Требуется проверка"
+    status_en = "System ready" if health.get("system_status") == "ok" else "Review required"
     css = "ok" if status == "Система готова" else "warn"
     updated = html.escape(str(health.get("source_checked_at") or health.get("last_success_at") or "—"))
     build_id = html.escape(str(health.get("build_id") or "—"))
@@ -175,7 +301,9 @@ def _health_panel(health: dict) -> str:
     approved = int(health.get("approved_count") or 0)
     issues = int(health.get("critical_qa_issues") or 0)
     source_status = "OK" if health.get("source_status") == "ok" else "ошибка"
+    source_status_en = "OK" if health.get("source_status") == "ok" else "error"
     freshness = "свежие" if health.get("freshness_status") == "ok" else "устарели"
+    freshness_en = "fresh" if health.get("freshness_status") == "ok" else "stale"
     age = health.get("source_age_minutes")
     age_label = f"{float(age):.0f} мин" if isinstance(age, (int, float)) else "—"
     market_status = health.get("market_data_status", "unavailable")
@@ -188,24 +316,24 @@ def _health_panel(health: dict) -> str:
         "unavailable": f"недоступен · {market_count}/{market_total}",
     }.get(str(market_status), "не проверен")
     return f'''<section class="health-panel {css}" id="data-health" data-last-success="{updated}" aria-label="Состояние системы">
-      <div><span class="health-dot"></span><strong id="data-health-label">{status}</strong><small>Источники проверены: {updated}</small></div>
-      <dl><div><dt>Build ID</dt><dd>{build_id}</dd></div><div><dt>Записей</dt><dd>{records}</dd></div><div><dt>Approved</dt><dd>{approved}</dd></div><div><dt>Источники</dt><dd>{source_status}</dd></div><div><dt>Market tape</dt><dd>{market_label}</dd></div><div><dt>Свежесть</dt><dd>{freshness} · {age_label}</dd></div><div><dt>QA issues</dt><dd>{issues}</dd></div><div><dt>Excel</dt><dd>{'синхронизирован' if synced else 'ожидает сборки'}</dd></div></dl>
+      <div><span class="health-dot"></span><strong id="data-health-label" data-ru="{status}" data-en="{status_en}">{status}</strong><small data-ru="Источники проверены: {updated}" data-en="Sources checked: {updated}">Источники проверены: {updated}</small></div>
+      <dl><div><dt>Build ID</dt><dd>{build_id}</dd></div><div><dt data-ru="Записей" data-en="Records">Записей</dt><dd>{records}</dd></div><div><dt>Approved</dt><dd>{approved}</dd></div><div><dt data-ru="Источники" data-en="Sources">Источники</dt><dd data-ru="{source_status}" data-en="{source_status_en}">{source_status}</dd></div><div><dt>Market tape</dt><dd>{market_label}</dd></div><div><dt data-ru="Свежесть" data-en="Freshness">Свежесть</dt><dd data-ru="{freshness} · {age_label}" data-en="{freshness_en} · {age_label}">{freshness} · {age_label}</dd></div><div><dt>QA issues</dt><dd>{issues}</dd></div><div><dt>Excel</dt><dd data-ru="{'синхронизирован' if synced else 'ожидает сборки'}" data-en="{'synchronized' if synced else 'awaiting build'}">{'синхронизирован' if synced else 'ожидает сборки'}</dd></div></dl>
     </section>'''
 
 
 def _deal_bucket_panels(buckets: dict[str, list[dict]]) -> str:
     metadata = {
-        "deal": ("Актуальные сделки", "Сделки и размещения; уровень проверки явно указан на каждой карточке."),
-        "watchlist": ("Требует проверки", "Материальные сообщения, которые ещё нельзя использовать как подтверждённый факт."),
-        "denial": ("Опровержения", "Отдельный журнал опровергнутых или спорных сообщений."),
-        "technical_filing": ("Technical filings", "Официальные документы биржи: параметры выпуска без смешивания со сделками."),
+        "deal": ("Актуальные сделки", "Current deals", "Сделки и размещения; уровень проверки явно указан на каждой карточке.", "Deals and placements with an explicit review level on every card."),
+        "watchlist": ("Требует проверки", "Needs review", "Материальные сообщения, которые ещё нельзя использовать как подтверждённый факт.", "Material reports that cannot yet be used as confirmed facts."),
+        "denial": ("Опровержения", "Denials", "Отдельный журнал опровергнутых или спорных сообщений.", "A separate log of denied or disputed reports."),
+        "technical_filing": ("Technical filings", "Technical filings", "Официальные документы биржи: параметры выпуска без смешивания со сделками.", "Official exchange documents kept separate from transaction flow."),
     }
     panels = []
     for kind, rows in buckets.items():
-        title, description = metadata[kind]
+        title, title_en, description, description_en = metadata[kind]
         hidden = "" if kind == "deal" else " hidden"
         cards = _deal_tiles(rows, kind) if rows else '<div class="empty">В этом потоке пока нет записей.</div>'
-        panels.append(f'<section class="bucket-panel" data-bucket-panel="{kind}"{hidden}><div class="bucket-head"><div><h3>{title}</h3><p>{description}</p></div><span>{len(rows)}</span></div><div class="deal-grid">{cards}</div><div class="filter-empty" hidden>По выбранным фильтрам записей нет. Сбросьте фильтры или выберите другой поток.</div></section>')
+        panels.append(f'<section class="bucket-panel" data-bucket-panel="{kind}"{hidden}><div class="bucket-head"><div><h3 data-ru="{title}" data-en="{title_en}">{title}</h3><p data-ru="{description}" data-en="{description_en}">{description}</p></div><span>{len(rows)}</span></div><div class="deal-grid">{cards}</div><div class="filter-empty" hidden data-ru="По выбранным фильтрам записей нет. Сбросьте фильтры или выберите другой поток." data-en="No records match the selected filters. Reset filters or choose another stream.">По выбранным фильтрам записей нет. Сбросьте фильтры или выберите другой поток.</div></section>')
     return "".join(panels)
 
 
@@ -218,13 +346,13 @@ def _deal_tiles(rows: list[dict], bucket: str = "deal") -> str:
             "security_code", "isin",
         )).lower()
         type_class = {"M&A": "ma", "DCM": "dcm", "ECM": "ecm"}.get(deal_type, "other")
-        cards.append(f"""<article class="deal-tile" data-deal-bucket="{html.escape(bucket, quote=True)}" data-deal-type="{html.escape(deal_type, quote=True)}" data-deal-sector="{html.escape(str(row.get('sector') or 'Not classified'), quote=True)}" data-deal-status="{html.escape(str(row.get('status') or ''), quote=True)}" data-deal-date="{html.escape(str(row.get('announced_date') or ''), quote=True)}" data-deal-amount="{html.escape(str(row.get('transaction_value') or ''), quote=True)}" data-deal-currency="{html.escape(str(row.get('currency') or 'Not disclosed'), quote=True)}" data-deal-score="{int(row.get('quality_score') or 0)}" data-deal-search="{html.escape(search, quote=True)}">
-          <div class="deal-tile-top"><span class="type-badge type-{type_class}">{html.escape(deal_type)}</span><span class="deal-status">{html.escape(_status_label(row.get('status','Rumor')))}</span><span class="quality-badge {html.escape(row.get('quality_status','review'))}">{html.escape(_quality_label(row.get('quality_status','review')))}</span><time>{html.escape(row.get('announced_date','—') or '—')}</time></div>
+        cards.append(f"""<article class="deal-tile" data-deal-bucket="{html.escape(bucket, quote=True)}" data-deal-type="{html.escape(deal_type, quote=True)}" data-deal-sector="{html.escape(str(row.get('sector') or 'Not classified'), quote=True)}" data-deal-country="{html.escape(str(row.get('geography') or 'Not disclosed'), quote=True)}" data-deal-status="{html.escape(str(row.get('status') or ''), quote=True)}" data-deal-quality="{html.escape(str(row.get('quality_status') or 'review'), quote=True)}" data-deal-source="{html.escape(_source_tier(row), quote=True)}" data-deal-date="{html.escape(str(row.get('announced_date') or ''), quote=True)}" data-deal-amount="{html.escape(str(row.get('transaction_value') or ''), quote=True)}" data-deal-currency="{html.escape(str(row.get('currency') or 'Not disclosed'), quote=True)}" data-deal-score="{int(row.get('quality_score') or 0)}" data-deal-search="{html.escape(search, quote=True)}">
+          <div class="deal-tile-top"><span class="type-badge type-{type_class}">{html.escape(deal_type)}</span><span class="market-badge" data-ru="{html.escape(_country_label(row.get('geography', 'Not disclosed')), quote=True)}" data-en="{html.escape(str(row.get('geography', 'Not disclosed')), quote=True)}">{html.escape(_country_label(row.get('geography', 'Not disclosed')))}</span><span class="deal-status" data-ru="{html.escape(_status_label(row.get('status','Rumor')), quote=True)}" data-en="{html.escape(_status_label_en(row.get('status','Rumor')), quote=True)}">{html.escape(_status_label(row.get('status','Rumor')))}</span><span class="quality-badge {html.escape(row.get('quality_status','review'))}" data-ru="{html.escape(_quality_label(row.get('quality_status','review')), quote=True)}" data-en="{html.escape(_quality_label_en(row.get('quality_status','review')), quote=True)}">{html.escape(_quality_label(row.get('quality_status','review')))}</span><time>{html.escape(row.get('announced_date','—') or '—')}</time></div>
           <h3>{html.escape(row.get('headline','Сделка без заголовка'))}</h3>
           {_typed_deal_body(row)}
           {_quality_note(row)}
-          <details class="card-more"><summary>Все параметры</summary>{_typed_deal_details(row)}</details>
-          <div class="deal-tile-foot"><span>Источники · {int(row.get('source_count') or len(row.get('sources', [])) or 1)}</span><div class="source-list">{_deal_source_links(row)}</div></div>
+          <details class="card-more"><summary data-ru="Все параметры" data-en="All fields">Все параметры</summary>{_typed_deal_details(row)}</details>
+          <div class="deal-tile-foot"><span data-ru="Источники · {int(row.get('source_count') or len(row.get('sources', [])) or 1)}" data-en="Sources · {int(row.get('source_count') or len(row.get('sources', [])) or 1)}">Источники · {int(row.get('source_count') or len(row.get('sources', [])) or 1)}</span><div class="source-list">{_deal_source_links(row)}</div></div>
         </article>""")
     return "".join(cards)
 
@@ -283,16 +411,35 @@ def _typed_deal_details(row: dict) -> str:
 
 
 def _entity_grid(items: list[tuple[str, object]]) -> str:
-    return '<div class="entity-grid">' + "".join(f'<div><span>{html.escape(label)}</span><strong>{html.escape(_display_value(value))}</strong></div>' for label, value in items) + "</div>"
+    return '<div class="entity-grid">' + "".join(f'<div><span data-ru="{html.escape(label, quote=True)}" data-en="{html.escape(_en_label(label), quote=True)}">{html.escape(label)}</span><strong data-ru="{html.escape(_display_value(value), quote=True)}" data-en="{html.escape(_display_value_en(value), quote=True)}">{html.escape(_display_value(value))}</strong></div>' for label, value in items) + "</div>"
 
 
 def _fact(label: str, value: object) -> str:
-    return f'<div><span>{html.escape(label)}</span><strong>{html.escape(_display_value(value))}</strong></div>'
+    return f'<div><span data-ru="{html.escape(label, quote=True)}" data-en="{html.escape(_en_label(label), quote=True)}">{html.escape(label)}</span><strong data-ru="{html.escape(_display_value(value), quote=True)}" data-en="{html.escape(_display_value_en(value), quote=True)}">{html.escape(_display_value(value))}</strong></div>'
+
+
+def _en_label(value: str) -> str:
+    return {
+        "Покупатель": "Buyer", "Продавец": "Seller", "Эмитент": "Issuer",
+        "Инструмент": "Instrument", "Стоимость": "Value", "Доля": "Stake",
+        "Форма оплаты": "Consideration", "Объём": "Issue size", "Купон": "Coupon",
+        "Погашение / срок": "Maturity / tenor", "ISIN / номер": "ISIN / code",
+        "Цена / акция": "Price / share", "Дисконт": "Discount", "Валюта": "Currency",
+        "Доходность": "Yield", "Срок": "Tenor", "Цена размещения": "Issue price",
+    }.get(str(value), str(value))
 
 
 def _display_value(value: object) -> str:
     labels = {"Floating": "Плавающий", "Fixed": "Фиксированный", "Discount": "Дисконтный"}
     return "Не раскрыто" if value in {None, "", "Not disclosed", "NOT DISCLOSED"} else "Не применимо" if value == "Not applicable" else labels.get(str(value), str(value))
+
+
+def _display_value_en(value: object) -> str:
+    if value in {None, "", "Not disclosed", "NOT DISCLOSED", "Не раскрыт", "Не раскрыта", "Не раскрыто"}:
+        return "Not disclosed"
+    if value in {"Not applicable", "Не применимо"}:
+        return "Not applicable"
+    return str(value).replace("млрд", "bn").replace("млн", "mm").replace(" года", " years").replace(" лет", " years")
 
 
 def _display_amount(row: dict) -> str:
@@ -312,7 +459,7 @@ def _display_percent(value) -> str:
 def _display_number(value, currency: str) -> str:
     if value in {None, ""}:
         return "Не раскрыта"
-    symbol = {"RUB": "₽", "USD": "$", "EUR": "€", "CNY": "¥"}.get(str(currency).upper(), str(currency or ""))
+    symbol = {"RUB": "₽", "USD": "$", "EUR": "€", "CNY": "¥", "UZS": "UZS", "KZT": "₸", "KGS": "KGS", "BYN": "BYN"}.get(str(currency).upper(), str(currency or ""))
     return f"{float(value):,.2f} {symbol}".replace(",", " ").strip()
 
 
@@ -332,8 +479,16 @@ def _status_label(value: str) -> str:
     }.get(str(value), str(value))
 
 
+def _status_label_en(value: str) -> str:
+    return {"Completed": "Closed", "Potential": "In talks"}.get(str(value), str(value))
+
+
 def _quality_label(value: str) -> str:
     return {"approved": "Проверено", "review": "Требует проверки", "rejected": "Отклонено"}.get(str(value), "Требует проверки")
+
+
+def _quality_label_en(value: str) -> str:
+    return {"approved": "Verified", "review": "Needs review", "rejected": "Rejected"}.get(str(value), "Needs review")
 
 
 def _deal_source_links(row: dict, limit: int = 3) -> str:
@@ -377,8 +532,22 @@ def _quality_note(row: dict) -> str:
         "denied_or_disputed": "сделка опровергнута",
         "invalid_currency": "валюта не нормализована",
     }
+    labels_en = {
+        "unverified_source": "source not verified", "aggregator_link": "aggregator link",
+        "missing_both_parties": "parties not identified", "missing_target": "target not identified",
+        "missing_acquirer": "buyer not identified", "missing_issuer": "issuer not identified",
+        "missing_status": "deal stage not identified", "missing_transaction_value": "value not disclosed",
+        "missing_currency": "currency not identified", "single_secondary_source": "primary source or independent confirmation required",
+        "price_target_context": "target-price context detected", "suspicious_small_transaction_value": "suspicious transaction value",
+        "non_transaction_or_technical_notice": "possible technical notice", "technical_filing": "official filing, not a deal",
+        "rumor_only": "market rumor only", "talks_only": "talks without completion", "denied_or_disputed": "deal denied or disputed",
+        "invalid_currency": "currency not normalized",
+    }
     notes = [labels.get(flag, flag) for flag in row.get("quality_flags", [])][:3]
-    return f'<div class="quality-note"><b>Проверить:</b> {html.escape(", ".join(notes))}</div>' if notes else ""
+    notes_en = [labels_en.get(flag, flag) for flag in row.get("quality_flags", [])][:3]
+    ru = f'Проверить: {", ".join(notes)}'
+    en = f'Review: {", ".join(notes_en)}'
+    return f'<div class="quality-note" data-ru="{html.escape(ru, quote=True)}" data-en="{html.escape(en, quote=True)}">{html.escape(ru)}</div>' if notes else ""
 
 
 def _deal_card(deal: dict | None) -> str:
@@ -424,7 +593,7 @@ def _deal_amount(value, currency: str) -> str:
         return "Not disclosed"
     number = float(value)
     normalized = str(currency or "").upper()
-    symbol = {"RUB": "₽", "USD": "$", "EUR": "€", "CNY": "¥", "GBP": "£"}.get(normalized, "")
+    symbol = {"RUB": "₽", "USD": "$", "EUR": "€", "CNY": "¥", "GBP": "£", "UZS": "UZS", "KZT": "₸", "KGS": "KGS", "BYN": "BYN"}.get(normalized, normalized)
     if number >= 1_000_000_000:
         return f"{number / 1_000_000_000:,.1f} bn {symbol}".replace(",", " ")
     if number >= 1_000_000:
@@ -464,7 +633,7 @@ def _quote_cards(quotes: list[dict], live: bool) -> str:
 
 def _task_rows(tasks: list[dict]) -> str:
     if not tasks:
-        return '<div class="empty">Нет действий выше заданного порога.</div>'
+        return '<div class="empty" data-ru="Нет действий выше заданного порога." data-en="No actions above the configured threshold.">Нет действий выше заданного порога.</div>'
     rows = []
     for task in tasks:
         hypotheses = " · ".join(task.get("hypothesis_ids", [])) or task.get("category", "")
@@ -506,7 +675,7 @@ def _filter_buttons(counts: Counter) -> str:
 
 def _event_cards(items: list[ClassifiedEvent], new_ids: set[str]) -> str:
     if not items:
-        return '<div class="empty">Нет событий выше заданного порога.</div>'
+        return '<div class="empty" data-ru="Нет событий выше заданного порога." data-en="No signals above the configured threshold.">Нет событий выше заданного порога.</div>'
     cards = []
     for index, item in enumerate(items):
         event = item.event
@@ -544,12 +713,12 @@ def _normalize_text(value: str) -> str:
 
 def _detail_panel(item: ClassifiedEvent | None, is_new: bool) -> str:
     if item is None:
-        return '<div class="empty">Выберите событие.</div>'
+        return '<div class="empty" data-ru="Выберите событие." data-en="Select a signal.">Выберите событие.</div>'
     payload = _event_payload(item, is_new)
     return f"""<span class="kicker">BANKER BRIEF</span><div class="detail-score"><span id="detail-score">{item.score}/10</span><small id="detail-state">{'NEW SIGNAL' if is_new else item.severity.upper()}</small></div>
     <h2 id="detail-title">{html.escape(payload['title'])}</h2>
-    <div class="detail-section"><span>ПОЧЕМУ ЭТО ВАЖНО</span><p id="detail-angle">{html.escape(payload['banker_angle'])}</p></div>
-    <div class="detail-section"><span>СЛЕДУЮЩЕЕ ДЕЙСТВИЕ</span><p id="detail-action">{html.escape(payload['next_action'])}</p></div>
+    <div class="detail-section"><span data-ru="ПОЧЕМУ ЭТО ВАЖНО" data-en="WHY IT MATTERS">ПОЧЕМУ ЭТО ВАЖНО</span><p id="detail-angle">{html.escape(payload['banker_angle'])}</p></div>
+    <div class="detail-section"><span data-ru="СЛЕДУЮЩЕЕ ДЕЙСТВИЕ" data-en="NEXT ACTION">СЛЕДУЮЩЕЕ ДЕЙСТВИЕ</span><p id="detail-action">{html.escape(payload['next_action'])}</p></div>
     <div class="detail-grid"><div><span>TYPE</span><strong id="detail-category">{html.escape(payload['category'])}</strong></div>
     <div><span>COVERAGE</span><strong id="detail-coverage">{html.escape(payload['coverage'])}</strong></div>
     <div><span>EVIDENCE</span><strong id="detail-evidence">{html.escape(payload['evidence'])}</strong></div>
@@ -633,19 +802,22 @@ def _short_date(value: str) -> str:
 
 _JS = r"""
 const AUTO_REFRESH_MS=5*60*1000;
+const langButtons=[...document.querySelectorAll('.lang-toggle button')];
+function setLanguage(lang){document.documentElement.lang=lang;document.querySelectorAll('[data-ru][data-en]').forEach(node=>{node.textContent=node.dataset[lang];});langButtons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.lang===lang)));const placeholders={ru:{'deal-search':'Найти компанию или сделку','event-search':'Компания, событие или источник'},en:{'deal-search':'Find a company or deal','event-search':'Company, event or source'}};Object.entries(placeholders[lang]).forEach(([id,value])=>{const node=document.getElementById(id);if(node)node.placeholder=value;});localStorage.setItem('dealDeskLanguage',lang);}
+langButtons.forEach(button=>button.addEventListener('click',()=>setLanguage(button.dataset.lang)));setLanguage(localStorage.getItem('dealDeskLanguage')||'ru');
 const cards=[...document.querySelectorAll('.event-card')],filters=[...document.querySelectorAll('.filter')],search=document.getElementById('event-search');let active='all';
-function applyFilters(){const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}
-filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));button.classList.add('active');active=button.dataset.filter;applyFilters();}));search.addEventListener('input',applyFilters);
-const dealCards=[...document.querySelectorAll('.deal-tile')],dealPanels=[...document.querySelectorAll('.bucket-panel')],dealFilters=[...document.querySelectorAll('.deal-filter')],dealSearch=document.getElementById('deal-search'),dealType=document.getElementById('deal-type-filter'),dealPeriod=document.getElementById('deal-period-filter'),dealSector=document.getElementById('deal-sector-filter'),dealStatus=document.getElementById('deal-status-filter'),dealSize=document.getElementById('deal-size-filter'),dealSort=document.getElementById('deal-sort');let activeDeal='deal';
-function applyDealFilters(){const q=dealSearch.value.trim().toLowerCase(),days=Number(dealPeriod.value)||0,cutoff=days?Date.now()-days*86400000:0;dealPanels.forEach(panel=>panel.hidden=panel.dataset.bucketPanel!==activeDeal);dealCards.forEach(card=>{const amount=Number(card.dataset.dealAmount)||0,date=Date.parse(card.dataset.dealDate)||0;const ok=card.dataset.dealBucket===activeDeal&&(!q||card.dataset.dealSearch.includes(q))&&(dealType.value==='all'||card.dataset.dealType===dealType.value)&&(dealSector.value==='all'||card.dataset.dealSector===dealSector.value)&&(dealStatus.value==='all'||card.dataset.dealStatus===dealStatus.value)&&(!cutoff||date>=cutoff)&&(dealSize.value==='all'||(dealSize.value==='disclosed'&&amount>0)||(dealSize.value==='undisclosed'&&!amount)||(dealSize.value==='large'&&amount>=1e10));card.hidden=!ok;});dealPanels.forEach(panel=>{const grid=panel.querySelector('.deal-grid');if(!grid)return;[...grid.querySelectorAll('.deal-tile')].sort((a,b)=>{if(dealSort.value==='date-asc')return a.dataset.dealDate.localeCompare(b.dataset.dealDate);if(dealSort.value==='amount-desc'){const currencyOrder={RUB:0,USD:1,EUR:2,CNY:3,GBP:4,CHF:5};const ac=currencyOrder[a.dataset.dealCurrency]??99,bc=currencyOrder[b.dataset.dealCurrency]??99;return ac!==bc?ac-bc:(Number(b.dataset.dealAmount)||0)-(Number(a.dataset.dealAmount)||0);}if(dealSort.value==='score-desc')return (Number(b.dataset.dealScore)||0)-(Number(a.dataset.dealScore)||0);return b.dataset.dealDate.localeCompare(a.dataset.dealDate);}).forEach(card=>grid.appendChild(card));const visible=[...grid.querySelectorAll('.deal-tile')].some(card=>!card.hidden);const empty=panel.querySelector('.filter-empty');if(empty)empty.hidden=visible;});}
-dealFilters.forEach(button=>button.addEventListener('click',()=>{dealFilters.forEach(x=>x.classList.remove('active'));button.classList.add('active');activeDeal=button.dataset.dealFilter;applyDealFilters();}));dealSearch.addEventListener('input',applyDealFilters);applyDealFilters();
-[dealType,dealPeriod,dealSector,dealStatus,dealSize,dealSort].forEach(control=>control.addEventListener('change',applyDealFilters));document.getElementById('deal-filter-reset').addEventListener('click',()=>{dealSearch.value='';[dealType,dealPeriod,dealSector,dealStatus,dealSize].forEach(control=>control.value='all');dealSort.value='date-desc';applyDealFilters();});
+function applyFilters(){if(!search)return;const q=search.value.trim().toLowerCase();cards.forEach(c=>{const categoryOk=active==='all'||(active==='new'?c.dataset.new==='true':c.dataset.category===active);const searchOk=!q||c.dataset.search.includes(q);c.hidden=!(categoryOk&&searchOk);});}
+filters.forEach(button=>button.addEventListener('click',()=>{filters.forEach(x=>x.classList.remove('active'));button.classList.add('active');active=button.dataset.filter;applyFilters();}));if(search)search.addEventListener('input',applyFilters);
+const dealCards=[...document.querySelectorAll('.deal-tile')],dealRows=[...document.querySelectorAll('.deal-row')],dealPanels=[...document.querySelectorAll('.bucket-panel')],dealSearch=document.getElementById('deal-search'),dealType=document.getElementById('deal-type-filter'),dealPeriod=document.getElementById('deal-period-filter'),dealSector=document.getElementById('deal-sector-filter'),dealCountry=document.getElementById('deal-country-filter'),dealStatus=document.getElementById('deal-status-filter'),dealQuality=document.getElementById('deal-quality-filter'),dealSource=document.getElementById('deal-source-filter'),dealSize=document.getElementById('deal-size-filter'),dealSort=document.getElementById('deal-sort');
+function dealMatches(node,q,cutoff){const amount=Number(node.dataset.dealAmount)||0,date=Date.parse(node.dataset.dealDate)||0;return(!q||node.dataset.dealSearch.includes(q))&&(dealType.value==='all'||node.dataset.dealType===dealType.value)&&(dealSector.value==='all'||node.dataset.dealSector===dealSector.value)&&(dealCountry.value==='all'||node.dataset.dealCountry===dealCountry.value)&&(dealStatus.value==='all'||node.dataset.dealStatus===dealStatus.value)&&(dealQuality.value==='all'||node.dataset.dealQuality===dealQuality.value)&&(dealSource.value==='all'||node.dataset.dealSource===dealSource.value)&&(!cutoff||date>=cutoff)&&(dealSize.value==='all'||(dealSize.value==='disclosed'&&amount>0)||(dealSize.value==='undisclosed'&&!amount)||(dealSize.value==='large'&&amount>=1e10));}
+function applyDealFilters(){if(!dealSearch)return;const q=dealSearch.value.trim().toLowerCase(),days=Number(dealPeriod.value)||0,cutoff=days?Date.now()-days*86400000:0;dealCards.forEach(card=>{card.hidden=!dealMatches(card,q,cutoff);});dealRows.forEach(row=>{row.hidden=!dealMatches(row,q,cutoff);});dealPanels.forEach(panel=>{const grid=panel.querySelector('.deal-grid');if(!grid)return;[...grid.querySelectorAll('.deal-tile')].sort((a,b)=>{if(dealSort.value==='date-asc')return a.dataset.dealDate.localeCompare(b.dataset.dealDate);if(dealSort.value==='amount-desc'){const currencyOrder={RUB:0,USD:1,EUR:2,CNY:3,GBP:4,CHF:5,UZS:6,KZT:7,KGS:8,BYN:9};const ac=currencyOrder[a.dataset.dealCurrency]??99,bc=currencyOrder[b.dataset.dealCurrency]??99;return ac!==bc?ac-bc:(Number(b.dataset.dealAmount)||0)-(Number(a.dataset.dealAmount)||0);}if(dealSort.value==='score-desc')return (Number(b.dataset.dealScore)||0)-(Number(a.dataset.dealScore)||0);return b.dataset.dealDate.localeCompare(a.dataset.dealDate);}).forEach(card=>grid.appendChild(card));const visible=[...grid.querySelectorAll('.deal-tile')].some(card=>!card.hidden);const empty=panel.querySelector('.filter-empty');if(empty)empty.hidden=visible;});const tableEmpty=document.querySelector('.table-filter-empty');if(tableEmpty)tableEmpty.hidden=dealRows.some(row=>!row.hidden);}
+if(dealSearch){dealSearch.addEventListener('input',applyDealFilters);[dealType,dealPeriod,dealSector,dealCountry,dealStatus,dealQuality,dealSource,dealSize,dealSort].forEach(control=>control.addEventListener('change',applyDealFilters));const reset=document.getElementById('deal-filter-reset');if(reset)reset.addEventListener('click',()=>{dealSearch.value='';[dealType,dealPeriod,dealSector,dealCountry,dealStatus,dealQuality,dealSource,dealSize].forEach(control=>control.value='all');dealSort.value='date-desc';applyDealFilters();});applyDealFilters();}
 cards.forEach(card=>card.addEventListener('click',event=>{if(event.target.closest('a'))return;cards.forEach(x=>x.classList.remove('selected'));card.classList.add('selected');const d=window.EVENTS[Number(card.dataset.index)];
 document.getElementById('detail-title').textContent=d.title;document.getElementById('detail-angle').textContent=d.banker_angle;document.getElementById('detail-action').textContent=d.next_action;document.getElementById('detail-category').textContent=d.category;document.getElementById('detail-coverage').textContent=d.coverage;document.getElementById('detail-evidence').textContent=d.evidence;document.getElementById('detail-source').textContent=d.source;document.getElementById('detail-score').textContent=d.score+'/10';document.getElementById('detail-state').textContent=d.is_new?'NEW SIGNAL':d.severity.toUpperCase();document.getElementById('detail-link').href=d.url;document.getElementById('detail-link').textContent=d.proof_label;}));
 const completed=JSON.parse(localStorage.getItem('dealDeskCompleted')||'{}');
-function refreshTasks(){document.querySelectorAll('.task').forEach(row=>{const check=row.querySelector('.task-check');check.checked=!!completed[row.dataset.taskId];row.classList.toggle('done',check.checked);});document.getElementById('open-count').textContent=document.querySelectorAll('.task:not(.done)').length;localStorage.setItem('dealDeskCompleted',JSON.stringify(completed));}
+function refreshTasks(){document.querySelectorAll('.task').forEach(row=>{const check=row.querySelector('.task-check');check.checked=!!completed[row.dataset.taskId];row.classList.toggle('done',check.checked);});const openCount=document.getElementById('open-count');if(openCount)openCount.textContent=document.querySelectorAll('.task:not(.done)').length;localStorage.setItem('dealDeskCompleted',JSON.stringify(completed));}
 document.querySelectorAll('.task-check').forEach(check=>check.addEventListener('change',()=>{const row=check.closest('.task');completed[row.dataset.taskId]=check.checked;if(!check.checked)delete completed[row.dataset.taskId];refreshTasks();}));refreshTasks();
-document.getElementById('copy-brief').addEventListener('click',async event=>{await navigator.clipboard.writeText(window.BRIEF_TEXT);const old=event.currentTarget.textContent;event.currentTarget.textContent='Скопировано ✓';setTimeout(()=>event.currentTarget.textContent=old,1300);});
+const copyBrief=document.getElementById('copy-brief');if(copyBrief)copyBrief.addEventListener('click',async event=>{await navigator.clipboard.writeText(window.BRIEF_TEXT);const old=event.currentTarget.textContent;event.currentTarget.textContent='Скопировано ✓';setTimeout(()=>event.currentTarget.textContent=old,1300);});
 const healthPanel=document.getElementById('data-health');if(healthPanel){const last=Date.parse(healthPanel.dataset.lastSuccess),now=new Date(),hour=Number(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Moscow',hour:'2-digit',hour12:false}).format(now)),weekday=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Moscow',weekday:'short'}).format(now),working=!['Sat','Sun'].includes(weekday)&&hour>=8&&hour<20,maxAge=working?90*60000:72*3600000;if(!last||now-last>maxAge){healthPanel.classList.remove('ok');healthPanel.classList.add('warn');document.getElementById('data-health-label').textContent='Данные устарели';const global=document.getElementById('global-health');if(global){global.querySelector('strong').textContent='Данные устарели';global.querySelector('.dot').className='dot demo';}}}
 setInterval(()=>{if(document.visibilityState==='visible')window.location.reload();},AUTO_REFRESH_MS);
 """
@@ -666,4 +838,19 @@ _CSS = r"""
 @media(max-width:980px){.site-header nav{display:none}.overview{grid-template-columns:1fr;padding:36px}.overview-side{grid-template-columns:1fr 1fr;align-items:start}.metric-grid{grid-template-columns:repeat(4,1fr)}.health-panel{align-items:flex-start;flex-direction:column}.health-panel dl{width:100%;flex-wrap:wrap}.deal-toolbar{flex-direction:column}.deal-advanced-filters{grid-template-columns:repeat(3,1fr)}.deal-grid,.analytics-grid,.utility-grid{grid-template-columns:1fr}.signal-layout{grid-template-columns:1fr}.detail{position:static}.market-strip{grid-template-columns:1fr}.quote-card{border-right:0;border-bottom:1px solid var(--line)}.quote-card:last-child{border-bottom:0}}
 @media(max-width:680px){.nav-wrap{height:62px;padding:0 16px}.brand{min-width:0}.brand small,.status strong{display:none}.page{padding:18px 12px 38px}.overview{padding:27px 22px;border-radius:16px;gap:26px}.overview h1{font-size:32px}.overview-copy>p{font-size:13px}.overview-actions{flex-direction:column}.overview-actions .button{width:100%}.overview-side{grid-template-columns:1fr}.metric-grid{grid-template-columns:1fr 1fr}.section{padding:20px 16px;border-radius:14px}.section-head,.deal-toolbar{flex-direction:column}.section-head h2{font-size:23px}.export-actions,.export-actions .button,.search{width:100%}.search{min-width:0}.deal-filters,.deal-advanced-filters{grid-template-columns:1fr 1fr;width:100%}.deal-filter{padding:8px 7px;font-size:10px}.deal-grid{grid-template-columns:1fr}.deal-tile{min-height:0;padding:17px}.parties,.entity-grid{grid-template-columns:1fr}.entity-grid div+div{border-left:0;border-top:1px solid var(--line);padding:8px 0 0}.party-arrow{display:none}.deal-facts,.typed-facts{grid-template-columns:1fr 1fr}.deal-facts div:nth-child(3){display:block}.event-card{grid-template-columns:34px minmax(0,1fr) 18px;padding:13px 11px}.score{width:31px;height:31px}.filters{width:100%}.analytics-grid{grid-template-columns:1fr}.task{grid-template-columns:20px 27px minmax(0,1fr) 16px}.task .state{display:none}.hypothesis-grid{grid-template-columns:1fr}.utility-grid{display:block}footer{grid-template-columns:1fr;text-align:center}footer span{text-align:center}}
 @media print{.site-header,.overview-actions,.deal-toolbar,.filters,.event-search,.utility-grid{display:none}.page{max-width:none;padding:0}.overview{color:#111;background:#fff;border:1px solid #ccc;box-shadow:none}.overview-copy>p{color:#444}.section{break-inside:avoid;box-shadow:none}.deal-grid{grid-template-columns:1fr 1fr}}
+.nav-wrap{gap:28px}.lang-toggle{display:flex;padding:2px;border:1px solid var(--line);border-radius:9px;background:var(--surface-soft)}.lang-toggle button{border:0;border-radius:6px;background:transparent;color:var(--muted);padding:5px 8px;font-size:9px;font-weight:800;cursor:pointer}.lang-toggle button[aria-pressed=true]{background:#fff;color:var(--blue);box-shadow:0 1px 4px rgba(31,45,72,.12)}
+.deal-advanced-filters{grid-template-columns:repeat(7,minmax(108px,1fr)) auto}.type-badge,.market-badge,.deal-status,.quality-badge{padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800;letter-spacing:.04em}.market-badge{background:#eef5ff;color:#365d8d}
+.status-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:15px;border-top:1px solid var(--line)}.status-grid div{display:grid;gap:3px;padding:11px;border-radius:9px;background:var(--surface-soft)}.status-grid b{color:var(--blue);font-size:9px}.status-grid strong{font-size:11px}.status-grid small{color:var(--muted);font-size:9px}.coverage-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.coverage-card{display:flex;flex-direction:column;min-height:250px;padding:18px;border:1px solid var(--line);border-radius:13px;background:var(--surface)}.coverage-card.active{border-color:#a8d8c8}.coverage-card>div:first-child{display:flex;justify-content:space-between;color:var(--muted);font-size:9px;text-transform:uppercase}.coverage-card>div:first-child b{color:var(--amber)}.coverage-card.active>div:first-child b{color:var(--mint)}.coverage-card h3{margin:13px 0 5px;font-size:15px}.coverage-card p,.coverage-card>small{color:var(--muted);font-size:10px}.coverage-card dl{display:grid;grid-template-columns:1fr 1fr;gap:8px}.coverage-card dt{color:var(--muted);font-size:8px;text-transform:uppercase}.coverage-card dd{margin:2px 0;font-size:10px}.coverage-card>a{margin-top:auto;color:var(--blue);font-size:10px;font-weight:750;text-decoration:none}.download-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.download-grid>a,.download-grid>div{display:grid;gap:5px;padding:16px;border:1px solid var(--line);border-radius:11px;text-decoration:none;background:var(--surface-soft)}.download-grid b{color:var(--blue)}.download-grid span{color:var(--muted);font-size:10px;overflow-wrap:anywhere}
+@media(max-width:980px){.coverage-grid{grid-template-columns:repeat(2,1fr)}.download-grid,.status-grid{grid-template-columns:1fr 1fr}.deal-advanced-filters{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.nav-wrap{gap:10px}.lang-toggle{margin-left:auto}.status{margin-left:0}.coverage-grid,.download-grid,.status-grid{grid-template-columns:1fr}.deal-advanced-filters{grid-template-columns:1fr 1fr}}
+.nav-wrap{gap:18px}.brand{min-width:205px}.brand-mark{width:35px;height:35px;border-radius:9px}.brand strong{font-size:13px}.brand small{font-size:8px}.site-header nav{gap:14px;flex:1;justify-content:center}.site-header nav a{font-size:11px;white-space:nowrap}.status{margin-left:0}.status strong{font-size:9px}.status small{font-size:9px}
+.overview{grid-template-columns:minmax(0,1.15fr) minmax(480px,.85fr);gap:34px;padding:30px 34px}.overview h1{font-size:17px;line-height:1.2;letter-spacing:.01em;margin:0 0 8px;color:#aebeea}.overview h2{font-size:30px;line-height:1.14;letter-spacing:-.035em;margin:0 0 12px;max-width:660px}.overview-copy>p{font-size:13px;line-height:1.55}.hero-disclaimer{display:block;color:#9eabc2;font-size:9px;margin-top:8px}.overview-actions{margin-top:18px}.product-kpis{grid-template-columns:repeat(5,minmax(0,1fr));align-self:center;gap:7px}.product-kpis article{padding:13px 11px;min-height:98px}.product-kpis span,.product-kpis small{font-size:8px}.product-kpis strong{font-size:24px;margin:7px 0 5px}
+.market-context{margin:14px 0 22px;border:1px solid var(--line);border-radius:13px;background:var(--surface);overflow:hidden}.context-label{display:flex;align-items:center;gap:12px;padding:9px 15px;border-bottom:1px solid var(--line);background:var(--surface-soft)}.context-label b{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue)}.context-label span{font-size:9px;color:var(--muted)}.market-context .market-strip{margin:0;border:0;border-radius:0}
+.screener-summary{display:flex;align-items:baseline;gap:8px;color:var(--muted);font-size:10px}.screener-summary b{font-size:22px;color:var(--ink)}.deal-advanced-filters{grid-template-columns:repeat(5,minmax(120px,1fr));gap:9px;padding:14px}.deal-advanced-filters select{font-size:10px}.deal-detail-cards{margin-top:18px}.screener-table-wrap{position:relative;border:1px solid var(--line);border-radius:12px;overflow:auto;background:#fff}.screener-table{min-width:1080px}.screener-table th{position:sticky;top:0;z-index:1}.screener-table td{padding:11px 9px;font-size:10px}.screener-table td:nth-child(3){min-width:260px}.screener-table td strong{display:block;font-size:11px}.screener-table .source-tier{display:inline-block;padding:4px 7px;border-radius:6px;background:var(--surface-soft);color:var(--muted);font-size:9px}.deal-row[hidden]{display:none}.table-filter-empty{padding:22px;color:var(--muted);text-align:center}.table-filter-empty[hidden]{display:none}
+.review-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.review-stream{padding:17px;border:1px solid var(--line);border-radius:12px;background:var(--surface-soft)}.review-stream-head{display:flex;justify-content:space-between;align-items:center}.review-stream-head span{font-weight:800}.review-stream-head b{display:grid;place-items:center;min-width:29px;height:29px;border-radius:8px;background:var(--blue-soft);color:var(--blue)}.review-stream>p{min-height:42px;color:var(--muted);font-size:10px}.review-stream ul{list-style:none;margin:12px 0 0;padding:0;border-top:1px solid var(--line)}.review-stream li{display:grid;gap:2px;padding:9px 0;border-bottom:1px solid var(--line);font-size:10px}.review-stream li:last-child{border:0}.review-stream li small{color:var(--muted);font-size:8px}.empty-line{color:var(--muted)}
+.coverage-summary{display:flex;align-items:center;gap:9px;max-width:180px;color:var(--muted);font-size:9px}.coverage-summary b{font-size:28px;color:var(--blue)}.coverage-limit{margin:-5px 0 18px;padding:13px 15px;border-left:3px solid var(--amber);border-radius:0 9px 9px 0;background:var(--amber-soft);color:#76511c;font-size:10px}.coverage-card{min-height:265px}.download-grid{grid-template-columns:repeat(3,1fr)}
+.method-flow{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:16px;border:1px solid var(--line);border-radius:11px;background:var(--surface-soft)}.method-flow span{flex:1;text-align:center;font-size:10px;font-weight:750}.method-flow i{color:var(--blue);font-style:normal}.integrity-grid{display:grid;grid-template-columns:1.1fr 2fr repeat(3,1fr);gap:8px;margin-top:12px}.integrity-grid>div{display:grid;gap:4px;padding:12px;border:1px solid var(--line);border-radius:9px}.integrity-grid span{color:var(--muted);font-size:8px;text-transform:uppercase}.integrity-grid b{font-size:10px;overflow-wrap:anywhere}.method-note{margin-top:12px;color:var(--muted);font-size:9px}
+@media(max-width:1180px){.status strong{display:none}.overview{grid-template-columns:1fr}.product-kpis{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:980px){.overview{padding:28px}.product-kpis{grid-template-columns:repeat(5,1fr)}.review-grid{grid-template-columns:1fr 1fr}.integrity-grid{grid-template-columns:1fr 1fr}.method-flow{align-items:stretch;flex-wrap:wrap}.method-flow span{min-width:28%}}
+@media(max-width:680px){.page{padding-top:14px}.nav-wrap{height:58px}.brand-mark{width:32px;height:32px}.brand strong{font-size:12px}.overview{gap:16px;padding:20px 18px}.overview h1{font-size:12px;margin-bottom:6px}.overview h2{font-size:23px;margin-bottom:10px}.overview-copy>p{font-size:12px;line-height:1.5}.hero-disclaimer{font-size:8px}.overview-actions{flex-direction:row;margin-top:14px}.overview-actions .button{width:auto;flex:1;min-height:37px;padding:7px 8px;font-size:10px}.product-kpis{grid-template-columns:repeat(3,1fr);gap:5px}.product-kpis article{min-height:66px;padding:8px}.product-kpis article:last-child{grid-column:auto}.product-kpis span{font-size:7px}.product-kpis strong{font-size:18px;margin:5px 0 0}.product-kpis small{display:none}.health-panel{margin-bottom:14px}.market-context{margin-top:10px}.context-label{align-items:flex-start;flex-direction:column;gap:2px}.market-context .market-strip{grid-template-columns:1fr}.deal-toolbar{gap:9px}.deal-advanced-filters{grid-template-columns:1fr 1fr;padding:10px}.screener-table-wrap{display:none}.deal-detail-cards{margin-top:0}.review-grid{grid-template-columns:1fr}.review-stream>p{min-height:0}.coverage-summary{max-width:none}.coverage-limit{margin-top:0}.method-flow{display:grid;grid-template-columns:1fr}.method-flow i{display:none}.method-flow span{text-align:left;padding:8px;border-bottom:1px solid var(--line)}.method-flow span:last-child{border-bottom:0}.integrity-grid{grid-template-columns:1fr}.download-grid{grid-template-columns:1fr}.status-grid{grid-template-columns:1fr 1fr}}
 """

@@ -16,7 +16,7 @@ event
 → working output
 ```
 
-The current product collects public events, keeps an auditable source trail, separates current flow from historical precedents, creates a banker-oriented dashboard/workflow and publishes synchronized HTML/JSON/CSV/XLSX.
+The current product collects public events, keeps an auditable source trail, separates current flow from historical precedents, creates a Russian-first deal-intelligence dashboard and analyst workflow for Russia and CIS markets, and publishes synchronized HTML/JSON/CSV/XLSX. English remains available as an interface toggle; source titles and primary evidence are never machine-translated.
 
 ## Current strengths
 
@@ -28,11 +28,12 @@ The current product collects public events, keeps an auditable source trail, sep
 - Five-sheet Excel output aligned with the dashboard build.
 - Automated CI refresh and public Pages deployment.
 - Useful as a transparent portfolio project and lightweight analyst screen.
+- Explicit country/market context and a public source-coverage map that separates connected sources from roadmap candidates.
 
 ## Current limitations
 
 - Public sources only; reliability and disclosure depth vary.
-- Small current coverage universe and discovery vocabulary.
+- Russia remains the deepest live market; CIS coverage is deliberately narrow and must not be read as comprehensive.
 - Limited, Technology-heavy reviewed precedent sample.
 - DCM extraction is incomplete when notices omit structured terms.
 - Some records remain `review` because primary evidence or parties are missing.
@@ -55,7 +56,7 @@ These are current product commitments already expressed by code and invariants:
 
 The following are proposals, not committed scope. Select one coherent item before implementation:
 
-1. Better official-source coverage.
+1. Expand official CIS source coverage only after access, reuse terms and a narrow event taxonomy are verified.
 2. More complete DCM term extraction.
 3. Field-level provenance rather than only record/source-level evidence.
 4. Human review metadata and history.
@@ -65,6 +66,19 @@ The following are proposals, not committed scope. Select one coherent item befor
 8. Source-level SLA and health history.
 
 Potential sequencing: official sources → DCM completeness → provenance/review history → precedent expansion → UI attention controls. Re-evaluate after each milestone rather than treating this as a fixed delivery plan.
+
+## CIS source roadmap
+
+| Market | Current state | Product rule |
+|---|---|---|
+| Russia / MOEX | Connected | Preserve the existing classifier, quality gates and technical-notice suppression. |
+| Uzbekistan / UZSE | Connected, narrow | Collect only material fact 25 (securities issue), link every event to the primary disclosure and ignore records outside the configured archive window. |
+| Kazakhstan / KASE and AIX | Roadmap | Do not ingest until permitted unattended access and stable announcement endpoints are confirmed; high-volume routine notices require a narrow taxonomy. |
+| Uzbekistan / Openinfo | Roadmap | Add only after a stable public index or documented API is available; whitelist deal-relevant fact types. |
+| Kyrgyzstan / KSE | Roadmap | Do not copy content without permission; retain as a link-only research candidate. |
+| Belarus / BCSE and CSD | Roadmap | Confirm authoritative endpoints and reuse terms before implementation. |
+
+Source activation is a code-and-config decision, not a presentation claim. A roadmap card does not count as current coverage, and an empty optional CIS source never turns overall health green by itself.
 
 ## Out of scope
 

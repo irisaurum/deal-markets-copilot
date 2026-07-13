@@ -27,6 +27,7 @@ from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import (
     fetch_company_news,
+    fetch_cis_disclosures,
     fetch_configured_sources,
     fetch_deal_archive_news,
     fetch_deal_news,
@@ -106,6 +107,7 @@ def main() -> int:
         market_snapshot = previous_snapshot.get("market", [])
     elif selected_mode == "live":
         official_events = collect_source("issuer_news", fetch_official_issuer_news)
+        cis_events = collect_source("cis_disclosures", fetch_cis_disclosures, required=False)
         lookback = effective_news_lookback(config.get("live_data", {}))
         gdelt_events = collect_source("gdelt", fetch_gdelt_deal_news, required=False)
         events = (
@@ -115,8 +117,9 @@ def main() -> int:
             + collect_source("deal_news", fetch_deal_news)
             + collect_source("company_news", fetch_company_news)
             + filter_recent_events(gdelt_events, lookback)
+            + filter_recent_events(cis_events, lookback)
         )
-        archive_events = collect_source("deal_archive", fetch_deal_archive_news, required=False) + collect_source("sec_filings", fetch_sec_deal_filings, required=False) + official_events + gdelt_events
+        archive_events = collect_source("deal_archive", fetch_deal_archive_news, required=False) + collect_source("sec_filings", fetch_sec_deal_filings, required=False) + official_events + gdelt_events + filter_recent_events(cis_events, config.get("live_data", {}).get("archive_lookback", "90d"))
         market_snapshot = collect_source("moex_quotes", fetch_moex_quotes, required=False)
     else:
         events = load_demo_events(ROOT / "data" / "sample_events.json")
@@ -273,7 +276,7 @@ def _build_health(
     required_names = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news"}
     present_names = {str(run.get("name")) for run in runs}
     missing_required = sorted(required_names - present_names)
-    discovery_names = {"configured_rss", "deal_news", "company_news", "issuer_news", "gdelt"}
+    discovery_names = {"configured_rss", "deal_news", "company_news", "issuer_news", "gdelt", "cis_disclosures"}
     discovery_records = sum(int(run.get("records") or 0) for run in runs if run.get("name") in discovery_names)
     now = datetime.now(ZoneInfo("Europe/Moscow"))
     freshness_limit_minutes = 90 if now.weekday() < 5 and 8 <= now.hour < 20 else 72 * 60
