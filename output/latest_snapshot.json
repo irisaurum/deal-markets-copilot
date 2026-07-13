@@ -1,18 +1,18 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-13T12:30+03:00",
+  "generated_at": "2026-07-13T15:22+03:00",
   "health": {
-    "last_success_at": "2026-07-13T12:30+03:00",
-    "build_id": "8655a9cf3192",
-    "dataset_sha256": "8655a9cf3192affedf3a224f3c65a93ba2533f3d8e5cc2585ef8beec33bed226",
-    "record_count": 106,
-    "key_deal_count": 7,
-    "approved_count": 16,
+    "last_success_at": "2026-07-13T15:22+03:00",
+    "build_id": "2c9aa3f4ce3b",
+    "dataset_sha256": "2c9aa3f4ce3bf06fa85d263ce480050f9edc5f523f61245c1a02eef3d39935e7",
+    "record_count": 107,
+    "key_deal_count": 8,
+    "approved_count": 17,
     "review_count": 68,
     "rejected_count": 22,
-    "source_count": 138,
-    "source_representation_count": 184,
-    "direct_source_count": 127,
+    "source_count": 139,
+    "source_representation_count": 185,
+    "direct_source_count": 128,
     "aggregator_source_count": 57,
     "critical_qa_issues": 0,
     "source_group_count": 9,
@@ -22,43 +22,43 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-13T12:29:55+03:00",
+        "checked_at": "2026-07-13T15:21:40+03:00",
         "error": "",
-        "age_minutes": 0.7
+        "age_minutes": 0.6
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-13T12:30:13+03:00",
+        "checked_at": "2026-07-13T15:21:58+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 0.3
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
-        "records": 13,
+        "records": 12,
         "required": true,
-        "checked_at": "2026-07-13T12:30:13+03:00",
+        "checked_at": "2026-07-13T15:21:58+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 0.3
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-13T12:30:26+03:00",
+        "checked_at": "2026-07-13T15:22:08+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 10,
+        "records": 9,
         "required": true,
-        "checked_at": "2026-07-13T12:30:26+03:00",
+        "checked_at": "2026-07-13T15:22:09+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -67,16 +67,16 @@
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-13T12:30:27+03:00",
+        "checked_at": "2026-07-13T15:22:10+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 155,
+        "records": 142,
         "required": false,
-        "checked_at": "2026-07-13T12:30:28+03:00",
+        "checked_at": "2026-07-13T15:22:11+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-13T12:30:30+03:00",
+        "checked_at": "2026-07-13T15:22:13+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,16 +94,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-13T12:30:30+03:00",
+        "checked_at": "2026-07-13T15:22:13+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 41,
+    "discovery_record_count": 40,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.7,
-    "source_checked_at": "2026-07-13T12:29+03:00",
+    "source_age_minutes": 0.6,
+    "source_checked_at": "2026-07-13T15:21+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-13T09:30:35+00:00"
+    "xlsx_generated_at": "2026-07-13T12:22:17+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3636,
-      "change_percent": 2.73,
-      "turnover": 1294588891,
-      "updated": "12:15:30",
+      "price": 3650,
+      "change_percent": 3.12,
+      "turnover": 2236050654,
+      "updated": "15:07:12",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3269,
-      "change_percent": 1.43,
-      "turnover": 591484646,
-      "updated": "12:15:31",
+      "price": 3237,
+      "change_percent": 0.43,
+      "turnover": 987933668,
+      "updated": "15:07:13",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 170.4,
-      "change_percent": 1.46,
-      "turnover": 286373190,
-      "updated": "12:15:31",
+      "price": 166.75,
+      "change_percent": -0.71,
+      "turnover": 559713032,
+      "updated": "15:07:13",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -159,7 +159,32 @@
       "quote_usable": true
     }
   ],
-  "events": [],
+  "events": [
+    {
+      "event": {
+        "event_id": "moex-102042",
+        "published_at": "2026-07-13 14:57:00",
+        "title": "Московская биржа запустила скринер для подбора облигаций",
+        "summary": "Московская биржа запустила скринер для подбора облигаций 2026-07-13 14:57:00 С 13 июля 2026 года инвесторы получили удобный инструмент для подбора долговых инструментов в режиме реального времени – скринер облигаций . Сегодня на Московской бирже доступно более 4 тысяч выпусков облигаций 500 эмитентов: от ОФЗ до сложных корпоративных бумаг. Все они представлены в созданном Московской биржей скринере. Главные возможности нового сервиса: Гибкая настройка : фильтрация по доходности, рейтингу, сроку, типу купона, валюте и ликвидности. Актуальность : данные обновляются в режиме реального времени напрямую из торговой системы. Прозрачность : учет статуса инвестора (доступность для квалифицированных и неквалифицированных участников). Рынок долговых инструментов демонстрирует уверенный рост: объем вторичных торгов облигациями за первое полугодие 2026 года составил 13,2 трлн рублей, что в 1,5 раза больше показателей прошлого года. Скринер поможет инвесторам эффективнее ориентироваться в растущем потоке возможностей. Долговой рынок Московской биржи – центр привлечения средств для российских компаний, который сочетает развитую инфраструктуру, надежность и передовые технологии торговли облигациями. На Московской бирже торгуются облигации, объем в обращении которых составляет почти треть ВВП. Линейка из более четырех тысяч инструментов, выпущенных 500 эмитентами, включает в себя ОФЗ, корпоративные облигации, а также сложные долговые инструменты. Более 1,7 млн частных инвесторов торгуют обли",
+        "source": "MOEX disclosure",
+        "url": "https://www.moex.com/n102042",
+        "companies": [],
+        "source_type": "official_exchange",
+        "confidence": "confirmed",
+        "amount": null,
+        "currency": null,
+        "demo": false,
+        "discovery_url": ""
+      },
+      "category": "DCM",
+      "score": 6,
+      "severity": "high",
+      "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
+      "next_action": "Обновить debt comps и проверить ближайшие погашения.",
+      "matched_coverage": [],
+      "evidence_label": "confirmed"
+    }
+  ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
@@ -168,10 +193,10 @@
       {
         "ticker": "YDEX",
         "company": "Yandex",
-        "price": 3636,
-        "change_percent": 2.73,
-        "turnover": 1294588891,
-        "updated": "12:15:30",
+        "price": 3650,
+        "change_percent": 3.12,
+        "turnover": 2236050654,
+        "updated": "15:07:12",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -216,10 +241,27 @@
     ],
     "tasks": [
       {
+        "id": "TASK-a634153480bc",
+        "priority": "P2",
+        "state": "open",
+        "title": "Monitor pricing, final placement, and settlement: check issuer, MOEX, NSD, or arranger disclosure and update the record when final terms are disclosed.",
+        "deliverable": "DCM execution-status update",
+        "coverage": "MARKET",
+        "category": "DCM",
+        "source_url": "https://www.moex.com/n102042",
+        "source_title": "Московская биржа запустила скринер для подбора облигаций",
+        "hypothesis_ids": [],
+        "deal_id": "DL-moex-102042",
+        "quality_status": "approved",
+        "quality_flags": [],
+        "reason": "The transaction is Confirmed, not yet at a final Priced/Issued stage.",
+        "required_source": "issuer, MOEX, NSD, or arranger disclosure"
+      },
+      {
         "id": "TASK-7ed1e29b1a91",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения YDEX (+2.73%) и обновить trading comps.",
+        "title": "Проверить драйвер движения YDEX (+3.12%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "YDEX",
         "category": "Market",
@@ -229,7 +271,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 1 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -237,11 +279,11 @@
       },
       {
         "label": "Рынок",
-        "text": "YDEX: +2.73% к предыдущему закрытию."
+        "text": "YDEX: +3.12% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Проверить драйвер движения YDEX (+2.73%) и обновить trading comps."
+        "text": "Monitor pricing, final placement, and settlement: check issuer, MOEX, NSD, or arranger disclosure and update the record when final terms are disclosed."
       }
     ]
   }
