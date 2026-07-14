@@ -1,18 +1,18 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-14T14:55+03:00",
+  "generated_at": "2026-07-14T16:47+03:00",
   "health": {
-    "last_success_at": "2026-07-14T14:55+03:00",
-    "build_id": "c6dbc7d2ac7b",
-    "dataset_sha256": "c6dbc7d2ac7b9420a47d3cc0e681e9058d01d27a312d04bc1f5b934d3fdc8f2b",
-    "record_count": 107,
-    "key_deal_count": 8,
+    "last_success_at": "2026-07-14T16:47+03:00",
+    "build_id": "c8de8fc269f9",
+    "dataset_sha256": "c8de8fc269f910e717f6e2ce39ad4fe88c1bd41bb4c2de6fd8b45860992fc8d6",
+    "record_count": 108,
+    "key_deal_count": 9,
     "approved_count": 17,
-    "review_count": 68,
+    "review_count": 69,
     "rejected_count": 22,
-    "source_count": 141,
-    "source_representation_count": 188,
-    "direct_source_count": 128,
+    "source_count": 142,
+    "source_representation_count": 189,
+    "direct_source_count": 129,
     "aggregator_source_count": 60,
     "critical_qa_issues": 0,
     "source_group_count": 9,
@@ -22,43 +22,43 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-14T14:54:45+03:00",
+        "checked_at": "2026-07-14T16:46:55+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.9
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-14T14:55:03+03:00",
+        "checked_at": "2026-07-14T16:47:20+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.4
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
         "records": 9,
         "required": true,
-        "checked_at": "2026-07-14T14:55:03+03:00",
+        "checked_at": "2026-07-14T16:47:20+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.4
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-14T14:55:14+03:00",
+        "checked_at": "2026-07-14T16:47:31+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.3
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 3,
+        "records": 4,
         "required": true,
-        "checked_at": "2026-07-14T14:55:14+03:00",
+        "checked_at": "2026-07-14T16:47:33+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -67,43 +67,43 @@
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-14T14:55:15+03:00",
+        "checked_at": "2026-07-14T16:47:33+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 147,
+        "records": 145,
         "required": false,
-        "checked_at": "2026-07-14T14:55:16+03:00",
+        "checked_at": "2026-07-14T16:47:34+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "sec_filings",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-14T14:55:17+03:00",
+        "checked_at": "2026-07-14T16:47:36+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-14T14:55:17+03:00",
+        "checked_at": "2026-07-14T16:47:36+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 31,
+    "discovery_record_count": 32,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-14T14:54+03:00",
+    "source_age_minutes": 0.9,
+    "source_checked_at": "2026-07-14T16:46+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-14T11:55:23+00:00"
+    "xlsx_generated_at": "2026-07-14T13:47:46+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3599,
-      "change_percent": -0.68,
-      "turnover": 1263499195,
-      "updated": "14:40:18",
+      "price": 3577.5,
+      "change_percent": -1.27,
+      "turnover": 1779135516,
+      "updated": "16:32:36",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3159,
-      "change_percent": -2.12,
-      "turnover": 744338022,
-      "updated": "14:40:19",
+      "price": 3150,
+      "change_percent": -2.4,
+      "turnover": 1048598268,
+      "updated": "16:32:37",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 156,
-      "change_percent": -4.85,
-      "turnover": 591506025,
-      "updated": "14:40:19",
+      "price": 157.1,
+      "change_percent": -4.18,
+      "turnover": 761366723,
+      "updated": "16:32:37",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -162,12 +162,12 @@
   "events": [
     {
       "event": {
-        "event_id": "moex-102042",
-        "published_at": "2026-07-13 14:57:00",
-        "title": "Московская биржа запустила скринер для подбора облигаций",
-        "summary": "Московская биржа запустила скринер для подбора облигаций 2026-07-13 14:57:00 С 13 июля 2026 года инвесторы получили удобный инструмент для подбора долговых инструментов в режиме реального времени – скринер облигаций . Сегодня на Московской бирже доступно более 4 тысяч выпусков облигаций 500 эмитентов: от ОФЗ до сложных корпоративных бумаг. Все они представлены в созданном Московской биржей скринере. Главные возможности нового сервиса: Гибкая настройка : фильтрация по доходности, рейтингу, сроку, типу купона, валюте и ликвидности. Актуальность : данные обновляются в режиме реального времени напрямую из торговой системы. Прозрачность : учет статуса инвестора (доступность для квалифицированных и неквалифицированных участников). Рынок долговых инструментов демонстрирует уверенный рост: объем вторичных торгов облигациями за первое полугодие 2026 года составил 13,2 трлн рублей, что в 1,5 раза больше показателей прошлого года. Скринер поможет инвесторам эффективнее ориентироваться в растущем потоке возможностей. Долговой рынок Московской биржи – центр привлечения средств для российских компаний, который сочетает развитую инфраструктуру, надежность и передовые технологии торговли облигациями. На Московской бирже торгуются облигации, объем в обращении которых составляет почти треть ВВП. Линейка из более четырех тысяч инструментов, выпущенных 500 эмитентами, включает в себя ОФЗ, корпоративные облигации, а также сложные долговые инструменты. Более 1,7 млн частных инвесторов торгуют обли",
+        "event_id": "moex-102108",
+        "published_at": "2026-07-14 16:25:08",
+        "title": "Об отмене размещения облигаций серии CIB-SN-EQ-001S-370  АО \"Сбербанк КИБ\"",
+        "summary": "Об отмене размещения облигаций серии CIB-SN-EQ-001S-370 АО \"Сбербанк КИБ\" 2026-07-14 16:25:08 Участникам торгов В соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и в связи с получением от АО \"Сбербанк КИБ\" письма об отмене размещения облигаций структурных процентные дисконтные бездокументарные неконвертируемые с залоговым обеспечением серии CIB-SN-EQ-001S-370 неконвертируемых с залоговым обеспечением процентных АО \"Сбербанк КИБ\", ISIN - RU000A10CYK3 (далее – Облигации), установлено что c 19:00 по мск 14 июля 2026 года по Облигациям торги в Режиме торгов \"Размещение: Адресные заявки\" проводиться не будут. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
         "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n102042",
+        "url": "https://www.moex.com/n102108",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -177,7 +177,7 @@
         "discovery_url": ""
       },
       "category": "DCM",
-      "score": 7,
+      "score": 6,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -193,10 +193,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 156,
-        "change_percent": -4.85,
-        "turnover": 591506025,
-        "updated": "14:40:19",
+        "price": 157.1,
+        "change_percent": -4.18,
+        "turnover": 761366723,
+        "updated": "16:32:37",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -207,10 +207,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3159,
-        "change_percent": -2.12,
-        "turnover": 744338022,
-        "updated": "14:40:19",
+        "price": 3150,
+        "change_percent": -2.4,
+        "turnover": 1048598268,
+        "updated": "16:32:37",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -255,27 +255,30 @@
     ],
     "tasks": [
       {
-        "id": "TASK-a634153480bc",
-        "priority": "P2",
+        "id": "TASK-0100a773846b",
+        "priority": "P1",
         "state": "open",
-        "title": "Monitor pricing, final placement, and settlement: check issuer, MOEX, NSD, or arranger disclosure and update the record when final terms are disclosed.",
-        "deliverable": "DCM execution-status update",
+        "title": "Confirm placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record.",
+        "deliverable": "Verified DCM terms + evidence note",
         "coverage": "MARKET",
         "category": "DCM",
-        "source_url": "https://www.moex.com/n102042",
-        "source_title": "Московская биржа запустила скринер для подбора облигаций",
+        "source_url": "https://www.moex.com/n102108",
+        "source_title": "Об отмене размещения облигаций серии CIB-SN-EQ-001S-370  АО \"Сбербанк КИБ\"",
         "hypothesis_ids": [],
-        "deal_id": "DL-moex-102042",
-        "quality_status": "approved",
-        "quality_flags": [],
-        "reason": "The transaction is Confirmed, not yet at a final Priced/Issued stage.",
+        "deal_id": "DL-moex-102108",
+        "quality_status": "review",
+        "quality_flags": [
+          "missing_transaction_value",
+          "missing_currency"
+        ],
+        "reason": "Blocking or decision-useful fields are missing: placement size, currency.",
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
         "id": "TASK-9ef205441627",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения OZON (-2.12%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-2.40%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
         "category": "Market",
@@ -287,7 +290,7 @@
         "id": "TASK-2b786dfa9557",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-4.85%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-4.18%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -305,11 +308,11 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -4.85% к предыдущему закрытию."
+        "text": "VKCO: -4.18% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Monitor pricing, final placement, and settlement: check issuer, MOEX, NSD, or arranger disclosure and update the record when final terms are disclosed."
+        "text": "Confirm placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record."
       }
     ]
   }
