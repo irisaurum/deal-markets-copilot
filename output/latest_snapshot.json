@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-14T18:25+03:00",
+  "generated_at": "2026-07-14T19:09+03:00",
   "health": {
-    "last_success_at": "2026-07-14T18:25+03:00",
-    "build_id": "b0e93efa80f7",
-    "dataset_sha256": "b0e93efa80f73681efb9895df1a3925d33662c0a8441038622f92a8f81409ae5",
+    "last_success_at": "2026-07-14T19:09+03:00",
+    "build_id": "83c8b15fd6ba",
+    "dataset_sha256": "83c8b15fd6ba04dcfcc02b5443e748408f3f3cfc0fb2ef725b9d786875852280",
     "record_count": 109,
     "key_deal_count": 9,
     "approved_count": 17,
@@ -22,7 +22,7 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-14T18:24:30+03:00",
+        "checked_at": "2026-07-14T19:09:15+03:00",
         "error": "",
         "age_minutes": 0.6
       },
@@ -31,7 +31,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-14T18:24:48+03:00",
+        "checked_at": "2026-07-14T19:09:33+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -40,7 +40,7 @@
         "status": "ok",
         "records": 8,
         "required": true,
-        "checked_at": "2026-07-14T18:24:48+03:00",
+        "checked_at": "2026-07-14T19:09:33+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -49,34 +49,34 @@
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-14T18:24:56+03:00",
+        "checked_at": "2026-07-14T19:09:40+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 4,
+        "records": 5,
         "required": true,
-        "checked_at": "2026-07-14T18:24:57+03:00",
+        "checked_at": "2026-07-14T19:09:41+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 4,
+        "records": 5,
         "required": true,
-        "checked_at": "2026-07-14T18:24:58+03:00",
+        "checked_at": "2026-07-14T19:09:41+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 147,
+        "records": 146,
         "required": false,
-        "checked_at": "2026-07-14T18:24:59+03:00",
+        "checked_at": "2026-07-14T19:09:42+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-14T18:25:00+03:00",
+        "checked_at": "2026-07-14T19:09:44+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,16 +94,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-14T18:25:00+03:00",
+        "checked_at": "2026-07-14T19:09:44+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 32,
+    "discovery_record_count": 34,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
     "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-14T18:24+03:00",
+    "source_checked_at": "2026-07-14T19:09+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-14T15:25:05+00:00"
+    "xlsx_generated_at": "2026-07-14T16:09:50+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3536,
-      "change_percent": -2.41,
-      "turnover": 2344925154,
-      "updated": "18:10:00",
+      "price": 3548.5,
+      "change_percent": -2.07,
+      "turnover": 2549571963,
+      "updated": "18:54:43",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3111.5,
-      "change_percent": -3.59,
-      "turnover": 1355729796,
-      "updated": "18:10:01",
+      "price": 3145,
+      "change_percent": -2.56,
+      "turnover": 1476746667,
+      "updated": "18:54:42",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 155.2,
-      "change_percent": -5.34,
-      "turnover": 928289128,
-      "updated": "18:10:01",
+      "price": 156.75,
+      "change_percent": -4.39,
+      "turnover": 995455968,
+      "updated": "18:54:45",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -201,7 +201,7 @@
         "discovery_url": ""
       },
       "category": "DCM",
-      "score": 6,
+      "score": 7,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -217,10 +217,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 155.2,
-        "change_percent": -5.34,
-        "turnover": 928289128,
-        "updated": "18:10:01",
+        "price": 156.75,
+        "change_percent": -4.39,
+        "turnover": 995455968,
+        "updated": "18:54:45",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -231,10 +231,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 3111.5,
-        "change_percent": -3.59,
-        "turnover": 1355729796,
-        "updated": "18:10:01",
+        "price": 3145,
+        "change_percent": -2.56,
+        "turnover": 1476746667,
+        "updated": "18:54:42",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -245,10 +245,10 @@
       {
         "ticker": "YDEX",
         "company": "Yandex",
-        "price": 3536,
-        "change_percent": -2.41,
-        "turnover": 2344925154,
-        "updated": "18:10:00",
+        "price": 3548.5,
+        "change_percent": -2.07,
+        "turnover": 2549571963,
+        "updated": "18:54:43",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -313,22 +313,10 @@
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
-        "id": "TASK-2b786dfa9557",
-        "priority": "P1",
-        "state": "market",
-        "title": "Проверить драйвер движения VKCO (-5.34%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
-        "hypothesis_ids": []
-      },
-      {
         "id": "TASK-5db6e41c2f45",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения YDEX (-2.41%) и обновить trading comps.",
+        "title": "Проверить драйвер движения YDEX (-2.07%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "YDEX",
         "category": "Market",
@@ -340,12 +328,24 @@
         "id": "TASK-9ef205441627",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения OZON (-3.59%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-2.56%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
         "category": "Market",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
         "source_title": "MOEX quote for OZON",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-2b786dfa9557",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (-4.39%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
         "hypothesis_ids": []
       }
     ],
@@ -358,7 +358,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -5.34% к предыдущему закрытию."
+        "text": "VKCO: -4.39% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
