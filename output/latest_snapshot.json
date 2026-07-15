@@ -1,19 +1,19 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-15T10:29+03:00",
+  "generated_at": "2026-07-15T11:13+03:00",
   "health": {
-    "last_success_at": "2026-07-15T10:29+03:00",
-    "build_id": "bdac40313d81",
-    "dataset_sha256": "bdac40313d81c13c11c1c915da67aa2b8817c0a5c1ab9dd3203dbcfdb88dd8e3",
-    "record_count": 109,
+    "last_success_at": "2026-07-15T11:13+03:00",
+    "build_id": "736dbf04031a",
+    "dataset_sha256": "736dbf04031a98ffc95b6d7510dd3b7b143805eb3b6d3d04d6b891e99fcb82c1",
+    "record_count": 110,
     "key_deal_count": 9,
     "approved_count": 17,
     "review_count": 70,
-    "rejected_count": 22,
-    "source_count": 143,
-    "source_representation_count": 191,
-    "direct_source_count": 130,
-    "aggregator_source_count": 61,
+    "rejected_count": 23,
+    "source_count": 144,
+    "source_representation_count": 193,
+    "direct_source_count": 131,
+    "aggregator_source_count": 62,
     "critical_qa_issues": 0,
     "source_group_count": 9,
     "source_runs": [
@@ -22,16 +22,16 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-15T10:29:07+03:00",
+        "checked_at": "2026-07-15T11:12:53+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.8
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-15T10:29:27+03:00",
+        "checked_at": "2026-07-15T11:13:19+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -40,7 +40,7 @@
         "status": "ok",
         "records": 8,
         "required": true,
-        "checked_at": "2026-07-15T10:29:27+03:00",
+        "checked_at": "2026-07-15T11:13:19+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -49,7 +49,7 @@
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-15T10:29:35+03:00",
+        "checked_at": "2026-07-15T11:13:28+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -58,25 +58,25 @@
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-15T10:29:36+03:00",
+        "checked_at": "2026-07-15T11:13:30+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 6,
+        "records": 7,
         "required": true,
-        "checked_at": "2026-07-15T10:29:36+03:00",
+        "checked_at": "2026-07-15T11:13:30+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
         "records": 139,
         "required": false,
-        "checked_at": "2026-07-15T10:29:37+03:00",
+        "checked_at": "2026-07-15T11:13:31+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-15T10:29:39+03:00",
+        "checked_at": "2026-07-15T11:13:33+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,16 +94,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-15T10:29:39+03:00",
+        "checked_at": "2026-07-15T11:13:33+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 33,
+    "discovery_record_count": 34,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-15T10:29+03:00",
+    "source_age_minutes": 0.8,
+    "source_checked_at": "2026-07-15T11:12+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-15T07:29:44+00:00"
+    "xlsx_generated_at": "2026-07-15T08:13:39+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3501,
-      "change_percent": -1.28,
-      "turnover": 300683616,
-      "updated": "10:14:39",
+      "price": 3514,
+      "change_percent": -0.92,
+      "turnover": 504456411,
+      "updated": "10:58:33",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3117,
-      "change_percent": 0.26,
-      "turnover": 228590131,
-      "updated": "10:14:40",
+      "price": 3119.5,
+      "change_percent": 0.34,
+      "turnover": 310289426,
+      "updated": "10:58:30",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 151.15,
-      "change_percent": -3.39,
-      "turnover": 234718720,
-      "updated": "10:14:40",
+      "price": 150.75,
+      "change_percent": -3.64,
+      "turnover": 336210022,
+      "updated": "10:58:34",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -207,6 +207,34 @@
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "71a9d2943257610f",
+        "published_at": "Wed, 15 Jul 2026 07:31:10 GMT",
+        "title": "Компания Nebius Group основателя «Яндекса» подписала сделку на 1 млрд долларов с разработчиком ИИ - БИЗНЕС ЖУРНАЛ. ЦЕНТР",
+        "summary": "Компания Nebius Group основателя «Яндекса» подписала сделку на 1 млрд долларов с разработчиком ИИ БИЗНЕС ЖУРНАЛ. ЦЕНТР",
+        "source": "БИЗНЕС ЖУРНАЛ. ЦЕНТР",
+        "url": "https://center.business-magazine.online/fn_1906052.html",
+        "companies": [
+          "YDEX"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false,
+        "discovery_url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE1zUmxLSVFGdFFyVkgxMDJZVjlSbFJtOS1kUHlmQ1pweG8ySkxNNko4T3RESGViMEh1aWVycW5Gb3RmYmZYN05DSzM1dnNIR3NhVHZtUWRva1NuRmFMVnowOXB5SXZMdw?oc=5"
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "YDEX"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
@@ -217,10 +245,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 151.15,
-        "change_percent": -3.39,
-        "turnover": 234718720,
-        "updated": "10:14:40",
+        "price": 150.75,
+        "change_percent": -3.64,
+        "turnover": 336210022,
+        "updated": "10:58:34",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -241,10 +269,12 @@
         "thesis": "Проверить, формируется ли публично подтверждаемая логика консолидации travel-tech активов вокруг экосистемы Yandex.",
         "decision_question": "Есть ли достаточно подтверждённых сигналов для pitch по buy-side / strategic options?",
         "deliverable": "Target map + precedent transactions + one-page pitch angle",
-        "signal_count": 0,
+        "signal_count": 1,
         "new_signal_count": 0,
-        "signal_ids": [],
-        "latest_signal": "Новых подтверждающих сигналов нет"
+        "signal_ids": [
+          "71a9d2943257610f"
+        ],
+        "latest_signal": "Компания Nebius Group основателя «Яндекса» подписала сделку на 1 млрд долларов с разработчиком ИИ - БИЗНЕС ЖУРНАЛ. ЦЕНТР"
       },
       {
         "id": "H-02",
@@ -288,7 +318,7 @@
         "id": "TASK-e1f6363d3f4a",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-3.39%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-3.64%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -306,7 +336,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -3.39% к предыдущему закрытию."
+        "text": "VKCO: -3.64% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
