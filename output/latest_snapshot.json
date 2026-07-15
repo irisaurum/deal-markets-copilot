@@ -1,19 +1,19 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-15T17:03+03:00",
+  "generated_at": "2026-07-15T19:03+03:00",
   "health": {
-    "last_success_at": "2026-07-15T17:03+03:00",
-    "build_id": "5d13379aef05",
-    "dataset_sha256": "5d13379aef054f5a0ec79bdcdd281d80a4f1b342af9fc113fb3df4858c0aa346",
-    "record_count": 114,
+    "last_success_at": "2026-07-15T19:03+03:00",
+    "build_id": "9aa25a019b95",
+    "dataset_sha256": "9aa25a019b958671542c970e99688e083c41e1e7fe81a3fdc3f7e4c8935154c3",
+    "record_count": 116,
     "key_deal_count": 9,
     "approved_count": 17,
-    "review_count": 72,
-    "rejected_count": 25,
-    "source_count": 148,
-    "source_representation_count": 200,
-    "direct_source_count": 134,
-    "aggregator_source_count": 66,
+    "review_count": 73,
+    "rejected_count": 26,
+    "source_count": 150,
+    "source_representation_count": 203,
+    "direct_source_count": 136,
+    "aggregator_source_count": 67,
     "critical_qa_issues": 0,
     "source_group_count": 9,
     "source_runs": [
@@ -22,25 +22,25 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-15T17:02:37+03:00",
+        "checked_at": "2026-07-15T19:02:31+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.7
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-15T17:02:54+03:00",
+        "checked_at": "2026-07-15T19:02:53+03:00",
         "error": "",
         "age_minutes": 0.3
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
-        "records": 8,
+        "records": 9,
         "required": true,
-        "checked_at": "2026-07-15T17:02:54+03:00",
+        "checked_at": "2026-07-15T19:02:53+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -49,7 +49,7 @@
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-15T17:03:02+03:00",
+        "checked_at": "2026-07-15T19:03:02+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -58,25 +58,25 @@
         "status": "ok",
         "records": 3,
         "required": true,
-        "checked_at": "2026-07-15T17:03:03+03:00",
+        "checked_at": "2026-07-15T19:03:03+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 14,
+        "records": 12,
         "required": true,
-        "checked_at": "2026-07-15T17:03:04+03:00",
+        "checked_at": "2026-07-15T19:03:04+03:00",
         "error": "",
         "age_minutes": 0.1
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 146,
+        "records": 147,
         "required": false,
-        "checked_at": "2026-07-15T17:03:05+03:00",
+        "checked_at": "2026-07-15T19:03:05+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-15T17:03:07+03:00",
+        "checked_at": "2026-07-15T19:03:07+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,16 +94,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-15T17:03:07+03:00",
+        "checked_at": "2026-07-15T19:03:07+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 40,
+    "discovery_record_count": 38,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.6,
-    "source_checked_at": "2026-07-15T17:02+03:00",
+    "source_age_minutes": 0.7,
+    "source_checked_at": "2026-07-15T19:02+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-15T14:03:11+00:00"
+    "xlsx_generated_at": "2026-07-15T16:03:12+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3488.5,
-      "change_percent": -1.64,
-      "turnover": 2557959400,
-      "updated": "16:48:06",
+      "price": 3485,
+      "change_percent": -1.73,
+      "turnover": 3034938647,
+      "updated": "18:48:06",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3103,
-      "change_percent": -0.19,
-      "turnover": 1207875178,
-      "updated": "16:48:07",
+      "price": 3100.5,
+      "change_percent": -0.27,
+      "turnover": 1415652689,
+      "updated": "18:48:07",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 144.6,
-      "change_percent": -7.57,
-      "turnover": 2254358038,
-      "updated": "16:48:08",
+      "price": 144.85,
+      "change_percent": -7.41,
+      "turnover": 2455321168,
+      "updated": "18:48:08",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -162,12 +162,12 @@
   "events": [
     {
       "event": {
-        "event_id": "moex-102121",
-        "published_at": "2026-07-14 18:21:33",
-        "title": "15 июля 2026 г. вступает в силу новая база расчета Кривой бескупонной доходности государственных облигаций",
-        "summary": "15 июля 2026 г. вступает в силу новая база расчета Кривой бескупонной доходности государственных облигаций 2026-07-14 18:21:33 С 15 июля 2026 года вводится в действие новый состав базы расчета Кривой бескупонной доходности государственных облигаций (облигаций федеральных займов). База расчета Кривой бескупонной доходности государственных облигаций, действующая с 15.07.2026 № Наименование Номер государственной регистрации 1 ОФЗ 26245 SU26245RMFS9 2 ОФЗ 26219 SU26219RMFS4 3 ОФЗ 26226 SU26226RMFS9 4 ОФЗ 26207 SU26207RMFS9 5 ОФЗ 26232 SU26232RMFS7 6 ОФЗ 26212 SU26212RMFS9 7 ОФЗ 26242 SU26242RMFS6 8 ОФЗ 26228 SU26228RMFS5 9 ОФЗ 26218 SU26218RMFS6 10 ОФЗ 26241 SU26241RMFS8 11 ОФЗ 26221 SU26221RMFS0 12 ОФЗ 26244 SU26244RMFS2 13 ОФЗ 26225 SU26225RMFS1 14 ОФЗ 26233 SU26233RMFS5 15 ОФЗ 26240 SU26240RMFS0 16 ОФЗ 26243 SU26243RMFS4 17 ОФЗ 26230 SU26230RMFS1 18 ОФЗ 26238 SU26238RMFS4 19 ОФЗ 26239 SU26239RMFS2 20 ОФЗ 26247 SU26247RMFS5 21 ОФЗ 26236 SU26236RMFS8 22 ОФЗ 26248 SU26248RMFS3 23 ОФЗ 26235 SU26235RMFS0 24 ОФЗ 26246 SU26246RMFS7 25 ОФЗ 26249 SU26249RMFS1 26 ОФЗ 26250 SU26250RMFS9 27 ОФЗ 26252 SU26252RMFS5 28 ОФЗ 26251 SU26251RMFS7 29 ОФЗ 26253 SU26253RMFS3 30 ОФЗ 26254 SU26254RMFS1 Подробная информация о Кривой бескупонной доходности государственных облигаций (облигаций федеральных займов) размещена на сайте биржи http://moex.com/a3642 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "event_id": "moex-102161",
+        "published_at": "2026-07-15 17:09:47",
+        "title": "О порядке приобретения отдельных облигаций ООО \"ГПБ Финанс\" с 16 июля 2026 год",
+        "summary": "О порядке приобретения отдельных облигаций ООО \"ГПБ Финанс\" с 16 июля 2026 год 2026-07-15 17:09:47 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО Московская Биржа \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17), Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и на основании уведомлений о выкупе, полученных от ООО \"ГПБ Финанс\", определено, что для ценных бумаг ООО \"ГПБ Финанс\" (далее – Облигации): № п/п Наименование ценной бумаги Регистрационный номер выпуска Торговый код 1 Биржевые облигации с обеспечением процентные неконвертируемые бездокументарные серии 001P-07Р 4B02-07-00158-L-001P RU000A10DYH7 2 Биржевые облигации с обеспечением процентные неконвертируемые бездокументарные серии 001P-10Р 4B02-10-00158-L-001P RU000A10EDA4 будут установлены следующие форма, время, срок и порядок проведения приобретения Облигаций в режиме торгов \"Выкуп: Адресные заявки\": Информация о приобретении (Режим торгов, форма приобретения) С предварительным сбором адресных заявок с датой активации в режиме торгов \"Выкуп: Адресные заявки\". (Расчеты: Рубль) Код расчетов Z0 Цена приобретения 100% от номинальной сто",
         "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n102121",
+        "url": "https://www.moex.com/n102161",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -177,7 +177,7 @@
         "discovery_url": ""
       },
       "category": "DCM",
-      "score": 7,
+      "score": 6,
       "severity": "high",
       "banker_angle": "Проверить размер долга, купон/доходность, maturity profile, leverage и use of proceeds.",
       "next_action": "Обновить debt comps и проверить ближайшие погашения.",
@@ -186,12 +186,12 @@
     },
     {
       "event": {
-        "event_id": "moex-102108",
-        "published_at": "2026-07-14 16:25:08",
-        "title": "Об отмене размещения облигаций серии CIB-SN-EQ-001S-370  АО \"Сбербанк КИБ\"",
-        "summary": "Об отмене размещения облигаций серии CIB-SN-EQ-001S-370 АО \"Сбербанк КИБ\" 2026-07-14 16:25:08 Участникам торгов В соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и в связи с получением от АО \"Сбербанк КИБ\" письма об отмене размещения облигаций структурных процентные дисконтные бездокументарные неконвертируемые с залоговым обеспечением серии CIB-SN-EQ-001S-370 неконвертируемых с залоговым обеспечением процентных АО \"Сбербанк КИБ\", ISIN - RU000A10CYK3 (далее – Облигации), установлено что c 19:00 по мск 14 июля 2026 года по Облигациям торги в Режиме торгов \"Размещение: Адресные заявки\" проводиться не будут. Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
+        "event_id": "moex-102121",
+        "published_at": "2026-07-14 18:21:33",
+        "title": "15 июля 2026 г. вступает в силу новая база расчета Кривой бескупонной доходности государственных облигаций",
+        "summary": "15 июля 2026 г. вступает в силу новая база расчета Кривой бескупонной доходности государственных облигаций 2026-07-14 18:21:33 С 15 июля 2026 года вводится в действие новый состав базы расчета Кривой бескупонной доходности государственных облигаций (облигаций федеральных займов). База расчета Кривой бескупонной доходности государственных облигаций, действующая с 15.07.2026 № Наименование Номер государственной регистрации 1 ОФЗ 26245 SU26245RMFS9 2 ОФЗ 26219 SU26219RMFS4 3 ОФЗ 26226 SU26226RMFS9 4 ОФЗ 26207 SU26207RMFS9 5 ОФЗ 26232 SU26232RMFS7 6 ОФЗ 26212 SU26212RMFS9 7 ОФЗ 26242 SU26242RMFS6 8 ОФЗ 26228 SU26228RMFS5 9 ОФЗ 26218 SU26218RMFS6 10 ОФЗ 26241 SU26241RMFS8 11 ОФЗ 26221 SU26221RMFS0 12 ОФЗ 26244 SU26244RMFS2 13 ОФЗ 26225 SU26225RMFS1 14 ОФЗ 26233 SU26233RMFS5 15 ОФЗ 26240 SU26240RMFS0 16 ОФЗ 26243 SU26243RMFS4 17 ОФЗ 26230 SU26230RMFS1 18 ОФЗ 26238 SU26238RMFS4 19 ОФЗ 26239 SU26239RMFS2 20 ОФЗ 26247 SU26247RMFS5 21 ОФЗ 26236 SU26236RMFS8 22 ОФЗ 26248 SU26248RMFS3 23 ОФЗ 26235 SU26235RMFS0 24 ОФЗ 26246 SU26246RMFS7 25 ОФЗ 26249 SU26249RMFS1 26 ОФЗ 26250 SU26250RMFS9 27 ОФЗ 26252 SU26252RMFS5 28 ОФЗ 26251 SU26251RMFS7 29 ОФЗ 26253 SU26253RMFS3 30 ОФЗ 26254 SU26254RMFS1 Подробная информация о Кривой бескупонной доходности государственных облигаций (облигаций федеральных займов) размещена на сайте биржи http://moex.com/a3642 Контактная информация для СМИ +7 (495) 363-3232 PR@moex.com Контактная информация для клиентов +7 (495) 232-3363 Форма обратной связи",
         "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n102108",
+        "url": "https://www.moex.com/n102121",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -245,10 +245,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 144.6,
-        "change_percent": -7.57,
-        "turnover": 2254358038,
-        "updated": "16:48:08",
+        "price": 144.85,
+        "change_percent": -7.41,
+        "turnover": 2455321168,
+        "updated": "18:48:08",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -295,30 +295,31 @@
     ],
     "tasks": [
       {
-        "id": "TASK-0100a773846b",
+        "id": "TASK-9fd61a0a3641",
         "priority": "P1",
         "state": "open",
-        "title": "Confirm placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record.",
+        "title": "Confirm issuer, placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record.",
         "deliverable": "Verified DCM terms + evidence note",
         "coverage": "MARKET",
         "category": "DCM",
-        "source_url": "https://www.moex.com/n102108",
-        "source_title": "Об отмене размещения облигаций серии CIB-SN-EQ-001S-370  АО \"Сбербанк КИБ\"",
+        "source_url": "https://www.moex.com/n102161",
+        "source_title": "О порядке приобретения отдельных облигаций ООО \"ГПБ Финанс\" с 16 июля 2026 год",
         "hypothesis_ids": [],
-        "deal_id": "DL-moex-102108",
+        "deal_id": "DL-moex-102161",
         "quality_status": "review",
         "quality_flags": [
+          "missing_issuer",
           "missing_transaction_value",
           "missing_currency"
         ],
-        "reason": "Blocking or decision-useful fields are missing: placement size, currency.",
+        "reason": "Blocking or decision-useful fields are missing: issuer, placement size, currency.",
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
         "id": "TASK-e1f6363d3f4a",
         "priority": "P1",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-7.57%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-7.41%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -336,11 +337,11 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -7.57% к предыдущему закрытию."
+        "text": "VKCO: -7.41% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Confirm placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record."
+        "text": "Confirm issuer, placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record."
       }
     ]
   }
