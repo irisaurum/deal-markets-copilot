@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-16T17:34+03:00",
+  "generated_at": "2026-07-16T19:12+03:00",
   "health": {
-    "last_success_at": "2026-07-16T17:34+03:00",
-    "build_id": "b7233620e3c0",
-    "dataset_sha256": "b7233620e3c0f7e0bcf9ae450876f2f6225e8a0e46fba1de4e3b7cd538f58f02",
+    "last_success_at": "2026-07-16T19:12+03:00",
+    "build_id": "e7804f451064",
+    "dataset_sha256": "e7804f4510643c2e99becee121ee0b097463d0a06b804151bca35ba1518312aa",
     "record_count": 117,
     "key_deal_count": 9,
     "approved_count": 17,
@@ -22,7 +22,7 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-16T17:33:21+03:00",
+        "checked_at": "2026-07-16T19:11:37+03:00",
         "error": "",
         "age_minutes": 0.9
       },
@@ -31,25 +31,25 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-16T17:33:47+03:00",
+        "checked_at": "2026-07-16T19:12:03+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 0.4
       },
       {
         "name": "moex_disclosures",
         "status": "ok",
         "records": 13,
         "required": true,
-        "checked_at": "2026-07-16T17:33:47+03:00",
+        "checked_at": "2026-07-16T19:12:03+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 0.4
       },
       {
         "name": "configured_rss",
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-16T17:34:03+03:00",
+        "checked_at": "2026-07-16T19:12:17+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -58,25 +58,25 @@
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-16T17:34:05+03:00",
+        "checked_at": "2026-07-16T19:12:19+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 7,
+        "records": 6,
         "required": true,
-        "checked_at": "2026-07-16T17:34:06+03:00",
+        "checked_at": "2026-07-16T19:12:19+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 147,
+        "records": 146,
         "required": false,
-        "checked_at": "2026-07-16T17:34:06+03:00",
+        "checked_at": "2026-07-16T19:12:20+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-16T17:34:08+03:00",
+        "checked_at": "2026-07-16T19:12:22+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -94,16 +94,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-16T17:34:08+03:00",
+        "checked_at": "2026-07-16T19:12:22+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 34,
+    "discovery_record_count": 33,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
     "source_age_minutes": 0.9,
-    "source_checked_at": "2026-07-16T17:33+03:00",
+    "source_checked_at": "2026-07-16T19:11+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -112,17 +112,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-16T14:34:16+00:00"
+    "xlsx_generated_at": "2026-07-16T16:12:29+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3444.5,
-      "change_percent": -0.36,
-      "turnover": 3095821276,
-      "updated": "17:19:08",
+      "price": 3408.5,
+      "change_percent": -1.4,
+      "turnover": 3641971558,
+      "updated": "18:57:22",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -133,10 +133,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 3096.5,
-      "change_percent": 0.32,
-      "turnover": 2486648082,
-      "updated": "17:19:09",
+      "price": 3037,
+      "change_percent": -1.6,
+      "turnover": 2751805815,
+      "updated": "18:57:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -147,10 +147,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 129.8,
-      "change_percent": -7.42,
-      "turnover": 3779930109,
-      "updated": "17:19:09",
+      "price": 126.25,
+      "change_percent": -9.95,
+      "turnover": 4345022634,
+      "updated": "18:57:23",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -221,10 +221,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 129.8,
-        "change_percent": -7.42,
-        "turnover": 3779930109,
-        "updated": "17:19:09",
+        "price": 126.25,
+        "change_percent": -9.95,
+        "turnover": 4345022634,
+        "updated": "18:57:23",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -313,7 +313,7 @@
         "id": "TASK-030f1790f331",
         "priority": "P1",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-7.42%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-9.95%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -331,7 +331,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -7.42% к предыдущему закрытию."
+        "text": "VKCO: -9.95% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
