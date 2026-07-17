@@ -18,6 +18,8 @@ class Event:
     currency: str | None = None
     demo: bool = False
     discovery_url: str = ""
+    country: str = "Not disclosed"
+    market: str = "Not disclosed"
 
     def to_dict(self) -> dict:
         return asdict(self)

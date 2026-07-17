@@ -1,8 +1,8 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-16T19:12+03:00",
+  "generated_at": "2026-07-17T03:32+03:00",
   "health": {
-    "last_success_at": "2026-07-16T19:12+03:00",
+    "last_success_at": "2026-07-17T03:32+03:00",
     "build_id": "e7804f451064",
     "dataset_sha256": "e7804f4510643c2e99becee121ee0b097463d0a06b804151bca35ba1518312aa",
     "record_count": 117,
@@ -24,7 +24,7 @@
         "required": true,
         "checked_at": "2026-07-16T19:11:37+03:00",
         "error": "",
-        "age_minutes": 0.9
+        "age_minutes": 500.6
       },
       {
         "name": "gdelt",
@@ -33,7 +33,7 @@
         "required": false,
         "checked_at": "2026-07-16T19:12:03+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 500.2
       },
       {
         "name": "moex_disclosures",
@@ -42,7 +42,7 @@
         "required": true,
         "checked_at": "2026-07-16T19:12:03+03:00",
         "error": "",
-        "age_minutes": 0.4
+        "age_minutes": 500.2
       },
       {
         "name": "configured_rss",
@@ -51,7 +51,7 @@
         "required": true,
         "checked_at": "2026-07-16T19:12:17+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 500.0
       },
       {
         "name": "deal_news",
@@ -60,7 +60,7 @@
         "required": true,
         "checked_at": "2026-07-16T19:12:19+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 499.9
       },
       {
         "name": "company_news",
@@ -69,7 +69,7 @@
         "required": true,
         "checked_at": "2026-07-16T19:12:19+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 499.9
       },
       {
         "name": "deal_archive",
@@ -78,7 +78,7 @@
         "required": false,
         "checked_at": "2026-07-16T19:12:20+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 499.9
       },
       {
         "name": "sec_filings",
@@ -87,7 +87,7 @@
         "required": false,
         "checked_at": "2026-07-16T19:12:22+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 499.9
       },
       {
         "name": "moex_quotes",
@@ -102,9 +102,9 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 0.9,
+    "source_age_minutes": 500.6,
     "source_checked_at": "2026-07-16T19:11+03:00",
-    "freshness_limit_minutes": 90,
+    "freshness_limit_minutes": 4320,
     "source_status": "ok",
     "freshness_status": "ok",
     "market_data_status": "ok",
@@ -112,7 +112,7 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-16T16:12:29+00:00"
+    "xlsx_generated_at": "2026-07-17T03:02:51+03:00"
   },
   "mode": "live",
   "market": [
@@ -174,7 +174,9 @@
         "amount": null,
         "currency": null,
         "demo": false,
-        "discovery_url": ""
+        "discovery_url": "",
+        "country": "Not disclosed",
+        "market": "Not disclosed"
       },
       "category": "DCM",
       "score": 7,
@@ -200,7 +202,9 @@
         "amount": null,
         "currency": null,
         "demo": false,
-        "discovery_url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9rai0wd3R5dXZKcXRxanB6ZVlDRl9hTDJQR2RxdUlBbXBQN2RnVDBuM3BtVHNQQmh2ekxrb1AzMFNPa1QxQnJQeEhZNnBodXo3cWNVVkFTZGg1OWJpSUxPV2J3TzhWQzBGVnZXUXB4NEJqU3JEQ2gtdFVCUUYxMTA?oc=5"
+        "discovery_url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9rai0wd3R5dXZKcXRxanB6ZVlDRl9hTDJQR2RxdUlBbXBQN2RnVDBuM3BtVHNQQmh2ekxrb1AzMFNPa1QxQnJQeEhZNnBodXo3cWNVVkFTZGg1OWJpSUxPV2J3TzhWQzBGVnZXUXB4NEJqU3JEQ2gtdFVCUUYxMTA?oc=5",
+        "country": "Not disclosed",
+        "market": "Not disclosed"
       },
       "category": "M&A",
       "score": 7,
@@ -310,7 +314,7 @@
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
-        "id": "TASK-030f1790f331",
+        "id": "TASK-f63fe72a4825",
         "priority": "P1",
         "state": "market",
         "title": "Проверить драйвер движения VKCO (-9.95%) и обновить trading comps.",

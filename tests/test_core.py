@@ -74,9 +74,9 @@ class CoreTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             self.assertIn("Источники и подтверждения", text)
             self.assertIn("Демо-режим", text)
-            self.assertIn("Что происходит на рынке сделок", text)
+            self.assertIn("Монитор сделок и рынков капитала СНГ", text)
             self.assertIn("Что проверить сегодня", text)
-            self.assertIn("Последние сделки рынка", text)
+            self.assertIn("Скринер сделок: Россия и СНГ", text)
             self.assertIn("AUTO_REFRESH_MS", text)
             self.assertIn('class="deal-grid"', text)
             self.assertNotIn('class="sidebar"', text)
@@ -440,10 +440,10 @@ class CoreTests(unittest.TestCase):
             )
             text = path.read_text(encoding="utf-8")
             self.assertIn('class="deal-tile"', text)
-            self.assertIn("КЛЮЧЕВЫЕ СДЕЛКИ", text)
+            self.assertIn("БАЗА СДЕЛОК", text)
             self.assertIn("precedent_transactions.xlsx", text)
-            self.assertIn("Последние сделки рынка", text)
-            self.assertIn("Свежие события", text)
+            self.assertIn("Скринер сделок: Россия и СНГ", text)
+            self.assertIn("Новые события", text)
             self.assertIn("Подтверждение ↗", text)
 
     def test_extracts_explicit_precedent_analytics_only(self) -> None:
@@ -1500,7 +1500,7 @@ class CoreTests(unittest.TestCase):
             self.assertIn("Актуальные сделки", text)
             self.assertIn("Требует проверки", text)
             self.assertIn("Опровержения", text)
-            self.assertIn("Technical filings", text)
+            self.assertIn("Технические раскрытия", text)
             self.assertIn("Купон", text)
 
     def test_financial_enrichment_calculates_only_aligned_currency_multiples(self) -> None:

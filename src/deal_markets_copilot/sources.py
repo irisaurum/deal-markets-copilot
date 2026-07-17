@@ -67,6 +67,102 @@ def fetch_configured_sources(config: dict, timeout: int = 15) -> list[Event]:
     return events
 
 
+def fetch_cis_disclosures(config: dict, timeout: int = 15) -> list[Event]:
+    """Fetch narrowly scoped official CIS disclosures.
+
+    Connectors are opt-in and isolated from the required Russia source groups.
+    UZSE fact 25 is the first supported feed because it represents a securities
+    issue and each row links to a primary disclosure. Other fact types are
+    intentionally ignored to avoid coupons, related-party purchases and routine
+    corporate notices entering the deal workflow.
+    """
+    events: list[Event] = []
+    failures: list[str] = []
+    for source in config.get("cis_source_registry", []):
+        if not source.get("enabled") or not source.get("implemented"):
+            continue
+        try:
+            if source.get("connector") == "uzse_material_facts":
+                events.extend(_fetch_uzse_material_facts(source, timeout))
+        except Exception as exc:
+            failures.append(f"{source.get('name', 'CIS source')}: {type(exc).__name__}")
+    if failures:
+        raise RuntimeError("CIS source failure: " + "; ".join(failures))
+    return events
+
+
+def _fetch_uzse_material_facts(source: dict, timeout: int) -> list[Event]:
+    base_url = str(source.get("url") or "https://uzse.uz/reports/material_facts?locale=en&page=1")
+    allowed_facts = {str(value) for value in source.get("fact_numbers", ["25"])}
+    max_pages = max(1, min(int(source.get("max_pages", 3)), 10))
+    max_items = max(1, min(int(source.get("max_items", 10)), 50))
+    events: list[Event] = []
+    seen: set[str] = set()
+    for page_number in range(1, max_pages + 1):
+        page_url = re.sub(r"([?&])page=\d+", rf"\g<1>page={page_number}", base_url)
+        page = _get_text(page_url, timeout)
+        for row_html in re.findall(r"<tr\b[^>]*>(.*?)</tr>", page, re.I | re.S):
+            cells = [_strip_html(value) for value in re.findall(r"<td\b[^>]*>(.*?)</td>", row_html, re.I | re.S)]
+            link_match = re.search(r'href=["\']([^"\']*/reports/\d+/material_fact(?:\?[^"\']*)?)["\']', row_html, re.I)
+            if len(cells) < 5 or not link_match:
+                continue
+            fact_number = next((cell for cell in reversed(cells) if cell.strip().isdigit()), "")
+            if fact_number not in allowed_facts:
+                continue
+            detail_url = urllib.parse.urljoin(base_url, html.unescape(link_match.group(1)))
+            if detail_url in seen:
+                continue
+            seen.add(detail_url)
+            published = next((cell for cell in cells if re.fullmatch(r"\d{4}-\d{2}-\d{2}", cell.strip())), "")
+            issuer = cells[3].strip() if len(cells) > 3 else ""
+            detail = _strip_html(_get_text(detail_url, timeout))
+            security_type = _label_value(detail, ("Security type", "Вид ценной бумаги", "Qimmatli qog'oz turi"))
+            amount_text = _label_value(detail, ("Total issue amount", "Общая сумма выпуска", "Chiqarilishning umumiy summasi"))
+            amount = _uzs_amount(amount_text)
+            if not issuer or not published or not security_type:
+                continue
+            is_bond = bool(re.search(r"bond|облигац", security_type, re.I))
+            instrument = "облигаций" if is_bond else "акций"
+            amount_label = f" на {amount:,.0f} UZS".replace(",", " ") if amount else ""
+            title = f"{issuer} объявил выпуск {instrument}{amount_label}"
+            events.append(Event(
+                event_id=stable_event_id("uzse-fact-25", detail_url),
+                published_at=f"{published}T00:00:00+05:00",
+                title=title,
+                summary=f"Официальное раскрытие UZSE: {security_type}. {amount_text}"[:1500],
+                source=source.get("name", "UZSE material facts"),
+                url=detail_url,
+                source_type="official_exchange",
+                confidence="confirmed",
+                amount=amount,
+                currency="UZS" if amount else None,
+                country=source.get("country", "Uzbekistan"),
+                market=source.get("market", "UZSE"),
+            ))
+            if len(events) >= max_items:
+                return events
+    return events
+
+
+def _label_value(text: str, labels: tuple[str, ...]) -> str:
+    for label in labels:
+        match = re.search(rf"{re.escape(label)}\s*[:\-]?\s*(.+?)(?=\s{{2,}}[A-ZА-ЯЁOQ]|$)", text, re.I)
+        if match:
+            return re.sub(r"\s+", " ", match.group(1)).strip(" .:;-")[:300]
+    return ""
+
+
+def _uzs_amount(value: str) -> float | None:
+    match = re.search(r"(\d[\d\s.,]*)", value or "")
+    if not match:
+        return None
+    compact = re.sub(r"[\s,]", "", match.group(1))
+    try:
+        return float(compact)
+    except ValueError:
+        return None
+
+
 def fetch_moex_disclosures(config: dict, timeout: int = 15) -> list[Event]:
     """Fetch direct MOEX disclosure/news records from the official ISS API."""
     settings = config.get("primary_sources", {}).get("moex", {})
