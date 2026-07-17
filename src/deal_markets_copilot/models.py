@@ -20,6 +20,25 @@ class Event:
     discovery_url: str = ""
     country: str = "Not disclosed"
     market: str = "Not disclosed"
+    source_id: str = ""
+    source_event_id: str = ""
+    original_title: str = ""
+    issuer: str = ""
+    instrument: str = ""
+    programme: str = ""
+    series: str = ""
+    isin: str = ""
+    registration_number: str = ""
+    coupon_rate: float | None = None
+    yield_rate: float | None = None
+    maturity_date: str = ""
+    event_date: str = ""
+    lifecycle_stage: str = ""
+    event_sub_stage: str = ""
+    document_urls: list[str] = field(default_factory=list)
+    quantity: float | None = None
+    denomination: float | None = None
+    amount_is_derived: bool = False
 
     def to_dict(self) -> dict:
         return asdict(self)
