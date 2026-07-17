@@ -76,7 +76,7 @@ class CoreTests(unittest.TestCase):
             self.assertIn("Демо-режим", text)
             self.assertIn("Монитор сделок и рынков капитала СНГ", text)
             self.assertIn("Что проверить сегодня", text)
-            self.assertIn("Deal screener: Россия и СНГ", text)
+            self.assertIn("Скринер сделок: Россия и СНГ", text)
             self.assertIn("AUTO_REFRESH_MS", text)
             self.assertIn('class="deal-grid"', text)
             self.assertNotIn('class="sidebar"', text)
@@ -442,7 +442,7 @@ class CoreTests(unittest.TestCase):
             self.assertIn('class="deal-tile"', text)
             self.assertIn("БАЗА СДЕЛОК", text)
             self.assertIn("precedent_transactions.xlsx", text)
-            self.assertIn("Deal screener: Россия и СНГ", text)
+            self.assertIn("Скринер сделок: Россия и СНГ", text)
             self.assertIn("Новые события", text)
             self.assertIn("Подтверждение ↗", text)
 
