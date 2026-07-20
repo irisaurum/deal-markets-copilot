@@ -1,10 +1,10 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-20T11:25+03:00",
+  "generated_at": "2026-07-20T12:17+03:00",
   "health": {
-    "last_success_at": "2026-07-20T11:25+03:00",
-    "build_id": "b9ba83f370fc",
-    "dataset_sha256": "b9ba83f370fc71066103e599977547e884988d1d2669268d9a5548d231562f0c",
+    "last_success_at": "2026-07-20T12:17+03:00",
+    "build_id": "7dd51c888995",
+    "dataset_sha256": "7dd51c88899503c61ed128189714cc648afb1c25b8bf09ad183ca211eb58c80a",
     "record_count": 120,
     "key_deal_count": 9,
     "approved_count": 17,
@@ -22,25 +22,25 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-20T11:24:53+03:00",
+        "checked_at": "2026-07-20T12:16:26+03:00",
         "error": "",
-        "age_minutes": 1.0
+        "age_minutes": 0.9
       },
       {
         "name": "cis_disclosures",
         "status": "ok",
         "records": 1,
         "required": false,
-        "checked_at": "2026-07-20T11:25:18+03:00",
+        "checked_at": "2026-07-20T12:16:51+03:00",
         "error": "",
-        "age_minutes": 0.6
+        "age_minutes": 0.5
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-20T11:25:28+03:00",
+        "checked_at": "2026-07-20T12:17:01+03:00",
         "error": "",
         "age_minutes": 0.4
       },
@@ -49,7 +49,7 @@
         "status": "ok",
         "records": 5,
         "required": true,
-        "checked_at": "2026-07-20T11:25:28+03:00",
+        "checked_at": "2026-07-20T12:17:01+03:00",
         "error": "",
         "age_minutes": 0.4
       },
@@ -58,25 +58,25 @@
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-20T11:25:38+03:00",
+        "checked_at": "2026-07-20T12:17:10+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 9,
+        "records": 10,
         "required": true,
-        "checked_at": "2026-07-20T11:25:39+03:00",
+        "checked_at": "2026-07-20T12:17:12+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 11,
+        "records": 9,
         "required": true,
-        "checked_at": "2026-07-20T11:25:40+03:00",
+        "checked_at": "2026-07-20T12:17:12+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -85,7 +85,7 @@
         "status": "ok",
         "records": 148,
         "required": false,
-        "checked_at": "2026-07-20T11:25:41+03:00",
+        "checked_at": "2026-07-20T12:17:13+03:00",
         "error": "",
         "age_minutes": 0.2
       },
@@ -94,7 +94,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-20T11:25:43+03:00",
+        "checked_at": "2026-07-20T12:17:15+03:00",
         "error": "",
         "age_minutes": 0.1
       },
@@ -103,16 +103,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-20T11:25:43+03:00",
+        "checked_at": "2026-07-20T12:17:15+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 44,
+    "discovery_record_count": 43,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 1.0,
-    "source_checked_at": "2026-07-20T11:24+03:00",
+    "source_age_minutes": 0.9,
+    "source_checked_at": "2026-07-20T12:16+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -121,17 +121,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-20T08:25:51+00:00"
+    "xlsx_generated_at": "2026-07-20T09:17:22+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3288.5,
-      "change_percent": 2.1,
-      "turnover": 2108341109,
-      "updated": "11:10:43",
+      "price": 3307.5,
+      "change_percent": 2.69,
+      "turnover": 2337220674,
+      "updated": "12:02:15",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -142,10 +142,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 2594,
-      "change_percent": -12.19,
-      "turnover": 6254514913,
-      "updated": "11:10:44",
+      "price": 2681,
+      "change_percent": -9.24,
+      "turnover": 7699004760,
+      "updated": "12:02:16",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -156,10 +156,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 120.9,
-      "change_percent": -1.87,
-      "turnover": 1331864450,
-      "updated": "11:10:46",
+      "price": 121.1,
+      "change_percent": -1.7,
+      "turnover": 1497603873,
+      "updated": "12:02:17",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -177,10 +177,10 @@
       {
         "ticker": "OZON",
         "company": "Ozon",
-        "price": 2594,
-        "change_percent": -12.19,
-        "turnover": 6254514913,
-        "updated": "11:10:44",
+        "price": 2681,
+        "change_percent": -9.24,
+        "turnover": 7699004760,
+        "updated": "12:02:16",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -191,10 +191,10 @@
       {
         "ticker": "YDEX",
         "company": "Yandex",
-        "price": 3288.5,
-        "change_percent": 2.1,
-        "turnover": 2108341109,
-        "updated": "11:10:43",
+        "price": 3307.5,
+        "change_percent": 2.69,
+        "turnover": 2337220674,
+        "updated": "12:02:15",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -242,7 +242,7 @@
         "id": "TASK-d0d1b27e8420",
         "priority": "P1",
         "state": "market",
-        "title": "Проверить драйвер движения OZON (-12.19%) и обновить trading comps.",
+        "title": "Проверить драйвер движения OZON (-9.24%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
         "category": "Market",
@@ -254,7 +254,7 @@
         "id": "TASK-20fdef627fa5",
         "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения YDEX (+2.10%) и обновить trading comps.",
+        "title": "Проверить драйвер движения YDEX (+2.69%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "YDEX",
         "category": "Market",
@@ -272,11 +272,11 @@
       },
       {
         "label": "Рынок",
-        "text": "OZON: -12.19% к предыдущему закрытию."
+        "text": "OZON: -9.24% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
-        "text": "Проверить драйвер движения OZON (-12.19%) и обновить trading comps."
+        "text": "Проверить драйвер движения OZON (-9.24%) и обновить trading comps."
       }
     ]
   }
