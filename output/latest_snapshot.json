@@ -1,19 +1,19 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-20T19:21+03:00",
+  "generated_at": "2026-07-21T10:55+03:00",
   "health": {
-    "last_success_at": "2026-07-20T19:21+03:00",
-    "build_id": "2c0c71005cb0",
-    "dataset_sha256": "2c0c71005cb0f659c544ffd3fd58330eaf341da2c564a9e9cc909a2f69dea6b7",
-    "record_count": 123,
+    "last_success_at": "2026-07-21T10:55+03:00",
+    "build_id": "eb2e0f3ea714",
+    "dataset_sha256": "eb2e0f3ea7140bb264bd667d566d12adc4ffb8b2e1feedd4870cce7113257e51",
+    "record_count": 124,
     "key_deal_count": 9,
     "approved_count": 17,
-    "review_count": 78,
+    "review_count": 79,
     "rejected_count": 28,
-    "source_count": 161,
-    "source_representation_count": 222,
-    "direct_source_count": 143,
-    "aggregator_source_count": 79,
+    "source_count": 162,
+    "source_representation_count": 224,
+    "direct_source_count": 144,
+    "aggregator_source_count": 80,
     "critical_qa_issues": 0,
     "source_group_count": 9,
     "source_runs": [
@@ -22,7 +22,7 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-20T19:20:37+03:00",
+        "checked_at": "2026-07-21T10:54:44+03:00",
         "error": "",
         "age_minutes": 0.9
       },
@@ -31,16 +31,16 @@
         "status": "ok",
         "records": 1,
         "required": false,
-        "checked_at": "2026-07-20T19:21:02+03:00",
+        "checked_at": "2026-07-21T10:55:09+03:00",
         "error": "",
-        "age_minutes": 0.5
+        "age_minutes": 0.4
       },
       {
         "name": "gdelt",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-20T19:21:12+03:00",
+        "checked_at": "2026-07-21T10:55:20+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -49,7 +49,7 @@
         "status": "ok",
         "records": 1,
         "required": true,
-        "checked_at": "2026-07-20T19:21:12+03:00",
+        "checked_at": "2026-07-21T10:55:20+03:00",
         "error": "",
         "age_minutes": 0.3
       },
@@ -58,61 +58,61 @@
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-20T19:21:16+03:00",
+        "checked_at": "2026-07-21T10:55:24+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 0.2
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 8,
+        "records": 6,
         "required": true,
-        "checked_at": "2026-07-20T19:21:17+03:00",
+        "checked_at": "2026-07-21T10:55:26+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 15,
+        "records": 11,
         "required": true,
-        "checked_at": "2026-07-20T19:21:18+03:00",
+        "checked_at": "2026-07-21T10:55:26+03:00",
         "error": "",
         "age_minutes": 0.2
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 147,
+        "records": 148,
         "required": false,
-        "checked_at": "2026-07-20T19:21:19+03:00",
+        "checked_at": "2026-07-21T10:55:27+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.1
       },
       {
         "name": "sec_filings",
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-20T19:21:21+03:00",
+        "checked_at": "2026-07-21T10:55:29+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 0.1
       },
       {
         "name": "moex_quotes",
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-20T19:21:21+03:00",
+        "checked_at": "2026-07-21T10:55:29+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 47,
+    "discovery_record_count": 41,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
     "source_age_minutes": 0.9,
-    "source_checked_at": "2026-07-20T19:20+03:00",
+    "source_checked_at": "2026-07-21T10:54+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -121,17 +121,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-20T16:21:31+00:00"
+    "xlsx_generated_at": "2026-07-21T07:55:35+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3436,
-      "change_percent": 6.67,
-      "turnover": 4930206337,
-      "updated": "19:06:21",
+      "price": 3514.5,
+      "change_percent": 1.18,
+      "turnover": 1182618816,
+      "updated": "10:40:29",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -142,10 +142,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 2830,
-      "change_percent": -4.2,
-      "turnover": 14856427168,
-      "updated": "19:06:22",
+      "price": 2948,
+      "change_percent": 1.81,
+      "turnover": 1941138225,
+      "updated": "10:40:30",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -156,10 +156,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 138.85,
-      "change_percent": 12.7,
-      "turnover": 3970383132,
-      "updated": "19:06:24",
+      "price": 140.15,
+      "change_percent": -1.92,
+      "turnover": 1960274513,
+      "updated": "10:40:30",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -168,86 +168,12 @@
       "quote_usable": true
     }
   ],
-  "events": [
-    {
-      "event": {
-        "event_id": "3abc1bce1dce2b6f",
-        "published_at": "Sat, 18 Jul 2026 15:33:27 GMT",
-        "title": "VK продала RuStore и перевела «ВКонтакте» на новый адрес. Что происходит с холдингом - prospect.com.ru",
-        "summary": "VK продала RuStore и перевела «ВКонтакте» на новый адрес. Что происходит с холдингом prospect.com.ru",
-        "source": "prospect.com.ru",
-        "url": "https://prospect.com.ru/news/6876377/vk-prodala-rustore-i-perevela-vkontakte-na-novyj-adres-chto-proishodit-s-holdingom.html",
-        "companies": [
-          "VKCO"
-        ],
-        "source_type": "public_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false,
-        "discovery_url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPS3VlSG9NNDg1R3FXNWc2YTBxUU1FckVjTEp5U01JT3NldmlfbzE3blBZeWVzZzBSd3JGQS1kWEQtVkVhS2pmVllYUnVEV3lSN2VfMVFSOEFtY2FGa2RPVW9sNS1xVmVZNDFnWUh5R3hjWlotS2lwUEdxaU5iMkxHdGlsaEdqUHB2bzZZb21VSEJRVkl4bmd5YWJRZUlEQjZscGV2V1hzZjVKSndfNWdfYnp3d3Y4SG4xNVZYWnVMMmZDZw?oc=5",
-        "country": "Not disclosed",
-        "market": "Not disclosed"
-      },
-      "category": "M&A",
-      "score": 4,
-      "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "VKCO"
-      ],
-      "evidence_label": "unverified"
-    }
-  ],
+  "events": [],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [
-      {
-        "ticker": "VKCO",
-        "company": "VK",
-        "price": 138.85,
-        "change_percent": 12.7,
-        "turnover": 3970383132,
-        "updated": "19:06:24",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      },
-      {
-        "ticker": "YDEX",
-        "company": "Yandex",
-        "price": 3436,
-        "change_percent": 6.67,
-        "turnover": 4930206337,
-        "updated": "19:06:21",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      },
-      {
-        "ticker": "OZON",
-        "company": "Ozon",
-        "price": 2830,
-        "change_percent": -4.2,
-        "turnover": 14856427168,
-        "updated": "19:06:22",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      }
-    ],
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -282,66 +208,9 @@
         "latest_signal": "Новых подтверждающих сигналов нет"
       }
     ],
-    "tasks": [
-      {
-        "id": "TASK-53091e952028",
-        "priority": "P1",
-        "state": "open",
-        "title": "Verify official source and confirm acquirer, transaction value, stake, payment form: use company, FAS, exchange, or transaction-party disclosure before upgrading this M&A record.",
-        "deliverable": "Verified M&A terms + evidence note",
-        "coverage": "VKCO",
-        "category": "M&A",
-        "source_url": "https://prospect.com.ru/news/6876377/vk-prodala-rustore-i-perevela-vkontakte-na-novyj-adres-chto-proishodit-s-holdingom.html",
-        "source_title": "VK продала RuStore и перевела «ВКонтакте» на новый адрес. Что происходит с холдингом - prospect.com.ru",
-        "hypothesis_ids": [],
-        "deal_id": "DL-3abc1bce1dce2b6f",
-        "quality_status": "review",
-        "quality_flags": [
-          "unverified_source",
-          "missing_acquirer"
-        ],
-        "reason": "Official evidence is insufficient for approval.",
-        "required_source": "company, FAS, exchange, or transaction-party disclosure"
-      },
-      {
-        "id": "TASK-20fdef627fa5",
-        "priority": "P1",
-        "state": "market",
-        "title": "Проверить драйвер движения YDEX (+6.67%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "YDEX",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-        "source_title": "MOEX quote for YDEX",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-b6574ade1ec0",
-        "priority": "P1",
-        "state": "market",
-        "title": "Проверить драйвер движения VKCO (+12.70%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "VKCO",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
-        "source_title": "MOEX quote for VKCO",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-d0d1b27e8420",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения OZON (-4.20%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "OZON",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "source_title": "MOEX quote for OZON",
-        "hypothesis_ids": []
-      }
-    ],
+    "tasks": [],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 4 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 0 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -349,11 +218,11 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: +12.70% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
-        "text": "Verify official source and confirm acquirer, transaction value, stake, payment form: use company, FAS, exchange, or transaction-party disclosure before upgrading this M&A record."
+        "text": "Очередь действий пуста."
       }
     ]
   }
