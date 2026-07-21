@@ -27,7 +27,7 @@ from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import build_html_report, build_telegram_digest
 from deal_markets_copilot.sources import (
     fetch_company_news,
-    fetch_cis_disclosures,
+    fetch_cis_disclosures_with_health,
     fetch_configured_sources,
     fetch_deal_archive_news,
     fetch_deal_news,
@@ -107,7 +107,16 @@ def main() -> int:
         market_snapshot = previous_snapshot.get("market", [])
     elif selected_mode == "live":
         official_events = collect_source("issuer_news", fetch_official_issuer_news)
-        cis_events = collect_source("cis_disclosures", fetch_cis_disclosures, required=False)
+        cis_events, cis_source_runs = fetch_cis_disclosures_with_health(config)
+        source_runs.extend(cis_source_runs)
+        source_runs.append({
+            "name": "cis_disclosures",
+            "status": "ok" if cis_events else "empty",
+            "records": len(cis_events),
+            "required": False,
+            "checked_at": datetime.now(ZoneInfo("Europe/Moscow")).isoformat(timespec="seconds"),
+            "error": "" if cis_events else "No enabled CIS source returned an allowed event",
+        })
         lookback = effective_news_lookback(config.get("live_data", {}))
         gdelt_events = collect_source("gdelt", fetch_gdelt_deal_news, required=False)
         events = (
@@ -272,7 +281,10 @@ def _build_health(
             manifest = {}
     source_groups = {str(source.get("source_type") or source.get("name") or "unknown") for source in sources if source.get("url")}
     runs = source_runs or []
-    failed_runs = [run for run in runs if run.get("name") != "moex_quotes" and run.get("status") != "ok"]
+    failed_runs = [
+        run for run in runs
+        if run.get("name") != "moex_quotes" and run.get("required") and run.get("status") != "ok"
+    ]
     required_names = {"issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news"}
     present_names = {str(run.get("name")) for run in runs}
     missing_required = sorted(required_names - present_names)

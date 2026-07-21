@@ -235,6 +235,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_dcm_lifecycle_merges_preliminary_aggregate_into_official_final`, `test_dcm_lifecycle_allows_amount_growth_with_shared_issue_identity`, `test_dcm_lifecycle_final_terms_override_preliminary_source_rank`, `test_dcm_lifecycle_does_not_merge_distinct_issue_series`, `test_dcm_lifecycle_does_not_merge_on_same_issuer_and_weak_signals_alone`, `test_dcm_lifecycle_repeat_processing_is_idempotent`, `test_dcm_lifecycle_archive_signal_cannot_recreate_final_transaction`, `test_dcm_lifecycle_known_source_lineage_prevents_recreation_without_identifiers`, `test_dcm_lifecycle_rediscovered_google_representation_after_source_canonicalization`, `test_dcm_lifecycle_representation_processing_orders_converge_to_canonical_final`, `test_dcm_lifecycle_representation_refresh_is_stable_across_three_runs`, `test_dcm_lifecycle_representation_does_not_overmerge_different_issue`, `test_dcm_refresh_preserves_populated_strong_identity_when_incoming_missing`, `test_dcm_refresh_adds_strong_identity_when_existing_missing`, `test_dcm_refresh_unions_partial_and_expanded_issue_identity`, `test_dcm_refresh_repeat_is_identity_idempotent`.
 - **Files:** `deals.py`, `tests/test_core.py`, canonical dataset and dependent public artifacts.
 
+### REG-29 — CIS exchange expansion creates permission, noise or issue-identity drift
+
+- **Failure mode:** a publicly readable exchange is labelled connected before unattended access/reuse is resolved; government/technical notices create deals or tasks; one programme amount is copied to every issue; or several ISINs collapse into one event.
+- **Why it mattered:** production coverage could overstate legal/operational readiness and corrupt DCM counts, economics and analyst workflow.
+- **Root mechanism:** treating public access as reuse permission, broad keyword scraping, publisher-level identity and programme-level amount extraction.
+- **Current protection:** KASE, AMX and BVM have separate access/reuse and production states; all remain disabled after the Wave 1 checkpoint. One shared adapter applies source-specific allowlists/exclusions, fail-closed health, factual-field-only retention, `source_id + source_event_id` lineage, distinct ISIN events and issue-level amount extraction. AMX multiplication is allowed only for deterministic quantity × denomination.
+- **Tests/checks:** `test_wave1_registry_is_implemented_but_not_enabled`, `test_three_positive_publications_per_source`, `test_three_negative_publications_per_source_are_suppressed`, `test_programme_tranche_and_distinct_isin_identity`, `test_amx_amount_is_deterministically_derived`, `test_bvm_issue_amount_does_not_use_programme_target`, `test_lifecycle_is_monotonic_and_repeat_fetch_is_idempotent`, `test_health_fails_closed_on_empty_markup_and_antibot`.
+- **Files:** `exchange_sources.py`, `sources.py`, `models.py`, `deals.py`, `classifier.py`, `config.json`, `report.py`, `tests/test_cis_exchange_sources.py`.
+
 ## CI and deployment
 
 ### REG-21 — Stale scheduled build publishing after a newer build

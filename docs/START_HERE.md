@@ -18,6 +18,7 @@ Deal Markets Copilot — open-source system мониторинга M&A, ECM и D
 - `DECISIONS_LOG.md` — почему приняты долгоживущие решения.
 - `NEW_CHAT_TEMPLATE.md` — короткие prompts для новых сессий.
 - `SETUP.md` — запуск и настройка.
+- `CIS_SOURCE_WAVE1_IMPLEMENTATION.md` — implementation и activation boundary для KASE, AMX и BVM.
 
 ## Reading matrix
 

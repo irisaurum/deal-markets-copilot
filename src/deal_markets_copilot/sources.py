@@ -14,6 +14,12 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 from .classifier import stable_event_id
+from .exchange_sources import (
+    SourceHealthError,
+    is_candidate_title,
+    parse_exchange_detail,
+    parse_exchange_index,
+)
 from .models import Event
 
 
@@ -71,24 +77,111 @@ def fetch_cis_disclosures(config: dict, timeout: int = 15) -> list[Event]:
     """Fetch narrowly scoped official CIS disclosures.
 
     Connectors are opt-in and isolated from the required Russia source groups.
-    UZSE fact 25 is the first supported feed because it represents a securities
-    issue and each row links to a primary disclosure. Other fact types are
-    intentionally ignored to avoid coupons, related-party purchases and routine
-    corporate notices entering the deal workflow.
+    Each adapter applies its own narrow deal-event allowlist and preserves a
+    primary disclosure link. Routine notices such as coupons, redemptions and
+    exchange plumbing are intentionally ignored.
+    """
+    events, runs = fetch_cis_disclosures_with_health(config, timeout)
+    failures = [run for run in runs if run.get("required") and run.get("status") != "ok"]
+    if failures:
+        raise RuntimeError("CIS source failure: " + "; ".join(
+            f"{run.get('name')}: {run.get('error') or run.get('status')}" for run in failures
+        ))
+    return events
+
+
+def fetch_cis_disclosures_with_health(config: dict, timeout: int = 15) -> tuple[list[Event], list[dict]]:
+    """Fetch each enabled CIS source independently and return per-source health.
+
+    Optional exchange failures remain isolated from the existing Russia and
+    Uzbekistan processing, while their own health state stays explicit.
     """
     events: list[Event] = []
-    failures: list[str] = []
+    runs: list[dict] = []
     for source in config.get("cis_source_registry", []):
         if not source.get("enabled") or not source.get("implemented"):
             continue
+        source_id = str(source.get("id") or "unknown")
+        required = bool(source.get("required", False))
+        checked_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
         try:
-            if source.get("connector") == "uzse_material_facts":
-                events.extend(_fetch_uzse_material_facts(source, timeout))
+            connector = source.get("connector")
+            if connector == "uzse_material_facts":
+                result = _fetch_uzse_material_facts(source, timeout)
+                request_counts = {}
+            elif connector == "exchange_news":
+                result, request_counts = _fetch_exchange_news(source, timeout)
+            else:
+                raise SourceHealthError(f"unsupported connector: {connector or 'missing'}")
+            events.extend(result)
+            runs.append({
+                "name": f"cis:{source_id}",
+                "source_id": source_id,
+                "status": "ok" if result else "empty",
+                "records": len(result),
+                "required": required,
+                "checked_at": checked_at,
+                "error": "" if result else "Active source returned zero allowed events",
+                **request_counts,
+            })
         except Exception as exc:
-            failures.append(f"{source.get('name', 'CIS source')}: {type(exc).__name__}")
-    if failures:
-        raise RuntimeError("CIS source failure: " + "; ".join(failures))
-    return events
+            runs.append({
+                "name": f"cis:{source_id}",
+                "source_id": source_id,
+                "status": "error",
+                "records": 0,
+                "required": required,
+                "checked_at": checked_at,
+                "error": f"{type(exc).__name__}: {str(exc)[:200]}",
+            })
+    return events, runs
+
+
+def _fetch_exchange_news(source: dict, timeout: int) -> tuple[list[Event], dict]:
+    index_url = str(source.get("index_url") or source.get("url") or "")
+    if not _safe_http_url(index_url):
+        raise SourceHealthError("Exchange index URL must be HTTP(S)")
+    max_pages = max(1, min(int(source.get("max_pages", 1)), 5))
+    max_details = max(1, min(int(source.get("max_detail_requests", 12)), 30))
+    pages_to_fetch = [index_url]
+    entries = []
+    index_requests = 0
+    for page_url in pages_to_fetch:
+        page = _get_text(page_url, timeout)
+        index_requests += 1
+        parsed, archive_pages = parse_exchange_index(source, page)
+        entries.extend(parsed)
+        if len(pages_to_fetch) < max_pages:
+            for archive_url in archive_pages:
+                if archive_url not in pages_to_fetch:
+                    pages_to_fetch.append(archive_url)
+                    if len(pages_to_fetch) >= max_pages:
+                        break
+    unique_entries = {entry.source_event_id: entry for entry in entries}
+    archive_days = max(1, min(int(source.get("archive_days", 90)), 730))
+    cutoff = datetime.now(timezone.utc).date() - timedelta(days=archive_days)
+    def inside_archive(entry) -> bool:
+        if not entry.published_at:
+            return True
+        try:
+            return datetime.fromisoformat(entry.published_at.replace("Z", "+00:00")).date() >= cutoff
+        except ValueError:
+            raise SourceHealthError(f"Unsafe publication timestamp for source event {entry.source_event_id}")
+    candidates = [
+        entry for entry in unique_entries.values()
+        if inside_archive(entry) and is_candidate_title(str(source.get("id") or ""), entry.title)
+    ][:max_details]
+    detail_requests = 0
+    events: list[Event] = []
+    for entry in candidates:
+        detail = _get_text(entry.url, timeout)
+        detail_requests += 1
+        events.extend(parse_exchange_detail(source, detail, entry.url, entry.title))
+    return events, {
+        "index_requests": index_requests,
+        "detail_requests": detail_requests,
+        "candidate_publications": len(candidates),
+    }
 
 
 def _fetch_uzse_material_facts(source: dict, timeout: int) -> list[Event]:

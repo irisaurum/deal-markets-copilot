@@ -60,10 +60,12 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
     financials_currency = revenue_currency or ebitda_currency or ""
     aligned_currency = bool(enterprise_value and financials_currency and ev_currency == financials_currency)
     target, acquirer = _extract_parties(item.category, headline, covered_company)
+    if event.issuer:
+        target = event.issuer
     if item.category in {"DCM", "ECM"} and _is_blank(target):
         target = _extract_issuer(text)
     seller = _extract_seller(headline) if item.category == "M&A" else "Not applicable"
-    status = _status(text, item.category, item.evidence_label)
+    status = event.lifecycle_stage if event.lifecycle_stage in {"Announced", "Priced", "Issued"} else _status(text, item.category, item.evidence_label)
     record_kind = _record_kind({
         "headline": headline,
         "summary": event.summary,
@@ -86,6 +88,22 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         "country": event.country,
         "market": event.market,
     }
+    source.update({key: value for key, value in {
+        "source_id": event.source_id,
+        "source_event_id": event.source_event_id,
+        "original_title": event.original_title or event.title,
+        "event_date": event.event_date,
+        "event_sub_stage": event.event_sub_stage,
+        "instrument": event.instrument,
+        "programme": event.programme,
+        "series": event.series,
+        "isin": event.isin,
+        "registration_number": event.registration_number,
+        "document_urls": event.document_urls,
+        "quantity": event.quantity,
+        "denomination": event.denomination,
+        "amount_is_derived": event.amount_is_derived,
+    }.items() if value not in (None, "", False, [])})
     if resolved_discovery:
         source["representations"] = [
             {
@@ -111,10 +129,13 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         "source_url": source["url"],
         "source_count": 1,
         "sources": [source],
+        "instrument": event.instrument,
+        "security_code": event.series or event.registration_number,
+        "isin": event.isin,
     })
     return DealRecord(
         deal_id=f"DL-{event.event_id}",
-        announced_date=_iso_date(event.published_at),
+        announced_date=_iso_date(event.event_date or event.published_at),
         deal_type=item.category,
         record_kind=record_kind,
         status=status,
@@ -141,13 +162,13 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         ev_revenue=(enterprise_value / revenue) if aligned_currency and revenue and revenue > 0 else None,
         ev_ebitda=(enterprise_value / ebitda) if aligned_currency and ebitda and ebitda > 0 else None,
         multiple_notes="Calculated from disclosed EV and aligned-currency financials" if aligned_currency else "N/M: EV and aligned-currency financials are required",
-        instrument=_instrument(text, item.category),
-        security_code=_security_code(text),
-        isin=_isin(text),
-        coupon_rate=_coupon_rate(text),
+        instrument=event.instrument or _instrument(text, item.category),
+        security_code=event.series or event.registration_number or _security_code(text),
+        isin=event.isin or _isin(text),
+        coupon_rate=event.coupon_rate if event.coupon_rate is not None else _coupon_rate(text),
         coupon_type=_coupon_type(text),
-        yield_rate=_yield_rate(text),
-        maturity_date=_maturity_date(text),
+        yield_rate=event.yield_rate if event.yield_rate is not None else _yield_rate(text),
+        maturity_date=event.maturity_date or _maturity_date(text),
         tenor=_tenor(text),
         issue_price=_issue_price(text) if item.category == "DCM" else None,
         price_per_share=_price_per_share(text) if item.category == "ECM" else None,
@@ -165,10 +186,13 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         source_url=_safe_public_url(event.url),
         evidence_label=item.evidence_label,
         score=item.score,
-        source_event_id=event.event_id,
+        source_event_id=(f"{event.source_id}:{event.source_event_id}" if event.source_id and event.source_event_id else event.event_id),
         first_seen_at=now,
         last_seen_at=now,
-        notes="Screening record; verify against primary transaction documents.",
+        notes=(
+            "Amount deterministically derived from quantity x denomination; "
+            if event.amount_is_derived else ""
+        ) + "Screening record; verify against primary transaction documents.",
     )
 
 
@@ -653,7 +677,7 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     if row.get("status") == "In talks":
         score -= 5
         flags.append("talks_only")
-    if row.get("currency") not in {None, "", "Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF", "UZS", "KZT", "KGS", "BYN"}:
+    if row.get("currency") not in {None, "", "Not disclosed", "RUB", "USD", "EUR", "CNY", "GBP", "CHF", "UZS", "KZT", "KGS", "BYN", "AMD", "MDL"}:
         score -= 25
         flags.append("invalid_currency")
     if record_kind == "deal" and row.get("evidence_label") == "confirmed" and not _approval_evidence_is_sufficient(row):

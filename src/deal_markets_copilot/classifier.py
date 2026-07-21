@@ -186,12 +186,22 @@ def deduplicate(events: list[Event]) -> list[Event]:
             continue
         event.event_id = key
         exact_ids.add(key)
-        duplicate_index = next((i for i, current in enumerate(unique) if _title_similarity(event.title, current.title) >= 0.30), None)
+        duplicate_index = next((
+            i for i, current in enumerate(unique)
+            if not _distinct_security_events(event, current)
+            and _title_similarity(event.title, current.title) >= 0.30
+        ), None)
         if duplicate_index is None:
             unique.append(event)
         elif _source_rank(event.source, event.source_type) > _source_rank(unique[duplicate_index].source, unique[duplicate_index].source_type):
             unique[duplicate_index] = event
     return unique
+
+
+def _distinct_security_events(left: Event, right: Event) -> bool:
+    left_identity = (left.isin or left.registration_number or left.series).strip().upper()
+    right_identity = (right.isin or right.registration_number or right.series).strip().upper()
+    return bool(left_identity and right_identity and left_identity != right_identity)
 
 
 def _title_similarity(left: str, right: str) -> float:

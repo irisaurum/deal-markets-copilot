@@ -106,6 +106,10 @@ Curated IDs use `CURATED-` and are valid in the database, Excel `Deals`, `Financ
 - Same publisher does not imply same publication. Different publishers and separately published/attributed articles remain independent unless stronger publication identity is available.
 - Every stored source URL must be safe `http` or `https`.
 - An empty required source or malformed feed is a health problem, not a quiet successful run.
+- Exchange-news source identity is `source_id + immutable source_event_id`; economic identity separately prefers ISIN/state registration number, then exact programme plus series/tranche.
+- A publication containing several ISINs preserves separate security events under shared source lineage. Programme target value is not an issue amount.
+- Deterministic `quantity × denomination` is permitted only with unambiguous units and currency; retain both operands and an amount-derivation flag.
+- Public readability and robots behavior are not reuse licences. Sources with unresolved terms stay implemented-disabled or link-only/blocked and do not count as connected coverage.
 
 ## Deduplication principles
 

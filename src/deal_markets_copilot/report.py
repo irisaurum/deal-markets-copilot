@@ -130,7 +130,7 @@ def build_html_report(
     <details class="data-drawer"><summary><b data-ru="Сценарии и гипотезы" data-en="Scenarios and hypotheses">Сценарии и гипотезы</b><span data-ru="внутренняя аналитика, не факты" data-en="internal analysis, not facts">внутренняя аналитика, не факты</span></summary><div class="hypothesis-grid">{_hypothesis_cards(flow.get('hypotheses', []))}</div></details>
   </section>
 
-  {_source_coverage(config.get('cis_source_registry', []))}
+  {_source_coverage(config.get('cis_source_registry', []), health)}
   {_downloads_integrity(health)}
   {_methodology_integrity(health)}
 
@@ -234,7 +234,8 @@ def _signals_section(items: list[ClassifiedEvent], new_ids: set[str], counts: Co
 def _country_label(value: str) -> str:
     return {
         "Russia": "Россия", "Kazakhstan": "Казахстан", "Uzbekistan": "Узбекистан",
-        "Kyrgyzstan": "Кыргызстан", "Belarus": "Беларусь", "Not disclosed": "Не раскрыто",
+        "Kyrgyzstan": "Кыргызстан", "Belarus": "Беларусь", "Armenia": "Армения",
+        "Moldova": "Молдова", "Not disclosed": "Не раскрыто",
     }.get(str(value), str(value))
 
 
@@ -252,27 +253,49 @@ def _status_guide() -> str:
     return f'<details class="data-drawer status-guide"><summary><span data-ru="Как читать статусы" data-en="How to read deal stages">Как читать статусы</span><span data-ru="единые определения M&amp;A, ECM и DCM" data-en="consistent M&amp;A, ECM and DCM definitions">единые определения M&amp;A, ECM и DCM</span></summary><div class="status-grid">{cards}</div></details>'
 
 
-def _source_coverage(registry: list[dict]) -> str:
+def _source_coverage(registry: list[dict], health: dict | None = None) -> str:
     ru_copy = {
         "ru-moex": ("Текущие российские раскрытия по сделкам и рынкам капитала", "Технические сообщения биржи по-прежнему подавляются существующим классификатором."),
-        "kz-kase-aix": ("Размещения и раскрытия эмитентов", "Отложено до подтверждения стабильного разрешённого автоматического доступа и узкой таксономии событий."),
+        "kz-kase": ("Корпоративные выпуски, книги заявок, ценообразование и итоги размещений", "Адаптер реализован, но production polling отключён: KASE требует письменного разрешения на копирование материалов."),
+        "kz-aix": ("Документы предложений и сообщения эмитентов", "Источник CIS-SOURCES-01A остаётся в дорожной карте и не входит в Wave 1."),
+        "am-amx": ("Корпоративные выпуски и завершённые периоды размещения", "Адаптер реализован, но обычный unattended access сейчас блокируется anti-bot страницей; условия повторного использования не разрешены."),
+        "md-bvm": ("Корпоративные выпуски облигаций с параметрами отдельных выпусков", "Адаптер реализован, но production polling отключён до явного вывода по условиям повторного использования."),
         "uz-uzse": ("Зарегистрированные выпуски ценных бумаг с эмитентом, инструментом и раскрытой суммой", "Собирается только факт №25; старые записи вне архивного окна не попадают в базу; каждое событие ссылается на UZSE."),
         "uz-openinfo": ("Более широкие существенные факты и выпуски ценных бумаг", "Источник дорожной карты до появления стабильного публичного индекса или документированного API и узких фильтров фактов."),
         "kg-kse": ("Раскрытия эмитентов и ценных бумаг", "Отложено: сайт ограничивает копирование без письменного разрешения."),
         "by-bcse-csd": ("Раскрытия эмитентов и ценных бумаг", "Только roadmap до подтверждения авторитетного стабильного endpoint и условий повторного использования."),
     }
     rows = []
+    source_runs = {
+        str(run.get("source_id") or str(run.get("name") or "").removeprefix("cis:")): run
+        for run in (health or {}).get("source_runs", [])
+        if isinstance(run, dict) and (run.get("source_id") or str(run.get("name") or "").startswith("cis:"))
+    }
+    status_labels = {
+        "connected": ("Подключён", "Connected"),
+        "implemented_disabled": ("Реализован, отключён", "Implemented, disabled"),
+        "roadmap": ("В дорожной карте", "Roadmap"),
+        "link_only": ("Только ссылка", "Link only"),
+        "blocked": ("Заблокирован", "Blocked"),
+    }
     for source in registry:
         active = bool(source.get("enabled") and source.get("implemented"))
-        status_ru = "Подключён" if active else "В дорожной карте"
-        status_en = "Connected" if active else "Roadmap"
+        production_status = str(source.get("production_status") or ("connected" if active else "roadmap"))
+        status_ru, status_en = status_labels.get(production_status, status_labels["roadmap"])
         expected_ru, limitations_ru = ru_copy.get(str(source.get("id")), (str(source.get("expected_value") or ""), str(source.get("limitations") or "")))
         expected_en = str(source.get("expected_value") or "")
         limitations_en = str(source.get("limitations") or "")
-        rows.append(f'''<article class="coverage-card {'active' if active else 'roadmap'}">
+        access_status = str(source.get("access_reuse_status") or production_status)
+        runtime_run = source_runs.get(str(source.get("id") or ""))
+        health_state = str(source.get("health_state") or ("enabled" if active else "not_active"))
+        if runtime_run:
+            health_state = str(runtime_run.get("status") or "unknown")
+            if runtime_run.get("error"):
+                health_state += f": {str(runtime_run['error'])[:120]}"
+        rows.append(f'''<article class="coverage-card {html.escape(production_status, quote=True)}">
           <div><span data-ru="{html.escape(_country_label(source.get('country', '')), quote=True)} · {html.escape(str(source.get('market') or ''), quote=True)}" data-en="{html.escape(str(source.get('country') or ''), quote=True)} · {html.escape(str(source.get('market') or ''), quote=True)}">{html.escape(_country_label(source.get('country', '')))} · {html.escape(str(source.get('market') or ''))}</span><b data-ru="{status_ru}" data-en="{status_en}">{status_ru}</b></div>
           <h3>{html.escape(str(source.get('name') or ''))}</h3><p data-ru="{html.escape(expected_ru, quote=True)}" data-en="{html.escape(expected_en, quote=True)}">{html.escape(expected_ru)}</p>
-          <dl><div><dt data-ru="Тип источника" data-en="Source type">Тип источника</dt><dd>{html.escape(str(source.get('officialness') or 'public'))}</dd></div><div><dt data-ru="Типы сделок" data-en="Deal types">Типы сделок</dt><dd>{html.escape(' · '.join(source.get('deal_types', [])))}</dd></div><div><dt data-ru="Шум" data-en="Noise">Шум</dt><dd>{html.escape(str(source.get('noise_risk') or 'unknown'))}</dd></div></dl>
+          <dl><div><dt data-ru="Тип источника" data-en="Source type">Тип источника</dt><dd>{html.escape(str(source.get('officialness') or 'public'))}</dd></div><div><dt data-ru="Типы сделок" data-en="Deal types">Типы сделок</dt><dd>{html.escape(' · '.join(source.get('deal_types', [])))}</dd></div><div><dt data-ru="Шум" data-en="Noise">Шум</dt><dd>{html.escape(str(source.get('noise_risk') or 'unknown'))}</dd></div><div><dt data-ru="Доступ / повторное использование" data-en="Access / reuse">Доступ / повторное использование</dt><dd>{html.escape(access_status)}</dd></div><div><dt data-ru="Состояние источника" data-en="Source health">Состояние источника</dt><dd>{html.escape(health_state)}</dd></div></dl>
           <small data-ru="{html.escape(limitations_ru, quote=True)}" data-en="{html.escape(limitations_en, quote=True)}">{html.escape(limitations_ru)}</small><a href="{html.escape(_safe_url(source.get('url', '')), quote=True)}" target="_blank" rel="noopener" data-ru="Официальный источник ↗" data-en="Official source ↗">Официальный источник ↗</a>
         </article>''')
     active_count = sum(1 for source in registry if source.get("enabled") and source.get("implemented"))
