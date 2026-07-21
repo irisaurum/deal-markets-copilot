@@ -15,6 +15,7 @@ from deal_markets_copilot.deals import extract_deal_record, update_precedent_dat
 from deal_markets_copilot.exchange_sources import SourceHealthError, parse_exchange_detail, parse_exchange_index
 from deal_markets_copilot.report import build_html_report
 from deal_markets_copilot.sources import fetch_cis_disclosures_with_health
+from run import _build_health
 
 
 def _registry() -> dict[str, dict]:
@@ -246,6 +247,51 @@ class CisExchangeSourceTests(TestCase):
         self.assertFalse(runs[0]["required"])
         self.assertIn("anti-bot", runs[0]["error"])
 
+    def test_disabled_wave1_sources_are_not_polled_or_required_for_health(self):
+        disabled = [self.sources[source_id] for source_id in ("kz-kase", "am-amx", "md-bvm")]
+        with patch("deal_markets_copilot.sources._get_text") as get_text:
+            events, runs = fetch_cis_disclosures_with_health({"cis_source_registry": disabled})
+        get_text.assert_not_called()
+        self.assertEqual(events, [])
+        self.assertEqual(runs, [])
+
+        required_names = ("issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news")
+        baseline = [
+            {"name": name, "status": "ok", "records": 1, "required": True, "checked_at": "2099-01-01T10:00:00+03:00"}
+            for name in required_names
+        ]
+        with TemporaryDirectory() as directory:
+            health = _build_health([], Path(directory) / "missing-manifest.json", source_runs=baseline)
+        self.assertEqual(health["source_status"], "ok")
+        self.assertEqual(health["missing_required_sources"], [])
+
+    def test_enabled_required_exchange_source_still_fails_closed(self):
+        required_names = ("issuer_news", "moex_disclosures", "configured_rss", "deal_news", "company_news")
+        baseline = [
+            {"name": name, "status": "ok", "records": 1, "required": True, "checked_at": "2099-01-01T10:00:00+03:00"}
+            for name in required_names
+        ]
+        source = dict(self.sources["am-amx"], enabled=True, required=True)
+        failures = (
+            OSError("transport unavailable"),
+            '<script src="/cdn-cgi/challenge-platform/main.js"></script>',
+            "<html><h1>News</h1></html>",
+        )
+        for response in failures:
+            with self.subTest(response=type(response).__name__ if isinstance(response, Exception) else response[:20]):
+                effect = response if isinstance(response, Exception) else None
+                value = response if isinstance(response, str) else None
+                with patch("deal_markets_copilot.sources._get_text", side_effect=effect, return_value=value):
+                    events, runs = fetch_cis_disclosures_with_health({"cis_source_registry": [source]})
+                self.assertEqual(events, [])
+                self.assertEqual(runs[0]["status"], "error")
+                self.assertTrue(runs[0]["required"])
+                with TemporaryDirectory() as directory:
+                    health = _build_health(
+                        [], Path(directory) / "missing-manifest.json", source_runs=baseline + runs
+                    )
+                self.assertEqual(health["source_status"], "error")
+
     def test_fetch_respects_configured_archive_window(self):
         recent_page, _ = BVM_POSITIVE[0]
         index = (
@@ -293,6 +339,22 @@ class CisExchangeSourceTests(TestCase):
         self.assertIn('data-ru="Заблокирован" data-en="Blocked"', document)
         self.assertIn("IMPLEMENTED_DISABLED_PENDING_TERMS", document)
         self.assertIn("blocked_anti_bot", document)
+        self.assertIn('<div class="coverage-summary"><b>2</b>', document)
+
+    def test_mobile_coverage_grid_can_shrink_and_wrap_health_tokens(self):
+        config = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+        with TemporaryDirectory() as directory:
+            path = build_html_report([], config, Path(directory) / "report.html", "live", health={
+                "build_id": "fixture", "dataset_sha256": "f" * 64,
+                "system_status": "warning", "source_status": "ok", "freshness_status": "ok",
+                "source_age_minutes": 1, "freshness_limit_minutes": 90,
+            })
+            document = path.read_text(encoding="utf-8")
+        self.assertIn(".coverage-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))", document)
+        self.assertIn(".coverage-card{display:flex;flex-direction:column;min-width:0", document)
+        self.assertIn(".coverage-card dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))", document)
+        self.assertIn(".coverage-card h3,.coverage-card p,.coverage-card dd,.coverage-card>small,.coverage-card>a{overflow-wrap:anywhere}", document)
+        self.assertIn(".coverage-grid{grid-template-columns:minmax(0,1fr)}", document)
 
 
 if __name__ == "__main__":
