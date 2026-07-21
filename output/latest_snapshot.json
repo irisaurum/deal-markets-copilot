@@ -1,8 +1,8 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-21T15:35+03:00",
+  "generated_at": "2026-07-21T16:53+03:00",
   "health": {
-    "last_success_at": "2026-07-21T15:35+03:00",
+    "last_success_at": "2026-07-21T16:53+03:00",
     "build_id": "6aa238b6b003",
     "dataset_sha256": "6aa238b6b0036cfbe8d975829db8dee9ffa4a4deed003cb15724d3a76cb06908",
     "record_count": 125,
@@ -24,7 +24,7 @@
         "required": true,
         "checked_at": "2026-07-21T15:34:40+03:00",
         "error": "",
-        "age_minutes": 1.0
+        "age_minutes": 79.1
       },
       {
         "name": "cis:ru-moex",
@@ -34,7 +34,7 @@
         "required": false,
         "checked_at": "2026-07-21T12:35:04+00:00",
         "error": "SourceHealthError: unsupported connector: missing",
-        "age_minutes": 0.6
+        "age_minutes": 78.7
       },
       {
         "name": "cis:uz-uzse",
@@ -44,7 +44,7 @@
         "required": false,
         "checked_at": "2026-07-21T12:35:04+00:00",
         "error": "URLError: <urlopen error timed out>",
-        "age_minutes": 0.6
+        "age_minutes": 78.7
       },
       {
         "name": "cis_disclosures",
@@ -53,7 +53,7 @@
         "required": false,
         "checked_at": "2026-07-21T15:35:21+03:00",
         "error": "No enabled CIS source returned an allowed event",
-        "age_minutes": 0.3
+        "age_minutes": 78.4
       },
       {
         "name": "gdelt",
@@ -62,7 +62,7 @@
         "required": false,
         "checked_at": "2026-07-21T15:35:21+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 78.4
       },
       {
         "name": "moex_disclosures",
@@ -71,7 +71,7 @@
         "required": true,
         "checked_at": "2026-07-21T15:35:21+03:00",
         "error": "",
-        "age_minutes": 0.3
+        "age_minutes": 78.4
       },
       {
         "name": "configured_rss",
@@ -80,7 +80,7 @@
         "required": true,
         "checked_at": "2026-07-21T15:35:25+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 78.3
       },
       {
         "name": "deal_news",
@@ -89,7 +89,7 @@
         "required": true,
         "checked_at": "2026-07-21T15:35:26+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 78.3
       },
       {
         "name": "company_news",
@@ -98,7 +98,7 @@
         "required": true,
         "checked_at": "2026-07-21T15:35:27+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 78.3
       },
       {
         "name": "deal_archive",
@@ -107,7 +107,7 @@
         "required": false,
         "checked_at": "2026-07-21T15:35:28+03:00",
         "error": "",
-        "age_minutes": 0.2
+        "age_minutes": 78.3
       },
       {
         "name": "sec_filings",
@@ -116,7 +116,7 @@
         "required": false,
         "checked_at": "2026-07-21T15:35:30+03:00",
         "error": "",
-        "age_minutes": 0.1
+        "age_minutes": 78.2
       },
       {
         "name": "moex_quotes",
@@ -131,7 +131,7 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 1.0,
+    "source_age_minutes": 79.1,
     "source_checked_at": "2026-07-21T15:34+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
