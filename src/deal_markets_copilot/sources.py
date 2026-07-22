@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 import html
 import math
@@ -13,6 +14,7 @@ import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -26,16 +28,23 @@ from .exchange_sources import (
 )
 from .models import Event
 
-try:
-    import truststore
-except ImportError:  # The disabled connector must not break pre-install CI phases.
-    truststore = None
-
 
 USER_AGENT = "DealMarketsCopilot/0.2"
 _SYSTEM_CA = Path("/etc/ssl/cert.pem")
 SSL_CONTEXT = ssl.create_default_context(cafile=str(_SYSTEM_CA)) if _SYSTEM_CA.exists() else ssl.create_default_context()
-CNPF_SSL_CONTEXT = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT) if truststore else None
+
+
+@lru_cache(maxsize=1)
+def _cnpf_ssl_context() -> ssl.SSLContext:
+    """Load platform trust only when an enabled CNPF request is attempted."""
+    try:
+        truststore = importlib.import_module("truststore")
+    except ImportError as exc:
+        raise RuntimeError("CNPF platform trust store dependency is unavailable") from exc
+    context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    if context.verify_mode != ssl.CERT_REQUIRED or not context.check_hostname:
+        raise RuntimeError("CNPF platform trust store is not enforcing TLS verification")
+    return context
 
 
 @dataclass(frozen=True, slots=True)
@@ -1188,12 +1197,10 @@ def _get_http_response(
     *,
     extra_headers: dict[str, str] | None = None,
 ) -> HttpResponse:
-    if CNPF_SSL_CONTEXT is None:
-        raise RuntimeError("CNPF platform trust store dependency is unavailable")
     headers = {"User-Agent": USER_AGENT, "Accept": accept, **(extra_headers or {})}
     request = urllib.request.Request(url, headers=headers)
     try:
-        response = urllib.request.urlopen(request, timeout=timeout, context=CNPF_SSL_CONTEXT)
+        response = urllib.request.urlopen(request, timeout=timeout, context=_cnpf_ssl_context())
     except urllib.error.HTTPError as exc:
         body = exc.read().decode(exc.headers.get_content_charset() or "utf-8", errors="replace")
         return HttpResponse(

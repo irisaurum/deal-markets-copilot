@@ -5,7 +5,7 @@ import ssl
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest import TestCase, skipUnless
+from unittest import TestCase
 from unittest.mock import patch
 
 
@@ -23,7 +23,12 @@ from deal_markets_copilot.deals import extract_deal_record, update_precedent_dat
 from deal_markets_copilot.exchange_sources import SourceHealthError
 from deal_markets_copilot.models import Event
 from deal_markets_copilot.report import build_html_report
-from deal_markets_copilot.sources import CNPF_SSL_CONTEXT, HttpResponse, fetch_cis_disclosures_with_health
+from deal_markets_copilot.sources import (
+    HttpResponse,
+    _cnpf_ssl_context,
+    _get_http_response,
+    fetch_cis_disclosures_with_health,
+)
 from deal_markets_copilot.workflow import build_morning_workflow
 
 
@@ -393,11 +398,28 @@ class CnpfSourceTests(TestCase):
         self.assertEqual(runs[0]["request_count"], 1)
         self.assertEqual(state["cnpf_moldova"]["last_successful_poll_at"], previous)
 
-    @skipUnless(CNPF_SSL_CONTEXT is not None, "truststore dependency not installed in this CI phase")
     def test_transport_uses_platform_trust_with_required_verification(self):
-        self.assertEqual(type(CNPF_SSL_CONTEXT).__module__.split(".")[0], "truststore")
-        self.assertEqual(CNPF_SSL_CONTEXT.verify_mode, ssl.CERT_REQUIRED)
-        self.assertTrue(CNPF_SSL_CONTEXT.check_hostname)
+        _cnpf_ssl_context.cache_clear()
+        expected_context = ssl.create_default_context()
+        with patch("deal_markets_copilot.sources.importlib.import_module") as import_module:
+            import_module.return_value.SSLContext.return_value = expected_context
+            context = _cnpf_ssl_context()
+        import_module.assert_called_once_with("truststore")
+        import_module.return_value.SSLContext.assert_called_once_with(ssl.PROTOCOL_TLS_CLIENT)
+        self.assertIs(context, expected_context)
+        self.assertEqual(context.verify_mode, ssl.CERT_REQUIRED)
+        self.assertTrue(context.check_hostname)
+
+    def test_missing_platform_trust_dependency_fails_before_network(self):
+        _cnpf_ssl_context.cache_clear()
+        try:
+            with patch("deal_markets_copilot.sources.urllib.request.urlopen") as urlopen:
+                with patch("deal_markets_copilot.sources.importlib.import_module", side_effect=ImportError):
+                    with self.assertRaisesRegex(RuntimeError, "platform trust store dependency is unavailable"):
+                        _get_http_response(self.source["feed_url"], 1)
+            urlopen.assert_not_called()
+        finally:
+            _cnpf_ssl_context.cache_clear()
 
     def test_replay_recency_uses_snapshot_clock_not_current_wall_clock(self):
         anchor = classification_as_of(
@@ -438,11 +460,15 @@ class CnpfSourceTests(TestCase):
         state = {"cnpf_moldova": {"last_successful_poll_at": "2026-07-20T10:00:00+00:00"}}
         before = json.loads(json.dumps(state))
         disabled_source = dict(self.source, enabled=False)
-        with patch("deal_markets_copilot.sources._get_http_response") as get:
+        with (
+            patch("deal_markets_copilot.sources._get_http_response") as get,
+            patch("deal_markets_copilot.sources.importlib.import_module") as import_module,
+        ):
             events, runs = fetch_cis_disclosures_with_health(
                 {"cis_source_registry": [disabled_source]}, operational_state=state, now=NOW
             )
         get.assert_not_called()
+        import_module.assert_not_called()
         self.assertEqual((events, runs), ([], []))
         self.assertEqual(state, before)
         ordinary = Event("ordinary", NOW.isoformat(), "Title", "Summary", "Source", "https://example.com")
