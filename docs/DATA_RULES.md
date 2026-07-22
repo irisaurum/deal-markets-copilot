@@ -108,6 +108,9 @@ Curated IDs use `CURATED-` and are valid in the database, Excel `Deals`, `Financ
 - An empty required source or malformed feed is a health problem, not a quiet successful run.
 - Exchange-news source identity is `source_id + immutable source_event_id`; economic identity separately prefers ISIN/state registration number, then exact programme plus series/tranche.
 - A publication containing several ISINs preserves separate security events under shared source lineage. Programme target value is not an issue amount.
+- CNPF source identity is `cnpf_moldova + immutable Atom entry ID`; a stable Atom ID is never replaced by title/date/issuer fallback identity.
+- A CNPF registration, prospectus or programme approval remains `Announced`. `Issued` requires explicit issue/placement-result evidence plus issuer, amount, currency and ISIN/registration identity; takeover approval is never `Closed`.
+- CNPF retains only factual fields, short original title, official identifiers, canonical/document links and exact source attribution. A page-specific reproduction restriction stops the item.
 - Deterministic `quantity × denomination` is permitted only with unambiguous units and currency; retain both operands and an amount-derivation flag.
 - Public readability and robots behavior are not reuse licences. Sources with unresolved terms stay implemented-disabled or link-only/blocked and do not count as connected coverage.
 

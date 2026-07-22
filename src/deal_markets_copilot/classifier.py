@@ -100,7 +100,12 @@ def stable_event_id(title: str, url: str) -> str:
     return hashlib.sha256(raw).hexdigest()[:16]
 
 
-def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
+def classify_event(
+    event: Event,
+    coverage: list[dict],
+    *,
+    as_of: datetime | None = None,
+) -> ClassifiedEvent:
     text = f"{event.title} {event.summary}".lower()
     category = "Strategic"
     keyword_hits = 0
@@ -142,7 +147,7 @@ def classify_event(event: Event, coverage: list[dict]) -> ClassifiedEvent:
         score -= 2
     if any(high_quality in source_name for high_quality in ("reuters", "интерфакс", "moex", "банк россии", "company release")):
         score += 1
-    score += _recency_bonus(event.published_at)
+    score += _recency_bonus(event.published_at, as_of=as_of)
     score = max(0, min(score, 10))
     if non_transaction_notice:
         score = 0
@@ -259,7 +264,7 @@ def _source_rank(source: str, source_type: str = "") -> int:
     return 1
 
 
-def _recency_bonus(value: str) -> int:
+def _recency_bonus(value: str, *, as_of: datetime | None = None) -> int:
     try:
         try:
             dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -267,7 +272,10 @@ def _recency_bonus(value: str) -> int:
             dt = parsedate_to_datetime(value)
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=timezone.utc)
-        age_hours = (datetime.now(timezone.utc) - dt.astimezone(timezone.utc)).total_seconds() / 3600
+        reference = as_of or datetime.now(timezone.utc)
+        if reference.tzinfo is None:
+            raise ValueError("Classification as-of timestamp must be timezone-aware")
+        age_hours = (reference.astimezone(timezone.utc) - dt.astimezone(timezone.utc)).total_seconds() / 3600
         return 1 if -1 <= age_hours <= 48 else 0
     except (TypeError, ValueError):
         return 0

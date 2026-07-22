@@ -1,19 +1,25 @@
 from __future__ import annotations
 
+import hashlib
+import importlib
 import json
 import html
 import math
 import re
 import ssl
+import urllib.error
 import urllib.parse
 import urllib.request
 import xml.etree.ElementTree as ET
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from html.parser import HTMLParser
 from pathlib import Path
 
 from .classifier import stable_event_id
+from .cnpf_source import CnpfFeedEntry, cnpf_candidate_type, parse_cnpf_atom, parse_cnpf_detail
 from .exchange_sources import (
     SourceHealthError,
     is_candidate_title,
@@ -26,6 +32,35 @@ from .models import Event
 USER_AGENT = "DealMarketsCopilot/0.2"
 _SYSTEM_CA = Path("/etc/ssl/cert.pem")
 SSL_CONTEXT = ssl.create_default_context(cafile=str(_SYSTEM_CA)) if _SYSTEM_CA.exists() else ssl.create_default_context()
+
+
+@lru_cache(maxsize=1)
+def _cnpf_ssl_context() -> ssl.SSLContext:
+    """Load platform trust only when an enabled CNPF request is attempted."""
+    try:
+        truststore = importlib.import_module("truststore")
+    except ImportError as exc:
+        raise RuntimeError("CNPF platform trust store dependency is unavailable") from exc
+    context = truststore.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    if context.verify_mode != ssl.CERT_REQUIRED or not context.check_hostname:
+        raise RuntimeError("CNPF platform trust store is not enforcing TLS verification")
+    return context
+
+
+@dataclass(frozen=True, slots=True)
+class HttpResponse:
+    status: int
+    content_type: str
+    text: str
+    etag: str = ""
+    last_modified: str = ""
+
+
+class CnpfFetchError(SourceHealthError):
+    def __init__(self, reason: str, diagnostics: dict):
+        super().__init__(f"cnpf_moldova: {reason}")
+        self.reason = reason
+        self.diagnostics = diagnostics
 
 
 def quote_status(quote: dict) -> str:
@@ -90,7 +125,13 @@ def fetch_cis_disclosures(config: dict, timeout: int = 15) -> list[Event]:
     return events
 
 
-def fetch_cis_disclosures_with_health(config: dict, timeout: int = 15) -> tuple[list[Event], list[dict]]:
+def fetch_cis_disclosures_with_health(
+    config: dict,
+    timeout: int = 15,
+    *,
+    operational_state: dict | None = None,
+    now: datetime | None = None,
+) -> tuple[list[Event], list[dict]]:
     """Fetch each enabled CIS source independently and return per-source health.
 
     Optional exchange failures remain isolated from the existing Russia and
@@ -98,6 +139,10 @@ def fetch_cis_disclosures_with_health(config: dict, timeout: int = 15) -> tuple[
     """
     events: list[Event] = []
     runs: list[dict] = []
+    poll_state = operational_state if operational_state is not None else {}
+    checked_now = now or datetime.now(timezone.utc)
+    if checked_now.tzinfo is None:
+        raise ValueError("CIS source clock must be timezone-aware")
     for source in config.get("cis_source_registry", []):
         if not source.get("enabled") or not source.get("implemented"):
             continue
@@ -111,18 +156,37 @@ def fetch_cis_disclosures_with_health(config: dict, timeout: int = 15) -> tuple[
                 request_counts = {}
             elif connector == "exchange_news":
                 result, request_counts = _fetch_exchange_news(source, timeout)
+            elif connector == "cnpf_atom":
+                result, request_counts = _fetch_cnpf_atom(
+                    source, timeout, poll_state, checked_now.astimezone(timezone.utc)
+                )
             else:
                 raise SourceHealthError(f"unsupported connector: {connector or 'missing'}")
             events.extend(result)
+            run_status = str(request_counts.pop("_status", "ok" if result else "empty"))
+            run_error = str(request_counts.pop("_error", "" if result else "Active source returned zero allowed events"))
             runs.append({
                 "name": f"cis:{source_id}",
                 "source_id": source_id,
-                "status": "ok" if result else "empty",
+                "enabled": True,
+                "status": run_status,
                 "records": len(result),
                 "required": required,
                 "checked_at": checked_at,
-                "error": "" if result else "Active source returned zero allowed events",
+                "error": run_error,
                 **request_counts,
+            })
+        except CnpfFetchError as exc:
+            runs.append({
+                "name": f"cis:{source_id}",
+                "source_id": source_id,
+                "enabled": True,
+                "status": "error",
+                "records": 0,
+                "required": required,
+                "checked_at": checked_at,
+                "error": f"CnpfFetchError: {exc.reason}",
+                **exc.diagnostics,
             })
         except Exception as exc:
             runs.append({
@@ -135,6 +199,249 @@ def fetch_cis_disclosures_with_health(config: dict, timeout: int = 15) -> tuple[
                 "error": f"{type(exc).__name__}: {str(exc)[:200]}",
             })
     return events, runs
+
+
+def _fetch_cnpf_atom(
+    source: dict,
+    timeout: int,
+    operational_state: dict,
+    now: datetime,
+) -> tuple[list[Event], dict]:
+    source_id = str(source.get("id") or "cnpf_moldova")
+    feed_url = str(source.get("feed_url") or source.get("url") or "")
+    diagnostics = {
+        "poll_eligible": True,
+        "request_count": 0,
+        "feed_requests": 0,
+        "feed_http_status": None,
+        "http_status_class": "not_requested",
+        "content_type": "",
+        "parser_status": "not_started",
+        "entries_discovered": 0,
+        "entries_in_archive": 0,
+        "whitelisted": 0,
+        "detail_requests": 0,
+        "accepted": 0,
+        "review": 0,
+        "excluded": 0,
+        "duplicates_suppressed": 0,
+        "health_reason": "not_started",
+    }
+    if not _safe_http_url(feed_url):
+        raise CnpfFetchError("unsafe_feed_url", diagnostics)
+
+    interval = max(30, int(source.get("poll_interval_minutes", 30)))
+    previous = operational_state.get(source_id, {}) if isinstance(operational_state.get(source_id, {}), dict) else {}
+    last_successful = _state_timestamp(previous.get("last_successful_poll_at"))
+    if last_successful and now < last_successful + timedelta(minutes=interval):
+        diagnostics.update({
+            "poll_eligible": False,
+            "health_reason": "poll_interval_not_elapsed",
+            "last_successful_poll_at": last_successful.isoformat(),
+            "next_eligible_at": (last_successful + timedelta(minutes=interval)).isoformat(),
+        })
+        return [], {"_status": "skipped", "_error": "poll_interval_not_elapsed", **diagnostics}
+
+    conditional_headers = {}
+    if previous.get("etag"):
+        conditional_headers["If-None-Match"] = str(previous["etag"])
+    if previous.get("last_modified"):
+        conditional_headers["If-Modified-Since"] = str(previous["last_modified"])
+    diagnostics.update({"request_count": 1, "feed_requests": 1})
+    try:
+        response = _get_http_response(
+            feed_url,
+            timeout,
+            accept="application/atom+xml, application/xml, text/xml",
+            extra_headers=conditional_headers,
+        )
+    except Exception as exc:
+        diagnostics.update({
+            "http_status_class": "transport_error",
+            "transport_error": type(exc).__name__,
+            "health_reason": "transport_error",
+        })
+        raise CnpfFetchError("transport_error", diagnostics) from exc
+    diagnostics.update({
+        "feed_http_status": response.status,
+        "http_status_class": _http_status_class(response.status),
+        "content_type": response.content_type,
+    })
+    if response.status == 304:
+        if not last_successful or not conditional_headers:
+            diagnostics["health_reason"] = "unexpected_not_modified"
+            raise CnpfFetchError("unexpected_not_modified", diagnostics)
+        diagnostics.update({
+            "parser_status": "not_modified",
+            "health_reason": "not_modified",
+        })
+        operational_state[source_id] = {
+            **previous,
+            "last_successful_poll_at": now.isoformat(),
+            "feed_url": feed_url,
+        }
+        return [], {"_status": "ok", "_error": "", **diagnostics}
+    _validate_cnpf_response(response, diagnostics, feed=True)
+    try:
+        feed = parse_cnpf_atom(response.text, feed_url)
+    except SourceHealthError as exc:
+        diagnostics.update({"parser_status": "error", "health_reason": _sanitized_health_reason(exc)})
+        raise CnpfFetchError(diagnostics["health_reason"], diagnostics) from exc
+    diagnostics.update({
+        "parser_status": "ok",
+        "entries_discovered": len(feed.entries),
+        "duplicates_suppressed": feed.duplicates_suppressed,
+    })
+
+    archive_days = max(1, min(int(source.get("archive_days", 90)), 730))
+    cutoff = now.date() - timedelta(days=archive_days)
+    try:
+        in_archive = [entry for entry in feed.entries if _entry_date(entry) >= cutoff]
+    except SourceHealthError as exc:
+        diagnostics.update({"parser_status": "error", "health_reason": _sanitized_health_reason(exc)})
+        raise CnpfFetchError(diagnostics["health_reason"], diagnostics) from exc
+    candidates = [entry for entry in in_archive if cnpf_candidate_type(entry)]
+    previous_fingerprints = (
+        previous.get("entry_fingerprints", {})
+        if isinstance(previous.get("entry_fingerprints", {}), dict)
+        else {}
+    )
+    fingerprints = {entry.entry_id: _cnpf_entry_fingerprint(entry) for entry in in_archive}
+    changed_candidates = [
+        entry for entry in candidates
+        if previous_fingerprints.get(entry.entry_id) != fingerprints[entry.entry_id]
+    ]
+    unchanged_candidates = len(candidates) - len(changed_candidates)
+    max_details = max(1, min(int(source.get("max_detail_requests", 8)), 8))
+    details_to_fetch = changed_candidates[:max_details]
+    diagnostics.update({
+        "entries_in_archive": len(in_archive),
+        "whitelisted": len(candidates),
+        "changed_candidates": len(changed_candidates),
+        "unchanged_candidates": unchanged_candidates,
+        "excluded": len(in_archive) - len(candidates),
+    })
+
+    events: list[Event] = []
+    completed_changed_ids: set[str] = set()
+    for entry in details_to_fetch:
+        diagnostics["request_count"] += 1
+        diagnostics["detail_requests"] += 1
+        try:
+            detail = _get_http_response(entry.url, timeout, accept="text/html, application/xhtml+xml")
+        except Exception as exc:
+            diagnostics.update({
+                "http_status_class": "transport_error",
+                "transport_error": type(exc).__name__,
+                "health_reason": "transport_error",
+            })
+            raise CnpfFetchError("transport_error", diagnostics) from exc
+        diagnostics["http_status_class"] = _http_status_class(detail.status)
+        _validate_cnpf_response(detail, diagnostics, feed=False)
+        try:
+            parsed = parse_cnpf_detail(source, detail.text, entry)
+        except SourceHealthError as exc:
+            diagnostics.update({"parser_status": "error", "health_reason": _sanitized_health_reason(exc)})
+            raise CnpfFetchError(diagnostics["health_reason"], diagnostics) from exc
+        if not parsed:
+            diagnostics["excluded"] += 1
+        events.extend(parsed)
+        completed_changed_ids.add(entry.entry_id)
+
+    diagnostics["accepted"] = len(events)
+    diagnostics["review"] = sum(not _cnpf_event_complete(event) for event in events)
+    diagnostics["health_reason"] = (
+        "healthy_zero_whitelisted" if not candidates
+        else "healthy_unchanged" if not details_to_fetch
+        else "ok"
+    )
+    next_fingerprints = {
+        entry.entry_id: fingerprints[entry.entry_id]
+        for entry in in_archive
+        if (
+            not cnpf_candidate_type(entry)
+            or previous_fingerprints.get(entry.entry_id) == fingerprints[entry.entry_id]
+            or entry.entry_id in completed_changed_ids
+        )
+    }
+    operational_state[source_id] = {
+        "last_successful_poll_at": now.isoformat(),
+        "feed_url": feed_url,
+        "etag": response.etag,
+        "last_modified": response.last_modified,
+        "entry_fingerprints": next_fingerprints,
+    }
+    return events, {"_status": "ok", "_error": "", **diagnostics}
+
+
+def _validate_cnpf_response(response: HttpResponse, diagnostics: dict, *, feed: bool) -> None:
+    if response.status in {403, 429}:
+        diagnostics["health_reason"] = f"http_{response.status}"
+        raise CnpfFetchError(diagnostics["health_reason"], diagnostics)
+    if not 200 <= response.status < 300:
+        diagnostics["health_reason"] = f"http_{_http_status_class(response.status)}"
+        raise CnpfFetchError(diagnostics["health_reason"], diagnostics)
+    content_type = response.content_type.split(";", 1)[0].strip().lower()
+    allowed = (
+        {"application/atom+xml", "application/xml", "text/xml"}
+        if feed else {"text/html", "application/xhtml+xml"}
+    )
+    if content_type not in allowed:
+        diagnostics["health_reason"] = "unexpected_content_type"
+        raise CnpfFetchError("unexpected_content_type", diagnostics)
+    if not response.text.strip():
+        diagnostics["health_reason"] = "empty_response"
+        raise CnpfFetchError("empty_response", diagnostics)
+    if "<html" in response.text[:500].lower() and feed:
+        diagnostics["health_reason"] = "html_challenge_or_error"
+        raise CnpfFetchError("html_challenge_or_error", diagnostics)
+
+
+def _entry_date(entry: CnpfFeedEntry):
+    try:
+        return datetime.fromisoformat(entry.published_at.replace("Z", "+00:00")).date()
+    except ValueError as exc:
+        raise SourceHealthError("cnpf_moldova: unsafe_entry_timestamp") from exc
+
+
+def _cnpf_entry_fingerprint(entry: CnpfFeedEntry) -> str:
+    payload = json.dumps({
+        "entry_id": entry.entry_id,
+        "title": entry.title,
+        "published_at": entry.published_at,
+        "updated_at": entry.updated_at,
+        "url": entry.url,
+        "summary": entry.summary,
+        "category": entry.category,
+        "document_urls": list(entry.document_urls),
+    }, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _state_timestamp(value: object) -> datetime | None:
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError):
+        return None
+    return parsed.astimezone(timezone.utc) if parsed.tzinfo else None
+
+
+def _http_status_class(status: int) -> str:
+    return f"{status // 100}xx" if 100 <= status <= 599 else "unknown"
+
+
+def _sanitized_health_reason(exc: Exception) -> str:
+    reason = str(exc).split(":", 1)[-1].strip()
+    return re.sub(r"[^a-z0-9_:-]+", "_", reason.lower())[:120] or type(exc).__name__.lower()
+
+
+def _cnpf_event_complete(event: Event) -> bool:
+    if event.instrument in {"Corporate bonds", "Share issue"}:
+        return bool(
+            event.issuer and event.instrument and event.amount is not None and event.currency
+            and (event.isin or event.registration_number) and event.lifecycle_stage
+        )
+    return bool(event.target and event.acquirer and event.lifecycle_stage)
 
 
 def _fetch_exchange_news(source: dict, timeout: int) -> tuple[list[Event], dict]:
@@ -881,6 +1188,37 @@ def _get_text(url: str, timeout: int) -> str:
     request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(request, timeout=timeout, context=SSL_CONTEXT) as response:
         return response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+
+
+def _get_http_response(
+    url: str,
+    timeout: int,
+    accept: str = "*/*",
+    *,
+    extra_headers: dict[str, str] | None = None,
+) -> HttpResponse:
+    headers = {"User-Agent": USER_AGENT, "Accept": accept, **(extra_headers or {})}
+    request = urllib.request.Request(url, headers=headers)
+    try:
+        response = urllib.request.urlopen(request, timeout=timeout, context=_cnpf_ssl_context())
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode(exc.headers.get_content_charset() or "utf-8", errors="replace")
+        return HttpResponse(
+            int(exc.code),
+            str(exc.headers.get_content_type() or ""),
+            body,
+            str(exc.headers.get("ETag") or ""),
+            str(exc.headers.get("Last-Modified") or ""),
+        )
+    with response:
+        body = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
+        return HttpResponse(
+            int(getattr(response, "status", 200)),
+            str(response.headers.get_content_type() or ""),
+            body,
+            str(response.headers.get("ETag") or ""),
+            str(response.headers.get("Last-Modified") or ""),
+        )
 
 
 def _page_metadata(url: str, timeout: int) -> tuple[str, str]:

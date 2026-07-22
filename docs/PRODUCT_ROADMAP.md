@@ -73,6 +73,7 @@ Potential sequencing: official sources → DCM completeness → provenance/revie
 |---|---|---|
 | Russia / MOEX | Connected | Preserve the existing classifier, quality gates and technical-notice suppression. |
 | Uzbekistan / UZSE | Connected, narrow | Collect only material fact 25 (securities issue), link every event to the primary disclosure and ignore records outside the configured archive window. |
+| Moldova / CNPF | Implemented, disabled | Conservative official Atom adapter is complete, but do not enable until a newly authorized live checkpoint verifies feed/detail access through the production runner and the normal replay/artifact gate passes. |
 | Kazakhstan / KASE and AIX | Roadmap | Do not ingest until permitted unattended access and stable announcement endpoints are confirmed; high-volume routine notices require a narrow taxonomy. |
 | Uzbekistan / Openinfo | Roadmap | Add only after a stable public index or documented API is available; whitelist deal-relevant fact types. |
 | Kyrgyzstan / KSE | Roadmap | Do not copy content without permission; retain as a link-only research candidate. |

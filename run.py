@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -62,6 +62,26 @@ def load_replay_precedents(precedent_path: Path) -> list[dict]:
     return precedents
 
 
+def classification_as_of(previous_snapshot: dict, *, replay: bool) -> datetime:
+    """Use an immutable snapshot clock for replay classification.
+
+    Older snapshots predate the explicit ``classification_as_of`` field, so
+    their build timestamp is the deterministic compatibility anchor. Live and
+    demo runs retain current-time recency behavior and persist that clock for
+    all future replays.
+    """
+    if not replay:
+        return datetime.now(timezone.utc)
+    value = previous_snapshot.get("classification_as_of") or previous_snapshot.get("generated_at")
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except (TypeError, ValueError) as exc:
+        raise RuntimeError("Replay snapshot has no valid classification as-of timestamp") from exc
+    if parsed.tzinfo is None:
+        raise RuntimeError("Replay classification as-of timestamp must be timezone-aware")
+    return parsed.astimezone(timezone.utc)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Deal & Markets Intelligence Copilot")
     mode = parser.add_mutually_exclusive_group()
@@ -76,6 +96,8 @@ def main() -> int:
     selected_mode = "live" if args.live or args.replay else "demo"
     snapshot_path = ROOT / "output" / "latest_snapshot.json"
     previous_snapshot = load_previous_snapshot(snapshot_path)
+    scoring_as_of = classification_as_of(previous_snapshot, replay=args.replay)
+    source_poll_state = dict(previous_snapshot.get("source_poll_state", {}))
     source_runs: list[dict] = []
     def collect_source(name, fetcher, required=True):
         checked_at = datetime.now(ZoneInfo("Europe/Moscow")).isoformat(timespec="seconds")
@@ -107,7 +129,9 @@ def main() -> int:
         market_snapshot = previous_snapshot.get("market", [])
     elif selected_mode == "live":
         official_events = collect_source("issuer_news", fetch_official_issuer_news)
-        cis_events, cis_source_runs = fetch_cis_disclosures_with_health(config)
+        cis_events, cis_source_runs = fetch_cis_disclosures_with_health(
+            config, operational_state=source_poll_state
+        )
         source_runs.extend(cis_source_runs)
         source_runs.append({
             "name": "cis_disclosures",
@@ -135,7 +159,10 @@ def main() -> int:
         archive_events = []
         market_snapshot = []
     events = deduplicate(events)
-    classified = [classify_event(event, config.get("coverage", [])) for event in events]
+    classified = [
+        classify_event(event, config.get("coverage", []), as_of=scoring_as_of)
+        for event in events
+    ]
     if config.get("workflow", {}).get("deals_only"):
         deal_categories = set(config.get("workflow", {}).get("deal_categories", ["M&A", "ECM", "DCM"]))
         classified = [item for item in classified if item.category in deal_categories]
@@ -152,7 +179,10 @@ def main() -> int:
         if (record := extract_deal_record(item, config.get("coverage", []))) is not None
     ]
     if archive_events:
-        archive_classified = [classify_event(event, config.get("coverage", [])) for event in deduplicate(archive_events)]
+        archive_classified = [
+            classify_event(event, config.get("coverage", []), as_of=scoring_as_of)
+            for event in deduplicate(archive_events)
+        ]
         archive_deals = [
             record for item in archive_classified
             if item.category in {"M&A", "ECM", "DCM"}
@@ -186,7 +216,14 @@ def main() -> int:
         deal_records=precedents,
     )
     csv_path = write_precedents_csv(precedents, ROOT / "output" / "precedent_transactions.csv")
-    health = _build_health(precedents, ROOT / "output" / "build_manifest.json", precedent_path, source_runs, market_snapshot)
+    health = _build_health(
+        precedents,
+        ROOT / "output" / "build_manifest.json",
+        precedent_path,
+        source_runs,
+        market_snapshot,
+        as_of=scoring_as_of,
+    )
 
     report_path = build_html_report(
         actionable,
@@ -198,15 +235,19 @@ def main() -> int:
         precedent_transactions=precedents,
         health=health,
     )
-    snapshot_path.write_text(json.dumps({
+    snapshot = {
         "workflow_version": 2,
         "generated_at": health["last_success_at"],
+        "classification_as_of": scoring_as_of.isoformat(),
         "health": health,
         "mode": selected_mode,
         "market": market_snapshot,
         "events": [item.to_dict() for item in actionable],
         "workflow": workflow,
-    }, ensure_ascii=False, indent=2), encoding="utf-8")
+    }
+    if source_poll_state:
+        snapshot["source_poll_state"] = source_poll_state
+    snapshot_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"Report created: {report_path}")
     print(f"Data snapshot: {snapshot_path}")
     print(f"Events included: {len(actionable)} ({len(classified) - len(actionable)} technical/context items suppressed)")
@@ -249,6 +290,8 @@ def _build_health(
     dataset_path: Path | None = None,
     source_runs: list[dict] | None = None,
     market_snapshot: list[dict] | None = None,
+    *,
+    as_of: datetime | None = None,
 ) -> dict:
     dataset_bytes = dataset_path.read_bytes() if dataset_path and dataset_path.exists() else json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     dataset_sha256 = hashlib.sha256(dataset_bytes).hexdigest()
@@ -290,7 +333,10 @@ def _build_health(
     missing_required = sorted(required_names - present_names)
     discovery_names = {"configured_rss", "deal_news", "company_news", "issuer_news", "gdelt", "cis_disclosures"}
     discovery_records = sum(int(run.get("records") or 0) for run in runs if run.get("name") in discovery_names)
-    now = datetime.now(ZoneInfo("Europe/Moscow"))
+    reference = as_of or datetime.now(timezone.utc)
+    if reference.tzinfo is None:
+        raise ValueError("Health as-of timestamp must be timezone-aware")
+    now = reference.astimezone(ZoneInfo("Europe/Moscow"))
     freshness_limit_minutes = 90 if now.weekday() < 5 and 8 <= now.hour < 20 else 72 * 60
     source_ages: list[float] = []
     source_checked_times: list[datetime] = []
@@ -327,7 +373,7 @@ def _build_health(
         market_data_status = "unavailable"
     xlsx_synced = manifest.get("dataset_sha256") == dataset_sha256 and manifest.get("build_id") == build_id and manifest.get("record_count") == len(rows)
     return {
-        "last_success_at": datetime.now(ZoneInfo("Europe/Moscow")).isoformat(timespec="minutes"),
+        "last_success_at": now.isoformat(timespec="minutes"),
         "build_id": build_id,
         "dataset_sha256": dataset_sha256,
         "record_count": len(rows),

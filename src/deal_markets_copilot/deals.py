@@ -62,6 +62,11 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
     target, acquirer = _extract_parties(item.category, headline, covered_company)
     if event.issuer:
         target = event.issuer
+    if item.category == "M&A":
+        if event.target:
+            target = event.target
+        if event.acquirer:
+            acquirer = event.acquirer
     if item.category in {"DCM", "ECM"} and _is_blank(target):
         target = _extract_issuer(text)
     seller = _extract_seller(headline) if item.category == "M&A" else "Not applicable"
@@ -103,6 +108,11 @@ def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealReco
         "quantity": event.quantity,
         "denomination": event.denomination,
         "amount_is_derived": event.amount_is_derived,
+        "target": event.target,
+        "acquirer": event.acquirer,
+        "source_operator": event.source_operator,
+        "source_attribution": event.source_attribution,
+        "quality_flags": event.source_quality_flags,
     }.items() if value not in (None, "", False, [])})
     if resolved_discovery:
         source["representations"] = [
@@ -427,7 +437,11 @@ def _is_material_transaction(row: dict) -> bool:
     if category == "M&A":
         if "последний день покупки акций" in title:
             return False
-        return bool(re.search(r"покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout", title))
+        return bool(re.search(
+            r"покуп|куп|приобрет|продал|продаж|слиян|поглощ|acquir|acquisition|merger|buyout|"
+            r"ofert[aeă]\s+(?:de\s+)?preluare|achiziț|fuziune",
+            title,
+        ))
     if category == "DCM":
         if _is_technical_filing(title, str(row.get("source_type") or "")):
             return False
@@ -437,13 +451,13 @@ def _is_material_transaction(row: dict) -> bool:
             return False
         if re.search(r"выкуп", title) and not re.search(r"размещ|анонс|план", title):
             return False
-        return bool(re.search(r"размещ|выпуск|облигац|bond|notes", title))
+        return bool(re.search(r"размещ|выпуск|облигац|bond|notes|obligațiun|emisiun", title))
     if category == "ECM":
         if re.search(r"объем (?:ipo|продаж акций)|рынок ipo|полугоди|квартал|рекордн|обзор", title):
             return False
         if re.search(r"выкуп акций|buyback", title):
             return False
-        return bool(re.search(r"\bipo\b|\bspo\b|размещ|эмисси", title))
+        return bool(re.search(r"\bipo\b|\bspo\b|размещ|эмисси|emisiun.+acțiun|ofert[aeă].+acțiun", title))
     return False
 
 
@@ -615,6 +629,16 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
     flags: list[str] = []
     record_kind = row.get("record_kind") or _record_kind(row)
 
+    source_quality_flags = {
+        str(flag)
+        for source in row.get("sources", []) if isinstance(source, dict)
+        for flag in source.get("quality_flags", []) if flag
+    }
+    for flag in sorted(source_quality_flags):
+        if flag not in flags:
+            flags.append(flag)
+            score -= 15
+
     material_probe = dict(row)
     material_probe["headline"] = row.get("headline", "")
     material_transaction = _is_material_transaction(material_probe)
@@ -690,6 +714,7 @@ def _quality_gate(row: dict) -> tuple[int, str, list[str]]:
         "technical_filing", "missing_both_parties", "missing_target", "missing_acquirer",
         "missing_issuer", "price_target_context", "invalid_currency", "denied_or_disputed",
         "missing_status", "missing_transaction_value", "missing_currency", "single_secondary_source",
+        "missing_security_identity", "missing_instrument", "unsupported_lifecycle_evidence",
     }
     if row.get("evidence_label") != "confirmed" and status == "approved":
         status = "review"

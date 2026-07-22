@@ -19,6 +19,7 @@ Deal Markets Copilot — open-source system мониторинга M&A, ECM и D
 - `NEW_CHAT_TEMPLATE.md` — короткие prompts для новых сессий.
 - `SETUP.md` — запуск и настройка.
 - `CIS_SOURCE_WAVE1_IMPLEMENTATION.md` — implementation и activation boundary для KASE, AMX и BVM.
+- `CIS_SOURCE_CNPF_IMPLEMENTATION.md` — conservative Atom adapter и activation boundary для CNPF Moldova.
 
 ## Reading matrix
 
