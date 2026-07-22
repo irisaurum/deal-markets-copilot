@@ -244,6 +244,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_wave1_registry_is_implemented_but_not_enabled`, `test_three_positive_publications_per_source`, `test_three_negative_publications_per_source_are_suppressed`, `test_programme_tranche_and_distinct_isin_identity`, `test_amx_amount_is_deterministically_derived`, `test_bvm_issue_amount_does_not_use_programme_target`, `test_lifecycle_is_monotonic_and_repeat_fetch_is_idempotent`, `test_health_fails_closed_on_empty_markup_and_antibot`.
 - **Files:** `exchange_sources.py`, `sources.py`, `models.py`, `deals.py`, `classifier.py`, `config.json`, `report.py`, `tests/test_cis_exchange_sources.py`.
 
+### REG-30 — Broad regulator feed creates false deals or unsafe activation
+
+- **Failure mode:** broad CNPF notices create transactions/tasks, preliminary registration is labelled `Issued`, several ISINs collapse, polling exceeds the agreed cap, or the source is labelled connected without a successful current live check.
+- **Why it mattered:** this would overstate Moldova coverage, corrupt lifecycle/economics and ignore the source's page-specific permission boundary.
+- **Root mechanism:** broad keyword ingestion, title-based fallback identity, official-source quality bypass, unbounded polling and treating a generic terms page as sufficient activation evidence.
+- **Current protection:** a separate namespace-aware Atom adapter applies strict allowlists/exclusions, immutable entry lineage, distinct-ISIN events, complete-economics lifecycle/quality rules, exact attribution, page-specific restriction stops, 30-minute state gating, conditional feed requests, entry fingerprints, one-feed/eight-new-or-changed-detail hard caps and fail-closed per-source diagnostics. The CNPF transport can use the maintained platform trust store through `truststore` with certificate and hostname verification required. Its macOS checkpoint passed, but the source remains `implemented_disabled` because the server omits its intermediate certificate and the deployed Ubuntu transport is not verified.
+- **Tests/checks:** `tests.test_cnpf_source` covers six positive and eight negative fixtures, XML/HTTP/transport/restriction failures, identity/lifecycle/dedup/fixed-point behavior, polling caps/state, quality/task behavior and coverage/mobile contracts; full regression and strict artifact checks remain required before any future activation.
+- **Files:** `cnpf_source.py`, `sources.py`, `run.py`, `models.py`, `deals.py`, `config.json`, `report.py`, `tests/test_cnpf_source.py`, `CIS_SOURCE_CNPF_IMPLEMENTATION.md`.
+
 ## CI and deployment
 
 ### REG-21 — Stale scheduled build publishing after a newer build

@@ -39,9 +39,18 @@ class Event:
     quantity: float | None = None
     denomination: float | None = None
     amount_is_derived: bool = False
+    target: str = ""
+    acquirer: str = ""
+    source_operator: str = ""
+    source_attribution: str = ""
+    source_quality_flags: list[str] = field(default_factory=list)
 
     def to_dict(self) -> dict:
-        return asdict(self)
+        data = asdict(self)
+        for key in ("target", "acquirer", "source_operator", "source_attribution", "source_quality_flags"):
+            if data[key] in ("", []):
+                data.pop(key)
+        return data
 
 
 @dataclass(slots=True)
