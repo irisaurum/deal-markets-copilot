@@ -40,6 +40,7 @@ Final LaunchAgent policy: GitHub Actions scheduled production refresh is the onl
 
 - Historical failed runs in the `#50`-`#55` range showed the same failed verifier step / repeated failure pattern. The exact assertion is unavailable here; they are likely in the same pre-fix family, but that is not independently proven without the logs.
 - `config.json` contains an account-specific contact value in the disabled SEC user-agent setting. It is already public and is not an active credential, but a future privacy review should decide whether to replace it with a project-level contact identifier.
+- CIS-ORCHESTRATOR-01 is implemented on a local feature branch only. Its operational-state schema now has a transactional committed/candidate/failure-patch boundary, but it still requires a final synchronization/publication preflight, merge and qualifying scheduled `main` runs. Until those steps succeed, the verified production cadence and behavior remain those of current `origin/main`.
 
 No other open issue is asserted here without current repository evidence.
 

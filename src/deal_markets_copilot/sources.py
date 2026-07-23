@@ -27,6 +27,14 @@ from .exchange_sources import (
     parse_exchange_index,
 )
 from .models import Event
+from .orchestrator import (
+    EligibilityDecision,
+    SourceOrchestrator,
+    SourcePolicy,
+    classify_error,
+    content_changed,
+    specific_error_code,
+)
 
 
 USER_AGENT = "DealMarketsCopilot/0.2"
@@ -54,6 +62,7 @@ class HttpResponse:
     text: str
     etag: str = ""
     last_modified: str = ""
+    retry_after: str = ""
 
 
 class CnpfFetchError(SourceHealthError):
@@ -61,6 +70,7 @@ class CnpfFetchError(SourceHealthError):
         super().__init__(f"cnpf_moldova: {reason}")
         self.reason = reason
         self.diagnostics = diagnostics
+        self.retry_after = diagnostics.get("retry_after")
 
 
 def quote_status(quote: dict) -> str:
@@ -131,6 +141,7 @@ def fetch_cis_disclosures_with_health(
     *,
     operational_state: dict | None = None,
     now: datetime | None = None,
+    orchestrator: SourceOrchestrator | None = None,
 ) -> tuple[list[Event], list[dict]]:
     """Fetch each enabled CIS source independently and return per-source health.
 
@@ -139,23 +150,50 @@ def fetch_cis_disclosures_with_health(
     """
     events: list[Event] = []
     runs: list[dict] = []
-    poll_state = operational_state if operational_state is not None else {}
+    poll_state = (
+        orchestrator.sources
+        if orchestrator is not None
+        else operational_state if operational_state is not None else {}
+    )
     checked_now = now or datetime.now(timezone.utc)
     if checked_now.tzinfo is None:
         raise ValueError("CIS source clock must be timezone-aware")
     for source in config.get("cis_source_registry", []):
-        if not source.get("enabled") or not source.get("implemented"):
+        if source.get("orchestrated_by"):
             continue
         source_id = str(source.get("id") or "unknown")
         required = bool(source.get("required", False))
-        checked_at = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        checked_at = checked_now.astimezone(timezone.utc).isoformat(timespec="seconds")
+        policy = SourcePolicy.from_mapping(source_id, source)
+        decision: EligibilityDecision | None = None
+        if orchestrator is not None:
+            decision = orchestrator.decide(policy)
+            if not decision.eligible:
+                diagnostics = orchestrator.diagnostic(policy, decision)
+                runs.append({
+                    "name": f"cis:{source_id}",
+                    "source_id": source_id,
+                    "enabled": policy.enabled,
+                    "status": decision.decision,
+                    "records": 0,
+                    "required": required,
+                    "checked_at": checked_at,
+                    "error": decision.reason,
+                    **diagnostics,
+                })
+                continue
+            orchestrator.begin(policy, decision)
+        elif not source.get("enabled") or not source.get("implemented"):
+            continue
         try:
             connector = source.get("connector")
             if connector == "uzse_material_facts":
                 result = _fetch_uzse_material_facts(source, timeout)
                 request_counts = {}
             elif connector == "exchange_news":
-                result, request_counts = _fetch_exchange_news(source, timeout)
+                result, request_counts = _fetch_exchange_news(
+                    source, timeout, checked_now.astimezone(timezone.utc)
+                )
             elif connector == "cnpf_atom":
                 result, request_counts = _fetch_cnpf_atom(
                     source, timeout, poll_state, checked_now.astimezone(timezone.utc)
@@ -165,6 +203,37 @@ def fetch_cis_disclosures_with_health(
             events.extend(result)
             run_status = str(request_counts.pop("_status", "ok" if result else "empty"))
             run_error = str(request_counts.pop("_error", "" if result else "Active source returned zero allowed events"))
+            if orchestrator is not None and decision is not None:
+                changed = (
+                    False
+                    if request_counts.get("health_reason") in {"not_modified", "healthy_unchanged"}
+                    else content_changed(orchestrator, policy, result)
+                )
+                orchestrator.succeed(policy, changed=changed)
+                result_state = "completed_changed" if changed else "completed_unchanged"
+                orchestration_row = orchestrator.diagnostic(
+                    policy,
+                    decision,
+                    result=result_state,
+                    reason=str(request_counts.get("health_reason") or result_state),
+                    index_feed_request_count=int(
+                        request_counts.get("feed_requests")
+                        or request_counts.get("index_requests")
+                        or 0
+                    ),
+                    detail_request_count=int(request_counts.get("detail_requests") or 0),
+                    http_status_class=request_counts.get("http_status_class"),
+                    parser_status=request_counts.get("parser_status"),
+                    items_discovered=request_counts.get("entries_discovered"),
+                    items_in_archive=request_counts.get("entries_in_archive"),
+                    items_whitelisted=request_counts.get("whitelisted") or request_counts.get("candidate_publications"),
+                    accepted=len(result),
+                    review=request_counts.get("review"),
+                    excluded=request_counts.get("excluded"),
+                )
+                run_status = result_state
+            else:
+                orchestration_row = {}
             runs.append({
                 "name": f"cis:{source_id}",
                 "source_id": source_id,
@@ -175,28 +244,80 @@ def fetch_cis_disclosures_with_health(
                 "checked_at": checked_at,
                 "error": run_error,
                 **request_counts,
+                **orchestration_row,
             })
         except CnpfFetchError as exc:
+            if orchestrator is not None and decision is not None:
+                code = classify_error(exc)
+                error_code = specific_error_code(exc)
+                next_eligible = orchestrator.fail(
+                    policy,
+                    error_code,
+                    result=code,
+                    retry_after=getattr(exc, "retry_after", None),
+                )
+                failed = EligibilityDecision(
+                    source_id, code, exc.reason, next_eligible,
+                    int(orchestrator.source_state(source_id).get("consecutive_failures") or 0),
+                )
+                orchestration_row = orchestrator.diagnostic(
+                    policy,
+                    failed,
+                    reason=exc.reason,
+                    index_feed_request_count=exc.diagnostics.get("feed_requests"),
+                    detail_request_count=exc.diagnostics.get("detail_requests"),
+                    http_status_class=exc.diagnostics.get("http_status_class"),
+                    parser_status=exc.diagnostics.get("parser_status"),
+                    items_discovered=exc.diagnostics.get("entries_discovered"),
+                    items_in_archive=exc.diagnostics.get("entries_in_archive"),
+                    items_whitelisted=exc.diagnostics.get("whitelisted"),
+                    accepted=exc.diagnostics.get("accepted"),
+                    review=exc.diagnostics.get("review"),
+                    excluded=exc.diagnostics.get("excluded"),
+                    sanitized_error_code=error_code,
+                )
+                run_status = code
+            else:
+                orchestration_row = {}
+                run_status = "error"
             runs.append({
                 "name": f"cis:{source_id}",
                 "source_id": source_id,
                 "enabled": True,
-                "status": "error",
+                "status": run_status,
                 "records": 0,
                 "required": required,
                 "checked_at": checked_at,
                 "error": f"CnpfFetchError: {exc.reason}",
                 **exc.diagnostics,
+                **orchestration_row,
             })
         except Exception as exc:
+            if orchestrator is not None and decision is not None:
+                code = classify_error(exc)
+                error_code = specific_error_code(exc)
+                next_eligible = orchestrator.fail(policy, error_code, result=code)
+                failed = EligibilityDecision(
+                    source_id, code, code, next_eligible,
+                    int(orchestrator.source_state(source_id).get("consecutive_failures") or 0),
+                )
+                orchestration_row = orchestrator.diagnostic(
+                    policy, failed, sanitized_error_code=error_code
+                )
+                run_status = code
+            else:
+                orchestration_row = {}
+                run_status = "error"
             runs.append({
                 "name": f"cis:{source_id}",
                 "source_id": source_id,
-                "status": "error",
+                "enabled": policy.enabled,
+                "status": run_status,
                 "records": 0,
                 "required": required,
                 "checked_at": checked_at,
                 "error": f"{type(exc).__name__}: {str(exc)[:200]}",
+                **orchestration_row,
             })
     return events, runs
 
@@ -266,6 +387,7 @@ def _fetch_cnpf_atom(
         "feed_http_status": response.status,
         "http_status_class": _http_status_class(response.status),
         "content_type": response.content_type,
+        "retry_after": response.retry_after,
     })
     if response.status == 304:
         if not last_successful or not conditional_headers:
@@ -365,6 +487,7 @@ def _fetch_cnpf_atom(
         )
     }
     operational_state[source_id] = {
+        **previous,
         "last_successful_poll_at": now.isoformat(),
         "feed_url": feed_url,
         "etag": response.etag,
@@ -444,7 +567,11 @@ def _cnpf_event_complete(event: Event) -> bool:
     return bool(event.target and event.acquirer and event.lifecycle_stage)
 
 
-def _fetch_exchange_news(source: dict, timeout: int) -> tuple[list[Event], dict]:
+def _fetch_exchange_news(
+    source: dict,
+    timeout: int,
+    now: datetime | None = None,
+) -> tuple[list[Event], dict]:
     index_url = str(source.get("index_url") or source.get("url") or "")
     if not _safe_http_url(index_url):
         raise SourceHealthError("Exchange index URL must be HTTP(S)")
@@ -466,7 +593,7 @@ def _fetch_exchange_news(source: dict, timeout: int) -> tuple[list[Event], dict]
                         break
     unique_entries = {entry.source_event_id: entry for entry in entries}
     archive_days = max(1, min(int(source.get("archive_days", 90)), 730))
-    cutoff = datetime.now(timezone.utc).date() - timedelta(days=archive_days)
+    cutoff = (now or datetime.now(timezone.utc)).astimezone(timezone.utc).date() - timedelta(days=archive_days)
     def inside_archive(entry) -> bool:
         if not entry.published_at:
             return True
@@ -1209,6 +1336,7 @@ def _get_http_response(
             body,
             str(exc.headers.get("ETag") or ""),
             str(exc.headers.get("Last-Modified") or ""),
+            str(exc.headers.get("Retry-After") or ""),
         )
     with response:
         body = response.read().decode(response.headers.get_content_charset() or "utf-8", errors="replace")
@@ -1218,6 +1346,7 @@ def _get_http_response(
             body,
             str(response.headers.get("ETag") or ""),
             str(response.headers.get("Last-Modified") or ""),
+            str(response.headers.get("Retry-After") or ""),
         )
 
 

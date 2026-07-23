@@ -49,6 +49,7 @@ These are current product commitments already expressed by code and invariants:
 - prefer evidence quality over filling a fixed number of cards;
 - keep DCM status semantics distinct from M&A;
 - keep generated artifacts synchronized and verifiable;
+- evaluate production every 30 minutes while retaining source-specific request intervals and true no-op publication;
 - expose uncertainty, sample size and missing disclosure honestly;
 - keep public-data and no-trading-system boundaries.
 

@@ -10,6 +10,15 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from deal_markets_copilot.orchestrator import (
+    OperationalStateError,
+    OperationalStateStore,
+    validate_state_document,
+)
+
+
 MAIN_REMOTE_REF = "refs/remotes/origin/main"
 MAIN_FETCH_REFSPEC = "+refs/heads/main:refs/remotes/origin/main"
 MAIN_PUSH_REFSPEC = "HEAD:refs/heads/main"
@@ -180,10 +189,129 @@ def bot_push(expected_base: str) -> int:
     return push.returncode
 
 
+def verify_parent(expected_base: str) -> int:
+    """Read-only stale-main guard used on both delta and no-op production runs."""
+    try:
+        _run_git(["fetch", "--no-tags", "origin", MAIN_FETCH_REFSPEC])
+        actual = _run_git(["rev-parse", MAIN_REMOTE_REF]).stdout.strip()
+    except subprocess.CalledProcessError as error:
+        failure = _git_failure_text(error)
+        _append_summary(
+            "Production failure diagnostics",
+            [
+                ("failed stage", "production parent verification"),
+                ("invariant", "origin/main must be freshly resolved before publication decision"),
+                ("artifact/file", "origin/main"),
+                ("Deal ID / row / field", "n/a"),
+                ("expected", expected_base),
+                ("actual", failure),
+                ("recommended next action", "Restore GitHub connectivity and let the next scheduled run retry."),
+            ],
+        )
+        return error.returncode or 1
+    if actual == expected_base:
+        return 0
+    _append_summary(
+        "Production failure diagnostics",
+        [
+            ("failed stage", "production parent verification"),
+            ("invariant", "origin/main must still equal the workflow run parent"),
+            ("artifact/file", "origin/main"),
+            ("Deal ID / row / field", "n/a"),
+            ("expected", expected_base),
+            ("actual", actual),
+            ("recommended next action", "Let the next scheduled run start from current main; do not merge, rebase or force-push."),
+        ],
+    )
+    print("Refusing publication because origin/main changed during this run.", file=sys.stderr)
+    return 1
+
+
+def verify_orchestration_state(path: str | Path) -> int:
+    """Allow cache save only for a present, finalized committed state file."""
+    state_path = Path(path)
+    if not state_path.is_file():
+        print("ORCHESTRATION_STATE_NOT_SAVED missing_state_file", file=sys.stderr)
+        return 1
+    try:
+        state = OperationalStateStore(state_path).load()
+        validate_state_document(state, require_committed=True)
+    except OperationalStateError as exc:
+        print(f"ORCHESTRATION_STATE_NOT_SAVED {exc}", file=sys.stderr)
+        return 1
+    print(
+        "ORCHESTRATION_STATE_VALID "
+        f"schema={state['schema_version']} "
+        f"generation={state['accepted_generation']} "
+        f"sources={len(state['committed']['sources'])}"
+    )
+    return 0
+
+
+def _write_github_output(name: str, value: str) -> None:
+    output_path = os.environ.get("GITHUB_OUTPUT")
+    if output_path:
+        with Path(output_path).open("a", encoding="utf-8") as handle:
+            handle.write(f"{name}={value}\n")
+
+
+def finalize_orchestration_state(
+    path: str | Path,
+    *,
+    publish_delta: str,
+    refresh_outcome: str,
+    verifier_outcome: str,
+    parent_outcome: str,
+    publication_outcome: str,
+) -> int:
+    """Promote candidate evidence only after the applicable release boundary."""
+    common_success = (
+        refresh_outcome == "success"
+        and verifier_outcome == "success"
+        and parent_outcome == "success"
+    )
+    accept_candidate = (
+        publish_delta == "false"
+        and common_success
+        and publication_outcome == "skipped"
+    ) or (
+        publish_delta == "true"
+        and common_success
+        and publication_outcome == "success"
+    )
+    try:
+        outcome = OperationalStateStore(path).finalize(
+            accept_candidate=accept_candidate,
+        )
+    except OperationalStateError as exc:
+        _write_github_output("state_acceptance", "invalid")
+        _write_github_output("cache_save", "false")
+        print(f"ORCHESTRATION_STATE_NOT_FINALIZED {exc}", file=sys.stderr)
+        return 1
+    _write_github_output("state_acceptance", outcome)
+    _write_github_output("cache_save", "true")
+    print(
+        "ORCHESTRATION_STATE_FINALIZED "
+        f"outcome={outcome} publish_delta={publish_delta or 'missing'}"
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("verify-public-artifacts")
+    verify_parent_parser = subparsers.add_parser("verify-parent")
+    verify_parent_parser.add_argument("--expected-base", required=True)
+    verify_state_parser = subparsers.add_parser("verify-orchestration-state")
+    verify_state_parser.add_argument("--path", required=True)
+    finalize_state_parser = subparsers.add_parser("finalize-orchestration-state")
+    finalize_state_parser.add_argument("--path", required=True)
+    finalize_state_parser.add_argument("--publish-delta", default="")
+    finalize_state_parser.add_argument("--refresh-outcome", default="")
+    finalize_state_parser.add_argument("--verifier-outcome", default="")
+    finalize_state_parser.add_argument("--parent-outcome", default="")
+    finalize_state_parser.add_argument("--publication-outcome", default="")
     bot_push_parser = subparsers.add_parser("bot-push")
     bot_push_parser.add_argument("--expected-base", required=True)
     args = parser.parse_args(argv)
@@ -192,6 +320,19 @@ def main(argv: list[str] | None = None) -> int:
         return verify_public_artifacts()
     if args.command == "bot-push":
         return bot_push(args.expected_base)
+    if args.command == "verify-parent":
+        return verify_parent(args.expected_base)
+    if args.command == "verify-orchestration-state":
+        return verify_orchestration_state(args.path)
+    if args.command == "finalize-orchestration-state":
+        return finalize_orchestration_state(
+            args.path,
+            publish_delta=args.publish_delta,
+            refresh_outcome=args.refresh_outcome,
+            verifier_outcome=args.verifier_outcome,
+            parent_outcome=args.parent_outcome,
+            publication_outcome=args.publication_outcome,
+        )
     raise AssertionError(f"Unknown command: {args.command}")
 
 

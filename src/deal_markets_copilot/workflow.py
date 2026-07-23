@@ -39,6 +39,7 @@ def build_morning_workflow(
     config: dict,
     previous_snapshot: dict | None = None,
     deal_records: list[dict] | None = None,
+    as_of: datetime | None = None,
 ) -> dict:
     """Turn public signals into a repeatable junior-banker morning workflow."""
     previous = previous_snapshot or {}
@@ -64,7 +65,7 @@ def build_morning_workflow(
             hypothesis_by_event.setdefault(event_id, []).append(hypothesis["id"])
 
     tasks = _build_tasks(
-        ranked, market_snapshot, hypothesis_by_event, new_ids, config, deal_records or []
+        ranked, market_snapshot, hypothesis_by_event, new_ids, config, deal_records or [], as_of
     )
     move_threshold = float(config.get("workflow", {}).get("market_move_threshold", 2.0))
     market_moves = [
@@ -158,6 +159,7 @@ def _build_tasks(
     new_ids: set[str],
     config: dict,
     deal_records: list[dict],
+    as_of: datetime | None,
 ) -> list[dict]:
     limit = int(config.get("workflow", {}).get("max_actions", 8))
     tasks: list[dict] = []
@@ -189,6 +191,9 @@ def _build_tasks(
         })
 
     threshold = float(config.get("workflow", {}).get("market_move_threshold", 2.0))
+    market_task_date = (as_of or datetime.now(ZoneInfo("Europe/Moscow"))).astimezone(
+        ZoneInfo("Europe/Moscow")
+    ).date().isoformat()
     for quote in market_snapshot:
         change = quote.get("change_percent")
         if change is None or abs(float(change)) < threshold:
@@ -196,7 +201,7 @@ def _build_tasks(
         ticker = quote.get("ticker", "SECURITY")
         title = f"Проверить драйвер движения {ticker} ({float(change):+.2f}%) и обновить trading comps."
         tasks.append({
-            "id": _stable_task_id(ticker, f"market-move|{datetime.now(ZoneInfo('Europe/Moscow')).date().isoformat()}"),
+            "id": _stable_task_id(ticker, f"market-move|{market_task_date}"),
             "priority": "P1" if abs(float(change)) >= 5 else "P2",
             "state": "market",
             "title": title,

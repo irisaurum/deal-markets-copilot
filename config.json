@@ -85,6 +85,95 @@
     "max_news_per_company": 8,
     "max_deal_news_per_query": 15
   },
+  "orchestration": {
+    "state_schema_version": 2,
+    "base_slot_minutes": 30,
+    "maximum_backoff_minutes": 1440,
+    "sources": {
+      "issuer_news": {
+        "enabled": true,
+        "required": true,
+        "implementation_state": "connected",
+        "source_type": "official_html_and_feed",
+        "poll_interval_minutes": 120,
+        "index_request_cap": 5,
+        "detail_request_cap": 15
+      },
+      "moex_disclosures": {
+        "source_id": "ru-moex",
+        "enabled": true,
+        "required": true,
+        "implementation_state": "connected",
+        "source_type": "official_api",
+        "poll_interval_minutes": 30,
+        "index_request_cap": 1,
+        "detail_request_cap": 100
+      },
+      "configured_rss": {
+        "enabled": true,
+        "required": true,
+        "implementation_state": "connected",
+        "source_type": "official_rss",
+        "poll_interval_minutes": 30,
+        "index_request_cap": 1,
+        "detail_request_cap": 0
+      },
+      "deal_news": {
+        "enabled": true,
+        "required": true,
+        "implementation_state": "connected",
+        "source_type": "public_discovery_rss",
+        "poll_interval_minutes": 30,
+        "index_request_cap": 2,
+        "detail_request_cap": 0
+      },
+      "company_news": {
+        "enabled": true,
+        "required": true,
+        "implementation_state": "connected",
+        "source_type": "public_discovery_rss",
+        "poll_interval_minutes": 30,
+        "index_request_cap": 3,
+        "detail_request_cap": 0
+      },
+      "deal_archive": {
+        "enabled": true,
+        "required": false,
+        "implementation_state": "connected",
+        "source_type": "public_discovery_archive",
+        "poll_interval_minutes": 360,
+        "index_request_cap": 5,
+        "detail_request_cap": 10
+      },
+      "gdelt": {
+        "enabled": false,
+        "required": false,
+        "implementation_state": "implemented_disabled",
+        "source_type": "public_discovery_api",
+        "poll_interval_minutes": 120,
+        "index_request_cap": 3,
+        "detail_request_cap": 0
+      },
+      "sec_filings": {
+        "enabled": false,
+        "required": false,
+        "implementation_state": "implemented_disabled",
+        "source_type": "official_regulator_api",
+        "poll_interval_minutes": 360,
+        "index_request_cap": 8,
+        "detail_request_cap": 0
+      },
+      "moex_quotes": {
+        "enabled": true,
+        "required": false,
+        "implementation_state": "connected",
+        "source_type": "official_market_api",
+        "poll_interval_minutes": 30,
+        "index_request_cap": 3,
+        "detail_request_cap": 0
+      }
+    }
+  },
   "primary_sources": {
     "moex": {
       "enabled": true,
@@ -200,6 +289,12 @@
       "permission_risk": "low",
       "implemented": true,
       "enabled": true,
+      "orchestrated_by": "moex_disclosures",
+      "required": false,
+      "production_status": "connected",
+      "poll_interval_minutes": 30,
+      "max_pages": 1,
+      "max_detail_requests": 100,
       "limitations": "Technical exchange notices remain suppressed by the existing classifier."
     },
     {
@@ -247,6 +342,10 @@
       "permission_risk": "medium",
       "implemented": false,
       "enabled": false,
+      "required": false,
+      "poll_interval_minutes": 360,
+      "max_pages": 1,
+      "max_detail_requests": 0,
       "production_status": "roadmap",
       "limitations": "CIS-SOURCES-01A roadmap source; outside Wave 1 implementation."
     },
@@ -334,6 +433,7 @@
       "access_reuse_status": "READY_WITH_CONSERVATIVE_LIMITS",
       "implemented": true,
       "enabled": false,
+      "connected": false,
       "required": false,
       "connector": "cnpf_atom",
       "implementation_state": "implemented_disabled",
@@ -381,10 +481,14 @@
       "permission_risk": "low",
       "implemented": true,
       "enabled": true,
+      "required": false,
       "connector": "uzse_material_facts",
+      "production_status": "connected",
       "fact_numbers": ["25"],
       "max_pages": 3,
       "max_items": 10,
+      "max_detail_requests": 10,
+      "poll_interval_minutes": 120,
       "limitations": "Only fact 25 is collected; old records outside the archive window do not enter the dataset; every event links to UZSE."
     },
     {
@@ -401,6 +505,11 @@
       "permission_risk": "low",
       "implemented": false,
       "enabled": false,
+      "required": false,
+      "poll_interval_minutes": 360,
+      "max_pages": 1,
+      "max_detail_requests": 0,
+      "production_status": "roadmap",
       "limitations": "Roadmap source pending a stable public index or documented API and narrow fact filters."
     },
     {
@@ -417,6 +526,11 @@
       "permission_risk": "high",
       "implemented": false,
       "enabled": false,
+      "required": false,
+      "poll_interval_minutes": 360,
+      "max_pages": 1,
+      "max_detail_requests": 0,
+      "production_status": "roadmap",
       "limitations": "Deferred because the site restricts copying without written permission."
     },
     {
@@ -433,6 +547,11 @@
       "permission_risk": "unknown",
       "implemented": false,
       "enabled": false,
+      "required": false,
+      "poll_interval_minutes": 360,
+      "max_pages": 1,
+      "max_detail_requests": 0,
+      "production_status": "roadmap",
       "limitations": "Roadmap only until an authoritative stable endpoint and reuse terms are verified."
     }
   ],

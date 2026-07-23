@@ -42,7 +42,7 @@ Public readability alone is not treated as unrestricted bulk-reuse permission.
 
 ## Adapter boundary
 
-`src/deal_markets_copilot/cnpf_source.py` owns safe Atom parsing, the CNPF-specific event allowlist/exclusions, canonical URL handling, factual detail extraction, source identity and lifecycle mapping. `src/deal_markets_copilot/sources.py` owns polling eligibility, conditional request validators, entry fingerprints, request caps, transport/content validation and source-health diagnostics. `run.py` persists CNPF operational state in internal `latest_snapshot.json`; replay preserves that state without making a request.
+`src/deal_markets_copilot/cnpf_source.py` owns safe Atom parsing, the CNPF-specific event allowlist/exclusions, canonical URL handling, factual detail extraction, source identity and lifecycle mapping. `src/deal_markets_copilot/sources.py` owns conditional request validators, entry fingerprints, request caps, transport/content validation and source-health diagnostics. The production orchestrator owns eligibility and persists CNPF operational state in the schema-versioned external GitHub Actions cache; replay neither reads nor writes that state.
 
 The source is optional and isolated from required Russia processing and the existing connected UZSE source. Its failure cannot corrupt records from other sources.
 
@@ -89,7 +89,7 @@ Official-regulator status does not bypass the quality gate. Missing issuer, secu
 
 ## Polling and health
 
-CNPF is eligible no more often than once every 30 minutes after the last successful eligible poll. An eligible poll is capped at exactly one conditional Atom feed request and at most eight new or changed whitelisted canonical detail requests; there is no pagination or site crawl. A run at +29 minutes makes zero requests; +30 minutes is eligible. ETag and Last-Modified validators are retained when available, and HTTP 304 is healthy with zero detail requests. Deterministic Atom-entry fingerprints prevent repeated detail fetches for unchanged entries.
+CNPF is configured for 30-minute deterministic UTC-slot eligibility but remains disabled, so production makes zero requests. If separately activated in the future, an eligible poll is capped at exactly one conditional Atom feed request and at most eight new or changed whitelisted canonical detail requests; there is no pagination or site crawl. The adapter compatibility contract also retains +29/+30-minute last-success gating when invoked outside the production orchestrator. ETag and Last-Modified validators are retained when available, and HTTP 304 is healthy with zero detail requests. Deterministic Atom-entry fingerprints prevent repeated detail fetches for unchanged entries.
 
 Per-source diagnostics include eligibility, request counts, feed HTTP status/class, content type, parser status, entries discovered/in archive, whitelisted/excluded counts, detail requests, accepted/review counts, duplicate suppression and a sanitized health reason. Transport exceptions retain attempted-request counters and fail as `transport_error` without storing response content.
 

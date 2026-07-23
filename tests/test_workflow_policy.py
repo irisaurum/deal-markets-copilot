@@ -88,10 +88,11 @@ class WorkflowPolicyTests(unittest.TestCase):
         trigger_block = self.workflow.split("permissions:", 1)[0]
         self.assertRegex(trigger_block, r"(?m)^  workflow_dispatch:$")
         self.assertRegex(trigger_block, r"(?m)^  schedule:$")
-        self.assertEqual(trigger_block.count("- cron:"), 3)
-        production_gate = "if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'"
+        self.assertEqual(trigger_block.count("- cron:"), 1)
+        self.assertIn('- cron: "*/30 * * * *"', trigger_block)
+        production_gate = "if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'"
         self.assertIn(production_gate, self.production_job)
-        self.assertIn(production_gate, self.deploy_job)
+        self.assertIn("needs.production_refresh.outputs.publish_delta == 'true'", self.deploy_job)
 
     def test_validation_path_is_deterministic(self) -> None:
         self.assertIn("contents: read", self.validate_job)
@@ -137,7 +138,11 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertNotIn("--force", self.production_job)
         self.assertRegex(
             self.production_job,
-            r'(?ms)if ! git diff --cached --quiet; then\n\s+git commit -m "chore: refresh deal desk"\n\s+fi\n\s+python scripts/release_diagnostics.py bot-push --expected-base "\$GITHUB_SHA"',
+            r'(?ms)if git diff --cached --quiet; then.*?exit 1\n\s+fi\n\s+git commit -m "chore: refresh deal desk"\n\s+python scripts/release_diagnostics.py bot-push --expected-base "\$GITHUB_SHA"',
+        )
+        self.assertIn(
+            'python scripts/release_diagnostics.py verify-parent --expected-base "$GITHUB_SHA"',
+            self.production_job,
         )
 
     def test_bot_commit_is_limited_to_public_data_and_output_files(self) -> None:
@@ -169,6 +174,7 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertLess(site, bot_push)
         self.assertLess(bot_push, upload)
         self.assertIn("needs: production_refresh", self.deploy_job)
+        self.assertIn("needs.production_refresh.outputs.publish_delta == 'true'", self.deploy_job)
 
     def test_post_refresh_verifier_emits_diagnostics_before_regression_tests(self) -> None:
         step = self.production_job.split("- name: Verify synchronized public artifacts", 1)[1].split("- name:", 1)[0]
@@ -182,6 +188,83 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("'deal-desk-pages'", self.workflow)
         self.assertIn("github.event_name == 'schedule'", self.workflow)
         self.assertIn("github.event_name == 'workflow_dispatch'", self.workflow)
+        self.assertIn("cancel-in-progress: false", self.workflow)
+
+    def test_production_dependencies_precede_live_discovery(self) -> None:
+        install = self.production_job.find("Install pinned production dependencies")
+        live = self.production_job.find("python run.py --live")
+        self.assertNotEqual(install, -1)
+        self.assertNotEqual(live, -1)
+        self.assertLess(install, live)
+
+    def test_noop_skips_commit_upload_and_deploy(self) -> None:
+        self.assertIn("steps.refresh.outputs.publish_delta == 'true'", self.production_job)
+        for step in (
+            "Persist replay canonicalization before Excel",
+            "Rebuild Excel workbook",
+            "Prepare site",
+            "Commit and push verified publishable delta",
+            "Upload Pages artifact",
+        ):
+            block = self.production_job.split(f"- name: {step}", 1)[1].split("- name:", 1)[0]
+            self.assertIn("if: steps.refresh.outputs.publish_delta == 'true'", block)
+
+    def test_cross_run_operational_state_uses_cache_not_git(self) -> None:
+        self.assertIn("actions/cache/restore@v4", self.production_job)
+        self.assertIn("actions/cache/save@v4", self.production_job)
+        self.assertIn("runner.temp", self.production_job)
+        key = "deal-markets-orchestration-v2-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}"
+        prefix = "deal-markets-orchestration-v2-${{ runner.os }}-main-"
+        self.assertEqual(self.production_job.count(f"key: {key}"), 2)
+        self.assertIn(prefix, self.production_job)
+        self.assertNotIn("deal-markets-orchestration-v1-", self.production_job)
+        self.assertIn("Finalize orchestration state transaction", self.production_job)
+        self.assertIn("Validate finalized orchestration state", self.production_job)
+        self.assertIn(
+            "if: always() && steps.state-finalization.outputs.cache_save == 'true' && steps.orchestration-state.outputs.cache_save == 'true'",
+            self.production_job,
+        )
+        self.assertIn(
+            'verify-orchestration-state --path "$DEAL_MARKETS_ORCHESTRATION_STATE"',
+            self.production_job,
+        )
+        git_add = re.search(r"(?m)^\s+git add (?P<paths>.+)$", self.production_job)
+        self.assertIsNotNone(git_add)
+        self.assertNotIn("orchestration", git_add.group("paths"))
+
+    def test_state_transaction_finalizes_only_after_release_boundary(self) -> None:
+        refresh, verifier, parent, publication, finalize, validate, cache_save, pages = _step_positions(
+            self.production_job,
+            [
+                "python run.py --live",
+                "python scripts/release_diagnostics.py verify-public-artifacts",
+                'python scripts/release_diagnostics.py verify-parent --expected-base "$GITHUB_SHA"',
+                'python scripts/release_diagnostics.py bot-push --expected-base "$GITHUB_SHA"',
+                "finalize-orchestration-state",
+                "verify-orchestration-state",
+                "actions/cache/save@v4",
+                "actions/configure-pages@v5",
+            ],
+        )
+        self.assertLess(refresh, verifier)
+        self.assertLess(verifier, parent)
+        self.assertLess(parent, publication)
+        self.assertLess(publication, finalize)
+        self.assertLess(finalize, validate)
+        self.assertLess(validate, cache_save)
+        self.assertLess(cache_save, pages)
+        finalizer = self.production_job.split(
+            "- name: Finalize orchestration state transaction", 1
+        )[1].split("- name:", 1)[0]
+        self.assertIn("if: always()", finalizer)
+        for output in (
+            "steps.refresh.outputs.publish_delta",
+            "steps.refresh.outcome",
+            "steps.verifier.outcome",
+            "steps.parent.outcome",
+            "steps.publication.outcome",
+        ):
+            self.assertIn(output, finalizer)
 
 
 if __name__ == "__main__":

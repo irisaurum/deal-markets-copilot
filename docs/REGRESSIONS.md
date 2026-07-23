@@ -282,6 +282,63 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_push_path_matrix`, `test_non_push_production_triggers_are_preserved`, `test_generated_artifacts_remain_a_loop_guard`.
 - **Files:** `.github/workflows/deal-desk.yml`, `tests/test_workflow_policy.py`.
 
+### REG-31 — No-op scheduled run creates a bot commit and deployment
+
+- **Failure mode:** unchanged evidence rewrites generated timestamps, creates `chore: refresh deal desk` and redeploys identical Pages content.
+- **Root mechanism:** publication was gated only by staged file differences after unconditional generation.
+- **Current protection:** exact dataset/stable-health/versioned-presentation `publish_delta`; replay/build/commit/upload/deploy require `true`; no-op prints `NO_PUBLISH_DELTA`.
+- **Tests/checks:** `test_noop_skips_commit_upload_and_deploy`, `test_operational_health_timestamp_alone_is_not_publishable`; workflow contract review.
+- **Files:** `run.py`, `.github/workflows/deal-desk.yml`, orchestrator tests.
+
+### REG-32 — Unchanged observation advances `last_seen_at`
+
+- **Failure mode:** the same normalized event changes database bytes, dataset SHA and Build ID on every poll.
+- **Root mechanism:** extraction used the wall clock and merge retained the incoming observation time without comparing meaning.
+- **Current protection:** one injected observation time plus canonical comparison excluding seen timestamps; unchanged meaning preserves the stored `last_seen_at`.
+- **Tests/checks:** `test_identical_observation_preserves_last_seen_dataset_sha_and_build_id`.
+- **Files:** `deals.py`, `run.py`, `tests/test_orchestrator_noop.py`.
+
+### REG-33 — Duplicate scheduled production runs overlap or cancel valid work
+
+- **Failure mode:** the next 30-minute slot overlaps discovery/push or cancels a valid writer.
+- **Root mechanism:** production used a shared group with `cancel-in-progress: true`.
+- **Current protection:** one production group with `cancel-in-progress: false`; queued runs serialize, and parent verification prevents stale publication.
+- **Tests/checks:** `test_production_concurrency_group_is_preserved`, bot-push real-Git race tests.
+- **Files:** `.github/workflows/deal-desk.yml`, `release_diagnostics.py`.
+
+### REG-34 — Live discovery starts before pinned production dependencies
+
+- **Failure mode:** an adapter may initialize before its pinned runtime dependency is installed.
+- **Root mechanism:** `requirements-ci.txt` installation followed `run.py --live`.
+- **Current protection:** pinned dependency installation precedes tests and live discovery.
+- **Tests/checks:** `test_production_dependencies_precede_live_discovery`.
+- **Files:** `.github/workflows/deal-desk.yml`.
+
+### REG-35 — Operational polling timestamps change public artifacts
+
+- **Failure mode:** attempts, successes, counters, validators or health-check time alone regenerate HTML/snapshot/CSV/XLSX.
+- **Root mechanism:** polling state lived in tracked snapshot state and generation ran unconditionally.
+- **Current protection:** schema-versioned external atomic state, deterministic slots and stable-health transition comparison; replay is state-independent.
+- **Tests/checks:** operational-state restart/corruption tests, `test_operational_health_timestamp_alone_is_not_publishable`, replay fixed-point checks.
+- **Files:** `orchestrator.py`, `run.py`, workflow, tests.
+
+### REG-36 — Immutable cache key or invalid state freezes/poisons cross-run orchestration
+
+- **Failure mode:** a constant cache key cannot be replaced, a branch/platform-ambiguous prefix restores incompatible state, or `always()` saves a missing/corrupt directory after an earlier failure.
+- **Impact:** validators and backoff freeze, disappear or are replaced, so separate runners cannot enforce source cadence safely.
+- **Current protection:** schema/runner/main restore prefix; unique run ID/attempt save key; main-only production gate; present/schema-valid state check before cache save; offline two-process persistence regression.
+- **Tests/checks:** `test_cross_run_operational_state_uses_cache_not_git`, `test_orchestration_state_validator_requires_present_valid_schema`, `test_state_and_public_artifacts_survive_a_second_python_process`.
+- **Files:** `.github/workflows/deal-desk.yml`, `release_diagnostics.py`, orchestrator/workflow tests.
+
+### REG-37 — Unpublished source evidence marked consumed before verification/publication
+
+- **Failure mode:** discovery advances ETag, Last-Modified, fingerprints, processed IDs or successful evidence timestamps, then strict verification, stale-parent checking, bot commit or bot push fails; the next runner restores those fields and silently skips the unpublished evidence.
+- **Impact:** a valid economic event can be absent from `main` while operational state says it was already handled.
+- **Root mechanism:** the live process mutated one authoritative state object and the workflow saved its cache before the artifact verifier and publication boundary.
+- **Current protection:** schema v2 stores explicit `committed`, `candidate` and `failure_patch` namespaces. Candidate evidence is promoted only after a successful verified no-op or successful fast-forward bot push. All other terminal paths roll back candidate evidence and merge only whitelisted attempt/error/backoff fields into the prior committed generation. Cache save occurs only after finalization and committed-state validation; hard cancellation leaves the prior immutable cache authoritative.
+- **Tests/checks:** `tests/test_orchestrator_transaction.py` covers verifier/stale-parent/commit/push rollback, required and optional source failures, successful no-op/publication, deployment failure and hard cancellation, including three separate-process scenarios; `test_state_transaction_finalizes_only_after_release_boundary` protects workflow ordering.
+- **Files:** `orchestrator.py`, `run.py`, `.github/workflows/deal-desk.yml`, `release_diagnostics.py`, transaction/workflow tests.
+
 ## Using this registry
 
 For a change, run the named test/checks for the affected rows first. Update this file only when a failure mode, protection or exact test changes. Do not treat a green historical verification date as proof of the current build; follow [`TESTING_AND_RELEASE.md`](TESTING_AND_RELEASE.md).

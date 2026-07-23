@@ -36,11 +36,19 @@ CSV_FIELDS = [
 ]
 
 
-def extract_deal_record(item: ClassifiedEvent, coverage: list[dict]) -> DealRecord | None:
+def extract_deal_record(
+    item: ClassifiedEvent,
+    coverage: list[dict],
+    *,
+    observed_at: datetime | None = None,
+) -> DealRecord | None:
     if item.category not in DEAL_CATEGORIES:
         return None
     event = item.event
-    now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    observation = observed_at or datetime.now(timezone.utc)
+    if observation.tzinfo is None:
+        raise ValueError("Deal observation time must be timezone-aware")
+    now = observation.astimezone(timezone.utc).isoformat(timespec="seconds")
     text = f"{event.title}. {event.summary}".strip()
     headline = _clean_headline(event.title)
     covered_company = _covered_company(item, coverage)
@@ -230,6 +238,8 @@ def update_precedent_database(records: list[DealRecord], path: str | Path) -> li
             row["source_count"] = len(row["sources"])
             _apply_primary_source(row)
             _apply_quality(row)
+            if _economic_row(row) == _economic_row(old):
+                row["last_seen_at"] = old.get("last_seen_at", row["last_seen_at"])
         by_id[record.deal_id] = row
     by_source: dict[tuple[str, str], dict] = {}
     for row in by_id.values():
@@ -252,6 +262,15 @@ def update_precedent_database(records: list[DealRecord], path: str | Path) -> li
     destination.parent.mkdir(parents=True, exist_ok=True)
     destination.write_text(json.dumps(output, ensure_ascii=False, indent=2), encoding="utf-8")
     return output
+
+
+def _economic_row(row: dict) -> dict:
+    """Return canonical meaning while excluding observation-only timestamps."""
+    return {
+        key: value
+        for key, value in row.items()
+        if key not in {"first_seen_at", "last_seen_at"}
+    }
 
 
 def load_public_dataset(path: str | Path) -> list[dict]:
