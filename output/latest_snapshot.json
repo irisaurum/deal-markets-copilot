@@ -1,20 +1,20 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-22T19:16+03:00",
-  "classification_as_of": "2026-07-22T16:16:13.325735+00:00",
+  "generated_at": "2026-07-23T10:57+03:00",
+  "classification_as_of": "2026-07-23T07:57:04.423390+00:00",
   "health": {
-    "last_success_at": "2026-07-22T19:16+03:00",
-    "build_id": "0b5f25754968",
-    "dataset_sha256": "0b5f257549684f16748253878301d73f3ebd0f3279ba060babad028fd68366d2",
-    "record_count": 129,
+    "last_success_at": "2026-07-23T10:57+03:00",
+    "build_id": "deddb3adcb23",
+    "dataset_sha256": "deddb3adcb23190cab4a3549b84be57b4134f0c95a973a6b670b8ef183f033ca",
+    "record_count": 131,
     "key_deal_count": 9,
     "approved_count": 17,
-    "review_count": 82,
+    "review_count": 84,
     "rejected_count": 30,
-    "source_count": 168,
-    "source_representation_count": 234,
-    "direct_source_count": 148,
-    "aggregator_source_count": 86,
+    "source_count": 170,
+    "source_representation_count": 238,
+    "direct_source_count": 150,
+    "aggregator_source_count": 88,
     "critical_qa_issues": 0,
     "source_group_count": 9,
     "source_runs": [
@@ -23,7 +23,7 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-22T19:16:13+03:00",
+        "checked_at": "2026-07-23T10:57:04+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -33,27 +33,28 @@
         "status": "error",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-22T16:16:42+00:00",
+        "checked_at": "2026-07-23T07:57:21+00:00",
         "error": "SourceHealthError: unsupported connector: missing",
         "age_minutes": 0.0
       },
       {
         "name": "cis:uz-uzse",
         "source_id": "uz-uzse",
-        "status": "error",
-        "records": 0,
+        "enabled": true,
+        "status": "ok",
+        "records": 1,
         "required": false,
-        "checked_at": "2026-07-22T16:16:42+00:00",
-        "error": "URLError: <urlopen error timed out>",
+        "checked_at": "2026-07-23T07:57:21+00:00",
+        "error": "",
         "age_minutes": 0.0
       },
       {
         "name": "cis_disclosures",
-        "status": "empty",
-        "records": 0,
+        "status": "ok",
+        "records": 1,
         "required": false,
-        "checked_at": "2026-07-22T19:16:57+03:00",
-        "error": "No enabled CIS source returned an allowed event",
+        "checked_at": "2026-07-23T10:57:35+03:00",
+        "error": "",
         "age_minutes": 0.0
       },
       {
@@ -61,7 +62,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-22T19:16:57+03:00",
+        "checked_at": "2026-07-23T10:57:35+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -70,7 +71,7 @@
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-22T19:16:57+03:00",
+        "checked_at": "2026-07-23T10:57:35+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -79,34 +80,34 @@
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-22T19:17:05+03:00",
+        "checked_at": "2026-07-23T10:57:41+03:00",
         "error": "",
         "age_minutes": 0.0
       },
       {
         "name": "deal_news",
         "status": "ok",
-        "records": 4,
+        "records": 3,
         "required": true,
-        "checked_at": "2026-07-22T19:17:07+03:00",
+        "checked_at": "2026-07-23T10:57:41+03:00",
         "error": "",
         "age_minutes": 0.0
       },
       {
         "name": "company_news",
         "status": "ok",
-        "records": 7,
+        "records": 9,
         "required": true,
-        "checked_at": "2026-07-22T19:17:07+03:00",
+        "checked_at": "2026-07-23T10:57:42+03:00",
         "error": "",
         "age_minutes": 0.0
       },
       {
         "name": "deal_archive",
         "status": "ok",
-        "records": 150,
+        "records": 144,
         "required": false,
-        "checked_at": "2026-07-22T19:17:08+03:00",
+        "checked_at": "2026-07-23T10:57:43+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -115,7 +116,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-22T19:17:10+03:00",
+        "checked_at": "2026-07-23T10:57:45+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -124,16 +125,16 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-22T19:17:10+03:00",
+        "checked_at": "2026-07-23T10:57:45+03:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 35,
+    "discovery_record_count": 37,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
     "source_age_minutes": 0.0,
-    "source_checked_at": "2026-07-22T19:16+03:00",
+    "source_checked_at": "2026-07-23T10:57+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -142,17 +143,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-22T16:17:17+00:00"
+    "xlsx_generated_at": "2026-07-23T07:57:52+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3678,
-      "change_percent": 2.18,
-      "turnover": 3826746246,
-      "updated": "19:02:10",
+      "price": 3635.5,
+      "change_percent": -1.56,
+      "turnover": 821002095,
+      "updated": "10:42:45",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -163,10 +164,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 2735.5,
-      "change_percent": -4.75,
-      "turnover": 8969697629,
-      "updated": "19:02:11",
+      "price": 2762.5,
+      "change_percent": 0.25,
+      "turnover": 1545688258,
+      "updated": "10:42:45",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -177,10 +178,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 138.3,
-      "change_percent": -1.53,
-      "turnover": 2009543679,
-      "updated": "19:02:12",
+      "price": 137.8,
+      "change_percent": -1.4,
+      "turnover": 438908981,
+      "updated": "10:42:46",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -279,42 +280,62 @@
       "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "3e7bd402fdf721b7",
+        "published_at": "Wed, 22 Jul 2026 16:34:06 GMT",
+        "title": "Ozon: 48% россиян считают, что ИИ делает онлайн-покупки безопаснее - prospect.com.ru",
+        "summary": "Ozon: 48% россиян считают, что ИИ делает онлайн-покупки безопаснее prospect.com.ru",
+        "source": "prospect.com.ru",
+        "url": "https://prospect.com.ru/news/6886565/ozon-48-rossiyan-schitayut-chto-ii-delaet-onlajnpokupki-bezopasnee.html",
+        "companies": [
+          "OZON"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false,
+        "discovery_url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOMmVWbTlWZUV2WGFId2F5Q2FWWWtKSXFJbHpuY1kzczlMRDJzSlU4d2RFTEFTWTdJQlh1ajl1Z1kzS1dlYUd6c3BoLTNOdEFiX0xINXVFbkY5ak14REhLTFRycHV5STVMdnlmY2tCZjI5eDdwUEpwczBGR1dVYjFHUGd5emFla3M5RVlOR19CRnhfRFlvQWpCN19oYUpITDBmSEJvdWZ4S2I2bnFR?oc=5",
+        "country": "Not disclosed",
+        "market": "Not disclosed",
+        "source_id": "",
+        "source_event_id": "",
+        "original_title": "",
+        "issuer": "",
+        "instrument": "",
+        "programme": "",
+        "series": "",
+        "isin": "",
+        "registration_number": "",
+        "coupon_rate": null,
+        "yield_rate": null,
+        "maturity_date": "",
+        "event_date": "",
+        "lifecycle_stage": "",
+        "event_sub_stage": "",
+        "document_urls": [],
+        "quantity": null,
+        "denomination": null,
+        "amount_is_derived": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "OZON"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [
-      {
-        "ticker": "OZON",
-        "company": "Ozon",
-        "price": 2735.5,
-        "change_percent": -4.75,
-        "turnover": 8969697629,
-        "updated": "19:02:11",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      },
-      {
-        "ticker": "YDEX",
-        "company": "Yandex",
-        "price": 3678,
-        "change_percent": 2.18,
-        "turnover": 3826746246,
-        "updated": "19:02:10",
-        "currency": "RUB",
-        "source": "MOEX ISS",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
-        "quote_status": "valid",
-        "quote_usable": true
-      }
-    ],
+    "market_moves": [],
     "hypotheses": [
       {
         "id": "H-01",
@@ -372,32 +393,28 @@
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
-        "id": "TASK-fe1a439f405c",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения YDEX (+2.18%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
-        "coverage": "YDEX",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
-        "source_title": "MOEX quote for YDEX",
-        "hypothesis_ids": []
-      },
-      {
-        "id": "TASK-77d96a41756b",
-        "priority": "P2",
-        "state": "market",
-        "title": "Проверить драйвер движения OZON (-4.75%) и обновить trading comps.",
-        "deliverable": "Trading comps + market movement note",
+        "id": "TASK-5cbe5b851a47",
+        "priority": "P1",
+        "state": "open",
+        "title": "Verify official source and confirm target, acquirer, transaction value, stake, payment form: use company, FAS, exchange, or transaction-party disclosure before upgrading this M&A record.",
+        "deliverable": "Verified M&A terms + evidence note",
         "coverage": "OZON",
-        "category": "Market",
-        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
-        "source_title": "MOEX quote for OZON",
-        "hypothesis_ids": []
+        "category": "M&A",
+        "source_url": "https://prospect.com.ru/news/6886565/ozon-48-rossiyan-schitayut-chto-ii-delaet-onlajnpokupki-bezopasnee.html",
+        "source_title": "Ozon: 48% россиян считают, что ИИ делает онлайн-покупки безопаснее - prospect.com.ru",
+        "hypothesis_ids": [],
+        "deal_id": "DL-3e7bd402fdf721b7",
+        "quality_status": "review",
+        "quality_flags": [
+          "unverified_source",
+          "missing_both_parties"
+        ],
+        "reason": "Official evidence is insufficient for approval.",
+        "required_source": "company, FAS, exchange, or transaction-party disclosure"
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -405,7 +422,7 @@
       },
       {
         "label": "Рынок",
-        "text": "OZON: -4.75% к предыдущему закрытию."
+        "text": "Движений выше установленного порога нет."
       },
       {
         "label": "Первое действие",
