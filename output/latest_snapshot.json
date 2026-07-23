@@ -1,32 +1,34 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-23T21:19+03:00",
-  "classification_as_of": "2026-07-23T18:19:43+00:00",
+  "generated_at": "2026-07-24T01:31+03:00",
+  "classification_as_of": "2026-07-23T22:31:59+00:00",
   "presentation_fingerprint": "37a227ad5fcb934a7d93c757726aaf815b0284d916e6f38068d2d53caf58a59d",
   "health": {
-    "last_success_at": "2026-07-23T21:19+03:00",
-    "build_id": "10f694b61f17",
-    "dataset_sha256": "10f694b61f17727a11c58fcfd85bbf736d48a38d0d7917bca3dd2672382c112c",
-    "record_count": 132,
+    "last_success_at": "2026-07-24T01:31+03:00",
+    "build_id": "2952ddd903c9",
+    "dataset_sha256": "2952ddd903c9eb56f21d1ee8da0e67ad9f695d20ab879e3f2ee38e0e36f4a92c",
+    "record_count": 133,
     "key_deal_count": 9,
     "approved_count": 17,
-    "review_count": 85,
+    "review_count": 86,
     "rejected_count": 30,
-    "source_count": 171,
-    "source_representation_count": 239,
-    "direct_source_count": 151,
-    "aggregator_source_count": 88,
+    "source_count": 172,
+    "source_representation_count": 241,
+    "direct_source_count": 152,
+    "aggregator_source_count": 89,
     "critical_qa_issues": 0,
     "source_group_count": 9,
     "source_runs": [
       {
         "name": "issuer_news",
+        "source_id": "issuer_news",
+        "enabled": true,
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-23T11:32:30+03:00",
+        "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
-        "age_minutes": 587.2
+        "age_minutes": 0.0
       },
       {
         "name": "cis:uz-uzse",
@@ -37,7 +39,7 @@
         "required": false,
         "checked_at": "2026-07-23T18:19:43+00:00",
         "error": "URLError: <urlopen error timed out>",
-        "age_minutes": 0.0
+        "age_minutes": 252.3
       },
       {
         "name": "cis_disclosures",
@@ -46,7 +48,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
-        "age_minutes": 586.8
+        "age_minutes": 839.0
       },
       {
         "name": "gdelt",
@@ -55,16 +57,16 @@
         "required": false,
         "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
-        "age_minutes": 586.8
+        "age_minutes": 839.0
       },
       {
         "name": "moex_disclosures",
         "source_id": "ru-moex",
         "enabled": true,
         "status": "ok",
-        "records": 6,
+        "records": 4,
         "required": true,
-        "checked_at": "2026-07-23T18:19:43+00:00",
+        "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -75,7 +77,7 @@
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-23T18:19:43+00:00",
+        "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -86,7 +88,7 @@
         "status": "ok",
         "records": 3,
         "required": true,
-        "checked_at": "2026-07-23T18:19:43+00:00",
+        "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -97,7 +99,7 @@
         "status": "ok",
         "records": 8,
         "required": true,
-        "checked_at": "2026-07-23T18:19:43+00:00",
+        "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -108,7 +110,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:33:07+03:00",
         "error": "",
-        "age_minutes": 586.6
+        "age_minutes": 838.9
       },
       {
         "name": "sec_filings",
@@ -117,7 +119,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:33:09+03:00",
         "error": "",
-        "age_minutes": 586.6
+        "age_minutes": 838.8
       },
       {
         "name": "moex_quotes",
@@ -126,7 +128,7 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-23T18:19:43+00:00",
+        "checked_at": "2026-07-23T22:31:59+00:00",
         "error": ""
       }
     ],
@@ -134,7 +136,7 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 587.2,
+    "source_age_minutes": 839.0,
     "source_checked_at": "2026-07-23T11:32+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
@@ -144,17 +146,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-23T18:20:11+00:00"
+    "xlsx_generated_at": "2026-07-23T22:32:34+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3668,
-      "change_percent": -0.68,
-      "turnover": 2746525994,
-      "updated": "21:05:07",
+      "price": 3665,
+      "change_percent": -0.76,
+      "turnover": 2853429130,
+      "updated": "23:50:22",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -165,10 +167,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 2737,
-      "change_percent": -0.67,
-      "turnover": 3747294586,
-      "updated": "21:05:07",
+      "price": 2726,
+      "change_percent": -1.07,
+      "turnover": 3939984455,
+      "updated": "23:50:22",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -179,10 +181,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 133.3,
-      "change_percent": -4.62,
-      "turnover": 1518043248,
-      "updated": "21:05:08",
+      "price": 132.6,
+      "change_percent": -5.12,
+      "turnover": 1606994449,
+      "updated": "23:50:22",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -281,6 +283,55 @@
       "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
+    },
+    {
+      "event": {
+        "event_id": "7e1f6c6e3007f879",
+        "published_at": "Thu, 23 Jul 2026 10:26:02 GMT",
+        "title": "🙅‍♂️ Не стоит торопиться с покупками Ozon — идея в Профите по OZON - БКС Экспресс",
+        "summary": "🙅‍♂️ Не стоит торопиться с покупками Ozon — идея в Профите по OZON БКС Экспресс",
+        "source": "БКС Экспресс",
+        "url": "https://bcs-express.ru/profit/post/8229d264-9362-49af-9bff-a5ab450f45bd",
+        "companies": [
+          "OZON"
+        ],
+        "source_type": "public_news",
+        "confidence": "unverified",
+        "amount": null,
+        "currency": null,
+        "demo": false,
+        "discovery_url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE03QnJEdnBELTN0VXFiWTYwLUxFVmpVN19kSnZzaFYzTDFsWU1zMjd0dTJ5cTFBV0ZDeG1HQlJNN0tZb0lFVlM2TDE4VXpwWEV6aW9fLXVQR2tkMDhYRUhoTmpyalZQUllIMzZKY3VPcEhxRmNGUzlVelRlNA?oc=5",
+        "country": "Not disclosed",
+        "market": "Not disclosed",
+        "source_id": "",
+        "source_event_id": "",
+        "original_title": "",
+        "issuer": "",
+        "instrument": "",
+        "programme": "",
+        "series": "",
+        "isin": "",
+        "registration_number": "",
+        "coupon_rate": null,
+        "yield_rate": null,
+        "maturity_date": "",
+        "event_date": "",
+        "lifecycle_stage": "",
+        "event_sub_stage": "",
+        "document_urls": [],
+        "quantity": null,
+        "denomination": null,
+        "amount_is_derived": false
+      },
+      "category": "M&A",
+      "score": 5,
+      "severity": "medium",
+      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
+      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
+      "matched_coverage": [
+        "OZON"
+      ],
+      "evidence_label": "unverified"
     }
   ],
   "workflow": {
@@ -291,10 +342,10 @@
       {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 133.3,
-        "change_percent": -4.62,
-        "turnover": 1518043248,
-        "updated": "21:05:08",
+        "price": 132.6,
+        "change_percent": -5.12,
+        "turnover": 1606994449,
+        "updated": "23:50:22",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -360,10 +411,30 @@
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
-        "id": "TASK-e94f7d6fef4a",
-        "priority": "P2",
+        "id": "TASK-b4f333f20610",
+        "priority": "P1",
+        "state": "open",
+        "title": "Verify official source and confirm target, acquirer, transaction value, stake, payment form: use company, FAS, exchange, or transaction-party disclosure before upgrading this M&A record.",
+        "deliverable": "Verified M&A terms + evidence note",
+        "coverage": "OZON",
+        "category": "M&A",
+        "source_url": "https://bcs-express.ru/profit/post/8229d264-9362-49af-9bff-a5ab450f45bd",
+        "source_title": "🙅‍♂️ Не стоит торопиться с покупками Ozon — идея в Профите по OZON - БКС Экспресс",
+        "hypothesis_ids": [],
+        "deal_id": "DL-7e1f6c6e3007f879",
+        "quality_status": "review",
+        "quality_flags": [
+          "unverified_source",
+          "missing_both_parties"
+        ],
+        "reason": "Official evidence is insufficient for approval.",
+        "required_source": "company, FAS, exchange, or transaction-party disclosure"
+      },
+      {
+        "id": "TASK-fa7f2b4d0c2e",
+        "priority": "P1",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-4.62%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (-5.12%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -373,7 +444,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -381,7 +452,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -4.62% к предыдущему закрытию."
+        "text": "VKCO: -5.12% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
