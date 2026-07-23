@@ -79,9 +79,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/deal-markets-orchestration
-          key: deal-markets-orchestration-v1-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}
+          key: deal-markets-orchestration-v2-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            deal-markets-orchestration-v1-${{ runner.os }}-main-
+            deal-markets-orchestration-v2-${{ runner.os }}-main-
 
       - name: Initialize orchestration state directory
         run: mkdir -p "$RUNNER_TEMP/deal-markets-orchestration"
@@ -98,25 +98,6 @@ jobs:
           DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
         run: python run.py --live --orchestration-at "$ORCHESTRATION_AT"
 
-      - name: Validate orchestration state for cache save
-        id: orchestration-state
-        if: always()
-        env:
-          DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
-        run: |
-          if python scripts/release_diagnostics.py verify-orchestration-state --path "$DEAL_MARKETS_ORCHESTRATION_STATE"; then
-            echo "cache_save=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "cache_save=false" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Save cross-run orchestration state
-        if: always() && steps.orchestration-state.outputs.cache_save == 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ runner.temp }}/deal-markets-orchestration
-          key: deal-markets-orchestration-v1-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}
-
       - name: Persist replay canonicalization before Excel
         if: steps.refresh.outputs.publish_delta == 'true'
         run: python run.py --replay
@@ -130,6 +111,7 @@ jobs:
         run: python run.py --replay
 
       - name: Verify synchronized public artifacts
+        id: verifier
         run: |
           python scripts/release_diagnostics.py verify-public-artifacts
           python -m unittest discover -s tests -v
@@ -146,18 +128,55 @@ jobs:
           touch site/.nojekyll
 
       - name: Verify origin main still matches the run parent
+        id: parent
         run: python scripts/release_diagnostics.py verify-parent --expected-base "$GITHUB_SHA"
 
       - name: Commit and push verified publishable delta
+        id: publication
         if: steps.refresh.outputs.publish_delta == 'true'
         run: |
           git config user.name "deal-desk-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add output/deal_markets_brief.html output/latest_snapshot.json output/precedent_transactions.csv output/precedent_transactions.xlsx output/build_manifest.json data/precedent_transactions.json
-          if ! git diff --cached --quiet; then
-            git commit -m "chore: refresh deal desk"
+          if git diff --cached --quiet; then
+            echo "publish_delta=true produced no allowlisted artifact diff" >&2
+            exit 1
           fi
+          git commit -m "chore: refresh deal desk"
           python scripts/release_diagnostics.py bot-push --expected-base "$GITHUB_SHA"
+
+      - name: Finalize orchestration state transaction
+        id: state-finalization
+        if: always()
+        env:
+          DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
+        run: |
+          python scripts/release_diagnostics.py finalize-orchestration-state \
+            --path "$DEAL_MARKETS_ORCHESTRATION_STATE" \
+            --publish-delta "${{ steps.refresh.outputs.publish_delta }}" \
+            --refresh-outcome "${{ steps.refresh.outcome }}" \
+            --verifier-outcome "${{ steps.verifier.outcome }}" \
+            --parent-outcome "${{ steps.parent.outcome }}" \
+            --publication-outcome "${{ steps.publication.outcome }}"
+
+      - name: Validate finalized orchestration state
+        id: orchestration-state
+        if: always()
+        env:
+          DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
+        run: |
+          if python scripts/release_diagnostics.py verify-orchestration-state --path "$DEAL_MARKETS_ORCHESTRATION_STATE"; then
+            echo "cache_save=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_save=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save accepted or failure-safe orchestration state
+        if: always() && steps.state-finalization.outputs.cache_save == 'true' && steps.orchestration-state.outputs.cache_save == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/deal-markets-orchestration
+          key: deal-markets-orchestration-v2-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Configure Pages
         if: steps.refresh.outputs.publish_delta == 'true'

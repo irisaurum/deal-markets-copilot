@@ -31,6 +31,7 @@ from deal_markets_copilot.orchestrator import (
     OperationalStateStore,
     SourceOrchestrator,
     SourcePolicy,
+    begin_transaction,
     classify_error,
     content_changed,
     empty_state,
@@ -135,7 +136,11 @@ def main() -> int:
         state_path = args.orchestration_state or os.environ.get("DEAL_MARKETS_ORCHESTRATION_STATE")
         state_store = OperationalStateStore(state_path) if state_path else None
         try:
-            operational_state = state_store.load() if state_store else empty_state()
+            operational_state = (
+                state_store.begin()
+                if state_store
+                else begin_transaction(empty_state())
+            )
         except OperationalStateError as exc:
             print(f"ORCHESTRATION_STATE_ERROR {exc}", file=sys.stderr)
             for row in _dependency_unavailable_diagnostics(config, orchestration_at):
@@ -351,7 +356,7 @@ def main() -> int:
         for row in orchestrator.diagnostics:
             print(format_diagnostic(row))
         if state_store is not None:
-            state_store.save(orchestrator.state)
+            state_store.save(orchestrator.transaction)
         required_failures = [
             row for row in source_runs
             if row.get("required") and (

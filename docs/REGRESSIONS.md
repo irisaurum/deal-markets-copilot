@@ -330,6 +330,15 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** `test_cross_run_operational_state_uses_cache_not_git`, `test_orchestration_state_validator_requires_present_valid_schema`, `test_state_and_public_artifacts_survive_a_second_python_process`.
 - **Files:** `.github/workflows/deal-desk.yml`, `release_diagnostics.py`, orchestrator/workflow tests.
 
+### REG-37 — Unpublished source evidence marked consumed before verification/publication
+
+- **Failure mode:** discovery advances ETag, Last-Modified, fingerprints, processed IDs or successful evidence timestamps, then strict verification, stale-parent checking, bot commit or bot push fails; the next runner restores those fields and silently skips the unpublished evidence.
+- **Impact:** a valid economic event can be absent from `main` while operational state says it was already handled.
+- **Root mechanism:** the live process mutated one authoritative state object and the workflow saved its cache before the artifact verifier and publication boundary.
+- **Current protection:** schema v2 stores explicit `committed`, `candidate` and `failure_patch` namespaces. Candidate evidence is promoted only after a successful verified no-op or successful fast-forward bot push. All other terminal paths roll back candidate evidence and merge only whitelisted attempt/error/backoff fields into the prior committed generation. Cache save occurs only after finalization and committed-state validation; hard cancellation leaves the prior immutable cache authoritative.
+- **Tests/checks:** `tests/test_orchestrator_transaction.py` covers verifier/stale-parent/commit/push rollback, required and optional source failures, successful no-op/publication, deployment failure and hard cancellation, including three separate-process scenarios; `test_state_transaction_finalizes_only_after_release_boundary` protects workflow ordering.
+- **Files:** `orchestrator.py`, `run.py`, `.github/workflows/deal-desk.yml`, `release_diagnostics.py`, transaction/workflow tests.
+
 ## Using this registry
 
 For a change, run the named test/checks for the affected rows first. Update this file only when a failure mode, protection or exact test changes. Do not treat a green historical verification date as proof of the current build; follow [`TESTING_AND_RELEASE.md`](TESTING_AND_RELEASE.md).

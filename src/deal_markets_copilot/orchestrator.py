@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import os
@@ -12,10 +13,32 @@ from pathlib import Path
 from typing import Callable, TypeVar
 
 
-STATE_SCHEMA_VERSION = 1
+STATE_SCHEMA_VERSION = 2
 BASE_SLOT_MINUTES = 30
 MAX_BACKOFF_MINUTES = 24 * 60
 _SAFE_CODE = re.compile(r"[^a-z0-9_:-]+")
+_SAFE_FAILURE_FIELDS = frozenset(
+    {
+        "last_attempt_at",
+        "last_attempt_slot",
+        "consecutive_failures",
+        "last_error_code",
+        "next_eligible_at",
+        "last_result",
+    }
+)
+_FORBIDDEN_STATE_KEYS = frozenset(
+    {
+        "authorization",
+        "cookie",
+        "headers",
+        "password",
+        "private_key",
+        "response_body",
+        "stack_trace",
+        "token",
+    }
+)
 T = TypeVar("T")
 
 
@@ -92,12 +115,119 @@ def parse_utc(value: str | datetime) -> datetime:
     return parsed.astimezone(timezone.utc)
 
 
+def empty_generation() -> dict:
+    return {"sources": {}}
+
+
+def empty_failure_patch() -> dict:
+    return {"sources": {}}
+
+
 def empty_state() -> dict:
-    return {"schema_version": STATE_SCHEMA_VERSION, "sources": {}}
+    return {
+        "schema_version": STATE_SCHEMA_VERSION,
+        "state_status": "committed",
+        "accepted_generation": 0,
+        "committed": empty_generation(),
+        "candidate": None,
+        "failure_patch": empty_failure_patch(),
+    }
+
+
+def _validate_generation(value: object) -> bool:
+    if not isinstance(value, dict) or set(value) != {"sources"} or not isinstance(value.get("sources"), dict):
+        return False
+    for source_id, source_state in value["sources"].items():
+        if not isinstance(source_id, str) or not isinstance(source_state, dict):
+            return False
+        if any(str(key).lower() in _FORBIDDEN_STATE_KEYS for key in source_state):
+            return False
+    return True
+
+
+def _validate_failure_patch(value: object) -> bool:
+    if not _validate_generation(value):
+        return False
+    return all(
+        set(source_state).issubset(_SAFE_FAILURE_FIELDS)
+        for source_state in value["sources"].values()
+    )
+
+
+def validate_state_document(value: object, *, require_committed: bool = False) -> dict:
+    expected_keys = {
+        "schema_version",
+        "state_status",
+        "accepted_generation",
+        "committed",
+        "candidate",
+        "failure_patch",
+    }
+    if (
+        not isinstance(value, dict)
+        or set(value) != expected_keys
+        or value.get("schema_version") != STATE_SCHEMA_VERSION
+    ):
+        raise OperationalStateError("operational_state_schema_invalid")
+    status = value.get("state_status")
+    generation = value.get("accepted_generation")
+    committed = value.get("committed")
+    candidate = value.get("candidate")
+    failure_patch = value.get("failure_patch")
+    if status not in {"committed", "candidate"} or not isinstance(generation, int) or generation < 0:
+        raise OperationalStateError("operational_state_schema_invalid")
+    if not _validate_generation(committed) or not _validate_failure_patch(failure_patch):
+        raise OperationalStateError("operational_state_schema_invalid")
+    if status == "committed":
+        if candidate is not None or failure_patch["sources"]:
+            raise OperationalStateError("operational_state_not_finalized")
+    elif not _validate_generation(candidate):
+        raise OperationalStateError("operational_state_schema_invalid")
+    if require_committed and status != "committed":
+        raise OperationalStateError("operational_state_not_finalized")
+    return value
+
+
+def begin_transaction(state: dict) -> dict:
+    validate_state_document(state, require_committed=True)
+    return {
+        "schema_version": STATE_SCHEMA_VERSION,
+        "state_status": "candidate",
+        "accepted_generation": state["accepted_generation"],
+        "committed": copy.deepcopy(state["committed"]),
+        "candidate": copy.deepcopy(state["committed"]),
+        "failure_patch": empty_failure_patch(),
+    }
+
+
+def finalize_transaction(state: dict, *, accept_candidate: bool) -> tuple[dict, str]:
+    validate_state_document(state)
+    if state["state_status"] != "candidate":
+        raise OperationalStateError("operational_state_transaction_missing")
+    if accept_candidate:
+        committed = copy.deepcopy(state["candidate"])
+        generation = state["accepted_generation"] + 1
+        outcome = "accepted"
+    else:
+        committed = copy.deepcopy(state["committed"])
+        for source_id, patch in state["failure_patch"]["sources"].items():
+            committed["sources"].setdefault(source_id, {}).update(copy.deepcopy(patch))
+        generation = state["accepted_generation"]
+        outcome = "failure_only"
+    finalized = {
+        "schema_version": STATE_SCHEMA_VERSION,
+        "state_status": "committed",
+        "accepted_generation": generation,
+        "committed": committed,
+        "candidate": None,
+        "failure_patch": empty_failure_patch(),
+    }
+    validate_state_document(finalized, require_committed=True)
+    return finalized, outcome
 
 
 class OperationalStateStore:
-    """Schema-versioned atomic JSON state outside tracked economic artifacts."""
+    """Atomic committed/candidate state outside tracked economic artifacts."""
 
     def __init__(self, path: str | Path):
         self.path = Path(path)
@@ -109,17 +239,10 @@ class OperationalStateStore:
             value = json.loads(self.path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
             raise OperationalStateError("operational_state_corrupted") from exc
-        if (
-            not isinstance(value, dict)
-            or value.get("schema_version") != STATE_SCHEMA_VERSION
-            or not isinstance(value.get("sources"), dict)
-        ):
-            raise OperationalStateError("operational_state_schema_invalid")
-        return value
+        return validate_state_document(value)
 
     def save(self, state: dict) -> None:
-        if state.get("schema_version") != STATE_SCHEMA_VERSION or not isinstance(state.get("sources"), dict):
-            raise OperationalStateError("operational_state_schema_invalid")
+        validate_state_document(state)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         descriptor, temporary_name = tempfile.mkstemp(prefix=f".{self.path.name}.", dir=self.path.parent)
         try:
@@ -133,14 +256,31 @@ class OperationalStateStore:
             if os.path.exists(temporary_name):
                 os.unlink(temporary_name)
 
+    def begin(self) -> dict:
+        transaction = begin_transaction(self.load())
+        self.save(transaction)
+        return transaction
+
+    def finalize(self, *, accept_candidate: bool) -> str:
+        finalized, outcome = finalize_transaction(
+            self.load(),
+            accept_candidate=accept_candidate,
+        )
+        self.save(finalized)
+        return outcome
+
 
 class SourceOrchestrator:
     """One deterministic eligibility/backoff layer for a production run."""
 
     def __init__(self, state: dict, as_of: str | datetime):
-        if state.get("schema_version") != STATE_SCHEMA_VERSION or not isinstance(state.get("sources"), dict):
-            raise OperationalStateError("operational_state_schema_invalid")
-        self.state = state
+        validate_state_document(state)
+        self.transaction = state
+        self.state = (
+            state["candidate"]
+            if state["state_status"] == "candidate"
+            else state["committed"]
+        )
         self.as_of = parse_utc(as_of)
         self.diagnostics: list[dict] = []
 
@@ -243,6 +383,18 @@ class SourceOrchestrator:
                 "last_result": result or code,
             }
         )
+        if self.transaction["state_status"] == "candidate":
+            patch = {
+                key: copy.deepcopy(state[key])
+                for key in _SAFE_FAILURE_FIELDS
+                if key in state
+            }
+            self.transaction["failure_patch"]["sources"][policy.source_id] = patch
+            committed_source = copy.deepcopy(
+                self.transaction["committed"]["sources"].get(policy.source_id, {})
+            )
+            committed_source.update(copy.deepcopy(patch))
+            self.transaction["candidate"]["sources"][policy.source_id] = committed_source
         return next_eligible.isoformat()
 
     def diagnostic(

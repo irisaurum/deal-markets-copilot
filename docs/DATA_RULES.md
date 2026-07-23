@@ -123,6 +123,7 @@ Curated IDs use `CURATED-` and are valid in the database, Excel `Deals`, `Financ
 - Database merging preserves earliest `first_seen_at`, latest `last_seen_at`, strongest source and complementary disclosed fields.
 - `first_seen_at` is assigned only when an economic event is first created. Re-observing byte-equivalent official evidence does not advance `last_seen_at`; it advances only when normalized event meaning or canonical evidence changes.
 - Poll attempts, success times, request counters, validators, fingerprints and backoff are operational state. They remain outside the economic dataset and replay.
+- Operational evidence consumption is transactional. ETag, Last-Modified, content/entry fingerprints, processed IDs and success state discovered by one runner remain candidate-only until either a verified no-op is accepted or the corresponding allowlisted artifact commit is pushed successfully. A failed verifier, stale-parent guard, bot commit or bot push cannot advance those fields. Only bounded attempt/error/backoff fields from a failed source may be merged into the prior committed generation.
 
 ## Financial enrichment
 

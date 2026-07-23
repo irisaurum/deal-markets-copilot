@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import json
 import hashlib
+import json
 import os
 import subprocess
 import sys
@@ -138,7 +138,7 @@ class OperationalStateTests(unittest.TestCase):
             path = Path(directory) / "state.json"
             store = OperationalStateStore(path)
             state = empty_state()
-            state["sources"]["feed"] = {"etag": '"v1"', "last_attempt_slot": 123}
+            state["committed"]["sources"]["feed"] = {"etag": '"v1"', "last_attempt_slot": 123}
             store.save(state)
             self.assertEqual(OperationalStateStore(path).load(), state)
             self.assertEqual(list(path.parent.glob(f".{path.name}.*")), [])
@@ -181,14 +181,19 @@ from deal_markets_copilot.orchestrator import OperationalStateStore, SourceOrche
 path = sys.argv[1]
 policy = SourcePolicy.from_mapping("feed", {"enabled": True, "required": True, "implementation_state": "connected", "poll_interval_minutes": 30})
 state = empty_state()
-orchestrator = SourceOrchestrator(state, datetime(2026, 7, 23, 12, 0, tzinfo=timezone.utc))
+state["committed"]["sources"]["feed"] = {
+    "etag": '"v1"',
+    "last_modified": "Wed, 23 Jul 2026 11:00:00 GMT",
+}
+store = OperationalStateStore(path)
+store.save(state)
+transaction = store.begin()
+orchestrator = SourceOrchestrator(transaction, datetime(2026, 7, 23, 12, 0, tzinfo=timezone.utc))
 decision = orchestrator.decide(policy)
 orchestrator.begin(policy, decision)
-source = orchestrator.source_state("feed")
-source["etag"] = '"v1"'
-source["last_modified"] = "Wed, 23 Jul 2026 11:00:00 GMT"
 orchestrator.fail(policy, "http_429", retry_after=3600)
-OperationalStateStore(path).save(state)
+store.save(transaction)
+store.finalize(accept_candidate=False)
 """
             subprocess.run(
                 [sys.executable, "-c", process_a, str(state_path)],
@@ -204,7 +209,7 @@ from deal_markets_copilot.orchestrator import OperationalStateStore, SourceOrche
 state = OperationalStateStore(sys.argv[1]).load()
 policy = SourcePolicy.from_mapping("feed", {"enabled": True, "required": True, "implementation_state": "connected", "poll_interval_minutes": 30})
 decision = SourceOrchestrator(state, datetime(2026, 7, 23, 12, 30, tzinfo=timezone.utc)).decide(policy)
-source = state["sources"]["feed"]
+source = state["committed"]["sources"]["feed"]
 print(json.dumps({"decision": decision.decision, "etag": source["etag"], "last_modified": source["last_modified"], "failures": source["consecutive_failures"]}, sort_keys=True))
 """
             completed = subprocess.run(
@@ -228,7 +233,7 @@ class BackoffTests(unittest.TestCase):
         state = empty_state()
         first = SourceOrchestrator(state, AT)
         first_next = first.fail(source, "failed_transport")
-        self.assertEqual(state["sources"]["required"]["consecutive_failures"], 1)
+        self.assertEqual(state["committed"]["sources"]["required"]["consecutive_failures"], 1)
         second_at = AT + timedelta(minutes=30)
         second = SourceOrchestrator(state, second_at)
         second_next = second.fail(source, "failed_transport")
@@ -238,7 +243,7 @@ class BackoffTests(unittest.TestCase):
         )
         for index in range(12):
             SourceOrchestrator(state, AT + timedelta(hours=index + 2)).fail(source, "failed_http_429")
-        capped = datetime.fromisoformat(state["sources"]["required"]["next_eligible_at"]) - (AT + timedelta(hours=13))
+        capped = datetime.fromisoformat(state["committed"]["sources"]["required"]["next_eligible_at"]) - (AT + timedelta(hours=13))
         self.assertLessEqual(capped.total_seconds() / 60, MAX_BACKOFF_MINUTES)
 
     def test_retry_after_is_respected_within_cap_and_success_clears_backoff(self) -> None:
@@ -248,12 +253,12 @@ class BackoffTests(unittest.TestCase):
         next_at = orchestrator.fail(source, "failed_http_429", retry_after=3600)
         self.assertGreaterEqual(datetime.fromisoformat(next_at), AT + timedelta(minutes=60))
         orchestrator.succeed(source, changed=False)
-        self.assertEqual(state["sources"]["feed"]["consecutive_failures"], 0)
-        self.assertEqual(state["sources"]["feed"]["next_eligible_at"], "")
+        self.assertEqual(state["committed"]["sources"]["feed"]["consecutive_failures"], 0)
+        self.assertEqual(state["committed"]["sources"]["feed"]["next_eligible_at"], "")
 
     def test_disabled_source_ignores_stale_backoff(self) -> None:
         state = empty_state()
-        state["sources"]["disabled"] = {
+        state["committed"]["sources"]["disabled"] = {
             "next_eligible_at": (AT + timedelta(days=1)).isoformat(),
             "consecutive_failures": 5,
         }
@@ -314,8 +319,8 @@ class DiagnosticsAndIntegrationTests(unittest.TestCase):
         good = policy("optional")
         execute_source(SourceOrchestrator(state, AT), bad, Mock(side_effect=OSError("down")))
         execute_source(SourceOrchestrator(state, AT), good, Mock(return_value=[]))
-        self.assertEqual(state["sources"]["required"]["consecutive_failures"], 1)
-        self.assertEqual(state["sources"]["optional"]["consecutive_failures"], 0)
+        self.assertEqual(state["committed"]["sources"]["required"]["consecutive_failures"], 1)
+        self.assertEqual(state["committed"]["sources"]["optional"]["consecutive_failures"], 0)
 
     def test_registered_long_interval_sources_have_stable_distributed_phases(self) -> None:
         configured = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))

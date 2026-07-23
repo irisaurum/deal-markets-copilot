@@ -156,8 +156,8 @@ Current `.github/workflows/deal-desk.yml` production refresh path performs:
 schedule or workflow_dispatch
 → install pinned production dependencies
 → tests
-→ restore external orchestration state and inject one UTC clock
-→ fetch only eligible sources and save state
+→ restore finalized committed v2 state and inject one UTC clock
+→ fetch only eligible sources into candidate state and compute a safe failure patch
 → compute publish_delta
 → strict verifier + parent check for both delta and no-op
 → if delta: replay canonicalization/persistence
@@ -165,6 +165,8 @@ schedule or workflow_dispatch
 → second replay health synchronization
 → local allowlisted bot commit
 → repeated stale-main check and explicit main-only fast-forward push
+→ promote candidate after successful no-op/push, otherwise merge failure patch only
+→ validate finalized committed state and save a unique immutable cache
 → Pages deploy
 ```
 
@@ -176,17 +178,19 @@ Before any bot push or Pages deploy, the workflow fetches `origin/main` and comp
 
 Production refresh uses one concurrency group, `deal-desk-pages`, with `cancel-in-progress: false`. A valid production writer finishes; later slots queue and cannot overlap discovery or push. Validation runs use unique concurrency groups and cannot cancel a production refresh.
 
-Operational cache restore/save uses separate `actions/cache` v4 actions. Keys are schema-, runner-platform- and main-scoped, with a stable restore prefix and unique run ID/attempt save suffix to respect immutable cache semantics. An `always()` validation step permits cache save only when the atomic state file exists and has the expected schema; no-op and known source-failure paths therefore retain operational state without allowing a missing/corrupt state directory to supersede it.
+Operational cache restore/save uses separate `actions/cache` v4 actions. Keys are schema-, runner-platform- and main-scoped, with v2 stable restore prefix and unique run ID/attempt save suffix to respect immutable cache semantics. The runtime writes explicit committed/candidate/failure-patch state, but cache save occurs only after an `always()` finalizer has either promoted candidate state at a verified no-op/successful-push boundary or rolled it back and merged failure-safe fields. A second validator requires `state_status=committed`; candidate, missing, malformed, v1 or partially written documents cannot supersede the last valid cache.
 
 The workflow has exactly one `*/30 * * * *` cron. GitHub scheduling may be delayed, so this is a target cadence rather than a real-time SLA. Source requests still follow explicit 30/120/360/720-minute policies and deterministic UTC slots.
 
-Operational polling state is external to Git and replay. It is restored/saved through a versioned GitHub Actions cache and written atomically. A missing cache does not bypass deterministic slot gating; corrupted state fails closed before transport. Cache retention is not a release artifact guarantee.
+Operational polling state is external to Git and replay. It is restored/saved through a versioned GitHub Actions cache and written atomically. Evidence-consumption fields are candidate-only until a verified no-op or successful bot push. Verifier, stale-parent, commit and push failures retain only bounded failure metadata, ensuring the same unpublished evidence remains reprocessable. A missing cache does not bypass deterministic slot gating; corrupted/unfinalized state fails closed before transport. Cache retention is not a release artifact guarantee.
 
-When `publish_delta=false`, the live step must print `NO_PUBLISH_DELTA`, preserve dataset bytes/Build ID, and skip replay/build regeneration, bot commit, push, Pages upload and deploy. Strict verification of the checked-in synchronized build and read-only parent verification still run.
+When `publish_delta=false`, the live step must print `NO_PUBLISH_DELTA`, preserve dataset bytes/Build ID, and skip replay/build regeneration, bot commit, push, Pages upload and deploy. Strict verification of the checked-in synchronized build and read-only parent verification still run; only after both succeed may candidate operational state be promoted and cached.
+
+When `publish_delta=true`, candidate operational state remains unaccepted through artifact generation, strict verification, the first parent check and local commit. It is promoted only after the bot-push command repeats the parent check and completes a normal fast-forward push. Pages setup/upload follows state finalization. A deployment failure after that point does not roll back state because the corresponding artifact commit is already on `main`.
 
 Do not reorder artifact creation so that a database write can happen after the final XLSX build without another synchronization cycle.
 
-If the strict verifier fails, there must be no bot commit and no Pages deployment.
+If the strict verifier, parent check, local commit or bot push fails, there must be no Pages deployment and unpublished candidate evidence must not enter committed state. A required-source failure after another source found a delta follows the same rollback; only the failed source's safe backoff/error patch may persist.
 
 ## LaunchAgent policy
 

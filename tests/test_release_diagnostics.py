@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from scripts import release_diagnostics
 from scripts import verify_public_artifacts as verifier
+from deal_markets_copilot.orchestrator import OperationalStateStore, empty_state
 
 
 def _git(cwd: Path, *args: str) -> subprocess.CompletedProcess[str]:
@@ -50,11 +51,14 @@ class ReleaseDiagnosticsTests(unittest.TestCase):
             with contextlib.redirect_stderr(io.StringIO()):
                 self.assertEqual(release_diagnostics.verify_orchestration_state(path), 1)
             path.write_text(
-                json.dumps({"schema_version": 1, "sources": {"feed": {"etag": "v1"}}}),
+                json.dumps(empty_state()),
                 encoding="utf-8",
             )
             with contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(release_diagnostics.verify_orchestration_state(path), 0)
+            OperationalStateStore(path).begin()
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(release_diagnostics.verify_orchestration_state(path), 1)
 
     def test_verifier_summary_extracts_csv_expected_actual(self) -> None:
         rows = release_diagnostics._verifier_summary(
