@@ -85,13 +85,15 @@ Disabled, blocked, research-only, not-due and backoff sources perform zero trans
 
 ## Operational-state persistence
 
-Polling state uses schema version `1` and lives under `${{ runner.temp }}/deal-markets-orchestration/state.json` in production. It is restored/saved with `actions/cache/restore@v4` and `actions/cache/save@v4`, using a unique per-run key and a versioned restore prefix. The JSON writer uses a same-directory temporary file, `fsync` and atomic replace.
+Polling state uses schema version `1` and lives under `${{ runner.temp }}/deal-markets-orchestration/state.json` in production. It is restored/saved with `actions/cache/restore@v4` and `actions/cache/save@v4`. The stable restore prefix is `deal-markets-orchestration-v1-${{ runner.os }}-main-`; every save key adds `${{ github.run_id }}-${{ github.run_attempt }}`, so immutable GitHub caches can advance on every production run without a key collision. The production job is explicitly limited to `refs/heads/main`. The JSON writer uses a same-directory temporary file, `fsync` and atomic replace.
 
 State includes attempts/successes, deterministic slot, consecutive failures, next eligibility, sanitized error code and adapter-supported validators/fingerprints. It is never staged by Git, never enters the economic dataset, and is not read or written by replay.
 
 On a missing/evicted cache, the schema starts empty but deterministic UTC slot phasing still prevents every 120/360-minute source from firing together. Conditional validators may be lost and one due source may perform its capped unconditional index request. GitHub cache retention/eviction is therefore a bounded efficiency limitation, not an economic-data or request-storm mechanism.
 
 Corrupted or wrong-version state fails the current live run closed before any source request. A clean schema is atomically written for the next scheduled retry. The failure is not treated as healthy and does not create a public delta.
+
+Before `actions/cache/save`, a step running with `always()` requires the state file to exist and pass the same schema validator used by the runtime. Cache save then requires the validator's canonical `cache_save=true` output. This preserves updated validators/backoff on no-op and known source-failure paths while preventing an absent, malformed or partially written state directory from becoming the newest compatible cache.
 
 ## Conditional requests and backoff
 
@@ -122,4 +124,10 @@ The formatter omits response bodies, headers, authorization, cookies and stack t
 
 ## Production acceptance still required
 
-This local branch requires a separate publication preflight, merge, normal validation and the first qualifying scheduled `main` run. Production acceptance must prove the schedule event, main ancestry, attempt, external-state cache behavior, no-op bot/deploy skip, a real-delta synchronized build, strict verifier, workbook parity and public artifact identity. CNPF Ubuntu TLS remains unverified and no source activation is part of this task.
+This local branch requires publication, merge and a multi-run acceptance sequence:
+
+1. Post-merge push validation must pass with production refresh and deploy skipped.
+2. The first qualifying natural `schedule/main` run must use the merged orchestrator, install dependencies before discovery, restore a compatible cache or report a legitimate miss, call only due sources, and save a new uniquely keyed state cache. A real public delta may produce one verified six-artifact bot commit and deploy; a no-op must produce neither.
+3. A later natural `schedule/main` run on a separate runner must restore the cache saved by the first run, apply source intervals, keep disabled/blocked/research sources at zero requests and, when evidence is unchanged, log `NO_PUBLISH_DELTA` with no bot commit or deploy and unchanged Build ID/dataset SHA.
+
+If the second run contains a legitimate public delta, it is not no-op evidence; wait for a later natural unchanged schedule rather than triggering an artificial run. CIS-ORCHESTRATOR-01 closes only after both separate-run cache restoration and a genuine scheduled no-op are proven. Production evidence must also retain strict verification, workbook parity, public artifact identity and safety-state checks. CNPF Ubuntu TLS remains unverified and no source activation is part of this task.

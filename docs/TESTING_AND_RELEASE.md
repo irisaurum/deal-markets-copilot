@@ -176,6 +176,8 @@ Before any bot push or Pages deploy, the workflow fetches `origin/main` and comp
 
 Production refresh uses one concurrency group, `deal-desk-pages`, with `cancel-in-progress: false`. A valid production writer finishes; later slots queue and cannot overlap discovery or push. Validation runs use unique concurrency groups and cannot cancel a production refresh.
 
+Operational cache restore/save uses separate `actions/cache` v4 actions. Keys are schema-, runner-platform- and main-scoped, with a stable restore prefix and unique run ID/attempt save suffix to respect immutable cache semantics. An `always()` validation step permits cache save only when the atomic state file exists and has the expected schema; no-op and known source-failure paths therefore retain operational state without allowing a missing/corrupt state directory to supersede it.
+
 The workflow has exactly one `*/30 * * * *` cron. GitHub scheduling may be delayed, so this is a target cadence rather than a real-time SLA. Source requests still follow explicit 30/120/360/720-minute policies and deterministic UTC slots.
 
 Operational polling state is external to Git and replay. It is restored/saved through a versioned GitHub Actions cache and written atomically. A missing cache does not bypass deterministic slot gating; corrupted state fails closed before transport. Cache retention is not a release artifact guarantee.

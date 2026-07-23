@@ -90,7 +90,7 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertRegex(trigger_block, r"(?m)^  schedule:$")
         self.assertEqual(trigger_block.count("- cron:"), 1)
         self.assertIn('- cron: "*/30 * * * *"', trigger_block)
-        production_gate = "if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'"
+        production_gate = "if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'"
         self.assertIn(production_gate, self.production_job)
         self.assertIn("needs.production_refresh.outputs.publish_delta == 'true'", self.deploy_job)
 
@@ -213,6 +213,19 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("actions/cache/restore@v4", self.production_job)
         self.assertIn("actions/cache/save@v4", self.production_job)
         self.assertIn("runner.temp", self.production_job)
+        key = "deal-markets-orchestration-v1-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}"
+        prefix = "deal-markets-orchestration-v1-${{ runner.os }}-main-"
+        self.assertEqual(self.production_job.count(f"key: {key}"), 2)
+        self.assertIn(prefix, self.production_job)
+        self.assertIn("Validate orchestration state for cache save", self.production_job)
+        self.assertIn(
+            "if: always() && steps.orchestration-state.outputs.cache_save == 'true'",
+            self.production_job,
+        )
+        self.assertIn(
+            'verify-orchestration-state --path "$DEAL_MARKETS_ORCHESTRATION_STATE"',
+            self.production_job,
+        )
         git_add = re.search(r"(?m)^\s+git add (?P<paths>.+)$", self.production_job)
         self.assertIsNotNone(git_add)
         self.assertNotIn("orchestration", git_add.group("paths"))

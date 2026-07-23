@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import contextlib
 import io
+import json
 import os
 import subprocess
 import tempfile
@@ -40,6 +41,21 @@ def _seed_remote(root: Path) -> Path:
 
 
 class ReleaseDiagnosticsTests(unittest.TestCase):
+    def test_orchestration_state_validator_requires_present_valid_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "state.json"
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(release_diagnostics.verify_orchestration_state(path), 1)
+            path.write_text("{broken", encoding="utf-8")
+            with contextlib.redirect_stderr(io.StringIO()):
+                self.assertEqual(release_diagnostics.verify_orchestration_state(path), 1)
+            path.write_text(
+                json.dumps({"schema_version": 1, "sources": {"feed": {"etag": "v1"}}}),
+                encoding="utf-8",
+            )
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(release_diagnostics.verify_orchestration_state(path), 0)
+
     def test_verifier_summary_extracts_csv_expected_actual(self) -> None:
         rows = release_diagnostics._verifier_summary(
             "CSV mismatch at row 7, deal_id DL-example, field quality_score: expected='100', actual='90'"

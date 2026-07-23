@@ -55,7 +55,7 @@ jobs:
         run: python scripts/release_diagnostics.py verify-public-artifacts
 
   production_refresh:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -79,9 +79,9 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: ${{ runner.temp }}/deal-markets-orchestration
-          key: deal-markets-orchestration-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          key: deal-markets-orchestration-v1-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}
           restore-keys: |
-            deal-markets-orchestration-v1-
+            deal-markets-orchestration-v1-${{ runner.os }}-main-
 
       - name: Initialize orchestration state directory
         run: mkdir -p "$RUNNER_TEMP/deal-markets-orchestration"
@@ -98,12 +98,24 @@ jobs:
           DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
         run: python run.py --live --orchestration-at "$ORCHESTRATION_AT"
 
-      - name: Save cross-run orchestration state
+      - name: Validate orchestration state for cache save
+        id: orchestration-state
         if: always()
+        env:
+          DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
+        run: |
+          if python scripts/release_diagnostics.py verify-orchestration-state --path "$DEAL_MARKETS_ORCHESTRATION_STATE"; then
+            echo "cache_save=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "cache_save=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Save cross-run orchestration state
+        if: always() && steps.orchestration-state.outputs.cache_save == 'true'
         uses: actions/cache/save@v4
         with:
           path: ${{ runner.temp }}/deal-markets-orchestration
-          key: deal-markets-orchestration-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          key: deal-markets-orchestration-v1-${{ runner.os }}-main-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Persist replay canonicalization before Excel
         if: steps.refresh.outputs.publish_delta == 'true'

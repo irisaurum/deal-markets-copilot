@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -157,6 +160,67 @@ class OperationalStateTests(unittest.TestCase):
             with self.assertRaisesRegex(OperationalStateError, "schema"):
                 OperationalStateStore(path).load()
 
+    def test_state_and_public_artifacts_survive_a_second_python_process(self) -> None:
+        artifact_paths = [
+            ROOT / "data" / "precedent_transactions.json",
+            ROOT / "output" / "build_manifest.json",
+            ROOT / "output" / "deal_markets_brief.html",
+            ROOT / "output" / "latest_snapshot.json",
+            ROOT / "output" / "precedent_transactions.csv",
+            ROOT / "output" / "precedent_transactions.xlsx",
+        ]
+        before = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in artifact_paths}
+        with tempfile.TemporaryDirectory() as directory:
+            state_path = Path(directory) / "state.json"
+            environment = dict(os.environ)
+            environment["PYTHONPATH"] = str(ROOT / "src")
+            process_a = """
+import sys
+from datetime import datetime, timezone
+from deal_markets_copilot.orchestrator import OperationalStateStore, SourceOrchestrator, SourcePolicy, empty_state
+path = sys.argv[1]
+policy = SourcePolicy.from_mapping("feed", {"enabled": True, "required": True, "implementation_state": "connected", "poll_interval_minutes": 30})
+state = empty_state()
+orchestrator = SourceOrchestrator(state, datetime(2026, 7, 23, 12, 0, tzinfo=timezone.utc))
+decision = orchestrator.decide(policy)
+orchestrator.begin(policy, decision)
+source = orchestrator.source_state("feed")
+source["etag"] = '"v1"'
+source["last_modified"] = "Wed, 23 Jul 2026 11:00:00 GMT"
+orchestrator.fail(policy, "http_429", retry_after=3600)
+OperationalStateStore(path).save(state)
+"""
+            subprocess.run(
+                [sys.executable, "-c", process_a, str(state_path)],
+                check=True,
+                env=environment,
+                capture_output=True,
+                text=True,
+            )
+            process_b = """
+import json, sys
+from datetime import datetime, timezone
+from deal_markets_copilot.orchestrator import OperationalStateStore, SourceOrchestrator, SourcePolicy
+state = OperationalStateStore(sys.argv[1]).load()
+policy = SourcePolicy.from_mapping("feed", {"enabled": True, "required": True, "implementation_state": "connected", "poll_interval_minutes": 30})
+decision = SourceOrchestrator(state, datetime(2026, 7, 23, 12, 30, tzinfo=timezone.utc)).decide(policy)
+source = state["sources"]["feed"]
+print(json.dumps({"decision": decision.decision, "etag": source["etag"], "last_modified": source["last_modified"], "failures": source["consecutive_failures"]}, sort_keys=True))
+"""
+            completed = subprocess.run(
+                [sys.executable, "-c", process_b, str(state_path)],
+                check=True,
+                env=environment,
+                capture_output=True,
+                text=True,
+            )
+            restored = json.loads(completed.stdout)
+        self.assertEqual(restored["decision"], "skipped_backoff")
+        self.assertEqual(restored["etag"], '"v1"')
+        self.assertEqual(restored["failures"], 1)
+        after = {path: hashlib.sha256(path.read_bytes()).hexdigest() for path in artifact_paths}
+        self.assertEqual(after, before)
+
 
 class BackoffTests(unittest.TestCase):
     def test_failure_increments_and_repeated_failures_increase_bounded_delay(self) -> None:
@@ -252,6 +316,39 @@ class DiagnosticsAndIntegrationTests(unittest.TestCase):
         execute_source(SourceOrchestrator(state, AT), good, Mock(return_value=[]))
         self.assertEqual(state["sources"]["required"]["consecutive_failures"], 1)
         self.assertEqual(state["sources"]["optional"]["consecutive_failures"], 0)
+
+    def test_registered_long_interval_sources_have_stable_distributed_phases(self) -> None:
+        configured = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+        policies: list[SourcePolicy] = []
+        for name, value in configured["orchestration"]["sources"].items():
+            if value["enabled"] and value["poll_interval_minutes"] > 30:
+                policies.append(SourcePolicy.from_mapping(value.get("source_id", name), value))
+        for value in configured["cis_source_registry"]:
+            if (
+                value.get("enabled")
+                and not value.get("orchestrated_by")
+                and value.get("poll_interval_minutes", 30) > 30
+            ):
+                policies.append(SourcePolicy.from_mapping(value["id"], value))
+        due_offsets = {}
+        start = datetime(2026, 7, 23, 0, 0, tzinfo=UTC)
+        for source in policies:
+            due = next_due(source, start)
+            interval_slots = source.poll_interval_minutes // 30
+            due_offsets[source.source_id] = int(due.timestamp() // 1800) % interval_slots
+        self.assertEqual(due_offsets, {
+            "issuer_news": 1,
+            "deal_archive": 7,
+            "uz-uzse": 0,
+        })
+        expected = {
+            source.source_id: int(
+                hashlib.sha256(source.source_id.encode("utf-8")).hexdigest()[:8],
+                16,
+            ) % (source.poll_interval_minutes // 30)
+            for source in policies
+        }
+        self.assertEqual(due_offsets, expected)
 
 
 if __name__ == "__main__":

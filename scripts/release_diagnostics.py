@@ -10,6 +10,11 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "src"))
+
+from deal_markets_copilot.orchestrator import OperationalStateError, OperationalStateStore
+
+
 MAIN_REMOTE_REF = "refs/remotes/origin/main"
 MAIN_FETCH_REFSPEC = "+refs/heads/main:refs/remotes/origin/main"
 MAIN_PUSH_REFSPEC = "HEAD:refs/heads/main"
@@ -218,12 +223,32 @@ def verify_parent(expected_base: str) -> int:
     return 1
 
 
+def verify_orchestration_state(path: str | Path) -> int:
+    """Allow cache save only for a present, complete, schema-valid state file."""
+    state_path = Path(path)
+    if not state_path.is_file():
+        print("ORCHESTRATION_STATE_NOT_SAVED missing_state_file", file=sys.stderr)
+        return 1
+    try:
+        state = OperationalStateStore(state_path).load()
+    except OperationalStateError as exc:
+        print(f"ORCHESTRATION_STATE_NOT_SAVED {exc}", file=sys.stderr)
+        return 1
+    print(
+        "ORCHESTRATION_STATE_VALID "
+        f"schema={state['schema_version']} sources={len(state['sources'])}"
+    )
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("verify-public-artifacts")
     verify_parent_parser = subparsers.add_parser("verify-parent")
     verify_parent_parser.add_argument("--expected-base", required=True)
+    verify_state_parser = subparsers.add_parser("verify-orchestration-state")
+    verify_state_parser.add_argument("--path", required=True)
     bot_push_parser = subparsers.add_parser("bot-push")
     bot_push_parser.add_argument("--expected-base", required=True)
     args = parser.parse_args(argv)
@@ -234,6 +259,8 @@ def main(argv: list[str] | None = None) -> int:
         return bot_push(args.expected_base)
     if args.command == "verify-parent":
         return verify_parent(args.expected_base)
+    if args.command == "verify-orchestration-state":
+        return verify_orchestration_state(args.path)
     raise AssertionError(f"Unknown command: {args.command}")
 
 

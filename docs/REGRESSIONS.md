@@ -322,6 +322,14 @@ Registry reviewed against current code and test definitions: **2026-07-04**. The
 - **Tests/checks:** operational-state restart/corruption tests, `test_operational_health_timestamp_alone_is_not_publishable`, replay fixed-point checks.
 - **Files:** `orchestrator.py`, `run.py`, workflow, tests.
 
+### REG-36 — Immutable cache key or invalid state freezes/poisons cross-run orchestration
+
+- **Failure mode:** a constant cache key cannot be replaced, a branch/platform-ambiguous prefix restores incompatible state, or `always()` saves a missing/corrupt directory after an earlier failure.
+- **Impact:** validators and backoff freeze, disappear or are replaced, so separate runners cannot enforce source cadence safely.
+- **Current protection:** schema/runner/main restore prefix; unique run ID/attempt save key; main-only production gate; present/schema-valid state check before cache save; offline two-process persistence regression.
+- **Tests/checks:** `test_cross_run_operational_state_uses_cache_not_git`, `test_orchestration_state_validator_requires_present_valid_schema`, `test_state_and_public_artifacts_survive_a_second_python_process`.
+- **Files:** `.github/workflows/deal-desk.yml`, `release_diagnostics.py`, orchestrator/workflow tests.
+
 ## Using this registry
 
 For a change, run the named test/checks for the affected rows first. Update this file only when a failure mode, protection or exact test changes. Do not treat a green historical verification date as proof of the current build; follow [`TESTING_AND_RELEASE.md`](TESTING_AND_RELEASE.md).
