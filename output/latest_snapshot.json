@@ -1,11 +1,11 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-23T10:57+03:00",
-  "classification_as_of": "2026-07-23T07:57:04.423390+00:00",
+  "generated_at": "2026-07-23T11:32+03:00",
+  "classification_as_of": "2026-07-23T08:32:30.727758+00:00",
   "health": {
-    "last_success_at": "2026-07-23T10:57+03:00",
-    "build_id": "deddb3adcb23",
-    "dataset_sha256": "deddb3adcb23190cab4a3549b84be57b4134f0c95a973a6b670b8ef183f033ca",
+    "last_success_at": "2026-07-23T11:32+03:00",
+    "build_id": "fa00b9674345",
+    "dataset_sha256": "fa00b9674345a15f97528f2a3dfce92059c2a8789c78312c39cc47c95b75a38c",
     "record_count": 131,
     "key_deal_count": 9,
     "approved_count": 17,
@@ -23,7 +23,7 @@
         "status": "ok",
         "records": 17,
         "required": true,
-        "checked_at": "2026-07-23T10:57:04+03:00",
+        "checked_at": "2026-07-23T11:32:30+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -33,7 +33,7 @@
         "status": "error",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-23T07:57:21+00:00",
+        "checked_at": "2026-07-23T08:32:47+00:00",
         "error": "SourceHealthError: unsupported connector: missing",
         "age_minutes": 0.0
       },
@@ -44,7 +44,7 @@
         "status": "ok",
         "records": 1,
         "required": false,
-        "checked_at": "2026-07-23T07:57:21+00:00",
+        "checked_at": "2026-07-23T08:32:47+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -53,7 +53,7 @@
         "status": "ok",
         "records": 1,
         "required": false,
-        "checked_at": "2026-07-23T10:57:35+03:00",
+        "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -62,7 +62,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-23T10:57:35+03:00",
+        "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -71,7 +71,7 @@
         "status": "ok",
         "records": 6,
         "required": true,
-        "checked_at": "2026-07-23T10:57:35+03:00",
+        "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -80,7 +80,7 @@
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-23T10:57:41+03:00",
+        "checked_at": "2026-07-23T11:33:05+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -89,7 +89,7 @@
         "status": "ok",
         "records": 3,
         "required": true,
-        "checked_at": "2026-07-23T10:57:41+03:00",
+        "checked_at": "2026-07-23T11:33:06+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -98,7 +98,7 @@
         "status": "ok",
         "records": 9,
         "required": true,
-        "checked_at": "2026-07-23T10:57:42+03:00",
+        "checked_at": "2026-07-23T11:33:07+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -107,7 +107,7 @@
         "status": "ok",
         "records": 144,
         "required": false,
-        "checked_at": "2026-07-23T10:57:43+03:00",
+        "checked_at": "2026-07-23T11:33:07+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -116,7 +116,7 @@
         "status": "ok",
         "records": 0,
         "required": false,
-        "checked_at": "2026-07-23T10:57:45+03:00",
+        "checked_at": "2026-07-23T11:33:09+03:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -125,7 +125,7 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-23T10:57:45+03:00",
+        "checked_at": "2026-07-23T11:33:09+03:00",
         "error": ""
       }
     ],
@@ -134,7 +134,7 @@
     "missing_required_sources": [],
     "stale_sources": [],
     "source_age_minutes": 0.0,
-    "source_checked_at": "2026-07-23T10:57+03:00",
+    "source_checked_at": "2026-07-23T11:32+03:00",
     "freshness_limit_minutes": 90,
     "source_status": "ok",
     "freshness_status": "ok",
@@ -143,17 +143,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-23T07:57:52+00:00"
+    "xlsx_generated_at": "2026-07-23T08:33:15+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3635.5,
-      "change_percent": -1.56,
-      "turnover": 821002095,
-      "updated": "10:42:45",
+      "price": 3651.5,
+      "change_percent": -1.12,
+      "turnover": 1040432889,
+      "updated": "11:18:07",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -164,10 +164,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 2762.5,
-      "change_percent": 0.25,
-      "turnover": 1545688258,
-      "updated": "10:42:45",
+      "price": 2727.5,
+      "change_percent": -1.02,
+      "turnover": 1961963582,
+      "updated": "11:18:10",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -178,10 +178,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 137.8,
-      "change_percent": -1.4,
-      "turnover": 438908981,
-      "updated": "10:42:46",
+      "price": 134.2,
+      "change_percent": -3.97,
+      "turnover": 639495410,
+      "updated": "11:18:10",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -335,7 +335,22 @@
     "baseline_status": "compared_with_previous_run",
     "new_event_ids": [],
     "new_signals": 0,
-    "market_moves": [],
+    "market_moves": [
+      {
+        "ticker": "VKCO",
+        "company": "VK",
+        "price": 134.2,
+        "change_percent": -3.97,
+        "turnover": 639495410,
+        "updated": "11:18:10",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+        "quote_status": "valid",
+        "quote_usable": true
+      }
+    ],
     "hypotheses": [
       {
         "id": "H-01",
@@ -411,10 +426,22 @@
         ],
         "reason": "Official evidence is insufficient for approval.",
         "required_source": "company, FAS, exchange, or transaction-party disclosure"
+      },
+      {
+        "id": "TASK-e94f7d6fef4a",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения VKCO (-3.97%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "VKCO",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
+        "source_title": "MOEX quote for VKCO",
+        "hypothesis_ids": []
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 2 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -422,7 +449,7 @@
       },
       {
         "label": "Рынок",
-        "text": "Движений выше установленного порога нет."
+        "text": "VKCO: -3.97% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
