@@ -194,3 +194,12 @@ Append-only log of durable architectural/product decisions. It is not a commit c
 - **Rationale:** a local scheduled writer can run outside the CI concurrency, stale-main, verifier and Pages publication contract. Keeping it disabled preserves one authoritative production path while retaining a manual escape hatch.
 - **Consequences:** tasks must not restore LaunchAgent automatically. It must not run during development, integration, branch work, PR work or while a GitHub Actions production refresh may run. Any manual restore requires an intentional local-only decision and a clean working tree; production publication still goes through GitHub Actions.
 - **Related:** `TESTING_AND_RELEASE.md`, `CURRENT_STATE.md`, `ARCHITECTURE.md`, `scripts/scheduled_update.py`.
+
+## Production polling state is external and no-op publication is explicit
+
+- **Date:** 2026-07-23 CIS-ORCHESTRATOR-01.
+- **Decision:** evaluate one production workflow every 30 minutes, decide requests through deterministic per-source UTC slots and bounded backoff, persist operational polling state outside tracked artifacts, and publish only when `publish_delta=true`.
+- **Context:** unchanged observations advanced `last_seen_at`; health/generation timestamps rewrote artifacts; CNPF cross-run state depended on tracked snapshot commits; overlapping slots cancelled valid work.
+- **Rationale:** request cadence, validators and backoff are operational concerns, while Build ID and public artifacts must represent stable economic/presentation meaning.
+- **Consequences:** cache loss retains slot gating but may lose conditional validators; corrupt state fails closed; replay never consumes polling state; no-op runs verify the existing build without commit or deploy; production concurrency queues instead of cancelling.
+- **Related:** `orchestrator.py`, `run.py`, `.github/workflows/deal-desk.yml`, `CIS_ORCHESTRATOR_IMPLEMENTATION.md`.

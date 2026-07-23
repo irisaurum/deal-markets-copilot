@@ -88,10 +88,11 @@ class WorkflowPolicyTests(unittest.TestCase):
         trigger_block = self.workflow.split("permissions:", 1)[0]
         self.assertRegex(trigger_block, r"(?m)^  workflow_dispatch:$")
         self.assertRegex(trigger_block, r"(?m)^  schedule:$")
-        self.assertEqual(trigger_block.count("- cron:"), 3)
+        self.assertEqual(trigger_block.count("- cron:"), 1)
+        self.assertIn('- cron: "*/30 * * * *"', trigger_block)
         production_gate = "if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'"
         self.assertIn(production_gate, self.production_job)
-        self.assertIn(production_gate, self.deploy_job)
+        self.assertIn("needs.production_refresh.outputs.publish_delta == 'true'", self.deploy_job)
 
     def test_validation_path_is_deterministic(self) -> None:
         self.assertIn("contents: read", self.validate_job)
@@ -139,6 +140,10 @@ class WorkflowPolicyTests(unittest.TestCase):
             self.production_job,
             r'(?ms)if ! git diff --cached --quiet; then\n\s+git commit -m "chore: refresh deal desk"\n\s+fi\n\s+python scripts/release_diagnostics.py bot-push --expected-base "\$GITHUB_SHA"',
         )
+        self.assertIn(
+            'python scripts/release_diagnostics.py verify-parent --expected-base "$GITHUB_SHA"',
+            self.production_job,
+        )
 
     def test_bot_commit_is_limited_to_public_data_and_output_files(self) -> None:
         match = re.search(r"(?m)^\s+git add (?P<paths>.+)$", self.production_job)
@@ -169,6 +174,7 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertLess(site, bot_push)
         self.assertLess(bot_push, upload)
         self.assertIn("needs: production_refresh", self.deploy_job)
+        self.assertIn("needs.production_refresh.outputs.publish_delta == 'true'", self.deploy_job)
 
     def test_post_refresh_verifier_emits_diagnostics_before_regression_tests(self) -> None:
         step = self.production_job.split("- name: Verify synchronized public artifacts", 1)[1].split("- name:", 1)[0]
@@ -182,6 +188,34 @@ class WorkflowPolicyTests(unittest.TestCase):
         self.assertIn("'deal-desk-pages'", self.workflow)
         self.assertIn("github.event_name == 'schedule'", self.workflow)
         self.assertIn("github.event_name == 'workflow_dispatch'", self.workflow)
+        self.assertIn("cancel-in-progress: false", self.workflow)
+
+    def test_production_dependencies_precede_live_discovery(self) -> None:
+        install = self.production_job.find("Install pinned production dependencies")
+        live = self.production_job.find("python run.py --live")
+        self.assertNotEqual(install, -1)
+        self.assertNotEqual(live, -1)
+        self.assertLess(install, live)
+
+    def test_noop_skips_commit_upload_and_deploy(self) -> None:
+        self.assertIn("steps.refresh.outputs.publish_delta == 'true'", self.production_job)
+        for step in (
+            "Persist replay canonicalization before Excel",
+            "Rebuild Excel workbook",
+            "Prepare site",
+            "Commit and push verified publishable delta",
+            "Upload Pages artifact",
+        ):
+            block = self.production_job.split(f"- name: {step}", 1)[1].split("- name:", 1)[0]
+            self.assertIn("if: steps.refresh.outputs.publish_delta == 'true'", block)
+
+    def test_cross_run_operational_state_uses_cache_not_git(self) -> None:
+        self.assertIn("actions/cache/restore@v4", self.production_job)
+        self.assertIn("actions/cache/save@v4", self.production_job)
+        self.assertIn("runner.temp", self.production_job)
+        git_add = re.search(r"(?m)^\s+git add (?P<paths>.+)$", self.production_job)
+        self.assertIsNotNone(git_add)
+        self.assertNotIn("orchestration", git_add.group("paths"))
 
 
 if __name__ == "__main__":

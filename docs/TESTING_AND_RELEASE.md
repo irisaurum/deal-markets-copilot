@@ -154,14 +154,17 @@ Current `.github/workflows/deal-desk.yml` production refresh path performs:
 
 ```text
 schedule or workflow_dispatch
-tests
-→ live refresh
-→ first replay canonicalization/persistence
+→ install pinned production dependencies
+→ tests
+→ restore external orchestration state and inject one UTC clock
+→ fetch only eligible sources and save state
+→ compute publish_delta
+→ strict verifier + parent check for both delta and no-op
+→ if delta: replay canonicalization/persistence
 → workbook + manifest generation
 → second replay health synchronization
-→ strict verifier
-→ local bot commit of public data/output when changed
-→ mandatory stale-main check and explicit main-only fast-forward/no-op push
+→ local allowlisted bot commit
+→ repeated stale-main check and explicit main-only fast-forward push
 → Pages deploy
 ```
 
@@ -171,7 +174,13 @@ Strict verifier failures write a compact GitHub Actions step summary with failed
 
 Before any bot push or Pages deploy, the workflow fetches `origin/main` and compares it with the run base SHA. This check also runs when the refresh produced no data commit. If `origin/main` moved, the workflow fails safely with expected and actual SHA values in the step summary. It does not rebase, merge, force-push or overwrite the remote; start a new production refresh on current `main`. A normal candidate pushes only `HEAD:refs/heads/main` to `origin`, without force.
 
-Production refresh uses one concurrency group, `deal-desk-pages`, so a newer scheduled/manual refresh supersedes an older production writer. Validation runs use unique concurrency groups and cannot cancel a production refresh.
+Production refresh uses one concurrency group, `deal-desk-pages`, with `cancel-in-progress: false`. A valid production writer finishes; later slots queue and cannot overlap discovery or push. Validation runs use unique concurrency groups and cannot cancel a production refresh.
+
+The workflow has exactly one `*/30 * * * *` cron. GitHub scheduling may be delayed, so this is a target cadence rather than a real-time SLA. Source requests still follow explicit 30/120/360/720-minute policies and deterministic UTC slots.
+
+Operational polling state is external to Git and replay. It is restored/saved through a versioned GitHub Actions cache and written atomically. A missing cache does not bypass deterministic slot gating; corrupted state fails closed before transport. Cache retention is not a release artifact guarantee.
+
+When `publish_delta=false`, the live step must print `NO_PUBLISH_DELTA`, preserve dataset bytes/Build ID, and skip replay/build regeneration, bot commit, push, Pages upload and deploy. Strict verification of the checked-in synchronized build and read-only parent verification still run.
 
 Do not reorder artifact creation so that a database write can happen after the final XLSX build without another synchronization cycle.
 

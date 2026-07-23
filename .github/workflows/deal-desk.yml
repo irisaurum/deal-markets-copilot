@@ -19,18 +19,16 @@ on:
       - "data/precedent_transactions.json"
   workflow_dispatch:
   schedule:
-    # Moscow 08:30, then every 30 minutes through 18:30 (UTC+3).
-    - cron: "30 5 * * 1-5"
-    - cron: "0,30 6-14 * * 1-5"
-    - cron: "0,30 15 * * 1-5"
+    # Target cadence only: GitHub may delay scheduled starts; this is not a real-time SLA.
+    - cron: "*/30 * * * *"
 
 permissions: {}
 
 concurrency:
   group: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && 'deal-desk-pages' || format('deal-desk-validation-{0}', github.run_id) }}
-  # A newer scheduled/manual refresh supersedes an older production writer.
+  # A valid production refresh is never cancelled by the next 30-minute slot.
   # Validation runs use unique groups and cannot cancel a production refresh.
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   validate:
@@ -62,6 +60,8 @@ jobs:
     permissions:
       contents: write
       pages: read
+    outputs:
+      publish_delta: ${{ steps.refresh.outputs.publish_delta }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -71,22 +71,50 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install pinned production dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+
+      - name: Restore cross-run orchestration state
+        id: orchestration-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ runner.temp }}/deal-markets-orchestration
+          key: deal-markets-orchestration-v1-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: |
+            deal-markets-orchestration-v1-
+
+      - name: Initialize orchestration state directory
+        run: mkdir -p "$RUNNER_TEMP/deal-markets-orchestration"
+
       - name: Run tests
         run: python -m unittest discover -s tests -v
 
-      - name: Fetch current deal flow
-        run: python run.py --live
+      - name: Set one UTC orchestration clock
+        run: echo "ORCHESTRATION_AT=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_ENV"
 
-      - name: Install public XLSX builder
-        run: python -m pip install --disable-pip-version-check -r requirements-ci.txt
+      - name: Fetch eligible current deal flow
+        id: refresh
+        env:
+          DEAL_MARKETS_ORCHESTRATION_STATE: ${{ runner.temp }}/deal-markets-orchestration/state.json
+        run: python run.py --live --orchestration-at "$ORCHESTRATION_AT"
+
+      - name: Save cross-run orchestration state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/deal-markets-orchestration
+          key: deal-markets-orchestration-v1-${{ github.run_id }}-${{ github.run_attempt }}
 
       - name: Persist replay canonicalization before Excel
+        if: steps.refresh.outputs.publish_delta == 'true'
         run: python run.py --replay
 
       - name: Rebuild Excel workbook
+        if: steps.refresh.outputs.publish_delta == 'true'
         run: python scripts/build_precedents_workbook_ci.py
 
       - name: Synchronize dashboard health with Excel
+        if: steps.refresh.outputs.publish_delta == 'true'
         run: python run.py --replay
 
       - name: Verify synchronized public artifacts
@@ -95,6 +123,7 @@ jobs:
           python -m unittest discover -s tests -v
 
       - name: Prepare site
+        if: steps.refresh.outputs.publish_delta == 'true'
         run: |
           mkdir -p site
           cp output/deal_markets_brief.html site/index.html
@@ -104,7 +133,11 @@ jobs:
           cp output/build_manifest.json site/build_manifest.json
           touch site/.nojekyll
 
-      - name: Persist change-detection baseline
+      - name: Verify origin main still matches the run parent
+        run: python scripts/release_diagnostics.py verify-parent --expected-base "$GITHUB_SHA"
+
+      - name: Commit and push verified publishable delta
+        if: steps.refresh.outputs.publish_delta == 'true'
         run: |
           git config user.name "deal-desk-bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -115,15 +148,17 @@ jobs:
           python scripts/release_diagnostics.py bot-push --expected-base "$GITHUB_SHA"
 
       - name: Configure Pages
+        if: steps.refresh.outputs.publish_delta == 'true'
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
+        if: steps.refresh.outputs.publish_delta == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
           path: site
 
   deploy:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: needs.production_refresh.result == 'success' && needs.production_refresh.outputs.publish_delta == 'true'
     environment:
       name: github-pages
       url: ${{ steps.deployment_retry.outputs.page_url || steps.deployment.outputs.page_url }}

@@ -180,10 +180,50 @@ def bot_push(expected_base: str) -> int:
     return push.returncode
 
 
+def verify_parent(expected_base: str) -> int:
+    """Read-only stale-main guard used on both delta and no-op production runs."""
+    try:
+        _run_git(["fetch", "--no-tags", "origin", MAIN_FETCH_REFSPEC])
+        actual = _run_git(["rev-parse", MAIN_REMOTE_REF]).stdout.strip()
+    except subprocess.CalledProcessError as error:
+        failure = _git_failure_text(error)
+        _append_summary(
+            "Production failure diagnostics",
+            [
+                ("failed stage", "production parent verification"),
+                ("invariant", "origin/main must be freshly resolved before publication decision"),
+                ("artifact/file", "origin/main"),
+                ("Deal ID / row / field", "n/a"),
+                ("expected", expected_base),
+                ("actual", failure),
+                ("recommended next action", "Restore GitHub connectivity and let the next scheduled run retry."),
+            ],
+        )
+        return error.returncode or 1
+    if actual == expected_base:
+        return 0
+    _append_summary(
+        "Production failure diagnostics",
+        [
+            ("failed stage", "production parent verification"),
+            ("invariant", "origin/main must still equal the workflow run parent"),
+            ("artifact/file", "origin/main"),
+            ("Deal ID / row / field", "n/a"),
+            ("expected", expected_base),
+            ("actual", actual),
+            ("recommended next action", "Let the next scheduled run start from current main; do not merge, rebase or force-push."),
+        ],
+    )
+    print("Refusing publication because origin/main changed during this run.", file=sys.stderr)
+    return 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(dest="command", required=True)
     subparsers.add_parser("verify-public-artifacts")
+    verify_parent_parser = subparsers.add_parser("verify-parent")
+    verify_parent_parser.add_argument("--expected-base", required=True)
     bot_push_parser = subparsers.add_parser("bot-push")
     bot_push_parser.add_argument("--expected-base", required=True)
     args = parser.parse_args(argv)
@@ -192,6 +232,8 @@ def main(argv: list[str] | None = None) -> int:
         return verify_public_artifacts()
     if args.command == "bot-push":
         return bot_push(args.expected_base)
+    if args.command == "verify-parent":
+        return verify_parent(args.expected_base)
     raise AssertionError(f"Unknown command: {args.command}")
 
 

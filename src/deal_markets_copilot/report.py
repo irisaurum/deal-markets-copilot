@@ -54,8 +54,9 @@ def build_html_report(
     source_tiers = sorted({_source_tier(row) for rows in deal_buckets.values() for row in rows})
     source_tier_options = "".join(f'<option value="{tier}" data-ru="{_source_tier_label(tier, "ru")}" data-en="{_source_tier_label(tier, "en")}">{_source_tier_label(tier, "ru")}</option>' for tier in source_tiers)
     counts = Counter(item.category for item in ranked)
-    generated = datetime.now(ZoneInfo("Europe/Moscow")).strftime("%d.%m.%Y · %H:%M")
-    news_window = "72H CATCH-UP" if datetime.now(ZoneInfo("Europe/Moscow")).weekday() in {0, 5, 6} else "24H"
+    report_as_of = _report_as_of(health)
+    generated = report_as_of.strftime("%d.%m.%Y · %H:%M")
+    news_window = "72H CATCH-UP" if report_as_of.weekday() in {0, 5, 6} else "24H"
     live = mode == "live"
     new_ids = set(flow.get("new_event_ids", []))
     scope = " · ".join(row.get("ticker", "") for row in config.get("coverage", []) if row.get("ticker")) or "CUSTOM"
@@ -164,6 +165,18 @@ def build_telegram_digest(items: list[ClassifiedEvent], max_items: int = 5) -> s
 
 def _empty_workflow() -> dict:
     return {"tasks": [], "hypotheses": [], "readout": [], "new_event_ids": [], "summary": "Workflow ещё не сформирован."}
+
+
+def _report_as_of(health: dict) -> datetime:
+    raw = health.get("last_success_at")
+    if raw:
+        try:
+            parsed = datetime.fromisoformat(str(raw).replace("Z", "+00:00"))
+            if parsed.tzinfo is not None:
+                return parsed.astimezone(ZoneInfo("Europe/Moscow"))
+        except ValueError:
+            pass
+    return datetime.now(ZoneInfo("Europe/Moscow"))
 
 
 def _brief_text(flow: dict, generated: str) -> str:
