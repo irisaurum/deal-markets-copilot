@@ -1,20 +1,20 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-24T03:05+03:00",
-  "classification_as_of": "2026-07-24T00:05:00+00:00",
+  "generated_at": "2026-07-24T20:06+03:00",
+  "classification_as_of": "2026-07-24T17:06:46+00:00",
   "presentation_fingerprint": "37a227ad5fcb934a7d93c757726aaf815b0284d916e6f38068d2d53caf58a59d",
   "health": {
-    "last_success_at": "2026-07-24T03:05+03:00",
-    "build_id": "06f0ff817a21",
-    "dataset_sha256": "06f0ff817a210447e78cea2af370bf5e687cd1ab07b91326d3e2ebca3b63341a",
-    "record_count": 133,
+    "last_success_at": "2026-07-24T20:06+03:00",
+    "build_id": "3c4fba95709b",
+    "dataset_sha256": "3c4fba95709be2ac4a19b2ff5ffb901e4d55d02e6c785c79a6193037e07c2b0b",
+    "record_count": 134,
     "key_deal_count": 9,
     "approved_count": 17,
-    "review_count": 86,
+    "review_count": 87,
     "rejected_count": 30,
-    "source_count": 172,
-    "source_representation_count": 241,
-    "direct_source_count": 152,
+    "source_count": 173,
+    "source_representation_count": 242,
+    "direct_source_count": 153,
     "aggregator_source_count": 89,
     "critical_qa_issues": 0,
     "source_group_count": 9,
@@ -28,7 +28,7 @@
         "required": true,
         "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
-        "age_minutes": 93.0
+        "age_minutes": 1114.8
       },
       {
         "name": "cis:uz-uzse",
@@ -39,7 +39,7 @@
         "required": false,
         "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
-        "age_minutes": 0.0
+        "age_minutes": 1021.8
       },
       {
         "name": "cis_disclosures",
@@ -50,7 +50,7 @@
         "required": false,
         "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
-        "age_minutes": 0.0
+        "age_minutes": 1021.8
       },
       {
         "name": "gdelt",
@@ -59,16 +59,16 @@
         "required": false,
         "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
-        "age_minutes": 932.0
+        "age_minutes": 1953.8
       },
       {
         "name": "moex_disclosures",
         "source_id": "ru-moex",
         "enabled": true,
         "status": "ok",
-        "records": 4,
+        "records": 8,
         "required": true,
-        "checked_at": "2026-07-24T00:05:00+00:00",
+        "checked_at": "2026-07-24T17:06:46+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -77,9 +77,9 @@
         "source_id": "configured_rss",
         "enabled": true,
         "status": "ok",
-        "records": 7,
+        "records": 8,
         "required": true,
-        "checked_at": "2026-07-24T00:05:00+00:00",
+        "checked_at": "2026-07-24T17:06:46+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -88,9 +88,9 @@
         "source_id": "deal_news",
         "enabled": true,
         "status": "ok",
-        "records": 4,
+        "records": 5,
         "required": true,
-        "checked_at": "2026-07-24T00:05:00+00:00",
+        "checked_at": "2026-07-24T17:06:46+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -99,9 +99,9 @@
         "source_id": "company_news",
         "enabled": true,
         "status": "ok",
-        "records": 8,
+        "records": 6,
         "required": true,
-        "checked_at": "2026-07-24T00:05:00+00:00",
+        "checked_at": "2026-07-24T17:06:46+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -112,7 +112,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:33:07+03:00",
         "error": "",
-        "age_minutes": 931.9
+        "age_minutes": 1953.7
       },
       {
         "name": "sec_filings",
@@ -121,7 +121,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:33:09+03:00",
         "error": "",
-        "age_minutes": 931.9
+        "age_minutes": 1953.6
       },
       {
         "name": "moex_quotes",
@@ -130,7 +130,7 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-24T00:05:00+00:00",
+        "checked_at": "2026-07-24T17:06:46+00:00",
         "error": ""
       }
     ],
@@ -138,7 +138,7 @@
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 932.0,
+    "source_age_minutes": 1953.8,
     "source_checked_at": "2026-07-23T11:32+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
@@ -148,17 +148,17 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-24T00:05:24+00:00"
+    "xlsx_generated_at": "2026-07-24T17:07:03+00:00"
   },
   "mode": "live",
   "market": [
     {
       "ticker": "YDEX",
       "company": "Yandex",
-      "price": 3665,
-      "change_percent": -0.76,
-      "turnover": 2853429130,
-      "updated": "23:50:22",
+      "price": 3824,
+      "change_percent": 4.34,
+      "turnover": 6159959954,
+      "updated": "19:51:58",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
@@ -169,10 +169,10 @@
     {
       "ticker": "OZON",
       "company": "Ozon",
-      "price": 2726,
-      "change_percent": -1.07,
-      "turnover": 3939984455,
-      "updated": "23:50:22",
+      "price": 2622.5,
+      "change_percent": -3.8,
+      "turnover": 8303010432,
+      "updated": "19:51:59",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
@@ -183,10 +183,10 @@
     {
       "ticker": "VKCO",
       "company": "VK",
-      "price": 132.6,
-      "change_percent": -5.12,
-      "turnover": 1606994449,
-      "updated": "23:50:22",
+      "price": 137.95,
+      "change_percent": 4.03,
+      "turnover": 1990115100,
+      "updated": "19:52:00",
       "currency": "RUB",
       "source": "MOEX ISS",
       "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
@@ -198,12 +198,12 @@
   "events": [
     {
       "event": {
-        "event_id": "moex-102717",
-        "published_at": "2026-07-23 16:42:44",
-        "title": "О порядке приобретения отдельных облигаций ООО \"Байсэл\" с 24 июля 2026 года",
-        "summary": "О порядке приобретения отдельных облигаций ООО \"Байсэл\" с 24 июля 2026 года 2026-07-23 16:42:44 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и на основании уведомления о выкупе, полученного от ООО \"Байсэл\", установлены следующие форма, время, срок и порядок проведения приобретения облигаций ООО \"Байсэл\" в режиме торгов \"Выкуп: Адресные заявки\": Наименование Эмитента ООО \"Байсэл\" Полное наименование ценных бумаг (вид и тип) биржевые облигации процентные неконвертируемые бездокументарные серии 001P-01 Регистрационный номер выпуска 4B02-01-00162-L-001P Торговый код RU000A1094U1 ISIN RU000A1094U1 Информация о приобретении (Режим торгов, форма приобретения) С предварительным сбором адресных заявок с датой активации в режиме торгов \"Выкуп: Адресные заявки\". (Расчеты: Рубль) Код расчетов T0 Цена приобретения 100% от номинальной стоимости Облигации Наименование Агента, выкупающего облигации ООО ИК \"Иволга Капитал\" (идентификатор в системе торгов – MC0478600000) Размер лота 1 Облигация Дата начала с",
+        "event_id": "moex-102773",
+        "published_at": "2026-07-24 15:15:24",
+        "title": "О порядке приобретения отдельных облигаций ООО \"Биннофарм Групп\" с 27 июля 2026 года.",
+        "summary": "О порядке приобретения отдельных облигаций ООО \"Биннофарм Групп\" с 27 июля 2026 года. 2026-07-24 15:15:24 Участникам торгов Информируем Вас о том, что в соответствии с Частью I. Общая часть Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 15 мая 2026 года (Протокол №17) и Частью II. Секция фондового рынка Правил проведения торгов на фондовом рынке, рынке депозитов и рынке кредитов ПАО \"Московская Биржа ММВБ-РТС\", утвержденных решением Наблюдательного совета ПАО Московская Биржа 23 января 2026 года (Протокол №11), и на основании уведомления о выкупе, полученного от ООО \"Биннофарм Групп\", установлены следующие форма, время, срок и порядок проведения приобретения облигаций ООО \"Биннофарм Групп\" в режиме торгов \"Выкуп: Адресные заявки\": Наименование Эмитента ООО \"Биннофарм Групп\" Полное наименование ценных бумаг (вид и тип) Биржевые облигации процентные неконвертируемые бездокументарные серии 001P-04 Регистрационный номер выпуска 4B02-04-00054-L-001P Торговый код RU000A10AS28 ISIN RU000A10AS28 Информация о приобретении (Режим торгов, форма приобретения) С предварительным сбором адресных заявок с датой активации в режиме торгов \"Выкуп: Адресные заявки\". (Расчеты: Рубль) Код расчетов T0 Цена приобретения 100% от номинальной стоимости Облигации Наименование Агента, выкупающего облигации АО \"Банк Синара\" (идентификатор в системе торгов – EC0106000000) Размер ",
         "source": "MOEX disclosure",
-        "url": "https://www.moex.com/n102717",
+        "url": "https://www.moex.com/n102773",
         "companies": [],
         "source_type": "official_exchange",
         "confidence": "confirmed",
@@ -279,61 +279,12 @@
         "amount_is_derived": false
       },
       "category": "M&A",
-      "score": 9,
+      "score": 8,
       "severity": "critical",
       "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
       "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
       "matched_coverage": [],
       "evidence_label": "confirmed"
-    },
-    {
-      "event": {
-        "event_id": "7e1f6c6e3007f879",
-        "published_at": "Thu, 23 Jul 2026 10:26:02 GMT",
-        "title": "🙅‍♂️ Не стоит торопиться с покупками Ozon — идея в Профите по OZON - БКС Экспресс",
-        "summary": "🙅‍♂️ Не стоит торопиться с покупками Ozon — идея в Профите по OZON БКС Экспресс",
-        "source": "БКС Экспресс",
-        "url": "https://bcs-express.ru/profit/post/8229d264-9362-49af-9bff-a5ab450f45bd",
-        "companies": [
-          "OZON"
-        ],
-        "source_type": "public_news",
-        "confidence": "unverified",
-        "amount": null,
-        "currency": null,
-        "demo": false,
-        "discovery_url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE03QnJEdnBELTN0VXFiWTYwLUxFVmpVN19kSnZzaFYzTDFsWU1zMjd0dTJ5cTFBV0ZDeG1HQlJNN0tZb0lFVlM2TDE4VXpwWEV6aW9fLXVQR2tkMDhYRUhoTmpyalZQUllIMzZKY3VPcEhxRmNGUzlVelRlNA?oc=5",
-        "country": "Not disclosed",
-        "market": "Not disclosed",
-        "source_id": "",
-        "source_event_id": "",
-        "original_title": "",
-        "issuer": "",
-        "instrument": "",
-        "programme": "",
-        "series": "",
-        "isin": "",
-        "registration_number": "",
-        "coupon_rate": null,
-        "yield_rate": null,
-        "maturity_date": "",
-        "event_date": "",
-        "lifecycle_stage": "",
-        "event_sub_stage": "",
-        "document_urls": [],
-        "quantity": null,
-        "denomination": null,
-        "amount_is_derived": false
-      },
-      "category": "M&A",
-      "score": 5,
-      "severity": "medium",
-      "banker_angle": "Проверить стратегическую логику, потенциальных покупателей, valuation и precedent transactions.",
-      "next_action": "Добавить событие в deal log и подготовить one-page transaction snapshot.",
-      "matched_coverage": [
-        "OZON"
-      ],
-      "evidence_label": "unverified"
     }
   ],
   "workflow": {
@@ -342,16 +293,44 @@
     "new_signals": 0,
     "market_moves": [
       {
+        "ticker": "YDEX",
+        "company": "Yandex",
+        "price": 3824,
+        "change_percent": 4.34,
+        "turnover": 6159959954,
+        "updated": "19:51:58",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/YDEX.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+        "quote_status": "valid",
+        "quote_usable": true
+      },
+      {
         "ticker": "VKCO",
         "company": "VK",
-        "price": 132.6,
-        "change_percent": -5.12,
-        "turnover": 1606994449,
-        "updated": "23:50:22",
+        "price": 137.95,
+        "change_percent": 4.03,
+        "turnover": 1990115100,
+        "updated": "19:52:00",
         "currency": "RUB",
         "source": "MOEX ISS",
         "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=VKCO",
         "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/VKCO.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
+        "quote_status": "valid",
+        "quote_usable": true
+      },
+      {
+        "ticker": "OZON",
+        "company": "Ozon",
+        "price": 2622.5,
+        "change_percent": -3.8,
+        "turnover": 8303010432,
+        "updated": "19:51:59",
+        "currency": "RUB",
+        "source": "MOEX ISS",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "api_url": "https://iss.moex.com/iss/engines/stock/markets/shares/securities/OZON.json?iss.meta=off&iss.only=marketdata%2Csecurities&marketdata.columns=SECID%2CLAST%2CLASTTOPREVPRICE%2CVALTODAY%2CUPDATETIME&securities.columns=SECID%2CSHORTNAME%2CPREVPRICE",
         "quote_status": "valid",
         "quote_usable": true
       }
@@ -392,17 +371,17 @@
     ],
     "tasks": [
       {
-        "id": "TASK-202582d2d8b5",
+        "id": "TASK-89947db4c565",
         "priority": "P1",
         "state": "open",
         "title": "Confirm issuer, placement size, currency: use issuer, MOEX, NSD, or arranger disclosure before upgrading this DCM record.",
         "deliverable": "Verified DCM terms + evidence note",
         "coverage": "MARKET",
         "category": "DCM",
-        "source_url": "https://www.moex.com/n102717",
-        "source_title": "О порядке приобретения отдельных облигаций ООО \"Байсэл\" с 24 июля 2026 года",
+        "source_url": "https://www.moex.com/n102773",
+        "source_title": "О порядке приобретения отдельных облигаций ООО \"Биннофарм Групп\" с 27 июля 2026 года.",
         "hypothesis_ids": [],
-        "deal_id": "DL-moex-102717",
+        "deal_id": "DL-moex-102773",
         "quality_status": "review",
         "quality_flags": [
           "missing_issuer",
@@ -413,30 +392,34 @@
         "required_source": "issuer, MOEX, NSD, or arranger disclosure"
       },
       {
-        "id": "TASK-b4f333f20610",
-        "priority": "P1",
-        "state": "open",
-        "title": "Verify official source and confirm target, acquirer, transaction value, stake, payment form: use company, FAS, exchange, or transaction-party disclosure before upgrading this M&A record.",
-        "deliverable": "Verified M&A terms + evidence note",
+        "id": "TASK-1b280a4b35b8",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения YDEX (+4.34%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
+        "coverage": "YDEX",
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=YDEX",
+        "source_title": "MOEX quote for YDEX",
+        "hypothesis_ids": []
+      },
+      {
+        "id": "TASK-2f26520d27ba",
+        "priority": "P2",
+        "state": "market",
+        "title": "Проверить драйвер движения OZON (-3.80%) и обновить trading comps.",
+        "deliverable": "Trading comps + market movement note",
         "coverage": "OZON",
-        "category": "M&A",
-        "source_url": "https://bcs-express.ru/profit/post/8229d264-9362-49af-9bff-a5ab450f45bd",
-        "source_title": "🙅‍♂️ Не стоит торопиться с покупками Ozon — идея в Профите по OZON - БКС Экспресс",
-        "hypothesis_ids": [],
-        "deal_id": "DL-7e1f6c6e3007f879",
-        "quality_status": "review",
-        "quality_flags": [
-          "unverified_source",
-          "missing_both_parties"
-        ],
-        "reason": "Official evidence is insufficient for approval.",
-        "required_source": "company, FAS, exchange, or transaction-party disclosure"
+        "category": "Market",
+        "source_url": "https://www.moex.com/ru/issue.aspx?board=TQBR&code=OZON",
+        "source_title": "MOEX quote for OZON",
+        "hypothesis_ids": []
       },
       {
         "id": "TASK-fa7f2b4d0c2e",
-        "priority": "P1",
+        "priority": "P2",
         "state": "market",
-        "title": "Проверить драйвер движения VKCO (-5.12%) и обновить trading comps.",
+        "title": "Проверить драйвер движения VKCO (+4.03%) и обновить trading comps.",
         "deliverable": "Trading comps + market movement note",
         "coverage": "VKCO",
         "category": "Market",
@@ -446,7 +429,7 @@
       }
     ],
     "attention_hypotheses": 0,
-    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 3 действий по текущему покрытию.",
+    "summary": "Новых сигналов с прошлого запуска нет; в очереди остаётся 4 действий по текущему покрытию.",
     "readout": [
       {
         "label": "Главный сигнал",
@@ -454,7 +437,7 @@
       },
       {
         "label": "Рынок",
-        "text": "VKCO: -5.12% к предыдущему закрытию."
+        "text": "YDEX: +4.34% к предыдущему закрытию."
       },
       {
         "label": "Первое действие",
