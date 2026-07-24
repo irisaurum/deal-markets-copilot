@@ -1,12 +1,12 @@
 {
   "workflow_version": 2,
-  "generated_at": "2026-07-24T01:31+03:00",
-  "classification_as_of": "2026-07-23T22:31:59+00:00",
+  "generated_at": "2026-07-24T03:05+03:00",
+  "classification_as_of": "2026-07-24T00:05:00+00:00",
   "presentation_fingerprint": "37a227ad5fcb934a7d93c757726aaf815b0284d916e6f38068d2d53caf58a59d",
   "health": {
-    "last_success_at": "2026-07-24T01:31+03:00",
-    "build_id": "2952ddd903c9",
-    "dataset_sha256": "2952ddd903c9eb56f21d1ee8da0e67ad9f695d20ab879e3f2ee38e0e36f4a92c",
+    "last_success_at": "2026-07-24T03:05+03:00",
+    "build_id": "06f0ff817a21",
+    "dataset_sha256": "06f0ff817a210447e78cea2af370bf5e687cd1ab07b91326d3e2ebca3b63341a",
     "record_count": 133,
     "key_deal_count": 9,
     "approved_count": 17,
@@ -28,27 +28,29 @@
         "required": true,
         "checked_at": "2026-07-23T22:31:59+00:00",
         "error": "",
-        "age_minutes": 0.0
+        "age_minutes": 93.0
       },
       {
         "name": "cis:uz-uzse",
         "source_id": "uz-uzse",
         "enabled": true,
-        "status": "error",
-        "records": 0,
-        "required": false,
-        "checked_at": "2026-07-23T18:19:43+00:00",
-        "error": "URLError: <urlopen error timed out>",
-        "age_minutes": 252.3
-      },
-      {
-        "name": "cis_disclosures",
         "status": "ok",
         "records": 1,
         "required": false,
-        "checked_at": "2026-07-23T11:32:58+03:00",
+        "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
-        "age_minutes": 839.0
+        "age_minutes": 0.0
+      },
+      {
+        "name": "cis_disclosures",
+        "source_id": null,
+        "enabled": true,
+        "status": "ok",
+        "records": 1,
+        "required": false,
+        "checked_at": "2026-07-24T00:05:00+00:00",
+        "error": "",
+        "age_minutes": 0.0
       },
       {
         "name": "gdelt",
@@ -57,7 +59,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:32:58+03:00",
         "error": "",
-        "age_minutes": 839.0
+        "age_minutes": 932.0
       },
       {
         "name": "moex_disclosures",
@@ -66,7 +68,7 @@
         "status": "ok",
         "records": 4,
         "required": true,
-        "checked_at": "2026-07-23T22:31:59+00:00",
+        "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -77,7 +79,7 @@
         "status": "ok",
         "records": 7,
         "required": true,
-        "checked_at": "2026-07-23T22:31:59+00:00",
+        "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -86,9 +88,9 @@
         "source_id": "deal_news",
         "enabled": true,
         "status": "ok",
-        "records": 3,
+        "records": 4,
         "required": true,
-        "checked_at": "2026-07-23T22:31:59+00:00",
+        "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -99,7 +101,7 @@
         "status": "ok",
         "records": 8,
         "required": true,
-        "checked_at": "2026-07-23T22:31:59+00:00",
+        "checked_at": "2026-07-24T00:05:00+00:00",
         "error": "",
         "age_minutes": 0.0
       },
@@ -110,7 +112,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:33:07+03:00",
         "error": "",
-        "age_minutes": 838.9
+        "age_minutes": 931.9
       },
       {
         "name": "sec_filings",
@@ -119,7 +121,7 @@
         "required": false,
         "checked_at": "2026-07-23T11:33:09+03:00",
         "error": "",
-        "age_minutes": 838.8
+        "age_minutes": 931.9
       },
       {
         "name": "moex_quotes",
@@ -128,15 +130,15 @@
         "status": "ok",
         "records": 3,
         "required": false,
-        "checked_at": "2026-07-23T22:31:59+00:00",
+        "checked_at": "2026-07-24T00:05:00+00:00",
         "error": ""
       }
     ],
-    "discovery_record_count": 36,
+    "discovery_record_count": 37,
     "discovery_status": "ok",
     "missing_required_sources": [],
     "stale_sources": [],
-    "source_age_minutes": 839.0,
+    "source_age_minutes": 932.0,
     "source_checked_at": "2026-07-23T11:32+03:00",
     "freshness_limit_minutes": 4320,
     "source_status": "ok",
@@ -146,7 +148,7 @@
     "market_quote_total": 3,
     "system_status": "ok",
     "xlsx_synced": true,
-    "xlsx_generated_at": "2026-07-23T22:32:34+00:00"
+    "xlsx_generated_at": "2026-07-24T00:05:24+00:00"
   },
   "mode": "live",
   "market": [
